@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { products as staticProducts } from '@/lib/data';
 
+// Normalize Supabase snake_case fields to match the Product type (camelCase)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeProduct(p: any) {
+  return {
+    ...p,
+    inStock: p.inStock ?? p.in_stock ?? true,
+    rating: p.rating ?? 5.0,
+    features: p.features ?? [],
+    specs: p.specs ?? {},
+  };
+}
+
 export async function GET() {
   try {
     // Attempt to fetch from Supabase
@@ -21,7 +33,7 @@ export async function GET() {
       return NextResponse.json(staticProducts);
     }
 
-    return NextResponse.json(data);
+    return NextResponse.json(data.map(normalizeProduct));
   } catch (err) {
     console.error('[products/route] Unexpected error:', err);
     // Graceful degradation — always serve something

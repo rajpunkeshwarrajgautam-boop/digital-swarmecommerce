@@ -2,6 +2,18 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { products as fallbackData } from '@/lib/data';
 
+// Normalize Supabase snake_case to match the Product type (camelCase)
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function normalizeProduct(p: any) {
+  return {
+    ...p,
+    inStock: p.inStock ?? p.in_stock ?? true,
+    rating: p.rating ?? 5.0,
+    features: p.features ?? [],
+    specs: p.specs ?? {},
+  };
+}
+
 export async function GET(
   request: Request,
   props: { params: Promise<{ id: string }> }
@@ -21,7 +33,7 @@ export async function GET(
         .single();
 
       if (dbProduct) {
-        return NextResponse.json(dbProduct);
+        return NextResponse.json(normalizeProduct(dbProduct));
       }
 
       if (error) {
