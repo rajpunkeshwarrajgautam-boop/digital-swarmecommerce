@@ -29,7 +29,7 @@ export function ParallaxHero() {
         {/* Main Typography */}
         <div className="relative z-20 text-center px-4">
             <h1 className="text-[12vw] leading-[0.8] font-titan text-black drop-shadow-[4px_4px_0px_rgba(255,255,255,1)]">
-                ANTI<br/>GRAVITY
+                DIGITAL<br/>SWARM
             </h1>
             <h2 className="text-2xl md:text-4xl font-fredoka mt-8 bg-black text-white px-6 py-2 inline-block -rotate-2 transform">
                 The Future of Digital Commerce
