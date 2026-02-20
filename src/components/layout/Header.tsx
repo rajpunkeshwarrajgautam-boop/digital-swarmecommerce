@@ -40,7 +40,7 @@ export function Header() {
           {/* Center: Logo */}
           <Link href="/">
             <div className="font-titan text-3xl bg-primary px-6 py-2 border-2 border-black -rotate-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:rotate-0 hover:scale-105 transition-all text-black">
-                AG
+                DS
             </div>
           </Link>
 
