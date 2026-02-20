@@ -101,7 +101,7 @@ export function CartDrawer() {
                     <div className="flex-1 flex flex-col justify-between">
                       <div className="flex justify-between items-start gap-2">
                         <h3 className="font-medium line-clamp-2 text-white/90 group-hover:text-primary transition-colors">{item.name}</h3>
-                        <p className="font-bold text-primary">$ {(item.price * item.quantity).toFixed(2)}</p>
+                        <p className="font-bold text-primary">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
                       </div>
                       
                       <div className="flex justify-between items-center mt-2">
@@ -145,7 +145,7 @@ export function CartDrawer() {
               <div className="relative z-10 p-6 border-t border-white/10 bg-black/40 backdrop-blur-md">
                 <div className="flex justify-between mb-6">
                   <span className="text-muted-foreground uppercase tracking-wider text-xs font-bold">Total Payload</span>
-                  <span className="text-2xl font-bold text-primary font-mono">$ {total.toFixed(2)}</span>
+                  <span className="text-2xl font-bold text-primary font-mono">₹{total.toLocaleString('en-IN')}</span>
                 </div>
                 <Link href="/checkout" onClick={toggleCart} className="w-full">
                   <Button className="w-full h-14 text-lg font-bold tracking-widest uppercase bg-primary hover:bg-blue-400 text-white shadow-[0_0_20px_-5px_rgba(66,133,244,0.6)] hover:shadow-[0_0_30px_-5px_rgba(66,133,244,0.8)] transition-all">

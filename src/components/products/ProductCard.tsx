@@ -24,7 +24,7 @@ export function ProductCard({ product }: ProductCardProps) {
               />
               {/* Floating Price Tag */}
               <div className="absolute top-2 right-2 bg-primary text-black font-black text-lg px-3 py-1 border-2 border-black rounded-full rotate-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                ${product.price}
+                ₹{product.price}
               </div>
         </div>
 

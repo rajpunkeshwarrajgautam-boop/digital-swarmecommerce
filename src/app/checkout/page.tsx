@@ -220,12 +220,12 @@ export default function CheckoutPage() {
                     {items.map((item) => (
                       <div key={item.id} className="flex justify-between text-sm">
                         <span className="text-muted-foreground truncate mr-4">{item.name} ×{item.quantity}</span>
-                        <span className="font-mono font-bold shrink-0">${(item.price * item.quantity).toFixed(2)}</span>
+                        <span className="font-mono font-bold shrink-0">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
                       </div>
                     ))}
                     <div className="border-t border-white/10 pt-2 flex justify-between font-bold">
                       <span>Total</span>
-                      <span className="text-primary">${total.toFixed(2)}</span>
+                      <span className="text-primary">₹{total.toLocaleString('en-IN')}</span>
                     </div>
                   </div>
 
@@ -244,7 +244,7 @@ export default function CheckoutPage() {
                     onClick={handleConfirmOrder}
                     isLoading={isProcessing}
                   >
-                    <Lock className="w-4 h-4 mr-2" />Pay ${total.toFixed(2)} Securely
+                    <Lock className="w-4 h-4 mr-2" />Pay ₹{total.toLocaleString('en-IN')} Securely
                   </Button>
                 </div>
               </motion.div>
@@ -268,7 +268,7 @@ export default function CheckoutPage() {
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold truncate text-xs">{item.name}</p>
                         <p className="text-[10px] text-muted-foreground">Qty: {item.quantity}</p>
-                        <p className="font-bold text-xs text-primary">${(item.price * item.quantity).toFixed(2)}</p>
+                        <p className="font-bold text-xs text-primary">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
                       </div>
                     </div>
                   ))
@@ -276,14 +276,14 @@ export default function CheckoutPage() {
               </div>
               <div className="border-t border-white/10 pt-4 space-y-2">
                 <div className="flex justify-between text-xs text-muted-foreground">
-                  <span>Subtotal</span><span>${total.toFixed(2)}</span>
+                  <span>Subtotal</span><span>₹{total.toLocaleString('en-IN')}</span>
                 </div>
                 <div className="flex justify-between text-xs text-muted-foreground">
                   <span>Delivery</span><span className="text-green-500">Free</span>
                 </div>
                 <div className="flex justify-between text-lg font-bold pt-2 border-t border-white/10 mt-2">
                   <span>Total</span>
-                  <span className="text-primary glowing-text">${total.toFixed(2)}</span>
+                  <span className="text-primary glowing-text">₹{total.toLocaleString('en-IN')}</span>
                 </div>
               </div>
             </div>
