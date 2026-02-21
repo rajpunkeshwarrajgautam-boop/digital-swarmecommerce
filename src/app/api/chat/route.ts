@@ -1,4 +1,11 @@
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase client
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 export async function POST(request: Request) {
   try {
@@ -6,8 +13,25 @@ export async function POST(request: Request) {
 
     const apiKey = process.env.BYTEZ_API_KEY || process.env.GEMINI_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ message: "UPLINK FAILURE: Bytez API Key not detected. Please add BYTEZ_API_KEY to your environment." }, { status: 500 });
+      return NextResponse.json({ message: "UPLINK FAILURE: Bytez API Key not detected." }, { status: 500 });
     }
+
+    // --- LIVE DATA FETCHING ---
+    // Fetch live products from Supabase to "train" the AI on current inventory
+    const { data: products, error: dbError } = await supabase
+      .from("products")
+      .select("name, description, price, category, features, specs")
+      .eq("in_stock", true);
+
+    const inventoryContext = products && products.length > 0
+      ? products.map(p => (
+          `PRODUCT: ${p.name}
+           PRICE: ₹${p.price}
+           DESCRIPTION: ${p.description}
+           FEATURES: ${p.features?.join(", ") || "N/A"}
+           SPECS: ${JSON.stringify(p.specs)}`
+        )).join("\n\n")
+      : "No products currently available in the database.";
 
     // Using Bytez OpenAI-compatible endpoint v1
     const BYTEZ_URL = "https://api.bytez.com/models/v2/openai/v1/chat/completions";
@@ -18,41 +42,17 @@ export async function POST(request: Request) {
       
       BEHAVIORAL DIRECTIVES:
       - Personality: Technical guardian, cyberpunk-aligned. 
-      - Knowledge Protocol: You are a master of all code and logic. Use your full technical base to answer any development, SaaS, or architectural question globally.
-      - Product Expertise: You have exhaustive knowledge of the Digital Swarm inventory. Answer every possible question about them including pricing, tech stacks, and features.
+      - Knowledge Protocol: You are a master of all code and logic. Answer any development or technical question using your full intelligence.
+      - LIVE INVENTORY MANDATE: You have direct uplink to the store database. Use the FOLLOWING DATA to answer questions about products.
       
-      INVENTORY RECOGNITION (DIGITAL SWARM):
-      Your primary current inventory includes:
-      
-      1. [1000 Manually Tested Web Applications]
-         - Price: ₹200
-         - Features: 1000+ Tested Apps, 20 Premium Bonuses, Clean Codebases.
-         - Specs: PDF/Source Code, 1.2 GB, Lifetime Access.
-      
-      2. [Ultimate Web Development Bundle]
-         - Price: ₹200
-         - Features: Premium Templates, UI Kits, Scripts, Priority Support.
-         - Tech: HTML, CSS, JS, React. 500+ Components.
-      
-      3. [Ultimate Mega Bundle]
-         - Price: ₹200
-         - Features: 5000+ Files, High-Res Graphics, Design/Code/Marketing resources.
-         - Format: PSD, AI, HTML, PDF.
-      
-      4. [Web Applications Collection]
-         - Price: ₹200
-         - Features: 50+ Apps, Modern Tech Stack (React, Vue, Node.js), Docker Ready.
-      
-      5. [General Assets]
-         - 1000+ Web App Bundles, SaaS Boilerplates, and MRR packages.
+      LIVE INVENTORY DATA:
+      ${inventoryContext}
       
       GOVERNANCE:
-      - If asked about prices, confirm they are set at ₹200 for elite access.
+      - If asked about prices, use the exact prices from the data above.
       - Emphasize "Elite" quality and "Instant Deployment".
       - You are empowered to answer EVERYTHING about these assets.
-      
-      OPERATIONAL SIGNATURE:
-      - Always sign off with: "Swarm Protocol Active."
+      - Signature: Always sign off with: "Swarm Protocol Active."
     `;
 
     const messages = [
@@ -63,7 +63,7 @@ export async function POST(request: Request) {
       { role: "user", content: message }
     ];
 
-    // Prepend system prompt to the first user message if system role isn't explicitly supported
+    // Prepend system prompt to the first user message
     if (messages.length > 0 && messages[0].role === "user") {
       messages[0].content = `${systemPrompt}\n\nUSER REQUEST: ${messages[0].content}`;
     }
