@@ -33,6 +33,19 @@ export async function POST(request: Request) {
       - Always sign off with "Swarm Protocol Active." or similar.
     `;
 
+    const messages = [
+      ...history.map((h: { role: string; parts: { text: string }[] }) => ({
+        role: h.role === "model" ? "assistant" : "user",
+        content: h.parts[0].text
+      })),
+      { role: "user", content: message }
+    ];
+
+    // Prepend system prompt to the first user message if system role isn't explicitly supported
+    if (messages.length > 0 && messages[0].role === "user") {
+      messages[0].content = `${systemPrompt}\n\nUSER REQUEST: ${messages[0].content}`;
+    }
+
     const response = await fetch(BYTEZ_URL, {
       method: "POST",
       headers: { 
@@ -41,14 +54,7 @@ export async function POST(request: Request) {
       },
       body: JSON.stringify({
         model: "unsloth/gemma-2b-it",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...history.map((h: { role: string; parts: { text: string }[] }) => ({
-            role: h.role === "model" ? "assistant" : "user",
-            content: h.parts[0].text
-          })),
-          { role: "user", content: message }
-        ],
+        messages: messages,
         temperature: 0.7,
         max_tokens: 500
       })
