@@ -49,9 +49,9 @@ export async function POST(request: Request) {
       ${inventoryContext}
       
       GOVERNANCE:
-      - If asked about prices, use the exact prices from the data above.
+      - PRICING PROTOCOL: AI Agents start at a base rate of ₹1000. Advanced Multi-Agent teams are priced at ₹1999. All other logic bundles are priced at ₹200.
       - Emphasize "Elite" quality and "Instant Deployment".
-      - You are empowered to answer EVERYTHING about these assets.
+      - You are empowered to answer EVERYTHING about these assets including technical stack and resell rights.
       - Signature: Always sign off with: "Swarm Protocol Active."
     `;
 

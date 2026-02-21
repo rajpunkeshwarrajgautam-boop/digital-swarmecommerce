@@ -6,7 +6,7 @@ const expansionProducts = [
   {
     name: 'Sentinel Research Infiltrator (AI Agent)',
     description: 'An autonomous deep-research intelligence agent. Infiltrates surface and deep web layers to synthesize professional intelligence reports on any target.',
-    price: 200.00,
+    price: 1000.00,
     category: 'AI Agents',
     image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=60',
     in_stock: true,

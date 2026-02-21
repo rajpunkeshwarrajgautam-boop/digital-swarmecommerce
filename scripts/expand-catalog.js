@@ -9,15 +9,15 @@ const supabase = createClient(
 
 const expansionProducts = [
   {
-    name: 'Sentinel Research Infiltrator (AI Agent)',
-    description: 'An autonomous deep-research intelligence agent. Infiltrates surface and deep web layers to synthesize professional intelligence reports on any target.',
-    price: 200.00,
+    name: 'Swarm Corporate Growth Team (Multi-Agent)',
+    description: 'An elite multi-agent team designed for enterprise-level sales intelligence. Coordinates between Lead Infiltrators, Outreach Strategists, and Closing Architects.',
+    price: 1999.00,
     category: 'AI Agents',
-    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=60',
+    image: 'https://images.unsplash.com/photo-1552664730-d307ca884978?w=800&auto=format&fit=crop&q=60',
     in_stock: true,
     rating: 5.0,
-    features: ['Autonomous Deep Web Scrape', 'Dual-Agent Synthesis Architecture', 'Cyberpunk Streamlit UI', 'OpenAI Agents SDK Powered', 'Full Source Code Included'],
-    specs: { Format: 'Python / Source', Components: '2 Agents + UI', API: 'OpenAI, Firecrawl', License: 'Resell Rights (MRR)', Support: 'Documentation Provided' }
+    features: ['Lead Scoring Engine', 'Multi-Agent Coordination Logic', 'CRM Integration Ready', 'Automated Outreach Workflows', 'Dashboard Analytics'],
+    specs: { Format: 'Python / CrewAI', Components: '3+ Agents', API: 'OpenAI / Claude', License: 'Master Resell Rights', Support: 'Priority Support' }
   }
 ];
 
