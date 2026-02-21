@@ -28,7 +28,7 @@ export async function GET(
     if (isUUID) {
       const { data: dbProduct, error } = await supabase
         .from('products')
-        .select('*')
+        .select('id, name, description, price, category, image, in_stock, rating, features, specs')
         .eq('id', id)
         .single();
 

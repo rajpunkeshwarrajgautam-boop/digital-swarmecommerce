@@ -16,7 +16,8 @@ export function Header() {
   // Handle hydration mismatch for cart count
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    setMounted(true);
+    const init = async () => setMounted(true);
+    init();
   }, []);
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
@@ -85,6 +86,10 @@ export function Header() {
             >
               <nav className="flex flex-col gap-4 min-w-[200px]">
                 <Link href="/products" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
+                <Link href="/bundle-builder" className="text-2xl font-titan text-primary hover:translate-x-2 transition-all flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                  Bundle Builder
+                  <span className="text-[10px] bg-white text-black px-2 py-0.5 rounded-full font-bold animate-pulse">NEW</span>
+                </Link>
                 <Link href="/products" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>New Arrivals</Link>
                 <Link href="/about" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>About Us</Link>
               </nav>

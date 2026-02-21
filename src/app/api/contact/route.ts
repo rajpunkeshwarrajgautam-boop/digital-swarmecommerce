@@ -1,8 +1,22 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabaseAdmin } from '@/lib/supabase';
+import { rateLimit } from '@/lib/rate-limit';
+
+const limiter = rateLimit({
+  interval: 10 * 60 * 1000, // 10 minutes
+  uniqueTokenPerInterval: 500, // Max IPs to track
+});
 
 export async function POST(request: Request) {
   try {
+    // Rate Limit Check
+    const ip = request.headers.get('x-forwarded-for') || 'anonymous';
+    try {
+      await limiter.check(3, ip); // 3 requests per interval
+    } catch {
+      return NextResponse.json({ error: 'Too many messages. Please try again later.' }, { status: 429 });
+    }
+
     const body = await request.json();
     const { firstName, lastName, email, message } = body;
 
@@ -17,7 +31,7 @@ export async function POST(request: Request) {
     }
 
     // Save to Supabase
-    const { error } = await supabase
+    const { error } = await supabaseAdmin
       .from('contact_messages')
       .insert({
         first_name: firstName.trim(),

@@ -3,8 +3,9 @@
 import { motion, useAnimation } from "framer-motion";
 import Image from "next/image";
 import { useState, useRef } from "react";
-import { Move3d } from "lucide-react";
+import { Move3d, RotateCcw } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { HolographicBox } from "./HolographicBox";
 
 interface QuantumProductViewProps {
   image: string;
@@ -90,18 +91,22 @@ export function QuantumProductView({ image, name }: QuantumProductViewProps) {
                 transition: { type: "spring", stiffness: 100 }
             }
         }}
-        className="w-full h-full relative z-10"
+        className="w-full h-full relative z-10 flex items-center justify-center"
       >
-        <Image 
-            src={image} 
-            alt={name}
-            fill
-            className={cn(
-                "object-cover transition-transform duration-700",
-                isAssembled && isHovering && "scale-105"
-            )}
-            priority
-        />
+        {isAssembled ? (
+          <HolographicBox image={image} name={name} />
+        ) : (
+          <Image 
+              src={image} 
+              alt={name}
+              fill
+              className={cn(
+                  "object-cover transition-transform duration-700",
+                  isHovering && "scale-105"
+              )}
+              priority
+          />
+        )}
         
         {/* Holographic Overlay Effect */}
         <div className={cn(
@@ -133,6 +138,3 @@ export function QuantumProductView({ image, name }: QuantumProductViewProps) {
     </div>
   );
 }
-
-// Importing lucide icon locally if needed, assuming they are available
-import { RotateCcw } from "lucide-react";

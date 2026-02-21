@@ -19,7 +19,7 @@ export async function GET() {
     // Attempt to fetch from Supabase
     const { data, error } = await supabase
       .from('products')
-      .select('*')
+      .select('id, name, description, price, category, image, in_stock, rating, features, specs')
       .order('created_at', { ascending: false });
 
     if (error) {

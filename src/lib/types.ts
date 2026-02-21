@@ -9,8 +9,13 @@ export interface Product {
   rating: number;
   features?: string[];
   specs?: Record<string, string>;
+  demoUrl?: string;
+  installGuide?: string;
+  scarcityStock?: number;
+  isFeatured?: boolean;
 }
 
 export interface CartItem extends Product {
   quantity: number;
+  originalPrice?: number;
 }

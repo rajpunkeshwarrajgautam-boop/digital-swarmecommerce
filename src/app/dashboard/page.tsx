@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
 import { formatCurrency } from "@/lib/utils";
 import { motion } from "framer-motion";
 
@@ -16,26 +15,22 @@ import {
 import { Badge } from "@/components/ui/Badge";
 
 export default function DashboardPage() {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [orders, setOrders] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     async function fetchOrders() {
-      const { data, error } = await supabase
-        .from('orders')
-        .select(`
-          *,
-          order_items (
-            *,
-            products (name)
-          )
-        `)
-        .order('created_at', { ascending: false });
-      
-      if (!error && data) {
+      try {
+        const res = await fetch('/api/admin/orders');
+        if (!res.ok) throw new Error('Failed to fetch');
+        const data = await res.ok ? await res.json() : [];
         setOrders(data);
+      } catch (err) {
+        console.error('Error fetching admin orders:', err);
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
     }
     fetchOrders();
   }, []);
@@ -76,7 +71,8 @@ export default function DashboardPage() {
                     <TableCell>
                       {order.order_items?.length} items
                       <span className="text-xs text-muted-foreground block truncate max-w-[200px]">
-                        {order.order_items?.map((i: any) => i.products?.name).join(', ')}
+                      {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                      {order.order_items?.map((i: any) => i.products?.name).join(', ')}
                       </span>
                     </TableCell>
                     <TableCell>{formatCurrency(order.total)}</TableCell>

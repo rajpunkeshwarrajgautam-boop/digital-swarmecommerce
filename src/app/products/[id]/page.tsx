@@ -4,12 +4,14 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Star, Shield, RotateCcw, Truck, AlertCircle } from "lucide-react";
+import { Star, Shield, RotateCcw, Truck, AlertCircle, ExternalLink, Eye, BookOpen } from "lucide-react";
 import AddToCartButton from "./AddToCartButton";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { Product } from "@/lib/types";
 import { Button } from "@/components/ui/Button";
 import { QuantumProductView } from "@/components/products/QuantumProductView";
+import { ScarcityEngine } from "@/components/products/ScarcityEngine";
+import { ReviewSystem } from "@/components/products/ReviewSystem";
 
 export default function ProductPage() {
   const { id } = useParams();
@@ -30,8 +32,9 @@ export default function ProductPage() {
         }
         const data = await res.json();
         setProduct(data);
-      } catch (err: any) {
-        setError(err.message);
+      } catch (err: unknown) {
+        const error = err as Error;
+        setError(error.message);
       } finally {
         setLoading(false);
       }
@@ -112,11 +115,11 @@ export default function ProductPage() {
                 )}
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70">
+              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
                 {product.name}
               </h1>
               
-              <div className="flex items-center gap-4 mb-8">
+              <div className="flex items-center gap-4 mb-6">
                 <span className="text-3xl font-bold text-primary">₹{product.price}</span>
                 <div className="flex items-center gap-1 border-l border-border pl-4">
                   <div className="flex">
@@ -125,16 +128,51 @@ export default function ProductPage() {
                     ))}
                   </div>
                   <span className="font-medium ml-2">{product.rating}</span>
-                  <span className="text-muted-foreground text-sm ml-1">(124 reviews)</span>
                 </div>
               </div>
+
+              <div className="flex flex-wrap gap-4 mt-6">
+                {product.demoUrl && (
+                  <a href={product.demoUrl} target="_blank" rel="noopener noreferrer">
+                    <Button variant="outline" className="gap-2 border-primary/30 hover:border-primary text-primary">
+                      <Eye className="w-4 h-4" /> Live Preview
+                    </Button>
+                  </a>
+                )}
+                <Button variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground">
+                  <ExternalLink className="w-4 h-4" /> View Source
+                </Button>
+              </div>
+
+              {/* Scarcity Engine */}
+              {(product.scarcityStock || product.isFeatured) && (
+                <div className="mt-8 border-t border-border pt-8">
+                   <ScarcityEngine 
+                      stockCount={product.scarcityStock} 
+                      expiresInHours={product.isFeatured ? 24 : undefined} 
+                   />
+                </div>
+              )}
             </div>
 
-            <div className="prose prose-zinc dark:prose-invert max-w-none mb-8">
+            <div className="prose prose-zinc dark:prose-invert max-w-none mb-8 mt-8">
               <p className="text-lg text-muted-foreground leading-relaxed">
                 {product.description}
               </p>
               
+              {/* Installation Guide Snippet */}
+              {product.installGuide && (
+                <div className="mt-8 p-6 rounded-2xl bg-secondary/20 border border-border/50">
+                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                    <BookOpen className="w-5 h-5 text-primary" /> 
+                    Installation Preview
+                  </h3>
+                  <pre className="text-xs bg-black/40 p-4 rounded-xl font-mono text-zinc-400 overflow-x-auto border border-white/5">
+                    {product.installGuide}
+                  </pre>
+                </div>
+              )}
+
               {/* Features List */}
               {product.features && product.features.length > 0 && (
                 <div className="mt-8">
@@ -156,7 +194,7 @@ export default function ProductPage() {
                   <h3 className="text-xl font-bold mb-4">Technical Specifications</h3>
                   <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
                     {Object.entries(product.specs).map(([key, value]) => (
-                      <div key={key} className="flex flex-col border-b border-border/50 pb-2">
+                      <div key={key} className="flex flex-col border-b border-border/50 pb-2 m-0!">
                         <span className="font-medium text-foreground">{key}</span>
                         <span className="text-muted-foreground">{value as string}</span>
                       </div>
@@ -167,37 +205,39 @@ export default function ProductPage() {
             </div>
 
             {/* Actions */}
-            <div className="space-y-8 mt-auto">
+            <div className="space-y-8 mt-auto pt-8 border-t border-border">
               <AddToCartButton product={product} />
 
               {/* Trust Signals */}
-              <div className="grid grid-cols-3 gap-4 pt-8 border-t border-border">
+              <div className="grid grid-cols-3 gap-4">
                 <div className="flex flex-col items-center text-center gap-2 group">
                   <div className="p-3 rounded-full bg-secondary text-primary group-hover:scale-110 transition-transform">
                     <Truck className="w-5 h-5" />
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground">Free Global Shipping</span>
+                  <span className="text-xs font-medium text-muted-foreground">Instant Delivery</span>
                 </div>
                 <div className="flex flex-col items-center text-center gap-2 group">
                   <div className="p-3 rounded-full bg-secondary text-primary group-hover:scale-110 transition-transform">
                     <Shield className="w-5 h-5" />
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground">2-Year Warranty</span>
+                  <span className="text-xs font-medium text-muted-foreground">Verified Assets</span>
                 </div>
                 <div className="flex flex-col items-center text-center gap-2 group">
                   <div className="p-3 rounded-full bg-secondary text-primary group-hover:scale-110 transition-transform">
                     <RotateCcw className="w-5 h-5" />
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground">30-Day Returns</span>
+                  <span className="text-xs font-medium text-muted-foreground">24/7 Support</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Pass ID filtering to related products to avoid showing current product */}
+        {/* Related Products */}
+        <ReviewSystem productId={product.id} />
         <RelatedProducts category={product.category} currentProductId={product.id} />
       </div>
     </div>
   );
 }
+

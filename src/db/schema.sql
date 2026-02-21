@@ -36,23 +36,15 @@ alter table public.products enable row level security;
 alter table public.orders enable row level security;
 alter table public.order_items enable row level security;
 
--- Create policies (modify as needed)
+-- Create policies
 -- Everyone can read products
 create policy "Public products are viewable by everyone" 
 on public.products for select using (true);
 
--- Only authenticated users can create orders (REMOVED strict check to allow Guest Checkout)
--- create policy "Users can creates their own orders" 
--- on public.orders for insert with check (auth.uid() = user_id);
+-- Orders: No public insert/select. Only Service Role (Backend) can manage.
+-- This prevents database pollution and unauthorized data access.
+-- We do NOT add a policy for service_role as it bypasses RLS by default.
 
--- Allow public insert for orders (Guest Checkout)
-create policy "Enable insert for all users" 
-on public.orders for insert with check (true);
-
--- Users can view their own orders
-create policy "Users can view own orders" 
-on public.orders for select using (auth.uid() = user_id);
-
--- Allow public insert for order items (linked to the order we just created)
-create policy "Enable insert for all users" 
-on public.order_items for insert with check (true);
+-- Users can view their own orders (If using Supabase Auth, otherwise handle via API)
+-- create policy "Users can view own orders" 
+-- on public.orders for select using (auth.uid() = user_id);

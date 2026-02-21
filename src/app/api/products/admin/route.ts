@@ -5,10 +5,13 @@ import { currentUser } from '@clerk/nextjs/server';
 
 export async function POST(request: Request) {
   try {
-    // Validate User (Basic check)
+    // Validate User (Admin check)
     const user = await currentUser();
-    if (!user) {
-        return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const userEmail = user?.emailAddresses[0]?.emailAddress;
+
+    if (!user || !adminEmail || userEmail !== adminEmail) {
+        return NextResponse.json({ message: 'Unauthorized: Admin access required' }, { status: 401 });
     }
 
     const body = await request.json();

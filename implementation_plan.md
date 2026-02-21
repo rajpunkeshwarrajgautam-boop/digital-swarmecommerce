@@ -1,83 +1,80 @@
-# Implementation Plan: Google Antigravity Commerce
+# Implementation Plan: Digital Swarm Commerce
 
-**Status**: Active Development (Phase 4)
-**Goal**: Build a high-performance, agentic-themed e-commerce platform demonstrating the "Google Antigravity" aesthetic and speed.
+**Status**: Hyper-Growth Expansion (Phase 6)
+**Goal**: Transform Digital Swarm into the premier boutique for professional digital assets with elite conversion features and next-gen tech.
 
 ---
 
-## 1. Design System (Google Antigravity)
+## 1. Design System (Digital Swarm)
 
-The design follows the "Interface as an Extension of Thought" philosophy.
-
-- **Brand Archetype**: The Alchemist (Transformation & Intelligence).
+- **Brand Archetype**: The Alchemist / The Visionary.
 - **Color Palette**:
-  - **Primary**: `#4285F4` (Google Blue)
-  - **Secondary/Accent**: `#EA4335` (Red), `#FBBC05` (Yellow), `#34A853` (Green).
-  - **Background**: Deep Space (`#09090b`).
+  - **Primary**: `#F5F5DC` (Cream/Gold)
+  - **Accent**: `#FFD700` (Gold), `#000000` (Black).
+  - **Background**: Deep Space (`#000000`).
 - **Signature Effects**:
-  - **The Halo**: Mouse-tracking radial glows on interactive elements.
-  - **The Pulse**: A central moving singularity in the logo.
-  - **Quantum Unboxing**: SVG turbulence filters for product materialization.
-  - **Glowing Type**: Retro-futuristic blurs on headings.
+  - **The Quantum Unboxing**: SVG turbulence filters for product materialization.
+  - **Holographic Gradients**: CSS-driven iridescent overlays.
+  - **3D Swarm UI**: Interactive Z-plane depth animations.
 
 ## 2. Component Architecture
 
-### Layout & Global
+### Expansion Features (In Progress)
 
-- `Header`: Fixed, glassmorphic navigation with `Logo` and `CartIcon`.
-- `Footer`: Multi-column recursive link structure with brand manifestos.
-- `PageTransition`: Framer Motion wrapper for seamless navigation.
-
-### Product System
-
-- `ProductCard`: Interactive grid items with `halo` hover effects.
-- `ProductGrid`: Responsive Masonry-style layout.
-- `ProductDetails`: Detailed manifest with "Quantum Unboxing" materialization logic.
-
-### Commerce System
-
-- `CartDrawer`: Slide-over state manager using **Zustand**.
-- `CheckoutForm`: Multi-step validated form for user data.
-- `StripeProvider`: Integration for secure processing.
+- `BundleBuilder`: Interactive UI for picking 3 assets with dynamic discounting.
+- `ProductPreview`: Live Demo integration with iframe/modal.
+- `ReviewSystem`: Verified purchase reviews with media attachments.
+- `AIHiveMind`: Gemini-powered support agent for technical troubleshooting.
+- `ScarcityEngine`: Real-time stock counters and countdown timers.
+- `ThreeDBox`: Interactive 3D holographic product visuals.
 
 ## 3. Data Structure (Supabase / Postgres)
 
-### Tables
+### Existing Tables
 
-- **`public.products`**:
-  - `id` (UUID), `name` (Text), `description` (Text), `price` (Numeric).
-  - `category` (Text), `image` (Text), `features` (TEXT[]), `specs` (JSONB).
-- **`public.orders`**:
-  - `id` (UUID), `user_id` (Text/Clerk), `total` (Numeric), `status` (Enum).
-- **`public.order_items`**:
-  - `id` (UUID), `order_id` (Ref), `product_id` (Ref), `quantity` (Int).
+- **`public.products`**: Extended with `demo_url`, `install_guide`, `stock_limit`.
+- **`public.orders`**: Standard order tracking.
+- **`public.order_items`**: Order line items.
+
+### New Tables
+
+- **`public.reviews`**: `id`, `product_id`, `user_id`, `rating`, `comment`, `images` (text[]), `verified` (bool).
+- **`public.bundle_promotions`**: `id`, `name`, `discount_percentage`, `active` (bool).
 
 ---
 
 ## 4. Execution Roadmap
 
-### Phase 1-3: Core Infrastructure (Done)
+### Phase 1-5: Base Infrastructure (Completed)
 
-- [x] Foundation setup (Next.js, Tailwind 4, Framer Motion).
-- [x] State Management (Zustand) & Auth (Clerk).
-- [x] Product Display & Cart functionality.
-- [x] Visual Rebranding to **Google Antigravity**.
+- [x] Foundation setup & User Auth.
+- [x] Product Display & Secure Checkout.
+- [x] Security Hardening (API Auth, RLS, Rate Limiting).
+- [x] Rebranding to **Digital Swarm**.
 
-### Phase 4: Production Readiness (Completed)
+### Phase 6: Hyper-Growth Expansion (Active)
 
-- [x] **Task 4.1: Robust Form Validation**.
-  - Implemented multi-step validation in the checkout flow with real-time feedback.
-- [x] **Task 4.2: Catalog Finalization**.
-  - Replaced generic bundles with premium "Google Antigravity" themed digital assets.
-- [x] **Task 4.3: SEO & Performance Audit**.
-  - Updated `app/layout.tsx` with rich semantic metadata and social graph tags.
-  - Verified image optimization across the product catalog.
+#### Task 6.1: Build Your Own Bundle
 
-### Phase 5: Final Review & Delivery (Completed)
+- [ ] Create `/bundle-builder` page.
+- [ ] Implement selection logic & dynamic pricing calculator.
+- [ ] Add "Bundle Checkout" flow.
 
-- [x] Final build check (`npm run build`).
-  - Successfully verified production build with exit code 0.
-- [x] README updates.
-  - Comprehensive documentation generated covering tech stack, features, and setup.
-- [x] Handover to User.
-  - **NOTIFY USER**: "Project Google Antigravity is complete and ready for review."
+#### Task 6.2: Enhanced Product Experience
+
+- [ ] Add `Live Preview` & `Documentation Snippet` to Product Details.
+- [ ] Implement `ScarcityEngine` (visual timers/counters).
+- [ ] Design & Implement `ThreeDBox` holographic visuals.
+
+#### Task 6.3: Trust & Support Ecosystem
+
+- [ ] Build User Review system with Supabase Storage for media.
+- [ ] Integrate Gemini AI Chatbot (`AI Hive-Mind`).
+
+---
+
+## 5. Final Review & Polish
+
+- [ ] Performance audit for 3D assets.
+- [ ] Final security audit of new API endpoints.
+- [ ] SEO optimization for bundle pages.

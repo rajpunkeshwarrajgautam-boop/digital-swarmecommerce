@@ -11,6 +11,7 @@ interface CartState {
   total: number;
   isOpen: boolean;
   toggleCart: () => void;
+  addBundle: (products: Product[], discountPercentage: number) => void;
 }
 
 export const useCartStore = create<CartState>()(
@@ -53,6 +54,23 @@ export const useCartStore = create<CartState>()(
 
       clearCart: () => set({ items: [], total: 0 }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
+
+      addBundle: (products, discountPercentage) => {
+        const currentItems = get().items;
+        const discountScale = (100 - discountPercentage) / 100;
+
+        const bundleItems: CartItem[] = products.map((p) => ({
+          ...p,
+          price: Math.round(p.price * discountScale),
+          originalPrice: p.price,
+          quantity: 1,
+        }));
+
+        // For bundles, we just push them as unique entries to avoid confusing quantity merges
+        // Usually, users want specific items in a bundle.
+        const updatedItems = [...currentItems, ...bundleItems];
+        set({ items: updatedItems, total: calculateTotal(updatedItems), isOpen: true });
+      },
     }),
     {
       name: 'digitalswarm-cart-storage',

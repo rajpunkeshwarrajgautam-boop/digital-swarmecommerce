@@ -25,7 +25,7 @@ export default function TermsPage() {
             </h2>
             <div className="text-muted-foreground space-y-2 bg-secondary/20 p-6 rounded-xl border border-border">
               <p>
-                By purchasing digital assets (source codes, ebooks, templates) from Google Antigravity, 
+                By purchasing digital assets (source codes, ebooks, templates) from Digital Swarm, 
                 you are granted a non-exclusive, non-transferable license to use the files for 
                 personal or commercial projects, subject to the specific license constraints of each product.
               </p>
@@ -81,9 +81,9 @@ export default function TermsPage() {
               4. Disclaimer of Warranties
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              Google Antigravity provides these digital assets &quot;as is&quot; without any express or implied warranties. 
-              While we test our codes rigorously, we do not guarantee specific results or compatibility 
-              with every server environment or third-party plugin. It is your responsibility to ensure 
+              Digital Swarm provides these digital assets &quot;as is&quot; without any express or implied warranties. 
+              While we test our products rigorously, we do not guarantee specific results or compatibility 
+              with every environment or third-party plugin. It is your responsibility to ensure 
               you have the necessary technical skills to implement the files.
             </p>
           </section>
@@ -93,7 +93,7 @@ export default function TermsPage() {
             <h2 className="text-2xl font-bold">5. Governing Law</h2>
             <p className="text-muted-foreground leading-relaxed">
               These terms shall be governed by and defined following the laws of India. 
-              Google Antigravity and yourself irrevocably consent that the courts of India 
+              Digital Swarm and yourself irrevocably consent that the courts of India 
               shall have exclusive jurisdiction to resolve any dispute which may arise 
               in connection with these terms.
             </p>

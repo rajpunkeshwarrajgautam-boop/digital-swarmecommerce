@@ -4,6 +4,7 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
+import { HiveMindChat } from "@/components/chat/HiveMindChat";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -55,6 +56,10 @@ export const metadata: Metadata = {
     index: true,
     follow: true,
   },
+  icons: {
+    icon: '/favicon.svg',
+    apple: '/favicon.svg',
+  },
 };
 
 import { ClerkProvider } from "@clerk/nextjs";
@@ -80,6 +85,7 @@ export default function RootLayout({
           <main className="flex-1 w-full pt-16">
             <PageTransition>{children}</PageTransition>
           </main>
+          <HiveMindChat />
           <Footer />
         </body>
       </html>

@@ -24,7 +24,7 @@ export default function PrivacyPage() {
               1. Introduction
             </h2>
             <p className="text-muted-foreground leading-relaxed">
-              At Google Antigravity, we are committed to protecting your personal information and your right to privacy. 
+              At Digital Swarm, we are committed to protecting your personal information and your right to privacy. 
               This Privacy Policy explains what information we collect, how we use it, and your rights in relation to it.
               This applies to all information collected through our website and related services.
             </p>
@@ -90,7 +90,7 @@ export default function PrivacyPage() {
           <section className="space-y-4">
             <h2 className="text-2xl font-bold">6. Contact Us</h2>
             <p className="text-muted-foreground leading-relaxed">
-              If you have questions or comments about this policy, you may email us at <a href="mailto:privacy@antigravity.google" className="text-primary hover:underline">privacy@antigravity.google</a> or by post to our corporate address in India.
+              If you have questions or comments about this policy, you may email us at <a href="mailto:support@digitalswarm.in" className="text-primary hover:underline">support@digitalswarm.in</a> or by post to our corporate address in India.
             </p>
           </section>
         </div>

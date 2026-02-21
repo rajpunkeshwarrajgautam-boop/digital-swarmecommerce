@@ -52,10 +52,13 @@ const seedProducts = [
 
 export async function POST() {
   try {
-    // Auth check — only authenticated users can seed
+    // Validate User (Admin check)
     const user = await currentUser();
-    if (!user) {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const userEmail = user?.emailAddresses[0]?.emailAddress;
+
+    if (!user || !adminEmail || userEmail !== adminEmail) {
+      return NextResponse.json({ message: 'Unauthorized: Admin access required' }, { status: 401 });
     }
 
     // Check if products already exist to avoid duplicates
