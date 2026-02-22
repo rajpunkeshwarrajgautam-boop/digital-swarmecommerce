@@ -11,6 +11,8 @@ function normalizeProduct(p: any) {
     rating: p.rating ?? 5.0,
     features: p.features ?? [],
     specs: p.specs ?? {},
+    installGuide: p.installGuide ?? p.install_guide ?? null,
+    downloadUrl: p.downloadUrl ?? p.download_url ?? null,
   };
 }
 
@@ -28,7 +30,7 @@ export async function GET(
     if (isUUID) {
       const { data: dbProduct, error } = await supabase
         .from('products')
-        .select('id, name, description, price, category, image, in_stock, rating, features, specs')
+        .select('id, name, description, price, category, image, in_stock, rating, features, specs, install_guide, download_url')
         .eq('id', id)
         .single();
 

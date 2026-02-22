@@ -156,9 +156,26 @@ export default function ProductPage() {
             </div>
 
             <div className="prose prose-zinc dark:prose-invert max-w-none mb-8 mt-8">
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {product.description}
-              </p>
+              {product.description.includes('🚀 DEPLOYMENT GUIDE:') ? (
+                <>
+                  <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                    {product.description.split('🚀 DEPLOYMENT GUIDE:')[0]}
+                  </p>
+                  <div className="mt-8 p-6 rounded-2xl bg-primary/5 border border-primary/20">
+                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-primary">
+                      <BookOpen className="w-5 h-5" /> 
+                      Deployment Guide
+                    </h3>
+                    <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap font-mono bg-black/20 p-4 rounded-xl border border-white/5">
+                      {product.description.split('🚀 DEPLOYMENT GUIDE:')[1].trim()}
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {product.description}
+                </p>
+              )}
               
               {/* Installation Guide Snippet */}
               {product.installGuide && (

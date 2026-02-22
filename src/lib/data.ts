@@ -4,7 +4,7 @@ export const products: Product[] = [
   {
     id: "agent-1",
     name: "AI Deep Research Agent",
-    description: "A powerful research assistant that leverages OpenAI's Agents SDK and Firecrawl to perform comprehensive web research and synthesize deep insights.",
+    description: "A powerful research assistant that leverages OpenAI's Agents SDK and Firecrawl to perform comprehensive web research and synthesize deep insights.\n\n🚀 DEPLOYMENT GUIDE:\n1. Install Python 3.10+.\n2. Run 'pip install -r requirements.txt'.\n3. Add OPENAI_API_KEY and FIRECRAWL_API_KEY to .env.\n4. Run 'python research_agent.py'.",
     price: 1499,
     category: "Advanced Agents",
     image: "https://images.unsplash.com/photo-1507146153580-69a1fe6d8aa1?w=800&auto=format&fit=crop&q=60",
@@ -30,7 +30,7 @@ export const products: Product[] = [
   {
     id: "agent-2",
     name: "AI System Architect (R1)",
-    description: "An advanced system design agent powered by DeepSeek R1. Capable of generating complex architecture diagrams and technical specifications autonomously.",
+    description: "An advanced system design agent powered by DeepSeek R1. Capable of generating complex architecture diagrams and technical specifications autonomously.\n\n🚀 DEPLOYMENT GUIDE:\n1. Configure DeepSeek R1 API access.\n2. Install Python dependencies.\n3. Run the architect agent with a project prompt.\n4. Export Mermaid diagrams for visual analysis.",
     price: 1999,
     category: "Advanced Agents",
     image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800&auto=format&fit=crop&q=60",
