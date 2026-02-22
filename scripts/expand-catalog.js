@@ -9,15 +9,15 @@ const supabase = createClient(
 
 const expansionProducts = [
   {
-    name: 'Swarm Finance Infiltrator (xAI Oracle)',
-    description: 'A high-speed technical market oracle powered by xAI Grok. Synthesizes real-time stock, crypto, and market metrics into actionable intelligence.',
-    price: 2499.00,
+    name: 'Swarm Cinema Infiltrator (AI Movie Producer)',
+    description: 'A God Tier multi-agent production engine. Coordinates Script Architects and Talent Oracles to materialize movie blueprints and casting strategies using live search telemetry.',
+    price: 2999.00,
     category: 'AI Agents',
-    image: 'https://images.unsplash.com/photo-1611974717482-58a25a3d5be0?w=800&auto=format&fit=crop&q=60',
+    image: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=800&auto=format&fit=crop&q=60',
     in_stock: true,
     rating: 5.0,
-    features: ['xAI Grok Intelligence', 'Real-time Stock/Crypto Uplink', 'Technical Analysis Engine', 'Market Sentiment Scrape', 'Full Source Code Included'],
-    specs: { Format: 'Python / Agno', Components: 'Finance Oracle', API: 'xAI, YFinance', License: 'Master Resell Rights', Support: 'Priority Support' }
+    features: ['Multi-Agent Film Orchestration', 'Live Talent Scouting (SerpApi)', 'Cyberpunk Narrative Engine', '3-Act Structure Synthesis', 'Full Source Code Included'],
+    specs: { Format: 'Python / Agno', Components: 'Script + Casting + Producer', API: 'Gemini, SerpApi', License: 'Master Resell Rights', Support: 'Priority Support' }
   }
 ];
 
