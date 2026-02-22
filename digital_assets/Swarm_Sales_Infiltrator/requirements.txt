@@ -1,0 +1,5 @@
+python-dotenv
+streamlit
+# Note: This version assumes standard HTTP requests/LLM API calls for compatibility
+requests
+openai

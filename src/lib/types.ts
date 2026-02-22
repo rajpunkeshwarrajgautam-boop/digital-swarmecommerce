@@ -11,6 +11,7 @@ export interface Product {
   specs?: Record<string, string>;
   demoUrl?: string;
   installGuide?: string;
+  downloadUrl?: string; // Link to the asset
   scarcityStock?: number;
   isFeatured?: boolean;
 }

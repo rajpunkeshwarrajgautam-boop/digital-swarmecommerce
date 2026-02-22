@@ -71,6 +71,9 @@ export default function CheckoutPage() {
       });
       const data = await res.json();
       if (res.ok && data.success) {
+        // Save items to localStorage for the success page to display
+        localStorage.setItem('last_purchase', JSON.stringify(items));
+        
         clearCart();
         if (data.checkoutUrl) {
           window.location.href = data.checkoutUrl;

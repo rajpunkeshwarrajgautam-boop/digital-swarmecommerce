@@ -85,12 +85,15 @@ export function Header() {
               className="absolute top-20 left-4 bg-white border-4 border-black p-6 rounded-xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] pointer-events-auto"
             >
               <nav className="flex flex-col gap-4 min-w-[200px]">
-                <Link href="/products" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Shop All</Link>
+                <Link href="/products?category=Web%20Development" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Web Apps</Link>
+                <Link href="/products?category=AI%20Agents" className="text-2xl font-titan text-accent hover:translate-x-2 transition-all flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                  AI Agents
+                  <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded-full font-bold">GOD TIER</span>
+                </Link>
                 <Link href="/bundle-builder" className="text-2xl font-titan text-primary hover:translate-x-2 transition-all flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
                   Bundle Builder
                   <span className="text-[10px] bg-white text-black px-2 py-0.5 rounded-full font-bold animate-pulse">NEW</span>
                 </Link>
-                <Link href="/products" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>New Arrivals</Link>
                 <Link href="/about" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>About Us</Link>
               </nav>
             </motion.div>
