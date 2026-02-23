@@ -1,19 +1,75 @@
-# Next Session Brief: Digital Swarm E-commerce
+# 🔖 Session Checkpoint — Resume Here
 
-## 📅 Last Session Recap
+**Saved:** 2026-02-23 at 12:17 IST
 
-- **UI Fixes:** Resolved visibility issues for the Cart Icon (Header) and "Quick Add" buttons (Product Cards).
-- **Content:** Professionalized the "About Us", "Contact", "FAQ", and "Terms of Service" pages to align with a digital product marketplace brand.
-- **Research:** Identified sources for Free PLR/MRR software and ebooks.
+---
 
-## 🚀 Immediate Next Steps
+## ✅ What Was Done This Session
 
-1. **Product Selection:** User will test/download free products from the provided sources (ProjectWorlds, Kashipara, etc.).
-2. **Catalog Update:** Add the selected products to `src/lib/data.ts`.
-3. **Store Expansion:** Verify checkout flow for digital items (no shipping address needed?).
+### 1. Razorpay — REJECTED (Permanent)
 
-## 🔗 Resources for User
+- Razorpay account was rejected by partner banks
+- Cannot be reactivated — permanently blocked
+- **Decision: Switch to Cashfree**
 
-- **Free Source Code:** [ProjectWorlds](https://projectworlds.com/free-projects-source-code/), [Kashipara](https://www.kashipara.com/project)
-- **Free Ebooks:** [Free PLR Downloads](https://www.freeplrdownloads.com/), [IDPLR](https://www.idplr.com/free-products)
-- **Free Templates:** [Start Bootstrap](https://startbootstrap.com/)
+### 2. Cashfree Integration — FULLY BUILT (Code Complete)
+
+All files created and committed:
+
+| File | Status |
+|---|---|
+| `src/app/api/cashfree/create-order/route.ts` | ✅ Done |
+| `src/app/api/cashfree/verify/route.ts` | ✅ Done |
+| `src/app/api/cashfree/webhook/route.ts` | ✅ Done |
+| `src/app/checkout/page.tsx` | ✅ Updated to use Cashfree |
+| `src/types/cashfree.d.ts` | ✅ Type declarations |
+| `.env` | ✅ Placeholder keys added |
+
+---
+
+## ⏳ What Is PENDING (User Must Do)
+
+### Step 1 — Sign Up for Cashfree
+
+👉 **[merchant.cashfree.com/merchants/signup](https://merchant.cashfree.com/merchants/signup)**
+
+- Sign up with email + phone
+- Select: Individual / Sole Proprietor
+- Business: Digital Swarm | Website: digitalswarm.in
+
+### Step 2 — Complete KYC on Cashfree
+
+- PAN + Aadhaar + Bank Account → submit directly on Cashfree secure portal
+- Approval: usually same day for individuals
+
+### Step 3 — Get API Keys (Test Mode first)
+
+- Dashboard → Developers → API Keys → Test Keys
+- Copy **App ID** + **Secret Key**
+
+### Step 4 — Paste Keys Into .env
+
+```env
+CASHFREE_APP_ID=           ← Paste here
+CASHFREE_SECRET_KEY=       ← Paste here
+CASHFREE_ENV=TEST          ← Change to PROD when live
+NEXT_PUBLIC_CASHFREE_ENV=sandbox  ← Change to production when live
+```
+
+### Step 5 — Tell Antigravity to Deploy
+
+Once keys are in `.env`, Antigravity will:
+
+1. Run a test transaction to verify flow
+2. Set webhook URL in Cashfree: `https://digitalswarm.in/api/cashfree/webhook`
+3. Deploy to production via `npx vercel --prod --yes`
+
+---
+
+## 📌 Key Info
+
+- **Project:** `d:\AI AGENT\antigravity-ecommerce`
+- **Live site:** <https://digitalswarm.in>
+- **Cashfree SDK:** `@cashfreepayments/cashfree-js` (installed)
+- **Node SDK:** `cashfree-pg` (installed)
+- **Git:** All committed ✅

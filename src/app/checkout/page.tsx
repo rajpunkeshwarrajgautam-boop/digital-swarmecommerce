@@ -7,14 +7,13 @@ import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { ArrowLeft, Check, Lock, Truck, ShieldCheck, CreditCard } from "lucide-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCartStore();
   const [isClient, setIsClient] = useState(false);
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-  const router = useRouter();
+
 
   useEffect(() => {
     setIsClient(true);
@@ -24,6 +23,7 @@ export default function CheckoutPage() {
     firstName: "",
     lastName: "",
     email: "",
+    phone: "",
     address: "",
     city: "",
     zip: "",
@@ -56,37 +56,49 @@ export default function CheckoutPage() {
   const handleConfirmOrder = async () => {
     setIsProcessing(true);
     try {
-      const res = await fetch('/api/orders', {
+      // Step 1: Create Cashfree order on the server
+      const res = await fetch('/api/cashfree/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          items, total,
+          items,
+          total,
           customer: {
             email: formData.email,
             firstName: formData.firstName,
             lastName: formData.lastName,
+            phone: formData.phone || '9999999999',
             address: formData.address,
-          }
-        })
+          },
+        }),
       });
+
       const data = await res.json();
-      if (res.ok && data.success) {
-        // Save items to localStorage for the success page to display
-        localStorage.setItem('last_purchase', JSON.stringify(items));
-        
-        clearCart();
-        if (data.checkoutUrl) {
-          window.location.href = data.checkoutUrl;
-        } else {
-          router.push('/success');
-        }
-      } else {
-        alert('Checkout failed: ' + (data.error || 'Unknown error'));
+
+      if (!res.ok || !data.paymentSessionId) {
+        alert('Payment setup failed: ' + (data.error || 'Unknown error'));
+        setIsProcessing(false);
+        return;
       }
+
+      // Step 2: Save cart to localStorage for success page
+      localStorage.setItem('last_purchase', JSON.stringify(items));
+      localStorage.setItem('pending_order_id', data.orderId);
+      clearCart();
+
+      // Step 3: Load Cashfree JS SDK and open payment modal
+      const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENV || 'sandbox';
+      const { load } = await import('@cashfreepayments/cashfree-js');
+      const cashfree = await load({ mode: cashfreeEnv as 'sandbox' | 'production' });
+
+      cashfree.checkout({
+        paymentSessionId: data.paymentSessionId,
+        redirectTarget: '_self',
+      });
+
     } catch (err) {
       console.error('Checkout error:', err);
-      alert('An unexpected error occurred.');
-    } finally {
+      alert('An unexpected error occurred. Please try again.');
       setIsProcessing(false);
     }
   };

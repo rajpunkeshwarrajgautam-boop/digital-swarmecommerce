@@ -9,12 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@cashfreepayments/cashfree-js": "^1.0.6",
     "@clerk/nextjs": "^6.37.4",
     "@clerk/themes": "^2.4.52",
     "@radix-ui/react-slot": "^1.2.4",
     "@stripe/stripe-js": "^8.7.0",
     "@supabase/supabase-js": "^2.96.0",
     "@tabler/icons-react": "^3.37.1",
+    "cashfree-pg": "^5.1.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^17.3.1",
