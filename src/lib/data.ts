@@ -11,7 +11,9 @@ export const products: Product[] = [
     inStock: true,
     rating: 5.0,
     features: ['Autonomous Deep Web Scrape', 'Dual-Agent Synthesis Architecture', 'Cyberpunk Streamlit UI', 'OpenAI Agents SDK Powered', 'Full Source Code Included'],
-    specs: { API: 'OpenAI, Firecrawl', Format: 'Python / Source', License: 'Resell Rights (MRR)', Support: 'Documentation Provided', Components: '2 Agents + UI' }
+    specs: { API: 'OpenAI, Firecrawl', Format: 'Python / Source', License: 'Resell Rights (MRR)', Support: 'Documentation Provided', Components: '2 Agents + UI' },
+    downloadUrl: "/downloads/sentinel-research.zip",
+    installGuide: "#"
   },
   {
     id: "swarm-sales",
@@ -23,7 +25,9 @@ export const products: Product[] = [
     inStock: true,
     rating: 5.0,
     features: ['Lead Scoring Engine', 'Multi-Agent Coordination Logic', 'CRM Integration Ready', 'Automated Outreach Workflows', 'Dashboard Analytics'],
-    specs: { API: 'OpenAI / Claude', Format: 'Python / CrewAI', License: 'Master Resell Rights', Support: 'Priority Support', Components: '3+ Agents' }
+    specs: { API: 'OpenAI / Claude', Format: 'Python / CrewAI', License: 'Master Resell Rights', Support: 'Priority Support', Components: '3+ Agents' },
+    downloadUrl: "/downloads/swarm-sales.zip",
+    installGuide: "#"
   },
   {
     id: "swarm-finance",
@@ -35,7 +39,9 @@ export const products: Product[] = [
     inStock: true,
     rating: 5.0,
     features: ['xAI Grok Intelligence', 'Real-time Stock/Crypto Uplink', 'Technical Analysis Engine', 'Market Sentiment Scrape', 'Full Source Code Included'],
-    specs: { API: 'xAI, YFinance', Format: 'Python / Agno', License: 'Master Resell Rights', Support: 'Priority Support', Components: 'Finance Oracle' }
+    specs: { API: 'xAI, YFinance', Format: 'Python / Agno', License: 'Master Resell Rights', Support: 'Priority Support', Components: 'Finance Oracle' },
+    downloadUrl: "/downloads/swarm-finance.zip",
+    installGuide: "#"
   },
   {
     id: "swarm-cinema",
@@ -47,7 +53,9 @@ export const products: Product[] = [
     inStock: true,
     rating: 5.0,
     features: ['Multi-Agent Film Orchestration', 'Live Talent Scouting (SerpApi)', 'Cyberpunk Narrative Engine', '3-Act Structure Synthesis', 'Full Source Code Included'],
-    specs: { API: 'Gemini, SerpApi', Format: 'Python / Agno', License: 'Master Resell Rights', Support: 'Priority Support', Components: 'Script + Casting + Producer' }
+    specs: { API: 'Gemini, SerpApi', Format: 'Python / Agno', License: 'Master Resell Rights', Support: 'Priority Support', Components: 'Script + Casting + Producer' },
+    downloadUrl: "/downloads/swarm-cinema.zip",
+    installGuide: "#"
   },
   {
     id: "web-apps-1000",
@@ -59,7 +67,9 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.8,
     features: ['1000+ Tested Applications', '20 Premium Bonuses', 'Diverse Use Cases', 'Clean Codebase', 'Instant Download'],
-    specs: { Size: '1.2 GB', Format: 'PDF / Source Code', License: 'Personal & Commercial Use', Updates: 'Lifetime Access' }
+    specs: { Size: '1.2 GB', Format: 'PDF / Source Code', License: 'Personal & Commercial Use', Updates: 'Lifetime Access' },
+    downloadUrl: "/downloads/1000-web-apps.pdf",
+    installGuide: "#"
   },
   {
     id: "web-bundle-ultimate",
@@ -71,7 +81,9 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.9,
     features: ['Premium Templates', 'UI Kits', 'Scripts & Plugins', 'Developer Tools', 'Regular Updates'],
-    specs: { Format: 'ZIP / PDF', License: 'Royalty Free', Support: 'Priority Email Support', Components: '500+' }
+    specs: { Format: 'ZIP / PDF', License: 'Royalty Free', Support: 'Priority Email Support', Components: '500+' },
+    downloadUrl: "/downloads/ultimate-web-bundle.pdf",
+    installGuide: "#"
   },
   {
     id: "mega-bundle-ultimate",
@@ -83,7 +95,9 @@ export const products: Product[] = [
     inStock: true,
     rating: 5.0,
     features: ['Huge Asset Library', 'Diverse Categories', 'High-Res Graphics', 'Ready-to-use Code', 'Exclusive Content'],
-    specs: { Download: 'Instant', Categories: 'Design, Code', 'File Types': 'PSD, AI, HTML', 'Total Files': '5000+' }
+    specs: { Download: 'Instant', Categories: 'Design, Code', 'File Types': 'PSD, AI, HTML', 'Total Files': '5000+' },
+    downloadUrl: "/downloads/mega-bundle.pdf",
+    installGuide: "#"
   },
   {
     id: "web-apps-collection",
@@ -95,6 +109,8 @@ export const products: Product[] = [
     inStock: true,
     rating: 4.7,
     features: ['Modern Tech Stack', 'Responsive Designs', 'Well-Documented', 'Easy Customization', 'Performance Optimized'],
-    specs: { DB: 'SQL/NoSQL', Backend: 'Node.js', Frameworks: 'React, Vue', 'Apps Included': '50+' }
+    specs: { DB: 'SQL/NoSQL', Backend: 'Node.js', Frameworks: 'React, Vue', 'Apps Included': '50+' },
+    downloadUrl: "/downloads/web-apps-collection.pdf",
+    installGuide: "#"
   }
 ];

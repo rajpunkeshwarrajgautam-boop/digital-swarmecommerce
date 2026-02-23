@@ -5,14 +5,17 @@ import { products as staticProducts } from '@/lib/data';
 // Normalize Supabase snake_case fields to match the Product type (camelCase)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalizeProduct(p: any) {
+  // Find matching static product for fulfillment links
+  const staticMatch = staticProducts.find(sp => sp.name === p.name);
+  
   return {
     ...p,
     inStock: p.inStock ?? p.in_stock ?? true,
     rating: p.rating ?? 5.0,
     features: p.features ?? [],
     specs: p.specs ?? {},
-    installGuide: p.installGuide ?? p.install_guide ?? null,
-    downloadUrl: p.downloadUrl ?? p.download_url ?? null,
+    installGuide: p.installGuide ?? p.install_guide ?? staticMatch?.installGuide ?? null,
+    downloadUrl: p.downloadUrl ?? p.download_url ?? staticMatch?.downloadUrl ?? null,
   };
 }
 
