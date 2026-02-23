@@ -83,7 +83,7 @@ export const products: Product[] = [
     inStock: true,
     rating: 5.0,
     features: ['Huge Asset Library', 'Diverse Categories', 'High-Res Graphics', 'Ready-to-use Code', 'Exclusive Content'],
-    specs: { Download: 'Instant', Categories: 'Design, Code', File Types: 'PSD, AI, HTML', 'Total Files': '5000+' }
+    specs: { Download: 'Instant', Categories: 'Design, Code', 'File Types': 'PSD, AI, HTML', 'Total Files': '5000+' }
   },
   {
     id: "web-apps-collection",
