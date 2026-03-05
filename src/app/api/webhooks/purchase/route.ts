@@ -1,4 +1,8 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
+
+const resendApiKey = process.env.RESEND_API_KEY?.trim() || "";
+const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 /**
  * MOCK POST-PURCHASE WEBHOOK PROCESSOR
@@ -32,13 +36,34 @@ export async function POST(request: Request) {
     //   license_tier: payload.isWhitelabel ? 'whitelabel' : 'standard'
     // });
 
-    // 4. Trigger Email Sequence using Resend (Mocked)
-    // await resend.emails.send({
-    //   from: 'Alex @ Digital Swarm <alex@digitalswarm.in>',
-    //   to: payload.customerEmail,
-    //   subject: 'Your Access Granted + Important Setup Instructions',
-    //   html: `<p>Here is your license key: ${licenseKey}</p>`
-    // });
+    // 4. Trigger Email Sequence using Resend (Live)
+    if (resend) {
+      try {
+        await resend.emails.send({
+          // You must have a verified domain in Resend to send from it, otherwise use 'onboarding@resend.dev' for testing to your verified email.
+          from: 'Digital Swarm <onboarding@resend.dev>', 
+          to: payload.customerEmail,
+          subject: 'Access Granted: Your Digital Swarm License Key',
+          html: `
+            <div style="font-family: sans-serif; padding: 20px; color: #111;">
+              <h2 style="color: #6366f1;">Welcome to the Swarm.</h2>
+              <p>Your transaction has been securely processed. Here is your permanent asset access key:</p>
+              <div style="background: #f4f4f5; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; margin: 20px 0; word-break: break-all;">
+                ${licenseKey}
+              </div>
+              <p>You can use this key to unlock and deploy your digital products instantly.</p>
+              <br/>
+              <p>To your success,<br/><strong>The Digital Swarm Engine</strong></p>
+            </div>
+          `
+        });
+        console.log(`[RESEND] Delivered access payload to ${payload.customerEmail}`);
+      } catch (resendError) {
+        console.error("[RESEND ERROR]", resendError);
+      }
+    } else {
+      console.warn("Resend API Key not configured. Skipping email dispatch.");
+    }
     
     console.log(`[WEBHOOK SUCCESS] License generated and Email Sequence initiated for ${payload.customerEmail}`);
 
