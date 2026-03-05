@@ -5,29 +5,37 @@ import { Copy, Download, Key, Package, ShieldCheck, Mail, ArrowRight } from "luc
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 
-// Mock data, in absolute production this fetches from Supabase orders where email matches user.email
-const mockPurchases = [
-  {
-    id: "ord_12345",
-    productName: "Swarm Sales Agent",
-    date: "2026-03-01",
-    licenseType: "Standard",
-    licenseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.c2FsZXMtbGljZW5zZS0x.signature",
-    downloadUrl: "#",
-  },
-  {
-    id: "ord_67890",
-    productName: "Ultimate Web Bundle",
-    date: "2026-03-05",
-    licenseType: "Agency Whitelabel",
-    licenseKey: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.YWdlbmN5LXdoaXRlbGFiZWw.signature2",
-    downloadUrl: "#",
-  }
-];
+interface CustomerLicense {
+  id: string;
+  productName: string;
+  date: string;
+  licenseType: string;
+  licenseKey: string;
+  downloadUrl: string;
+}
 
 export default function DashboardPage() {
   const { isSignedIn, user, isLoaded } = useUser();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
+  const [licenses, setLicenses] = useState<CustomerLicense[]>([]);
+  const [loadingLicenses, setLoadingLicenses] = useState(true);
+
+  useEffect(() => {
+    async function fetchLicenses() {
+      try {
+        if (!isSignedIn) return;
+        const res = await fetch("/api/user/licenses");
+        if (!res.ok) throw new Error("Failed to fetch");
+        const data = await res.json();
+        setLicenses(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingLicenses(false);
+      }
+    }
+    fetchLicenses();
+  }, [isSignedIn]);
 
   useEffect(() => {
     if (copiedKey) {
@@ -65,12 +73,20 @@ export default function DashboardPage() {
           </div>
           <div className="bg-secondary/30 border border-border px-6 py-4 rounded-xl text-center min-w-[200px]">
             <p className="text-xs uppercase tracking-widest text-muted-foreground font-bold mb-1">Total Assets</p>
-            <p className="text-3xl font-black text-primary">{mockPurchases.length}</p>
+            <p className="text-3xl font-black text-primary">{loadingLicenses ? "..." : licenses.length}</p>
           </div>
         </div>
 
         <div className="space-y-6">
-          {mockPurchases.map((purchase) => (
+          {loadingLicenses ? (
+            <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
+               Deciphering license vectors...
+            </div>
+          ) : licenses.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
+              No assets found in your secure vault.
+            </div>
+          ) : licenses.map((purchase) => (
             <div key={purchase.id} className="bg-card border border-border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:items-center hover:border-primary/50 transition-colors shadow-sm relative overflow-hidden group">
               
               {/* License Type Badge */}
@@ -122,7 +138,7 @@ export default function DashboardPage() {
           ))}
         </div>
 
-        {/* Email Funnel Status (Mock) */}
+        {/* Email Funnel Status */}
         <div className="mt-16 bg-blue-500/10 border border-blue-500/20 rounded-2xl p-6 flex gap-4">
           <div className="p-3 bg-blue-500/20 rounded-full shrink-0 h-fit">
             <Mail className="w-6 h-6 text-blue-400" />

@@ -1,12 +1,41 @@
-import { Metadata } from 'next';
-import { Share2, DollarSign, BarChart3, Users, ArrowRight } from "lucide-react";
+"use client";
 
-export const metadata: Metadata = {
-  title: 'Affiliate Portal',
-  description: 'Join the Digital Swarm affiliate program and earn 30% commission on every sale.',
-};
+import { Share2, DollarSign, BarChart3, Users, ArrowRight, CheckCircle2 } from "lucide-react";
+import { useState } from "react";
+
+// export const metadata: Metadata = {
+//   title: 'Affiliate Portal',
+//  description: 'Join the Digital Swarm affiliate program and earn 30% commission on every sale.',
+// };
 
 export default function AffiliatePage() {
+  const [formData, setFormData] = useState({ name: "", email: "", link: "" });
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [errorText, setErrorText] = useState("");
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setErrorText("");
+
+    try {
+      const res = await fetch("/api/affiliates", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData)
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to submit");
+      setSuccess(true);
+    } catch (err: unknown) {
+      if (err instanceof Error) setErrorText(err.message);
+      else setErrorText("An unknown error occurred.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="container mx-auto px-4 py-24 min-h-screen">
       <div className="max-w-5xl mx-auto">
@@ -75,29 +104,66 @@ export default function AffiliatePage() {
                 We review applications manually to ensure high-quality traffic. Tell us how you plan to promote Digital Swarm (YouTube, Newsletter, Twitter, etc).
               </p>
               
-              <form className="space-y-4">
-                <div className="grid sm:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Name</label>
-                    <input type="text" className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" placeholder="John Doe" />
+              {success ? (
+                <div className="bg-emerald-500/10 border border-emerald-500/20 p-8 rounded-2xl text-center space-y-4">
+                  <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
+                  <h3 className="text-xl font-bold text-emerald-400">Application Received</h3>
+                  <p className="text-muted-foreground">Our team will review your application and send your tracking dashboard link within 24 hours.</p>
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="space-y-4">
+                  <div className="grid sm:grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Name</label>
+                      <input 
+                        type="text" 
+                        required
+                        value={formData.name}
+                        onChange={e => setFormData({...formData, name: e.target.value})}
+                        className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" 
+                        placeholder="John Doe" 
+                      />
+                    </div>
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Email</label>
+                      <input 
+                        type="email" 
+                        required
+                        value={formData.email}
+                        onChange={e => setFormData({...formData, email: e.target.value})}
+                        className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" 
+                        placeholder="john@example.com" 
+                      />
+                    </div>
                   </div>
+                  
                   <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Email</label>
-                    <input type="email" className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" placeholder="john@example.com" />
+                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Link to your audience</label>
+                    <input 
+                      type="url" 
+                      required
+                      value={formData.link}
+                      onChange={e => setFormData({...formData, link: e.target.value})}
+                      className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" 
+                      placeholder="https://youtube.com/c/yourchannel" 
+                    />
                   </div>
-                </div>
-                
-                <div className="space-y-2">
-                  <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Link to your audience (YouTube, Blog, Twitter)</label>
-                  <input type="url" className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" placeholder="https://youtube.com/c/yourchannel" />
-                </div>
-                
-                <div className="pt-4">
-                  <button type="button" className="w-full bg-white text-black font-black uppercase tracking-wider py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity">
-                    Submit Application <ArrowRight className="w-5 h-5" />
-                  </button>
-                </div>
-              </form>
+                  
+                  {errorText && <p className="text-red-400 text-sm font-medium">{errorText}</p>}
+                  
+                  <div className="pt-4">
+                    <button 
+                      type="submit" 
+                      disabled={loading}
+                      className="w-full bg-white text-black font-black uppercase tracking-wider py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+                    >
+                      {loading ? "Submitting..." : (
+                        <>Submit Application <ArrowRight className="w-5 h-5" /></>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
             </div>
           </div>
         </div>

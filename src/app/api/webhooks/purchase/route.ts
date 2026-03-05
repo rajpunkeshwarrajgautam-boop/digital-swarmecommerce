@@ -1,5 +1,11 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL!,
+  process.env.SUPABASE_SERVICE_ROLE_KEY!
+);
 
 const resendApiKey = process.env.RESEND_API_KEY?.trim() || "";
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
@@ -28,13 +34,18 @@ export async function POST(request: Request) {
     const mockSignature = "secure_automated_signature";
     const licenseKey = `${jwtHeader}.${jwtPayload}.${mockSignature}`;
 
-    // 3. Save to Supabase (Mock representation)
-    // await supabase.from('customer_licenses').insert({
-    //   user_email: payload.customerEmail,
-    //   order_id: payload.orderId,
-    //   license_key: licenseKey,
-    //   license_tier: payload.isWhitelabel ? 'whitelabel' : 'standard'
-    // });
+    // 3. Save to Supabase (Production)
+    const { error: dbError } = await supabase.from('customer_licenses').insert({
+      user_email: payload.customerEmail,
+      order_id: payload.orderId,
+      license_key: licenseKey,
+      license_tier: payload.isWhitelabel ? 'whitelabel' : 'standard',
+      product_id: payload.productId || "unknown"
+    });
+
+    if (dbError) {
+      console.error("[SUPABASE ERROR] Failed to save license:", dbError);
+    }
 
     // 4. Trigger Email Sequence using Resend (Live)
     if (resend) {
