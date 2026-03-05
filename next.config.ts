@@ -11,6 +11,9 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.cloudfront.net' },
       { protocol: 'https', hostname: '*.supabase.co' },
     ],
+    // Improve image optimization
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 86400, // 24 hours
   },
   async headers() {
     return [
@@ -42,8 +45,18 @@ const nextConfig: NextConfig = {
             value: 'max-age=31536000; includeSubDomains; preload',
           },
           {
-             key: 'Content-Security-Policy',
-             value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://*.stripe.com; connect-src 'self' https://uhswcljouelyprsinchj.supabase.co https://*.clerk.accounts.dev https://*.stripe.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; frame-src 'self' https://*.stripe.com; worker-src 'self' blob:;",
+            key: 'Content-Security-Policy',
+            // Added *.clerk.accounts.dev for local dev, *.plural.zone for Plural payments
+            value: [
+              "default-src 'self'",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://*.stripe.com https://*.pluralonline.com",
+              "connect-src 'self' https://uhswcljouelyprsinchj.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://*.stripe.com https://api.pluralonline.com",
+              "img-src 'self' data: blob: https:",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+              "font-src 'self' https://fonts.gstatic.com",
+              "frame-src 'self' https://*.stripe.com https://*.pluralonline.com https://checkout.razorpay.com",
+              "worker-src 'self' blob:",
+            ].join('; '),
           }
         ],
       },

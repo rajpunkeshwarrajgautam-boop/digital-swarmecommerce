@@ -94,6 +94,7 @@ export default function BundleBuilderPage() {
                     alt={product.name}
                     fill
                     className={`object-cover transition-transform duration-500 ${isSelected ? "scale-110" : "group-hover:scale-110"}`}
+                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
                   />
                   {isSelected && (
                     <div className="absolute top-4 right-4 bg-primary text-black p-2 rounded-full shadow-xl">
@@ -140,7 +141,7 @@ export default function BundleBuilderPage() {
                 <div className="flex -space-x-3">
                   {selectedProducts.map((p) => (
                     <div key={p.id} className="w-10 h-10 rounded-full border-2 border-black overflow-hidden relative bg-zinc-800">
-                      <Image src={p.image} alt={p.name} fill className="object-cover" />
+                      <Image src={p.image} alt={p.name} fill sizes="40px" className="object-cover" />
                     </div>
                   ))}
                   {[...Array(3 - selectedIds.length)].map((_, i) => (

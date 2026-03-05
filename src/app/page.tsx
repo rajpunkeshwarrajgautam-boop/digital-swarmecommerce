@@ -1,51 +1,69 @@
 "use client";
 
-import { Zap, Shield, Truck } from "lucide-react";
-
+import { Zap, Shield, Download } from "lucide-react";
 import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { ParallaxHero } from "@/components/home/ParallaxHero";
+import { ProblemSolution } from "@/components/home/ProblemSolution";
+import { SocialProof } from "@/components/home/SocialProof";
+import { HowItWorks } from "@/components/home/HowItWorks";
+import { HomeFAQ } from "@/components/home/HomeFAQ";
+import { EmailCapture } from "@/components/home/EmailCapture";
 
 export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
-      {/* Hero Section - Deep Space Scrolling */}
+      {/* Hero Section */}
       <section className="relative h-[120vh] flex items-center justify-center overflow-hidden bg-background perspective-1000">
         <ParallaxHero />
       </section>
 
-      {/* Featured Section */}
+      {/* Problem / Solution */}
+      <ProblemSolution />
+
+      {/* Featured Products */}
       <FeaturedSection />
 
+      {/* Social Proof */}
+      <SocialProof />
 
-      {/* Features Grid */}
+      {/* Features Grid — jargon-free */}
       <section className="py-24 bg-secondary/30 border-t border-border/50">
         <div className="container px-4 mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <FeatureCard 
-              icon={<Zap className="h-8 w-8 text-primary" />}
-              title="Deployment Velocity"
-              description="Deploy assets in milliseconds across the entire swarm network."
+            <FeatureCard
+              icon={<Download className="h-8 w-8 text-primary" />}
+              title="Instant Download"
+              description="Buy once, access immediately. Every purchase delivers a fast, secure download link to your inbox in seconds."
             />
-            <FeatureCard 
+            <FeatureCard
               icon={<Shield className="h-8 w-8 text-accent" />}
-              title="Shield Hardening"
-              description="Quantum-resistant encryption for every node and transaction."
+              title="30-Day Money-Back Guarantee"
+              description="Secure SSL checkout via Razorpay. If a file is corrupted or broken, we fix it or refund you — no questions asked."
             />
-            <FeatureCard 
-              icon={<Truck className="h-8 w-8 text-primary" />}
-              title="Hive Mind Sync"
-              description="Your environment autonomously scales and repairs itself."
+            <FeatureCard
+              icon={<Zap className="h-8 w-8 text-primary" />}
+              title="Set Up in 5 Minutes"
+              description="Every product ships with a clear setup guide. Go from download to working in your project within minutes."
             />
           </div>
         </div>
       </section>
+
+      {/* How It Works */}
+      <HowItWorks />
+
+      {/* FAQ */}
+      <HomeFAQ />
+
+      {/* Email Capture + Final CTA */}
+      <EmailCapture />
     </div>
   );
 }
 
 import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 
-function FeatureCard({ icon, title, description }: { icon: React.ReactNode, title: string, description: string }) {
+function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <CardContainer className="inter-var w-full">
       <CardBody className="bg-card relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-auto rounded-xl p-8 border hover:border-primary/50 transition-colors">

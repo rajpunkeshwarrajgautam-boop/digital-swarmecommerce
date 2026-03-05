@@ -66,7 +66,7 @@ export function HolographicBox({ image, name }: HolographicBoxProps) {
           className="absolute inset-0 bg-zinc-900 border-2 border-primary/40 rounded-3xl overflow-hidden shadow-[0_50px_100px_rgba(0,0,0,0.8)]"
         >
           <div className="absolute inset-0 bg-linear-to-tr from-primary/20 to-transparent pointer-events-none z-10" />
-          <Image src={image} alt={name} fill className="object-cover opacity-90" />
+          <Image src={image} alt={name} fill sizes="(max-width: 1024px) 50vw, 33vw" className="object-cover opacity-90" />
           <div className="absolute bottom-0 left-0 right-0 p-6 bg-linear-to-t from-black via-black/80 to-transparent z-20">
             <h4 className="text-[10px] font-titan text-primary tracking-widest uppercase">SWARM CORE v2.0</h4>
             <div className="w-full h-1 bg-primary/20 rounded-full mt-2 overflow-hidden">
@@ -85,7 +85,7 @@ export function HolographicBox({ image, name }: HolographicBoxProps) {
           style={{ transform: "translateZ(-60px) rotateY(180deg)" }}
           className="absolute inset-0 bg-zinc-950 border-2 border-white/10 rounded-3xl flex items-center justify-center p-8"
         >
-             <Image src={image} alt={name} fill className="object-cover opacity-10 grayscale blur-sm" />
+             <Image src={image} alt={name} fill sizes="(max-width: 1024px) 50vw, 33vw" className="object-cover opacity-10 grayscale blur-sm" />
              <div className="z-10 text-center opacity-20">
                 <p className="text-[8px] font-mono leading-relaxed">PROPERTY OF DIGITAL SWARM<br/>ENCRYPTED ASSET<br/>ID: {assetId}</p>
              </div>

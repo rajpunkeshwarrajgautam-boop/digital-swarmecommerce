@@ -5,8 +5,10 @@ import { products as fallbackData } from '@/lib/data';
 // Normalize Supabase snake_case to match the Product type (camelCase)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalizeProduct(p: any) {
-  // Find matching static product for fulfillment links
-  const staticMatch = fallbackData.find(sp => sp.name === p.name);
+  // Find matching static product for fulfillment links (by name or slug id)
+  const staticMatch = fallbackData.find(
+    (sp) => sp.name === p.name || sp.id === p.id
+  );
 
   return {
     ...p,
@@ -27,9 +29,9 @@ export async function GET(
   const { id } = params;
 
   try {
-    // --- 1. Try Supabase by UUID ---
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
 
+    // ── 1. UUID lookup in Supabase ────────────────────────────────────────
     if (isUUID) {
       const { data: dbProduct, error } = await supabase
         .from('products')
@@ -37,29 +39,38 @@ export async function GET(
         .eq('id', id)
         .single();
 
-      if (dbProduct) {
-        return NextResponse.json(normalizeProduct(dbProduct));
-      }
-
-      if (error) {
-        console.warn('[products/[id]] Supabase UUID lookup failed:', error.message);
-      }
+      if (dbProduct) return NextResponse.json(normalizeProduct(dbProduct));
+      if (error) console.warn('[products/[id]] UUID lookup failed:', error.message);
     }
 
-    // --- 2. Try Supabase: search by name match (in case the id is a slug or number stored differently) ---
+    // ── 2. Slug lookup — match static data id against Supabase name ──────
+    // Static products use human-readable slugs (e.g. "swarm-sales").
+    // If the Supabase DB has the product stored by name, match via static alias.
     if (!isUUID) {
-      // Try looking up all and matching by a numeric index or name-based match isn't needed here
-      // Non-UUID IDs come from static data — fall through to step 3
+      const staticProduct = fallbackData.find((p) => p.id === id);
+
+      if (staticProduct) {
+        // Try to find in Supabase by name (in case it's been synced with a UUID)
+        const { data: dbByName } = await supabase
+          .from('products')
+          .select('id, name, description, price, category, image, in_stock, rating, features, specs, install_guide, download_url')
+          .eq('name', staticProduct.name)
+          .maybeSingle();
+
+        if (dbByName) {
+          // Merge DB data with static fulfillment links
+          return NextResponse.json(normalizeProduct({
+            ...dbByName,
+            id, // keep the slug-based id for frontend routing
+          }));
+        }
+
+        // Supabase doesn't have it — serve from static data (guaranteed full data)
+        return NextResponse.json(staticProduct);
+      }
     }
 
-    // --- 3. Fallback to static data ---
-    const staticProduct = fallbackData.find((p) => p.id === id);
-
-    if (staticProduct) {
-      return NextResponse.json(staticProduct);
-    }
-
-    // --- 4. Not found anywhere ---
+    // ── 3. Not found anywhere ─────────────────────────────────────────────
     return NextResponse.json({ error: 'Product not found' }, { status: 404 });
 
   } catch (err) {

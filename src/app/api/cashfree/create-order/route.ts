@@ -10,6 +10,8 @@ const BASE_URL =
     ? 'https://api.cashfree.com/pg'
     : 'https://sandbox.cashfree.com/pg';
 
+import { supabaseAdmin } from '@/lib/supabase';
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -21,6 +23,41 @@ export async function POST(request: Request) {
 
     // Generate a unique order ID
     const orderId = `DS_${Date.now()}_${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
+
+    // Step 1: Create Order in Supabase
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .insert({
+        total,
+        status: 'pending',
+        user_id: customer.email, // Use email if no auth, or actual userId if logged in
+        cashfree_order_id: orderId,
+        customer_email: customer.email,
+      })
+      .select()
+      .single();
+
+    if (orderError) {
+      console.error('[Supabase] Order creation failed:', orderError);
+      return NextResponse.json({ error: 'Database error' }, { status: 500 });
+    }
+
+    // Step 2: Create Order Items
+    const orderItems = items.map((item: { id: string; price: number; quantity?: number }) => ({
+      order_id: order.id,
+      product_id: item.id,
+      quantity: item.quantity || 1,
+      price: item.price,
+    }));
+
+    const { error: itemsError } = await supabaseAdmin
+      .from('order_items')
+      .insert(orderItems);
+
+    if (itemsError) {
+      console.error('[Supabase] Order items failed:', itemsError);
+      // We don't fail the whole request but log it
+    }
 
     const payload = {
       order_id: orderId,

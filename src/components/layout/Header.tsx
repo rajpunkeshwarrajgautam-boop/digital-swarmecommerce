@@ -8,6 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { Logo } from "@/components/ui/Logo";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -26,36 +27,33 @@ export function Header() {
     <>
       <header className="fixed top-0 left-0 right-0 z-50 p-4 pointer-events-none">
         <div className="container mx-auto flex items-center justify-between pointer-events-auto">
-          {/* Left: Menu */}
           <div className="flex items-center gap-2">
              <Button 
                 variant="ghost" 
                 size="icon" 
-                className="bg-white border-2 border-black rounded-full h-12 w-12 hover:scale-110 transition-transform shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
+                className="bg-black/40 backdrop-blur-lg border border-white/10 rounded-full h-12 w-12 hover:border-primary/50 transition-colors shadow-[0_0_15px_rgba(0,0,0,0.5)]"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
              >
-               {isMenuOpen ? <X className="w-6 h-6 text-black" /> : <Menu className="w-6 h-6 text-black" />}
+               {isMenuOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
              </Button>
           </div>
 
           {/* Center: Logo */}
           <Link href="/">
-            <div className="font-titan text-3xl bg-primary px-6 py-2 border-2 border-black -rotate-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:rotate-0 hover:scale-105 transition-all text-black">
-                DS
-            </div>
+            <Logo />
           </Link>
 
           {/* Right: Cart & Auth */}
           <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button className="font-bold border-2 border-black bg-white text-black hover:bg-black hover:text-white transition-colors shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                <Button className="font-bold border border-white/20 bg-white/5 text-white hover:bg-white hover:text-black transition-colors rounded-full px-6">
                     Sign In
                 </Button>
               </SignInButton>
             </SignedOut>
             <SignedIn>
-              <div className="bg-white p-1 rounded-full border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+              <div className="bg-black/40 p-1 rounded-full border border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
                   <UserButton />
               </div>
             </SignedIn>
@@ -63,12 +61,12 @@ export function Header() {
             <Button 
                 variant="ghost" 
                 size="icon" 
-                className="relative bg-white border-2 border-black rounded-full h-12 w-12 hover:scale-110 transition-transform shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]" 
+                className="relative bg-black/40 backdrop-blur-lg border border-white/10 rounded-full h-12 w-12 hover:border-primary/50 transition-colors shadow-[0_0_15px_rgba(0,0,0,0.5)] group" 
                 onClick={toggleCart}
             >
-              <ShoppingCart className="w-6 h-6 text-black" />
+              <ShoppingCart className="w-5 h-5 text-white group-hover:text-primary transition-colors" />
               {mounted && totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-6 w-6 items-center justify-center rounded-full bg-accent border-2 border-black text-xs font-bold text-white">
+                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary border border-black text-[10px] font-bold text-black shadow-[0_0_10px_var(--primary)]">
                   {totalItems}
                 </span>
               )}
@@ -78,23 +76,27 @@ export function Header() {
 
         <AnimatePresence>
           {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, y: -20 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
-              className="absolute top-20 left-4 bg-white border-4 border-black p-6 rounded-xl shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] pointer-events-auto"
+              <motion.div
+              initial={{ opacity: 0, scale: 0.95, y: -10 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.95, y: -10 }}
+              transition={{ duration: 0.2 }}
+              className="absolute top-20 left-4 bg-zinc-950/90 backdrop-blur-2xl border border-white/10 p-6 rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.8)] pointer-events-auto"
             >
-              <nav className="flex flex-col gap-4 min-w-[200px]">
-                <Link href="/products?category=Web%20Development" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Web Apps</Link>
-                <Link href="/products?category=AI%20Agents" className="text-2xl font-titan text-accent hover:translate-x-2 transition-all flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
-                  AI Agents
-                  <span className="text-[10px] bg-black text-white px-2 py-0.5 rounded-full font-bold">GOD TIER</span>
+              <nav className="flex flex-col gap-6 min-w-[220px]">
+                <Link href="/products" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>All Products</Link>
+                <Link href="/products?category=Web+Development" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Web Dev Kits</Link>
+                <Link href="/products?category=AI+Agents" className="text-xl font-space text-white/70 hover:text-primary hover:translate-x-2 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
+                  AI Agent Starters
+                  <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold">HOT</span>
                 </Link>
-                <Link href="/bundle-builder" className="text-2xl font-titan text-primary hover:translate-x-2 transition-all flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                <Link href="/bundle-builder" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
                   Bundle Builder
-                  <span className="text-[10px] bg-white text-black px-2 py-0.5 rounded-full font-bold animate-pulse">NEW</span>
+                  <span className="text-[9px] bg-white/10 text-white border border-white/20 px-2 py-0.5 rounded-full font-bold animate-pulse">NEW</span>
                 </Link>
-                <Link href="/about" className="text-2xl font-titan hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>About Us</Link>
+                <Link href="/about" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>About Us</Link>
+                <Link href="/contact" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+                <Link href="/faq" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
               </nav>
             </motion.div>
           )}

@@ -16,8 +16,8 @@
   --color-border: var(--border);
   --radius-lg: var(--radius);
 
-  --font-titan: var(--font-titan);
-  --font-fredoka: var(--font-fredoka);
+  --font-space: var(--font-space);
+  --font-inter: var(--font-inter);
 
   /* Moblinks Animations */
   --animate-float: float 6s ease-in-out infinite;
@@ -34,63 +34,65 @@
 }
 
 :root {
-  /* Moblinks Light Mode (Default) */
-  --background: #FFF2DF; /* Cream */
-  --foreground: #1A1A1A; /* Dark Text */
+  /* Ultra Modern Light Mode (Backup) */
+  --background: #FFFFFF;
+  --foreground: #0A0A0A;
   
-  --primary: #FFC900; /* Vibrant Yellow */
-  --primary-foreground: #1A1A1A;
+  --primary: #CCFF00; /* GSAP Electric Lime */
+  --primary-foreground: #0A0A0A;
   
-  --secondary: #001AFF; /* Deep Blue */
+  --secondary: #4A00FF; /* Deep Tech Blue/Purple */
   --secondary-foreground: #FFFFFF;
   
-  --accent: #FF0080; /* Pop Pink */
+  --accent: #FF0055; 
   --accent-foreground: #FFFFFF;
   
-  --muted: #EBE0CD;
-  --muted-foreground: #4A4A4A; 
+  --muted: #F5F5F5;
+  --muted-foreground: #737373; 
   
   --card: #FFFFFF;
-  --card-foreground: #1A1A1A;
+  --card-foreground: #0A0A0A;
   
-  --border: #1A1A1A; /* Graphic heavy orders */
+  --border: #E5E5E5; 
   --radius: 1rem; 
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    /* Moblinks Dark Mode (Inverted Logic but keeping vibrance) */
-    --background: #000000; 
-    --foreground: #FFF2DF;
+    /* Main GSAP Aesthetic (Premium Dark Mode) */
+    --background: #030303; 
+    --foreground: #FAFAFA;
     
-    --primary: #FFC900; 
+    --primary: #CCFF00; 
     --primary-foreground: #000000;
     
-    --secondary: #FFF2DF; 
-    --secondary-foreground: #000000;
+    --secondary: #121212; 
+    --secondary-foreground: #FFFFFF;
     
-    --accent: #FF0080; 
+    --accent: #4A00FF; 
     --accent-foreground: #FFFFFF;
     
-    --muted: #1A1A1A;
-    --muted-foreground: #A0A0A0; 
+    --muted: #171717;
+    --muted-foreground: #A3A3A3; 
     
-    --card: #1A1A1A; 
-    --card-foreground: #FFF2DF;
+    --card: #0A0A0A; 
+    --card-foreground: #FAFAFA;
     
-    --border: #FFF2DF;
+    --border: #262626;
   }
 }
 
 body {
   background-color: var(--background);
   color: var(--foreground);
-  font-family: var(--font-fredoka), sans-serif;
+  font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.02em;
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: var(--font-titan), display;
+  font-family: var(--font-space), display;
+  letter-spacing: -0.04em;
 }
 
 /* Swarm Pattern Background */
@@ -119,34 +121,63 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ----------------------------------------------------
-   MOBLINKS VISUAL EFFECTS
+   GSAP PREMIUM VISUAL EFFECTS
    ---------------------------------------------------- */
 
 .sticker-effect {
   position: relative;
-  transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .sticker-effect:hover {
-  transform: scale(1.05) rotate(2deg);
+  transform: scale(1.02) translateY(-2px);
   z-index: 10;
 }
 
 .pop-card {
-  @apply bg-card border-4 border-black shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] transition-all duration-200;
+  @apply bg-card/50 backdrop-blur-xl border border-white/5 transition-all duration-500 ease-out;
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
 }
 
 .pop-card:hover {
-  @apply shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] -translate-y-1 -translate-x-1;
+  @apply border-white/20 bg-card/80;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8), 0 0 20px rgba(204, 255, 0, 0.05);
+  transform: translateY(-4px);
 }
 
 .text-stroke {
-  -webkit-text-stroke: 2px black;
-  color: white; 
+  -webkit-text-stroke: 1px rgba(255,255,255,0.2);
+  color: transparent; 
 }
 
 .text-stroke-sm {
-  -webkit-text-stroke: 1px black;
-  color: white;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.1);
+  color: transparent;
+}
+
+.glowing-text {
+  text-shadow: 0 0 10px rgba(255, 201, 0, 0.5), 0 0 20px rgba(255, 201, 0, 0.3);
+}
+
+.glowing-text-accent {
+  text-shadow: 0 0 10px rgba(255, 0, 128, 0.5), 0 0 20px rgba(255, 0, 128, 0.3);
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100%); }
+}
+
+.scanline::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(to bottom, transparent, var(--primary), transparent);
+  opacity: 0.1;
+  animation: scanline 8s linear infinite;
+  pointer-events: none;
 }
 

@@ -1,5 +1,5 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono, Titan_One, Fredoka } from "next/font/google";
+import type { Metadata, Viewport } from "next";
+import { Geist, Geist_Mono, Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
@@ -16,40 +16,38 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-const titanOne = Titan_One({
-  weight: "400",
-  variable: "--font-titan",
+const spaceGrotesk = Space_Grotesk({
+  variable: "--font-space",
   subsets: ["latin"],
 });
 
-const fredoka = Fredoka({
-  variable: "--font-fredoka",
+const inter = Inter({
+  variable: "--font-inter",
   subsets: ["latin"],
 });
 
 export const metadata: Metadata = {
   title: {
-    default: "Digital Swarm | Digital Store",
+    default: "Digital Swarm | Source Code, UI Kits & Digital Templates for Developers",
     template: "%s | Digital Swarm"
   },
-  description: "Premium digital products, bundles, and web development resources by Digital Swarm.",
-  keywords: ["digital products", "web development bundles", "nextjs templates", "ecommerce", "digital assets", "code bundles"],
+  description: "Buy production-ready source code, UI kits, and digital templates. Used by 2,000+ indie developers. Instant download, setup guide included. Start building faster today.",
+  keywords: ["source code", "UI kits", "digital templates", "Next.js starter", "React components", "developer tools", "AI agent boilerplate", "web development", "instant download", "digital products India"],
   authors: [{ name: "Digital Swarm Team" }],
-  viewport: "width=device-width, initial-scale=1, maximum-scale=1",
   metadataBase: new URL('https://digitalswarm.in'),
   openGraph: {
     type: 'website',
-    locale: 'en_US',
+    locale: 'en_IN',
     url: 'https://digitalswarm.in',
-    title: 'Digital Swarm | Premium Digital Products',
-    description: 'Premium digital products, web development bundles, and curated resources.',
+    title: 'Digital Swarm | Source Code, UI Kits & Templates — Download & Ship Faster',
+    description: 'Production-ready source code, UI kits, and digital templates trusted by 2,000+ developers. Instant download, 30-day guarantee.',
     siteName: 'Digital Swarm',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Digital Swarm — Premium Digital Products' }]
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Digital Swarm — Premium Digital Products for Developers' }]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Digital Swarm | Premium Digital Products',
-    description: 'Premium digital products, web development bundles, and curated resources.',
+    title: 'Digital Swarm | Source Code, UI Kits & Templates',
+    description: 'Production-ready source code, UI kits, and digital templates trusted by 2,000+ developers. Instant download — start shipping faster.',
     images: ['/opengraph-image'],
   },
   robots: {
@@ -60,6 +58,13 @@ export const metadata: Metadata = {
     icon: '/favicon.svg',
     apple: '/favicon.svg',
   },
+};
+
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  themeColor: '#CCFF00',
 };
 
 import { ClerkProvider } from "@clerk/nextjs";
@@ -79,7 +84,7 @@ export default function RootLayout({
     >
       <html lang="en" className="dark">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} ${titanOne.variable} ${fredoka.variable} antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-black`}
+          className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-black`}
         >
           <Header />
           <main className="flex-1 w-full pt-16">

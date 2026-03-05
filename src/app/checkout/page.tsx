@@ -16,7 +16,8 @@ export default function CheckoutPage() {
 
 
   useEffect(() => {
-    setIsClient(true);
+    const id = requestAnimationFrame(() => setIsClient(true));
+    return () => cancelAnimationFrame(id);
   }, []);
 
   const [formData, setFormData] = useState({
@@ -44,6 +45,8 @@ export default function CheckoutPage() {
       if (!formData.lastName.trim()) newErrors.lastName = "Required";
       if (!formData.email.trim()) newErrors.email = "Required";
       else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email";
+      if (!formData.phone.trim()) newErrors.phone = "Required";
+      else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "10-digit number required";
     } else if (currentStep === 2) {
       if (!formData.address.trim()) newErrors.address = "Required";
       if (!formData.city.trim()) newErrors.city = "Required";
@@ -56,8 +59,8 @@ export default function CheckoutPage() {
   const handleConfirmOrder = async () => {
     setIsProcessing(true);
     try {
-      // Step 1: Create Cashfree order on the server
-      const res = await fetch('/api/cashfree/create-order', {
+      // Step 1: Create Plural order on the server
+      const res = await fetch('/api/plural/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -75,7 +78,7 @@ export default function CheckoutPage() {
 
       const data = await res.json();
 
-      if (!res.ok || !data.paymentSessionId) {
+      if (!res.ok || !data.paymentUrl) {
         alert('Payment setup failed: ' + (data.error || 'Unknown error'));
         setIsProcessing(false);
         return;
@@ -86,15 +89,8 @@ export default function CheckoutPage() {
       localStorage.setItem('pending_order_id', data.orderId);
       clearCart();
 
-      // Step 3: Load Cashfree JS SDK and open payment modal
-      const cashfreeEnv = process.env.NEXT_PUBLIC_CASHFREE_ENV || 'sandbox';
-      const { load } = await import('@cashfreepayments/cashfree-js');
-      const cashfree = await load({ mode: cashfreeEnv as 'sandbox' | 'production' });
-
-      cashfree.checkout({
-        paymentSessionId: data.paymentSessionId,
-        redirectTarget: '_self',
-      });
+      // Step 3: Redirect to Plural Pine Labs payment gateway
+      window.location.href = data.paymentUrl;
 
     } catch (err) {
       console.error('Checkout error:', err);
@@ -162,6 +158,23 @@ export default function CheckoutPage() {
                     <input id="checkout-email" name="email" value={formData.email} onChange={handleInputChange} type="email" className={inputClass('email')} placeholder="john@example.com" />
                     {errors.email && <p className="text-red-500 text-[10px] uppercase font-bold">{errors.email}</p>}
                   </div>
+                  <div className="col-span-2 space-y-2">
+                    <label htmlFor="checkout-phone" className="text-xs uppercase tracking-wider text-muted-foreground">Mobile Number (WhatsApp/SMS)</label>
+                    <div className="relative">
+                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground font-mono text-sm">+91</span>
+                        <input 
+                            id="checkout-phone" 
+                            name="phone" 
+                            value={formData.phone} 
+                            onChange={handleInputChange} 
+                            type="tel" 
+                            className={`${inputClass('phone')} pl-12`} 
+                            placeholder="9999999999" 
+                        />
+                    </div>
+                    {errors.phone && <p className="text-red-500 text-[10px] uppercase font-bold">{errors.phone}</p>}
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-widest leading-relaxed">Required for secure transaction verification via Pine Labs.</p>
+                  </div>
                 </div>
                 <Button id="checkout-step1-next" className="mt-8 w-full" size="lg" onClick={() => validateStep(1) && setStep(2)}>
                   Proceed to Logistics
@@ -217,14 +230,14 @@ export default function CheckoutPage() {
                 <div className="space-y-4 mb-8">
                   {/* Stripe Shield */}
                   <div className="p-6 border border-primary/20 bg-primary/5 rounded-xl flex flex-col items-center gap-4 text-center">
-                    <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center">
+                    <div className="w-16 h-16 rounded-full bg-primary/10 border border-primary/20 flex items-center justify-center shadow-[0_0_30px_rgba(34,197,94,0.1)]">
                       <ShieldCheck className="w-8 h-8 text-primary" />
                     </div>
                     <div>
-                      <p className="font-bold text-lg mb-1">Secured by Stripe</p>
+                      <p className="font-bold text-lg mb-1">Secured by Pine Labs (Plural)</p>
                       <p className="text-sm text-muted-foreground">
-                        Your payment is processed directly by Stripe — a PCI-DSS Level 1 certified provider.
-                        We never store or see your card details.
+                        Your payment is processed by Pine Labs via deep-encryption protocols.
+                        We never store or see your financial credentials.
                       </p>
                     </div>
                   </div>
@@ -278,7 +291,7 @@ export default function CheckoutPage() {
                   items.map((item) => (
                     <div key={item.id} className="flex gap-4">
                       <div className="h-14 w-14 relative rounded overflow-hidden bg-white/5 border border-white/10 shrink-0">
-                        <Image src={item.image} alt={item.name} fill className="object-cover" />
+                        <Image src={item.image} alt={item.name} fill sizes="56px" className="object-cover" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold truncate text-xs">{item.name}</p>

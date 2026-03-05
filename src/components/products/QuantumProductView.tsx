@@ -100,6 +100,7 @@ export function QuantumProductView({ image, name }: QuantumProductViewProps) {
               src={image} 
               alt={name}
               fill
+              sizes="(max-width: 1024px) 100vw, 50vw"
               className={cn(
                   "object-cover transition-transform duration-700",
                   isHovering && "scale-105"

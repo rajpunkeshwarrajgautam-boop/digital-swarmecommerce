@@ -40,8 +40,8 @@ export default function ProductsPage() {
     <div className="container mx-auto px-4 py-8">
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold">Catalog</h1>
-          <p className="text-muted-foreground">Explore our collection of future-tech.</p>
+          <h1 className="text-3xl font-bold">All Products</h1>
+          <p className="text-muted-foreground">Source code, UI kits, and digital templates — ready to download and use today.</p>
         </div>
         
         <div className="flex items-center gap-4 w-full md:w-auto">
