@@ -1,16 +1,21 @@
 "use client";
 
 import { useCartStore } from "@/lib/store";
-import { X, Minus, Plus, Trash2 } from "lucide-react";
+import { X, Minus, Plus, Trash2, Sparkles } from "lucide-react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence, Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { products } from "@/lib/data";
 
 export function CartDrawer() {
-  const { items, removeItem, updateQuantity, isOpen, toggleCart, total } = useCartStore();
+  const { items, removeItem, updateQuantity, isOpen, toggleCart, total, addItem } = useCartStore();
   const [isClient, setIsClient] = useState(false);
+
+  // Featured Order Bump Product
+  const orderBumpProduct = products.find(p => p.id === "web-bundle-ultimate");
+  const hasOrderBump = items.some(item => item.id === "web-bundle-ultimate");
 
   // Holographic Variants
   const drawerVariants: Variants = {
@@ -136,6 +141,37 @@ export function CartDrawer() {
                     </div>
                   </motion.div>
                 ))
+              )}
+              
+              {/* ORDER BUMP */}
+              {items.length > 0 && !hasOrderBump && orderBumpProduct && (
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                  className="mt-6 p-4 rounded-xl border border-dashed border-pink-400 bg-pink-50 relative overflow-hidden group"
+                >
+                  <div className="absolute top-0 right-0 bg-pink-500 text-white text-[10px] uppercase font-black px-2 py-1 tracking-wider rounded-bl-lg">
+                    One-Time Offer
+                  </div>
+                  <div className="flex gap-4 relative z-10 pt-2">
+                    <div className="h-16 w-16 rounded-lg overflow-hidden shrink-0 border border-pink-200">
+                      <Image src={orderBumpProduct.image} alt="Bundle" width={64} height={64} className="object-cover h-full w-full" />
+                    </div>
+                    <div className="flex-1 flex flex-col justify-center">
+                      <h4 className="font-bold text-sm text-pink-900 leading-tight">Add {orderBumpProduct.name}</h4>
+                      <p className="text-xs text-pink-700 mt-1 mb-2 font-medium">Normally ₹1,500. Get it for just ₹200 today!</p>
+                      <Button 
+                        size="sm" 
+                        onClick={() => addItem(orderBumpProduct)}
+                        className="h-8 w-full bg-pink-100 hover:bg-pink-600 text-pink-800 hover:text-white transition-colors border shadow-none border-pink-300 rounded-lg text-xs font-bold flex items-center justify-center gap-1"
+                      >
+                        <Sparkles className="w-3 h-3" />
+                        Add to Order +₹200
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
               )}
             </div>
 

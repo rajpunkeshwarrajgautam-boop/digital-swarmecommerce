@@ -5,6 +5,10 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { HiveMindChat } from "@/components/chat/HiveMindChat";
+import { ExitIntentPopup } from "@/components/home/ExitIntentPopup";
+import { LiveSalesNotification } from "@/components/home/LiveSalesNotification";
+import { PromoBanner } from "@/components/layout/PromoBanner";
+import { GeoPricing } from "@/components/layout/GeoPricing";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -86,12 +90,16 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-black`}
         >
+          <GeoPricing />
+          <PromoBanner />
           <Header />
           <main className="flex-1 w-full pt-16">
             <PageTransition>{children}</PageTransition>
           </main>
           <HiveMindChat />
           <Footer />
+          <ExitIntentPopup />
+          <LiveSalesNotification />
         </body>
       </html>
     </ClerkProvider>
