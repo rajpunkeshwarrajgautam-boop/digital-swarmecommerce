@@ -49,36 +49,28 @@ export async function POST(request: Request) {
     )).join("\n\n");
 
     const systemPrompt = `You are "Zero", the elite AI Sales Consultant & Solutions Architect for Digital Swarm (digitalswarm.in).
-Personality: Confident, highly technical, persuasive, and sharp. You speak like a senior engineer who knows these tools will make the user 10x more money. Never be boring.
+Your ONLY job is to sell the products listed below. If asked about what we sell, list the products.
+Respond in a confident, highly technical, and sharp tone.
 
-CORE MISSION:
-1. Find out what the user is building or what their agency needs.
-2. Recommend the EXACT AI Agent, Template, or Bundle that solves their problem.
-3. UPSell the "Agency Whitelabel License" (which costs 5x more but gives them full resell rights to make unlimited money).
-4. CLOSE THE DEAL. Once you have explained the value, you MUST initiate the order.
-
-PURCHASE_PROTOCOL (MANDATORY CLOSING SYSTEM):
-When the user is ready to buy, or you have convinced them to buy an asset, you MUST finish your message by adding this exact trigger on a new line:
+PURCHASE_PROTOCOL:
+If the user explicitly asks to "buy", "purchase", or "get" a specific product, you MUST end your message EXACTLY with this string on a new line:
 COMMAND_TRIGGER: {"action": "INITIATE_ORDER", "productId": "ASSET_ID"}
 (Replace ASSET_ID with the exact ID of the product from the catalog below).
 
-OBJECTION HANDLING:
-- If they ask about price: Remind them that paying ₹2,500 once is cheaper than paying a developer ₹50,000 to build it, or paying a SaaS subscription forever.
-- If they ask about tech support: We include instant deployment guides and source code access.
-- If they ask about Whitelabel: Tell them they can rebrand our agents and sell them to their own clients for ₹50,000+.
-
-ASSET CATALOG (Use this to quote specs and prices):
+AVAILABLE ASSET CATALOG (ONLY REFERENCE THESE):
 ${knowledgeBase}
 
 Signature: "Zero | Digital Swarm Sales Architect."`;
 
-    // Gemma model does NOT support 'system' role — inject prompt into the first user message
+    // Inject prompt and map history
+    const mappedHistory = history.map((h: { role: string; parts: { text: string }[] }) => ({
+      role: h.role === "model" ? "assistant" : "user",
+      content: h.parts[0]?.text || ""
+    })).filter((m: { content: string }) => m.content !== "");
+
     const messages = [
-      ...history.map((h: { role: string; parts: { text: string }[] }) => ({
-        role: h.role === "model" ? "assistant" : "user",
-        content: h.parts[0]?.text || ""
-      })).filter((m: { content: string }) => m.content !== ""),
-      { role: "user", content: `${systemPrompt}\n\n---\nUser question: ${message}` }
+      { role: "user", content: `ACT AS ZERO. \n\n${systemPrompt}\n\nUser Question: ${message}` },
+      ...mappedHistory
     ].slice(-6);
 
     const BYTEZ_URL = "https://api.bytez.com/models/v2/openai/v1/chat/completions";
