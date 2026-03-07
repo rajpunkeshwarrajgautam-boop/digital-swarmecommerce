@@ -62,16 +62,44 @@ ${knowledgeBase}
 
 Signature: "Zero | Digital Swarm Sales Architect."`;
 
-    // Inject prompt and map history
+    // Construct strict alternating history
     const mappedHistory = history.map((h: { role: string; parts: { text: string }[] }) => ({
       role: h.role === "model" ? "assistant" : "user",
       content: h.parts[0]?.text || ""
     })).filter((m: { content: string }) => m.content !== "");
 
-    const messages = [
-      { role: "user", content: `ACT AS ZERO. \n\n${systemPrompt}\n\nUser Question: ${message}` },
-      ...mappedHistory
-    ].slice(-6);
+    const validMessages: { role: string, content: string }[] = [];
+    
+    mappedHistory.forEach((h: { role: string; content: string }) => {
+      if (validMessages.length === 0 && h.role === "assistant") return; 
+      if (validMessages.length > 0 && validMessages[validMessages.length - 1].role === h.role) {
+        validMessages[validMessages.length - 1].content += "\n\n" + h.content;
+      } else {
+        validMessages.push(h);
+      }
+    });
+
+    // Append the CURRENT message
+    if (validMessages.length > 0 && validMessages[validMessages.length - 1].role === "user") {
+      validMessages[validMessages.length - 1].content += "\n\n" + message;
+    } else {
+      validMessages.push({ role: "user", content: message });
+    }
+
+    // Inject System Prompt safely into the first user message
+    if (validMessages.length > 0) {
+      validMessages[0].content = `[SYSTEM INSTRUCTIONS: ${systemPrompt}]\n\n====================\n\n${validMessages[0].content}`;
+    }
+    
+    // Keep context window tight to prevent token limits
+    const messages = validMessages.slice(-8);
+    if (messages.length > 0 && messages[0].role === "assistant") {
+       messages.shift(); // Must start with user
+    }
+    // Re-inject system instructions if sliced out
+    if (messages.length > 0 && !messages[0].content.includes("[SYSTEM INSTRUCTIONS")) {
+       messages[0].content = `[SYSTEM INSTRUCTIONS: ${systemPrompt}]\n\n====================\n\n${messages[0].content}`;
+    }
 
     const BYTEZ_URL = "https://api.bytez.com/models/v2/openai/v1/chat/completions";
 
