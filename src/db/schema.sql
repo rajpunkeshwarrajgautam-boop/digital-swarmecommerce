@@ -296,3 +296,51 @@ on conflict (name) do update set
   specs        = excluded.specs,
   download_url = excluded.download_url,
   updated_at   = now();
+-- ── 8. Phase 3 Scaling Tables (Affiliates & Licenses) ────────────────────────
+
+-- customer_licenses table for the Secure JWT Portal
+create table if not exists public.customer_licenses (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    user_email TEXT NOT NULL,
+    order_id TEXT NOT NULL,
+    license_key TEXT NOT NULL UNIQUE,
+    license_tier TEXT NOT NULL DEFAULT 'standard',
+    product_id TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+alter table public.customer_licenses enable row level security;
+
+-- NOTE: No public 'select' policy. The backend API uses the Service Role (supabaseAdmin) 
+-- to fetch licenses based on Clerk identity, which bypasses RLS.
+-- This prevents any unauthorized user from scraping licenses using the Anon key.
+do $$
+begin
+    -- Cleanup any loose policies if they exist from previous runs
+    drop policy if exists "Users can view their own licenses" on public.customer_licenses;
+end $$;
+
+-- affiliates table for the Affiliate & Influencer Portal
+create table if not exists public.affiliates (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT NOT NULL,
+    email TEXT UNIQUE NOT NULL,
+    audience_link TEXT,
+    status TEXT DEFAULT 'pending', -- pending | approved | rejected
+    clicks INT DEFAULT 0,
+    earned DECIMAL(10,2) DEFAULT 0.00,
+    referral_code TEXT UNIQUE,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+alter table public.affiliates enable row level security;
+
+do $$
+begin
+    -- Public can only insert (apply). 
+    -- Stats viewing is handled by the backend API via Service Role.
+    drop policy if exists "Anyone can insert application" on public.affiliates;
+    create policy "Anyone can insert application" on public.affiliates for insert with check (true);
+    
+    drop policy if exists "Affiliates can view their stats" on public.affiliates;
+end $$;

@@ -42,28 +42,19 @@ export async function GET(request: Request) {
     const { data, error } = await query;
 
     if (error) {
-      console.warn('[products/route] Supabase error, falling back to static data:', error.message);
-      const filtered = category
-        ? staticProducts.filter((p) => p.category === category)
-        : staticProducts;
-      return NextResponse.json(filtered);
+      console.error('[products/route] Supabase error:', error.message);
+      return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
     }
 
-    // If DB is empty, fall back to static data
+    // If DB is empty, return empty array
     if (!data || data.length === 0) {
-      const filtered = category
-        ? staticProducts.filter((p) => p.category === category)
-        : staticProducts;
-      return NextResponse.json(filtered);
+      return NextResponse.json([]);
     }
 
     return NextResponse.json(data.map(normalizeProduct));
 
   } catch (err) {
     console.error('[products/route] Unexpected error:', err);
-    const filtered = category
-      ? staticProducts.filter((p) => p.category === category)
-      : staticProducts;
-    return NextResponse.json(filtered);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }

@@ -2,6 +2,8 @@
 
 import { Share2, DollarSign, BarChart3, Users, ArrowRight, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { CyberInput } from "@/components/ui/CyberInput";
 
 // export const metadata: Metadata = {
 //   title: 'Affiliate Portal',
@@ -115,23 +117,20 @@ export default function AffiliatePage() {
                   <div className="grid sm:grid-cols-2 gap-4">
                     <div className="space-y-2">
                       <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Name</label>
-                      <input 
-                        type="text" 
+                      <CyberInput 
                         required
                         value={formData.name}
                         onChange={e => setFormData({...formData, name: e.target.value})}
-                        className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" 
                         placeholder="John Doe" 
                       />
                     </div>
                     <div className="space-y-2">
                       <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Email</label>
-                      <input 
+                      <CyberInput 
                         type="email" 
                         required
                         value={formData.email}
                         onChange={e => setFormData({...formData, email: e.target.value})}
-                        className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" 
                         placeholder="john@example.com" 
                       />
                     </div>
@@ -139,12 +138,11 @@ export default function AffiliatePage() {
                   
                   <div className="space-y-2">
                     <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Link to your audience</label>
-                    <input 
+                    <CyberInput 
                       type="url" 
                       required
                       value={formData.link}
                       onChange={e => setFormData({...formData, link: e.target.value})}
-                      className="w-full bg-secondary border border-border rounded-lg px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors" 
                       placeholder="https://youtube.com/c/yourchannel" 
                     />
                   </div>
@@ -152,15 +150,14 @@ export default function AffiliatePage() {
                   {errorText && <p className="text-red-400 text-sm font-medium">{errorText}</p>}
                   
                   <div className="pt-4">
-                    <button 
+                    <Button 
                       type="submit" 
-                      disabled={loading}
-                      className="w-full bg-white text-black font-black uppercase tracking-wider py-4 rounded-xl flex items-center justify-center gap-2 hover:opacity-90 transition-opacity disabled:opacity-50"
+                      variant="cyberpunk"
+                      isLoading={loading}
+                      className="w-full h-14"
                     >
-                      {loading ? "Submitting..." : (
-                        <>Submit Application <ArrowRight className="w-5 h-5" /></>
-                      )}
-                    </button>
+                      Submit Application <ArrowRight className="w-5 h-5 ml-2" />
+                    </Button>
                   </div>
                 </form>
               )}

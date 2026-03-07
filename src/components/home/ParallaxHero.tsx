@@ -4,6 +4,7 @@ import { useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
+import { Button } from "@/components/ui/Button";
 
 export function ParallaxHero() {
   const ref = useRef(null);
@@ -71,10 +72,10 @@ export function ParallaxHero() {
           className="mt-10 flex flex-col sm:flex-row justify-center gap-4"
         >
           <Link href="/products">
-            <button className="group flex items-center gap-2 bg-primary text-black font-black text-lg px-8 py-4 rounded-full border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all duration-200">
+            <Button variant="cyberpunk" size="lg" className="h-16 px-10 group">
               Browse Products
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </button>
+              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2" />
+            </Button>
           </Link>
           <Link href="/about">
             <button className="flex items-center gap-2 bg-transparent text-foreground font-bold text-lg px-8 py-4 rounded-full border-4 border-border hover:border-foreground transition-all duration-200">

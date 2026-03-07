@@ -26,6 +26,7 @@
     "mini-svg-data-uri": "^1.4.4",
     "next": "16.1.6",
     "pinelabs_node": "github:pluralonline/plural-nodejs-sdk",
+    "postgres": "^3.4.8",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "resend": "^6.9.3",

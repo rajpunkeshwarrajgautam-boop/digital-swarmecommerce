@@ -66,25 +66,29 @@ import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
     <CardContainer className="inter-var w-full">
-      <CardBody className="bg-card relative group/card dark:hover:shadow-2xl dark:hover:shadow-emerald-500/[0.1] dark:bg-black dark:border-white/[0.2] border-black/[0.1] w-full h-auto rounded-xl p-8 border hover:border-primary/50 transition-colors">
-        <CardItem translateZ="50" className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-lg bg-secondary">
-          {icon}
-        </CardItem>
-        <CardItem
-          as="h3"
-          translateZ="60"
-          className="text-xl font-bold text-neutral-600 dark:text-white"
-        >
-          {title}
-        </CardItem>
-        <CardItem
-          as="p"
-          translateZ="40"
-          className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-        >
-          {description}
-        </CardItem>
-      </CardBody>
+      <div className="neon-border-wrapper w-full h-full">
+        <div className="neon-border-content p-8">
+          <CardBody className="bg-transparent relative group/card w-full h-auto">
+            <CardItem translateZ="50" className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-lg bg-secondary">
+              {icon}
+            </CardItem>
+            <CardItem
+              as="h3"
+              translateZ="60"
+              className="text-xl font-bold text-neutral-600 dark:text-white"
+            >
+              {title}
+            </CardItem>
+            <CardItem
+              as="p"
+              translateZ="40"
+              className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
+            >
+              {description}
+            </CardItem>
+          </CardBody>
+        </div>
+      </div>
     </CardContainer>
   );
 }

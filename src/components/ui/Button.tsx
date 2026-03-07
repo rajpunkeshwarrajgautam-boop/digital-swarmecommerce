@@ -18,7 +18,8 @@ const buttonVariants = cva(
           "bg-secondary text-secondary-foreground hover:bg-secondary/80",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         link: "text-primary underline-offset-4 hover:underline",
-        neon: "bg-transparent border border-primary text-primary shadow-[0_0_10px_rgba(0,229,255,0.5)] hover:bg-primary/10 hover:shadow-[0_0_20px_rgba(0,229,255,0.8)] transition-all duration-300 transform hover:scale-105", 
+        neon: "bg-transparent border border-primary text-primary shadow-[0_0_10px_rgba(204,255,0,0.5)] hover:bg-primary/10 hover:shadow-[0_0_20px_rgba(204,255,0,0.8)] transition-all duration-300 transform hover:scale-105", 
+        cyberpunk: "btn-cyberpunk",
       },
       size: {
         default: "h-10 px-4 py-2",
