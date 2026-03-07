@@ -16,11 +16,11 @@ export function ParallaxHero() {
       <motion.div
         animate={{ rotate: [0, 3, 0], y: [0, -12, 0] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-        className="absolute top-20 left-[8%] bg-primary text-black rounded-2xl border-4 border-black px-4 py-3 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] z-10 hidden md:flex flex-col items-center gap-1"
+        className="absolute top-20 left-[8%] bg-primary text-white rounded-2xl border-4 border-transparent px-4 py-3 shadow-xl z-10 hidden md:flex flex-col items-center gap-1"
       >
         <div className="flex gap-0.5">
           {[1,2,3,4,5].map((s) => (
-            <Star key={s} className="w-3 h-3 fill-black text-black" />
+            <Star key={s} className="w-3 h-3 fill-white text-white" />
           ))}
         </div>
         <span className="font-black text-xs leading-none">500+ Reviews</span>
@@ -29,7 +29,7 @@ export function ParallaxHero() {
       <motion.div
         animate={{ rotate: [0, -4, 0], y: [0, 16, 0] }}
         transition={{ duration: 5, repeat: Infinity, ease: "easeInOut", delay: 1 }}
-        className="absolute bottom-32 right-[8%] bg-accent text-white rounded-2xl border-4 border-black px-4 py-3 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] z-10 hidden md:flex flex-col items-center gap-1"
+        className="absolute bottom-32 right-[8%] bg-accent text-white rounded-2xl border-4 border-transparent px-4 py-3 shadow-xl z-10 hidden md:flex flex-col items-center gap-1"
       >
         <span className="font-black text-2xl leading-none">5 min</span>
         <span className="font-bold text-xs leading-none text-center">Setup Guide<br/>Included</span>
@@ -50,10 +50,10 @@ export function ParallaxHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-[10vw] md:text-[7vw] leading-[0.85] font-titan text-foreground drop-shadow-[4px_4px_0px_rgba(204,255,0,0.3)]"
+          className="text-[10vw] md:text-[7vw] leading-[0.85] font-titan text-foreground drop-shadow-md"
         >
           Launch Your<br/>Next Project<br/>
-          <span className="text-primary">Today</span>
+          <span className="text-gradient">Today</span>
         </motion.h1>
 
         <motion.p

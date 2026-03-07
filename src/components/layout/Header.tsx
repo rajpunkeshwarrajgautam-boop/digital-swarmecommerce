@@ -31,10 +31,10 @@ export function Header() {
              <Button 
                 variant="ghost" 
                 size="icon" 
-                className="bg-black/40 backdrop-blur-lg border border-white/10 rounded-full h-12 w-12 hover:border-primary/50 transition-colors shadow-[0_0_15px_rgba(0,0,0,0.5)]"
+                className="bg-white border border-border rounded-full h-12 w-12 hover:border-primary transition-colors shadow-sm"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
              >
-               {isMenuOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
+               {isMenuOpen ? <X className="w-6 h-6 text-foreground" /> : <Menu className="w-6 h-6 text-foreground" />}
              </Button>
           </div>
 
@@ -47,24 +47,24 @@ export function Header() {
           <div className="flex items-center gap-4">
             <SignedOut>
               <SignInButton mode="modal">
-                <Button className="font-bold border border-white/20 bg-white/5 text-white hover:bg-white hover:text-black transition-colors rounded-full px-6">
+                <Button className="font-bold border border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
                     Sign In
                 </Button>
               </SignInButton>
             </SignedOut>
             <SignedIn>
-              <div className="bg-black/40 p-1 rounded-full border border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+              <div className="bg-white p-1 rounded-full border border-border shadow-sm">
                   <UserButton />
               </div>
             </SignedIn>
             
             <Button 
-                variant="ghost" 
+                variant="outline" 
                 size="icon" 
-                className="relative bg-black/40 backdrop-blur-lg border border-white/10 rounded-full h-12 w-12 hover:border-primary/50 transition-colors shadow-[0_0_15px_rgba(0,0,0,0.5)] group" 
+                className="relative bg-white border border-border rounded-full h-12 w-12 hover:border-primary transition-colors shadow-sm group" 
                 onClick={toggleCart}
             >
-              <ShoppingCart className="w-5 h-5 text-white group-hover:text-primary transition-colors" />
+              <ShoppingCart className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
               {mounted && totalItems > 0 && (
                 <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary border border-black text-[10px] font-bold text-black shadow-[0_0_10px_var(--primary)]">
                   {totalItems}

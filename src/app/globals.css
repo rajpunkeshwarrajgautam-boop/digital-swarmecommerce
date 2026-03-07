@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme inline {
-  --background: #030303;
-  --foreground: #fafafa;
-  --primary: #ccff00;
-  --primary-foreground: #000000;
-  --secondary: #121212;
-  --secondary-foreground: #ffffff;
-  --accent: #4a00ff;
+  --background: #fcfcfc; /* Premium Off-White */
+  --foreground: #0f172a; /* Slate 900 for high contrast text */
+  --primary: #3b82f6; /* Electric Blue */
+  --primary-foreground: #ffffff;
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --accent: #ec4899; /* Vibrant Pink for Gradients */
   --accent-foreground: #ffffff;
-  --muted: #171717;
-  --muted-foreground: #a3a3a3;
-  --card: #0a0a0a;
-  --card-foreground: #fafafa;
-  --border: #262626;
+  --muted: #f8fafc;
+  --muted-foreground: #64748b;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --border: #e2e8f0;
   --radius: 1rem;
 
   --color-background: var(--background);
@@ -102,11 +102,21 @@ h6 {
   letter-spacing: -0.04em;
 }
 
-/* Swarm Pattern Background */
+/* Swarm Pattern Background - Clean Dot Grid for Light Mode */
 .bg-swarm-pattern {
-  background-image: radial-gradient(var(--border) 1px, transparent 1px);
+  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
   background-size: 24px 24px;
-  mask-image: linear-gradient(to bottom, black 60%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+}
+
+/* Stunning Text Gradient */
+.text-gradient {
+  background: linear-gradient(135deg, #3b82f6 0%, #ec4899 50%, #8b5cf6 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+  display: inline-block;
 }
 
 /* Custom Scrollbar */
@@ -253,57 +263,46 @@ h6 {
     transform: translate(-5px, -5px);
   }
 }
-
-.btn-cyberpunk {
-  --color: var(--primary);
-  font-family: inherit;
-  display: inline-block;
-  width: auto;
-  height: 2.6em;
-  line-height: 2.5em;
+/* Modern Uiverse Gradient Button (Off-White Theme) */
+.btn-cyberpunk,
+.btn-cyberpunk:after {
+  padding: 16px 20px;
+  font-size: 18px;
+  background: linear-gradient(45deg, transparent 5%, #60a5fa 5%); /* Muted blue */
+  border: 0;
+  color: #fff;
+  letter-spacing: 3px;
+  line-height: 1;
+  box-shadow: 6px 0px 0px #fb7185; /* Muted pink */
+  outline: transparent;
   position: relative;
-  overflow: hidden;
-  border: 2px solid var(--color);
-  transition: color 0.5s;
-  z-index: 1;
-  font-size: 17px;
-  border-radius: 6px;
-  font-weight: 500;
-  color: var(--color);
-  text-transform: uppercase;
-  padding: 0 1.2em;
-  background-color: transparent;
+  font-weight: bold;
   cursor: pointer;
+  transition: all 0.3s ease;
 }
 
-.btn-cyberpunk:before {
-  content: "";
+.btn-cyberpunk:after {
+  --slice-0: inset(50% 50% 50% 50%);
+  --slice-1: inset(80% -6px 0 0);
+  --slice-2: inset(50% -6px 30% 0);
+  --slice-3: inset(10% -6px 85% 0);
+  --slice-4: inset(40% -6px 43% 0);
+  --slice-5: inset(80% -6px 5% 0);
+  content: "OFF-WHITE DRIP";
+  display: block;
   position: absolute;
-  z-index: -1;
-  background: var(--color);
-  height: 150px;
-  width: 250px;
-  border-radius: 50%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(45deg, transparent 3%, #a3e635 3%, #a3e635 5%, #fb7185 5%); /* Muted green and pink */
+  text-shadow: -3px -3px 0px #f8f005, 3px 3px 0px #a3e635; /* Yellow and muted green */
+  clip-path: var(--slice-0);
 }
 
-.btn-cyberpunk:hover {
-  color: #000;
-}
-
-.btn-cyberpunk:before {
-  top: 100%;
-  left: 100%;
-  transition: all 0.7s;
-}
-
-.btn-cyberpunk:hover:before {
-  top: -30px;
-  left: -30px;
-}
-
-.btn-cyberpunk:active:before {
-  background: var(--color);
-  transition: background 0s;
+.btn-cyberpunk:hover:after {
+  animation: 1s glitch;
+  animation-timing-function: steps(2, end);
 }
 
 /* Neon Border Animation for Cards */
@@ -316,9 +315,9 @@ h6 {
 .neon-border-wrapper {
   position: relative;
   overflow: hidden;
-  padding: 3px; /* Slightly thicker for visibility */
+  padding: 4px;
   border-radius: var(--radius);
-  background: rgba(255, 255, 255, 0.03);
+  background: #ffffff;
 }
 
 .neon-border-wrapper::before {
@@ -330,64 +329,43 @@ h6 {
   height: 200%;
   background: conic-gradient(
     transparent,
-    var(--primary),
-    #ff00ff, /* High-contrast Pink */
-    var(--primary),
+    #3b82f6,
+    #ec4899,
+    #8b5cf6,
     transparent
   );
-  animation: border-rotate 3s linear infinite; /* Faster for more kinetic energy */
+  animation: border-rotate 4s linear infinite;
   z-index: 0;
 }
 
 .neon-border-content {
   position: relative;
   z-index: 1;
-  background: var(--background); /* Use background instead of card for deeper contrast */
-  border-radius: calc(var(--radius) - 3px);
+  background: #ffffff;
+  border-radius: calc(var(--radius) - 4px);
   width: 100%;
   height: 100%;
 }
 
-/* Cyber Shadow with intense glow */
+/* Elegant Light Drop Shadow */
 .cyber-shadow {
   box-shadow:
-    0 0 15px rgba(204, 255, 0, 0.1),
-    0 0 30px rgba(204, 255, 0, 0.05);
+    0 4px 6px -1px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.03);
   transition: all 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.05); /* clean light border */
 }
 
 .cyber-shadow:hover {
   box-shadow:
-    0 0 25px rgba(204, 255, 0, 0.5),
-    0 0 50px rgba(204, 255, 0, 0.2);
-  transform: scale(1.02);
+    0 20px 25px -5px rgba(59, 130, 246, 0.15),
+    0 8px 10px -6px rgba(59, 130, 246, 0.1);
+  transform: translateY(-4px) scale(1.01);
+  border-color: rgba(59, 130, 246, 0.3);
 }
 
-/* Base Body Hack for Cyberpunk Texture */
-body {
-  position: relative;
-}
-
+/* Remove Dark Mode Scanlines overlay for clean light mode */
 body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%,
-    rgba(0, 0, 0, 0.05) 50%
-  ),
-  linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 0.02),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.02)
-  );
-  background-size: 100% 4px, 3px 100%;
-  z-index: 9999;
-  pointer-events: none;
-  opacity: 0.3;
+  display: none !important;
 }
 
