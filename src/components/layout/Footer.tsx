@@ -44,6 +44,7 @@ export function Footer() {
               <li><Link href="/faq" className="hover:text-primary transition-colors">FAQ</Link></li>
               <li><Link href="/license" className="hover:text-primary transition-colors">License</Link></li>
               <li><Link href="/terms" className="hover:text-primary transition-colors">Terms of Service</Link></li>
+              <li><Link href="/refund" className="hover:text-primary transition-colors">Refund Policy</Link></li>
             </ul>
           </div>
 
@@ -71,7 +72,8 @@ export function Footer() {
           <p>© {new Date().getFullYear()} Digital Swarm. All rights reserved.</p>
           <div className="flex gap-6">
             <Link href="/privacy" className="hover:text-foreground transition-colors">Privacy Policy</Link>
-            <Link href="/terms" className="hover:text-foreground transition-colors">Terms of Service</Link>
+            <Link href="/terms" className="hover:text-foreground transition-colors">Terms</Link>
+            <Link href="/refund" className="hover:text-foreground transition-colors">Refunds</Link>
             <Link href="/license" className="hover:text-foreground transition-colors">License</Link>
           </div>
         </div>

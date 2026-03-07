@@ -5,6 +5,7 @@ import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { ParallaxHero } from "@/components/home/ParallaxHero";
 import { ProblemSolution } from "@/components/home/ProblemSolution";
 import { SocialProof } from "@/components/home/SocialProof";
+import { Testimonials } from "@/components/home/Testimonials";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { EmailCapture } from "@/components/home/EmailCapture";
@@ -25,6 +26,9 @@ export default function Home() {
 
       {/* Social Proof */}
       <SocialProof />
+
+      {/* Trust Signals: Testimonials */}
+      <Testimonials />
 
       {/* Features Grid — jargon-free */}
       <section className="py-24 bg-secondary/30 border-t border-border/50">

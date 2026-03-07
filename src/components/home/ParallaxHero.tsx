@@ -73,7 +73,7 @@ export function ParallaxHero() {
         >
           <Link href="/products">
             <Button variant="cyberpunk" size="lg" className="h-16 px-10 group">
-              Browse Products
+              View Catalog
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform ml-2" />
             </Button>
           </Link>
