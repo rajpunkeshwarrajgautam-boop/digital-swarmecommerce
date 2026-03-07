@@ -88,7 +88,7 @@ Signature: "Zero | Digital Swarm Sales Architect."`;
 
     // Inject System Prompt safely into the first user message
     if (validMessages.length > 0) {
-      validMessages[0].content = `[SYSTEM INSTRUCTIONS: ${systemPrompt}]\n\n====================\n\n${validMessages[0].content}`;
+      validMessages[0].content = `**SYSTEM DETAILS AND PRODUCT CATALOG:**\n${systemPrompt}\n\n**USER QUESTION:**\n${validMessages[0].content}`;
     }
     
     // Keep context window tight to prevent token limits
@@ -97,8 +97,8 @@ Signature: "Zero | Digital Swarm Sales Architect."`;
        messages.shift(); // Must start with user
     }
     // Re-inject system instructions if sliced out
-    if (messages.length > 0 && !messages[0].content.includes("[SYSTEM INSTRUCTIONS")) {
-       messages[0].content = `[SYSTEM INSTRUCTIONS: ${systemPrompt}]\n\n====================\n\n${messages[0].content}`;
+    if (messages.length > 0 && !messages[0].content.includes("**SYSTEM DETAILS AND PRODUCT CATALOG:**")) {
+       messages[0].content = `**SYSTEM DETAILS AND PRODUCT CATALOG:**\n${systemPrompt}\n\n**USER QUESTION:**\n${messages[0].content}`;
     }
 
     const BYTEZ_URL = "https://api.bytez.com/models/v2/openai/v1/chat/completions";
