@@ -34,25 +34,29 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative bg-card border-2 border-border p-4 hover:-translate-y-1 hover:-translate-x-1 transition-all duration-300 rounded-xl overflow-hidden flex flex-col h-full cyber-shadow">
 
-      {/* Image Container */}
-      <div className="relative aspect-square w-full mb-4 bg-muted rounded-lg border-2 border-black overflow-hidden group-hover:rotate-1 transition-transform">
-        <Image
-          src={product.image}
-          fill
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-          className="object-cover"
-          alt={product.name}
-          loading="lazy"
-        />
-        {/* Price Tag */}
-        <div className="absolute top-2 right-2 bg-primary text-black font-black text-base px-3 py-1 border-2 border-black rounded-full rotate-6 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-          ₹{product.price.toLocaleString("en-IN")}
+      {/* Glassmorphic Image Container (Uiverse) */}
+      <Link href={`/products/${product.id}`} className="block">
+        <div className="uiverse-glass-container relative aspect-square w-full mb-4 group-hover:-translate-y-1 transition-transform duration-500">
+          <div className="uiverse-glass-inner">
+            <Image
+              src={product.image}
+              fill
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+              className="object-cover group-hover:scale-110 transition-transform duration-700"
+              alt={product.name}
+              loading="lazy"
+            />
+          </div>
+          {/* Minimalist Price Badge */}
+          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-foreground font-black text-sm px-3 py-1 border border-border/50 rounded-full shadow-sm z-10">
+            ₹{product.price.toLocaleString("en-IN")}
+          </div>
+          {/* Instant download badge */}
+          <div className="absolute bottom-3 left-3 bg-black/80 text-white text-[10px] font-bold px-3 py-1 rounded-full backdrop-blur-md z-10">
+            ⚡ Instant Download
+          </div>
         </div>
-        {/* Instant download badge */}
-        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-[10px] font-bold px-2 py-0.5 rounded-full backdrop-blur-sm">
-          ⚡ Instant Download
-        </div>
-      </div>
+      </Link>
 
       {/* Content */}
       <div className="flex flex-col grow">
@@ -70,27 +74,27 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.description}
         </p>
 
-        {/* Actions */}
-        <div className="flex flex-col sm:flex-row gap-2 mt-auto">
+        {/* Actions - Uiverse Button Applied */}
+        <div className="flex flex-col sm:flex-row gap-3 mt-auto relative z-10">
           <Link href={`/products/${product.id}`} className="flex-1">
-            <Button variant="outline" className="w-full h-11 border-primary/20 hover:border-primary/50 group/view">
+            <Button variant="outline" className="w-full h-11 bg-white hover:bg-gray-50 border-border group/view shadow-sm text-foreground">
               <Eye className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform text-primary" /> View Details
             </Button>
           </Link>
-          <Button
-            onClick={() => addItem(product)}
-            disabled={!product.inStock}
-            variant="neon"
-            className="flex-1 h-11"
-          >
+          <div className="flex-1">
             {product.inStock ? (
-              <>
+              <button
+                onClick={(e) => { e.preventDefault(); addItem(product); }}
+                className="uiverse-glow-btn h-11 shadow-sm"
+              >
                 <ShoppingCart className="w-4 h-4 mr-2" /> Buy
-              </>
+              </button>
             ) : (
-              "Sold Out"
+              <Button disabled variant="outline" className="w-full h-11 bg-gray-100 text-muted-foreground border-border">
+                Sold Out
+              </Button>
             )}
-          </Button>
+          </div>
         </div>
       </div>
     </div>
