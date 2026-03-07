@@ -15,9 +15,9 @@ export async function POST(request: Request) {
   try {
     const { message, history } = await request.json();
 
-    const apiKey = process.env.BYTEZ_API_KEY || process.env.GEMINI_API_KEY;
+    const apiKey = process.env.GROQ_API_KEY;
     if (!apiKey) {
-      return NextResponse.json({ message: "UPLINK FAILURE: Bytez API Key not detected." }, { status: 500 });
+      return NextResponse.json({ message: "UPLINK FAILURE: Groq API Key not detected." }, { status: 500 });
     }
 
     // --- LIVE DATA FETCHING ---
@@ -112,13 +112,13 @@ Signature: "Zero | Digital Swarm Sales Architect."`;
        messages[0].content = `**SYSTEM DETAILS AND PRODUCT CATALOG:**\n${systemPrompt}\n\n**USER QUESTION:**\n${messages[0].content}`;
     }
 
-    const BYTEZ_URL = "https://api.bytez.com/models/v2/openai/v1/chat/completions";
+    const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 55000); // 55s timeout for cold starts
 
     try {
-      const response = await fetch(BYTEZ_URL, {
+      const response = await fetch(GROQ_URL, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json",
@@ -126,7 +126,7 @@ Signature: "Zero | Digital Swarm Sales Architect."`;
         },
         signal: controller.signal,
         body: JSON.stringify({
-          model: "unsloth/gemma-2b-it",
+          model: "llama-3.3-70b-versatile",
           messages: messages,
           temperature: 0.5, // Slightly higher for more natural speech
           max_tokens: 800
@@ -137,7 +137,7 @@ Signature: "Zero | Digital Swarm Sales Architect."`;
       const data = await response.json();
 
       if (!response.ok) {
-        console.error("Bytez API Error:", data);
+        console.error("Groq API Error:", data);
         return NextResponse.json({ 
           message: `HIVE-MIND OFFLINE: ${data.message || data.error || "Communication interference."}` 
         }, { status: response.status });
