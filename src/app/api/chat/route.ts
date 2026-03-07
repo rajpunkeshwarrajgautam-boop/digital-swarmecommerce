@@ -3,6 +3,8 @@ import { createClient } from "@supabase/supabase-js";
 import { products as staticProducts } from '@/lib/data';
 import { Product } from "@/lib/types";
 
+export const maxDuration = 60; // Allow sufficient time for cold-start 
+
 // Initialize Supabase client
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -82,7 +84,7 @@ Signature: "Zero | Digital Swarm Sales Architect."`;
     const BYTEZ_URL = "https://api.bytez.com/models/v2/openai/v1/chat/completions";
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 25000); // 25s timeout
+    const timeoutId = setTimeout(() => controller.abort(), 55000); // 55s timeout for cold starts
 
     try {
       const response = await fetch(BYTEZ_URL, {
