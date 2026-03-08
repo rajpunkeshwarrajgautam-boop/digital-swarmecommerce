@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { products as fallbackData } from '@/lib/data';
 
+export const dynamic = 'force-dynamic';
+
 // Normalize Supabase snake_case to match the Product type (camelCase)
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function normalizeProduct(p: any) {
