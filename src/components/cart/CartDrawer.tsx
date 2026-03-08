@@ -17,7 +17,6 @@ export function CartDrawer() {
   const orderBumpProduct = products.find(p => p.id === "web-bundle-ultimate");
   const hasOrderBump = items.some(item => item.id === "web-bundle-ultimate");
 
-  // Holographic Variants
   const drawerVariants: Variants = {
     closed: { x: "100%", opacity: 0 },
     open: { 
@@ -25,10 +24,8 @@ export function CartDrawer() {
       opacity: 1,
       transition: { 
         type: "spring", 
-        stiffness: 300, 
-        damping: 30,
-        staggerChildren: 0.1,
-        delayChildren: 0.2
+        stiffness: 400, 
+        damping: 40
       } 
     }
   };
@@ -90,9 +87,7 @@ export function CartDrawer() {
                 </div>
               ) : (
                 items.map((item) => (
-                  <motion.div 
-                    layout
-                    variants={itemVariants}
+                  <div 
                     key={item.id} 
                     className="group relative flex gap-4 p-4 border border-black/10 rounded-xl bg-gray-50 hover:bg-gray-100 hover:border-purple-300 transition-colors duration-300 shadow-sm"
                   >
@@ -137,16 +132,13 @@ export function CartDrawer() {
                         </Button>
                       </div>
                     </div>
-                  </motion.div>
+                  </div>
                 ))
               )}
               
               {/* ORDER BUMP */}
               {items.length > 0 && !hasOrderBump && orderBumpProduct && (
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
+                <div
                   className="mt-6 p-4 rounded-xl border border-dashed border-pink-400 bg-pink-50 relative overflow-hidden group"
                 >
                   <div className="absolute top-0 right-0 bg-pink-500 text-white text-[10px] uppercase font-black px-2 py-1 tracking-wider rounded-bl-lg">
@@ -169,7 +161,7 @@ export function CartDrawer() {
                       </Button>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               )}
             </div>
 
