@@ -45,7 +45,6 @@ export function PromoBanner() {
           animate={{ opacity: 1, height: "auto" }}
           className="bg-linear-to-r from-purple-600 via-pink-500 to-orange-500 text-white overflow-hidden relative z-50"
         >
-          <div className="absolute inset-0 opacity-[0.1]" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} />
           <div className="container mx-auto px-4 py-2 flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-sm font-bold relative z-10">
             
             <div className="flex items-center gap-2">

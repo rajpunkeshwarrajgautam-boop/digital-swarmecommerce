@@ -65,9 +65,7 @@ export function CartDrawer() {
             exit="closed"
             className="fixed top-0 right-0 h-full w-full max-w-md bg-white border-l border-black/10 z-50 shadow-[-20px_0_50px_rgba(0,0,0,0.1)] flex flex-col"
           >
-            {/* Holographic Noise Overlay */}
-            <div className="absolute inset-0 opacity-[0.03] pointer-events-none z-0" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }} />
-            
+            {/* Clean Drawer Container - Removed CPU-intensive SVG noise filter to prevent frame drop lag */}
             {/* Header */}
             <div className="relative z-10 flex items-center justify-between p-6 border-b border-black/10 bg-black/5">
               <h2 className="text-xl font-black tracking-tight flex items-center gap-2 bg-linear-to-r from-purple-600 via-pink-500 to-orange-500 bg-clip-text text-transparent drop-shadow-sm">
