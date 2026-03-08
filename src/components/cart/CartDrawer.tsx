@@ -14,8 +14,8 @@ export function CartDrawer() {
   const [isClient, setIsClient] = useState(false);
 
   // Featured Order Bump Product
-  const orderBumpProduct = products.find(p => p.id === "web-bundle-ultimate");
-  const hasOrderBump = items.some(item => item.id === "web-bundle-ultimate");
+  const orderBumpProduct = products.find(p => p.id === "ultimate-web-dev-bundle");
+  const hasOrderBump = items.some(item => item.id === "ultimate-web-dev-bundle");
 
   const drawerVariants: Variants = {
     closed: { x: "100%", opacity: 0 },
