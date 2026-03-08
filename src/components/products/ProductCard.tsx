@@ -34,27 +34,25 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative bg-card border-2 border-border p-4 hover:-translate-y-1 hover:-translate-x-1 transition-all duration-300 rounded-xl overflow-hidden flex flex-col h-full cyber-shadow">
 
-      {/* Glassmorphic Image Container (Uiverse) */}
-      <Link href={`/products/${product.id}`} className="block">
-        <div className="uiverse-glass-container relative aspect-square w-full mb-4 group-hover:-translate-y-1 transition-transform duration-500">
-          <div className="uiverse-glass-inner">
-            <Image
-              src={product.image}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover group-hover:scale-110 transition-transform duration-700"
-              alt={product.name}
-              loading="lazy"
-            />
-          </div>
-          {/* Minimalist Price Badge */}
-          <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-foreground font-black text-sm px-3 py-1 border border-border/50 rounded-full shadow-sm z-10">
-            ₹{product.price.toLocaleString("en-IN")}
-          </div>
-          {/* Instant download badge */}
-          <div className="absolute bottom-3 left-3 bg-black/80 text-white text-[10px] font-bold px-3 py-1 rounded-full backdrop-blur-md z-10">
-            ⚡ Instant Download
-          </div>
+      {/* Minimalist Image Container (Uiverse) */}
+      <Link href={`/products/${product.id}`} className="block relative aspect-square w-full mb-4">
+        <div className="minimalist-card">
+          <Image
+            src={product.image}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover"
+            alt={product.name}
+            loading="lazy"
+          />
+        </div>
+        {/* Minimalist Price Badge */}
+        <div className="absolute top-3 right-3 bg-white/90 backdrop-blur-md text-foreground font-black text-sm px-3 py-1 border border-border/50 rounded-full shadow-sm z-10">
+          ₹{product.price.toLocaleString("en-IN")}
+        </div>
+        {/* Instant download badge */}
+        <div className="absolute bottom-3 left-3 bg-black/80 text-white text-[10px] font-bold px-3 py-1 rounded-full backdrop-blur-md z-10">
+          ⚡ Instant Download
         </div>
       </Link>
 
