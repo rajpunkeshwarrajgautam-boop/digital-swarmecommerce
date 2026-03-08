@@ -91,9 +91,13 @@ export function HiveMindChat() {
         whileHover={{ scale: 1.1 }}
         whileTap={{ scale: 0.9 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="fixed bottom-6 right-24 z-50 p-4 rounded-full bg-primary text-black shadow-[0_0_20px_rgba(245,245,220,0.4)] border-4 border-black"
+        className={`fixed bottom-6 right-6 z-50 p-3 rounded-full shadow-lg border border-border/50 transition-all duration-300 ${
+          isOpen
+            ? "bg-primary text-white opacity-100"
+            : "bg-white/60 backdrop-blur-md text-foreground opacity-30 hover:opacity-100"
+        }`}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Cpu className="w-6 h-6 animate-pulse" />}
+        {isOpen ? <X className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
       </motion.button>
 
       {/* Chat Window */}
@@ -105,18 +109,18 @@ export function HiveMindChat() {
             initial={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
             animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
             exit={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
-            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[500px] bg-zinc-950 border-4 border-zinc-900 rounded-3xl shadow-2xl z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[500px] bg-white border border-border rounded-xl shadow-2xl z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-zinc-900 p-4 border-b-2 border-primary/20 flex items-center gap-3 cursor-grab active:cursor-grabbing">
+            <div className="bg-gray-50/80 backdrop-blur-md p-4 border-b border-border flex items-center gap-3 cursor-grab active:cursor-grabbing">
               <div className="p-2 rounded-lg bg-primary/10 text-primary">
                 <Terminal className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-titan text-sm tracking-widest text-white">AI ASSISTANT</h3>
+                <h3 className="font-titan text-sm tracking-widest text-foreground">AI ASSISTANT</h3>
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[10px] text-zinc-500 font-bold uppercase">Online</span>
+                  <span className="text-[10px] text-muted-foreground font-bold uppercase">Online</span>
                 </div>
               </div>
             </div>
@@ -134,8 +138,8 @@ export function HiveMindChat() {
                   <div className={`max-w-[85%] space-y-3 ${msg.role === "user" ? "flex flex-col items-end" : "flex flex-col items-start"}`}>
                     <div className={`p-3 rounded-2xl text-sm ${
                       msg.role === "user" 
-                        ? "bg-primary text-black font-medium" 
-                        : "bg-zinc-900 text-zinc-300 border border-white/5"
+                        ? "bg-primary text-white font-medium" 
+                        : "bg-gray-100 text-foreground border border-border/50"
                     }`}>
                       {msg.text}
                     </div>
@@ -156,7 +160,7 @@ export function HiveMindChat() {
               ))}
               {loading && (
                 <div className="flex justify-start">
-                  <div className="bg-zinc-900 p-3 rounded-2xl border border-white/5 flex gap-1">
+                  <div className="bg-gray-100 p-3 rounded-2xl border border-border/50 flex gap-1">
                     <span className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.3s]" />
                     <span className="w-1 h-1 bg-primary rounded-full animate-bounce [animation-delay:-0.15s]" />
                     <span className="w-1 h-1 bg-primary rounded-full animate-bounce" />
@@ -166,19 +170,19 @@ export function HiveMindChat() {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleChat} className="p-4 bg-zinc-900/50 border-t border-white/5">
+            <form onSubmit={handleChat} className="p-4 bg-white border-t border-border">
               <div className="relative">
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Ask me anything..."
-                  className="w-full bg-black border-2 border-zinc-800 rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-primary transition-all text-white"
+                  className="w-full bg-gray-50 border border-border rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-primary transition-all text-foreground"
                 />
                 <button 
                   type="submit"
                   disabled={loading || !message.trim()}
-                  className="absolute right-2 top-1.5 p-2 rounded-lg bg-zinc-800 text-primary hover:bg-primary hover:text-black transition-all disabled:opacity-50"
+                  className="absolute right-2 top-1.5 p-2 rounded-lg bg-gray-200 text-foreground hover:bg-primary hover:text-white transition-all disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
                 </button>
