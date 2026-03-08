@@ -21,6 +21,7 @@ export function HiveMindChat() {
   const [message, setMessage] = useState("");
   const [history, setHistory] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
+  const [hasInteracted, setHasInteracted] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { addItem, clearCart } = useCartStore();
@@ -30,6 +31,14 @@ export function HiveMindChat() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [history, loading]);
+
+  // Initial discoverability timer: Fade to translucent after 12 seconds
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setHasInteracted(true);
+    }, 12000);
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleInitiateOrder = (productId: string) => {
     const product = products.find(p => p.id === productId);
@@ -84,21 +93,49 @@ export function HiveMindChat() {
 
   return (
     <>
-      {/* Floating Button */}
-      <motion.button
-        initial={{ scale: 0, rotate: -45 }}
-        animate={{ scale: 1, rotate: 0 }}
-        whileHover={{ scale: 1.1 }}
-        whileTap={{ scale: 0.9 }}
-        onClick={() => setIsOpen(!isOpen)}
-        className={`fixed bottom-6 right-6 z-50 p-3 rounded-full shadow-lg border border-border/50 transition-all duration-300 ${
-          isOpen
-            ? "bg-primary text-white opacity-100"
-            : "bg-white/60 backdrop-blur-md text-foreground opacity-30 hover:opacity-100"
-        }`}
+      {/* Floating Button Container */}
+      <div 
+        className="fixed bottom-6 right-6 z-50 flex flex-col items-end gap-3 pointer-events-none"
+        onMouseEnter={() => setHasInteracted(true)}
       >
-        {isOpen ? <X className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
-      </motion.button>
+        <AnimatePresence>
+          {!isOpen && !hasInteracted && (
+            <motion.div
+              initial={{ opacity: 0, y: 10, scale: 0.9 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9, y: 10 }}
+              transition={{ delay: 2, duration: 0.5 }}
+              className="bg-primary text-white text-xs font-bold py-2 px-4 rounded-full rounded-br-sm shadow-xl pointer-events-auto cursor-pointer"
+              onClick={() => {
+                setIsOpen(true);
+                setHasInteracted(true);
+              }}
+            >
+              Need help? Ask AI Zero! 👋
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        <motion.button
+          initial={{ scale: 0, rotate: -45 }}
+          animate={{ scale: 1, rotate: 0 }}
+          whileHover={{ scale: 1.1 }}
+          whileTap={{ scale: 0.9 }}
+          onClick={() => {
+            setIsOpen(!isOpen);
+            setHasInteracted(true);
+          }}
+          className={`pointer-events-auto p-4 rounded-full shadow-lg border border-border/50 transition-all duration-500 ${
+            isOpen
+              ? "bg-primary text-white opacity-100"
+              : !hasInteracted
+                ? "bg-white text-foreground opacity-100 shadow-[0_0_20px_rgba(59,130,246,0.3)] animate-pulse"
+                : "bg-white/60 backdrop-blur-md text-foreground opacity-30 hover:opacity-100"
+          }`}
+        >
+          {isOpen ? <X className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
+        </motion.button>
+      </div>
 
       {/* Chat Window */}
       <AnimatePresence>
