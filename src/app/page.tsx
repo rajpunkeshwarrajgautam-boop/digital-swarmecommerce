@@ -9,6 +9,8 @@ import { Testimonials } from "@/components/home/Testimonials";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { EmailCapture } from "@/components/home/EmailCapture";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   return (
@@ -58,6 +60,29 @@ export default function Home() {
 
       {/* FAQ */}
       <HomeFAQ />
+
+      {/* Freebie Banner */}
+      <section className="py-24 relative overflow-hidden">
+        <div className="container px-4 mx-auto">
+          <div className="relative p-12 rounded-[2.5rem] bg-zinc-950 border border-white/10 flex flex-col items-center text-center overflow-hidden">
+             <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl bg-primary w-64 h-64 rounded-full" />
+             <div className="relative z-10 space-y-6">
+                <span className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest">Limited Offer</span>
+                <h2 className="text-4xl md:text-6xl font-black italic tracking-tight">NOT READY TO BUY?</h2>
+                <p className="text-xl text-zinc-400 max-w-xl mx-auto leading-relaxed">
+                  Grab our <span className="text-white italic font-bold">&quot;Ultimate SaaS Launch Checklist&quot;</span> and a selection of premium UI components for ₹0.
+                </p>
+                <div className="pt-4">
+                  <Link href="/freebies">
+                    <Button variant="cyberpunk" size="lg" className="h-16 px-10 text-lg">
+                      Explore Free Resources <Zap className="w-4 h-4 ml-2 fill-current" />
+                    </Button>
+                  </Link>
+                </div>
+             </div>
+          </div>
+        </div>
+      </section>
 
       {/* Email Capture + Final CTA */}
       <EmailCapture />

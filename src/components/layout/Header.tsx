@@ -94,6 +94,10 @@ export function Header() {
                   Bundle Builder
                   <span className="text-[9px] bg-white/10 text-white border border-white/20 px-2 py-0.5 rounded-full font-bold animate-pulse">NEW</span>
                 </Link>
+                <Link href="/freebies" className="text-xl font-space text-white/70 hover:text-primary hover:translate-x-2 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
+                  Free Resources
+                  <span className="text-[9px] bg-primary/20 text-primary border border-primary/40 px-2 py-0.5 rounded-full font-bold">FREE</span>
+                </Link>
                 <Link href="/about" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>About Us</Link>
                 <Link href="/contact" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Contact</Link>
                 <Link href="/affiliate" className="text-xl font-space text-white/70 hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Partner Program</Link>
