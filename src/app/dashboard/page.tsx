@@ -14,11 +14,22 @@ interface CustomerLicense {
   downloadUrl: string;
 }
 
+interface Order {
+  id: string;
+  cashfree_order_id?: string;
+  created_at: string;
+  status: string;
+  total: number;
+}
+
 export default function DashboardPage() {
   const { isSignedIn, user, isLoaded } = useUser();
   const [copiedKey, setCopiedKey] = useState<string | null>(null);
   const [licenses, setLicenses] = useState<CustomerLicense[]>([]);
   const [loadingLicenses, setLoadingLicenses] = useState(true);
+  const [activeTab, setActiveTab] = useState<"assets" | "orders">("assets");
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loadingOrders, setLoadingOrders] = useState(true);
 
   useEffect(() => {
     async function fetchLicenses() {
@@ -34,7 +45,23 @@ export default function DashboardPage() {
         setLoadingLicenses(false);
       }
     }
+
+    async function fetchOrders() {
+      try {
+        if (!isSignedIn) return;
+        const res = await fetch("/api/user/orders");
+        if (!res.ok) throw new Error("Failed to fetch orders");
+        const data = await res.json();
+        setOrders(data);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoadingOrders(false);
+      }
+    }
+
     fetchLicenses();
+    fetchOrders();
   }, [isSignedIn]);
 
   useEffect(() => {
@@ -77,65 +104,114 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        <div className="space-y-6">
-          {loadingLicenses ? (
-            <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
-               Deciphering license vectors...
-            </div>
-          ) : licenses.length === 0 ? (
-            <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
-              No assets found in your secure vault.
-            </div>
-          ) : licenses.map((purchase) => (
-            <div key={purchase.id} className="bg-card border border-border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:items-center hover:border-primary/50 transition-colors shadow-sm relative overflow-hidden group">
-              
-              {/* License Type Badge */}
-              <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-bl-lg text-white ${
-                purchase.licenseType.includes("Whitelabel") ? "bg-purple-500" : "bg-zinc-800"
-              }`}>
-                {purchase.licenseType}
-              </div>
+        {/* Tabs for Assets / Orders */}
+        <div className="flex gap-4 border-b border-border mb-8">
+          <button 
+            className={`pb-4 text-sm font-bold uppercase tracking-widest border-b-2 transition-colors ${activeTab === "assets" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-white"}`}
+            onClick={() => setActiveTab("assets")}
+          >
+            My Assets
+          </button>
+          <button 
+            className={`pb-4 text-sm font-bold uppercase tracking-widest border-b-2 transition-colors ${activeTab === "orders" ? "border-primary text-primary" : "border-transparent text-muted-foreground hover:text-white"}`}
+            onClick={() => setActiveTab("orders")}
+          >
+            Recent Orders
+          </button>
+        </div>
 
-              <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center shrink-0 border border-border">
-                <Package className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+        <div className="space-y-6">
+          {activeTab === "assets" && (
+            loadingLicenses ? (
+              <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
+                 Deciphering license vectors...
               </div>
-              
-              <div className="flex-1 space-y-2">
-                <h3 className="text-xl font-bold">{purchase.productName}</h3>
-                <p className="text-sm text-muted-foreground font-mono">Purchased: {purchase.date}</p>
+            ) : licenses.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
+                No assets found in your secure vault.
+              </div>
+            ) : licenses.map((purchase) => (
+              <div key={purchase.id} className="bg-card border border-border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:items-center hover:border-primary/50 transition-colors shadow-sm relative overflow-hidden group">
                 
-                {/* Secure JWT License Key */}
-                <div className="mt-4 bg-black border border-zinc-800 rounded-lg p-3 flex items-center justify-between gap-4 overflow-hidden group/key">
-                  <div className="flex items-center gap-2 text-zinc-400 overflow-hidden">
-                    <Key className="w-4 h-4 shrink-0" />
-                    <span className="text-xs font-mono truncate select-all">{purchase.licenseKey}</span>
+                {/* License Type Badge */}
+                <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-bl-lg text-white ${
+                  purchase.licenseType.includes("Whitelabel") ? "bg-purple-500" : "bg-zinc-800"
+                }`}>
+                  {purchase.licenseType}
+                </div>
+
+                <div className="w-16 h-16 rounded-xl bg-secondary flex items-center justify-center shrink-0 border border-border">
+                  <Package className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+                </div>
+                
+                <div className="flex-1 space-y-2">
+                  <h3 className="text-xl font-bold">{purchase.productName}</h3>
+                  <p className="text-sm text-muted-foreground font-mono">Purchased: {purchase.date}</p>
+                  
+                  {/* Secure JWT License Key */}
+                  <div className="mt-4 bg-black border border-zinc-800 rounded-lg p-3 flex items-center justify-between gap-4 overflow-hidden group/key">
+                    <div className="flex items-center gap-2 text-zinc-400 overflow-hidden">
+                      <Key className="w-4 h-4 shrink-0" />
+                      <span className="text-xs font-mono truncate select-all">{purchase.licenseKey}</span>
+                    </div>
+                    <button 
+                      onClick={() => handleCopy(purchase.licenseKey)}
+                      className="shrink-0 p-2 hover:bg-zinc-800 rounded-md transition-colors text-zinc-400 hover:text-white"
+                    >
+                      {copiedKey === purchase.licenseKey ? (
+                        <span className="text-xs font-bold text-green-400">Copied!</span>
+                      ) : (
+                        <Copy className="w-4 h-4" />
+                      )}
+                    </button>
                   </div>
-                  <button 
-                    onClick={() => handleCopy(purchase.licenseKey)}
-                    className="shrink-0 p-2 hover:bg-zinc-800 rounded-md transition-colors text-zinc-400 hover:text-white"
-                  >
-                    {copiedKey === purchase.licenseKey ? (
-                      <span className="text-xs font-bold text-green-400">Copied!</span>
-                    ) : (
-                      <Copy className="w-4 h-4" />
-                    )}
-                  </button>
+                </div>
+                
+                <div className="flex flex-col gap-3 shrink-0 mt-4 md:mt-0">
+                  <Button className="w-full md:w-auto h-12 flex items-center justify-center gap-2 border-none bg-linear-to-r from-primary to-green-500 text-black shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all">
+                    <Download className="w-4 h-4" /> Download Asset
+                  </Button>
+                  {purchase.licenseType.includes("Whitelabel") && (
+                    <Button variant="outline" className="w-full md:w-auto text-purple-500 border-purple-500/30 hover:bg-purple-500/10">
+                      Resell Guidelines <ArrowRight className="w-4 h-4 ml-1" />
+                    </Button>
+                  )}
+                </div>
+
+              </div>
+            ))
+          )}
+
+          {activeTab === "orders" && (
+            loadingOrders ? (
+              <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
+                 Fetching order history...
+              </div>
+            ) : orders.length === 0 ? (
+              <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
+                No recent orders found.
+              </div>
+            ) : orders.map((order) => (
+              <div key={order.id} className="bg-card border border-border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:items-center hover:border-primary/50 transition-colors shadow-sm relative overflow-hidden group">
+                 {/* Order Status Badge */}
+                <div className={`absolute top-0 right-0 px-3 py-1 text-[10px] font-black uppercase tracking-widest rounded-bl-lg text-white ${
+                  order.status === "paid" || order.status === "success" || order.status === "ACTIVE" ? "bg-emerald-500" : "bg-orange-500"
+                }`}>
+                  {order.status}
+                </div>
+
+                <div className="flex-1 space-y-2">
+                  <h3 className="text-xl font-bold font-mono">Order ID: {order.cashfree_order_id || order.id?.split('-')[0].toUpperCase()}</h3>
+                  <p className="text-sm text-muted-foreground font-mono">Date: {new Date(order.created_at).toLocaleDateString()}</p>
+                </div>
+
+                <div className="flex flex-col gap-2 shrink-0 text-right mt-4 md:mt-0">
+                    <p className="text-sm text-muted-foreground font-bold uppercase tracking-widest">Total</p>
+                    <p className="text-2xl font-black text-primary">₹{Number(order.total).toLocaleString("en-IN")}</p>
                 </div>
               </div>
-              
-              <div className="flex flex-col gap-3 shrink-0 mt-4 md:mt-0">
-                <Button className="w-full md:w-auto h-12 flex items-center justify-center gap-2 border-none bg-linear-to-r from-primary to-green-500 text-black shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all">
-                  <Download className="w-4 h-4" /> Download Asset
-                </Button>
-                {purchase.licenseType.includes("Whitelabel") && (
-                  <Button variant="outline" className="w-full md:w-auto text-purple-500 border-purple-500/30 hover:bg-purple-500/10">
-                    Resell Guidelines <ArrowRight className="w-4 h-4 ml-1" />
-                  </Button>
-                )}
-              </div>
-
-            </div>
-          ))}
+            ))
+          )}
         </div>
 
         {/* Email Funnel Status */}
