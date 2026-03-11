@@ -72,7 +72,7 @@ export async function POST(request: Request) {
         customer_name: `${customer.firstName} ${customer.lastName}`,
       },
       order_meta: {
-        return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order_id={order_id}&order_token={order_token}`,
+        return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order_id={order_id}`,
         notify_url: `${process.env.NEXT_PUBLIC_SITE_URL}/api/cashfree/webhook`,
       },
       order_note: `Digital Swarm Order: ${items.map((i: { name: string }) => i.name).join(', ')}`,
