@@ -8,7 +8,7 @@ const steps = [
     step: "01",
     icon: <ShoppingCart className="w-7 h-7 text-primary" />,
     title: "Browse & Buy",
-    description: "Find the digital product you need. Add to cart and check out securely via Razorpay in under 2 minutes.",
+    description: "Find the digital product you need. Add to cart and check out securely via Cashfree in under 2 minutes.",
   },
   {
     step: "02",

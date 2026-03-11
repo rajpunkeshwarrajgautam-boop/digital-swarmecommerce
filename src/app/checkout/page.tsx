@@ -8,15 +8,24 @@ import Link from "next/link";
 import { ArrowLeft, Check, Lock, Truck, ShieldCheck, CreditCard } from "lucide-react";
 import Image from "next/image";
 
+import { load } from "@cashfreepayments/cashfree-js";
+
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCartStore();
   const [isClient, setIsClient] = useState(false);
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
-
+  const [cashfree, setCashfree] = useState<unknown>(null);
 
   useEffect(() => {
     const id = requestAnimationFrame(() => setIsClient(true));
+    const initCashfree = async () => {
+      const cf = await load({
+        mode: (process.env.NEXT_PUBLIC_CASHFREE_ENV as "sandbox" | "production") || "sandbox",
+      });
+      setCashfree(cf);
+    };
+    initCashfree();
     return () => cancelAnimationFrame(id);
   }, []);
 
@@ -57,10 +66,15 @@ export default function CheckoutPage() {
   };
 
   const handleConfirmOrder = async () => {
+    if (!cashfree) {
+      alert("Payment system initializing. Please wait.");
+      return;
+    }
+    
     setIsProcessing(true);
     try {
-      // Step 1: Create Plural order on the server
-      const res = await fetch('/api/plural/create-order', {
+      // Step 1: Create Cashfree order on the server
+      const res = await fetch('/api/cashfree/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -72,13 +86,15 @@ export default function CheckoutPage() {
             lastName: formData.lastName,
             phone: formData.phone || '9999999999',
             address: formData.address,
+            city: formData.city,
+            zip: formData.zip,
           },
         }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || !data.paymentUrl) {
+      if (!res.ok || !data.paymentSessionId) {
         alert('Payment setup failed: ' + (data.error || 'Unknown error'));
         setIsProcessing(false);
         return;
@@ -89,8 +105,11 @@ export default function CheckoutPage() {
       localStorage.setItem('pending_order_id', data.orderId);
       clearCart();
 
-      // Step 3: Redirect to Plural Pine Labs payment gateway
-      window.location.href = data.paymentUrl;
+      // Step 3: Initiate Cashfree Checkout
+      (cashfree as any).checkout({
+        paymentSessionId: data.paymentSessionId,
+        redirectTarget: "_self", 
+      });
 
     } catch (err) {
       console.error('Checkout error:', err);
@@ -98,6 +117,7 @@ export default function CheckoutPage() {
       setIsProcessing(false);
     }
   };
+
 
   if (!isClient) return null;
 
@@ -172,7 +192,7 @@ export default function CheckoutPage() {
                         />
                     </div>
                     {errors.phone && <p className="text-red-500 text-[10px] uppercase font-bold">{errors.phone}</p>}
-                    <p className="text-[9px] text-muted-foreground uppercase tracking-widest leading-relaxed">Required for secure transaction verification via Pine Labs.</p>
+                    <p className="text-[9px] text-muted-foreground uppercase tracking-widest leading-relaxed">Required for secure transaction verification via Cashfree.</p>
                   </div>
                 </div>
                 <Button id="checkout-step1-next" className="mt-8 w-full" size="lg" onClick={() => validateStep(1) && setStep(2)}>
@@ -233,9 +253,9 @@ export default function CheckoutPage() {
                       <ShieldCheck className="w-8 h-8 text-primary" />
                     </div>
                     <div>
-                      <p className="font-bold text-lg mb-1">Secured by Pine Labs (Plural)</p>
+                      <p className="font-bold text-lg mb-1">Secured by Cashfree Payments</p>
                       <p className="text-sm text-muted-foreground">
-                        Your payment is processed by Pine Labs via deep-encryption protocols.
+                        Your payment is processed by Cashfree via deep-encryption protocols.
                         We never store or see your financial credentials.
                       </p>
                     </div>

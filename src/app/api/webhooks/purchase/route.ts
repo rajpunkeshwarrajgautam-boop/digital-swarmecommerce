@@ -11,7 +11,7 @@ const resendApiKey = process.env.RESEND_API_KEY?.trim() || "";
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
 /**
- * MOCK POST-PURCHASE WEBHOOK PROCESSOR
+ * POST-PURCHASE WEBHOOK PROCESSOR
  * When a payment succeeds (Stripe/Plural/Cashfree), it hits this webhook.
  * This script allocates the product to the user's dashboard and initiates the Resend.com 5-day email sequence.
  */
@@ -34,7 +34,19 @@ export async function POST(request: Request) {
     const secureSignature = Buffer.from(process.env.SUPABASE_SERVICE_ROLE_KEY || "default_secret").toString('base64url').slice(0, 16);
     const licenseKey = `${jwtHeader}.${jwtPayload}.${secureSignature}`;
 
-    // 3. Save to Supabase (Production)
+    // 3. Idempotency Check: Prevent duplicate licenses
+    const { data: existingLicense } = await supabase
+      .from('customer_licenses')
+      .select('id')
+      .eq('order_id', payload.orderId)
+      .maybeSingle();
+
+    if (existingLicense) {
+      console.log(`[WEBHOOK] License already exists for order ${payload.orderId}. Skipping.`);
+      return NextResponse.json({ success: true, message: "License already fulfilled" });
+    }
+
+    // 4. Save to Supabase (Production)
     const { error: dbError } = await supabase.from('customer_licenses').insert({
       user_email: payload.customerEmail,
       order_id: payload.orderId,

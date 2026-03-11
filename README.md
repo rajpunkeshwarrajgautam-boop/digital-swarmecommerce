@@ -17,7 +17,7 @@ Built with **Next.js 14**, **Tailwind CSS 4**, and **Framer Motion**, this proje
 * **Robust Commerce**:
   * Multi-step validated checkout flow.
   * Zustand-powered persistent cart management.
-  * Stripe-integrated secure processing.
+    * **Cashfree-integrated** secure processing.
 * **Production Ready**:
   * Optimized image delivery via `Next/Image`.
   * Semantic SEO metadata and OpenGraph support.

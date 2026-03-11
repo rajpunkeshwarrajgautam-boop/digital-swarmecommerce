@@ -39,6 +39,9 @@ create table if not exists public.orders (
   total              numeric(10, 2) default 0,
   status             text default 'pending',   -- pending | paid | failed | refunded
   cashfree_order_id  text,                     -- Also used for Plural/Pine Labs order IDs
+  payment_id         text,                     -- Gateway transaction ID
+  customer_name      text,
+  customer_phone     text,
   created_at         timestamptz default now(),
   updated_at         timestamptz default now()
 );
@@ -46,6 +49,9 @@ create table if not exists public.orders (
 -- Add missing columns safely
 alter table public.orders add column if not exists customer_email    text;
 alter table public.orders add column if not exists cashfree_order_id text;
+alter table public.orders add column if not exists payment_id         text;
+alter table public.orders add column if not exists customer_name      text;
+alter table public.orders add column if not exists customer_phone     text;
 alter table public.orders add column if not exists updated_at        timestamptz default now();
 
 -- ── 3. Order Items Table ─────────────────────────────────────────────────────
@@ -63,9 +69,9 @@ create table if not exists public.order_items (
 
 create table if not exists public.contact_messages (
   id         uuid default gen_random_uuid() primary key,
-  name       text not null,
+  first_name text not null,
+  last_name  text,
   email      text not null,
-  subject    text,
   message    text not null,
   status     text default 'new',  -- new | read | replied
   created_at timestamptz default now()

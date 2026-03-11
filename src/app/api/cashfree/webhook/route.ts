@@ -34,18 +34,30 @@ export async function POST(request: Request) {
       const orderId = orderData?.order_id;
       if (orderId) {
         // Update order status in Supabase
-        const { error } = await supabaseAdmin
+        const { data: dbOrder, error } = await supabaseAdmin
           .from('orders')
           .update({
             status: 'paid',
             payment_id: paymentData?.cf_payment_id,
           })
-          .eq('cashfree_order_id', orderId);
+          .eq('cashfree_order_id', orderId)
+          .select('customer_email')
+          .single();
 
         if (error) {
           console.error('[Webhook] DB update error:', error);
         } else {
-          console.log(`[Webhook] Order ${orderId} marked as PAID`);
+          console.log(`[Webhook] Order ${orderId} marked as PAID. Triggering fulfillment...`);
+          
+          // Trigger Fulfillment Webhook (Atomic/Async)
+          fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/webhooks/purchase`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              orderId: orderId,
+              customerEmail: dbOrder.customer_email,
+            })
+          }).catch(e => console.error("[Webhook] Fulfillment trigger failed", e));
         }
       }
     }

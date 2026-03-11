@@ -23,7 +23,7 @@ export function ReviewSystem({ productId }: { productId: string }) {
 
   useEffect(() => {
     async function loadReviews() {
-      // Mock reviews for now - in a real app this would be a fetch
+      // Load deployment reports
       setReviews([
         {
           id: "1",

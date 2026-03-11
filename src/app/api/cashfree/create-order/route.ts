@@ -33,6 +33,8 @@ export async function POST(request: Request) {
         user_id: customer.email, // Use email if no auth, or actual userId if logged in
         cashfree_order_id: orderId,
         customer_email: customer.email,
+        customer_name: `${customer.firstName} ${customer.lastName}`,
+        customer_phone: customer.phone || '9999999999',
       })
       .select()
       .single();

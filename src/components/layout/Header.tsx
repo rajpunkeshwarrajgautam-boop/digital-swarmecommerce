@@ -96,7 +96,13 @@ export function Header() {
                 </Link>
                 <Link href="/about" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>About Us</Link>
                 <Link href="/contact" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Contact</Link>
+                <Link href="/affiliate" className="text-xl font-space text-white/70 hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Partner Program</Link>
                 <Link href="/faq" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
+                <SignedIn>
+                   <Link href="/dashboard" className="mt-4 p-4 border border-primary/20 bg-primary/5 rounded-xl text-primary font-bold text-center" onClick={() => setIsMenuOpen(false)}>
+                      ACCESS DASHBOARD
+                   </Link>
+                </SignedIn>
               </nav>
             </motion.div>
           )}
