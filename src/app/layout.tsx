@@ -9,6 +9,7 @@ import { ExitIntentPopup } from "@/components/home/ExitIntentPopup";
 import { LiveSalesNotification } from "@/components/home/LiveSalesNotification";
 import { PromoBanner } from "@/components/layout/PromoBanner";
 import { GeoPricing } from "@/components/layout/GeoPricing";
+import { JsonLd } from "@/components/layout/JsonLd";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -62,6 +63,9 @@ export const metadata: Metadata = {
     icon: '/favicon.svg',
     apple: '/favicon.svg',
   },
+  verification: {
+    google: 'YOUR_GOOGLE_VERIFICATION_CODE_HERE', // Placeholder for User
+  },
 };
 
 export const viewport: Viewport = {
@@ -98,6 +102,7 @@ export default function RootLayout({
           <Footer />
           <ExitIntentPopup />
           <LiveSalesNotification />
+          <JsonLd />
         </body>
       </html>
     </ClerkProvider>
