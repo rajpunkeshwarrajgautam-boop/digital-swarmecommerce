@@ -64,7 +64,7 @@ export const metadata: Metadata = {
     apple: '/favicon.svg',
   },
   verification: {
-    google: 'YOUR_GOOGLE_VERIFICATION_CODE_HERE', // Placeholder for User
+    google: 'ZAF9N1DVHDNUydBH8uni8jRo6si3uXjHg1c-6r-gLhs',
   },
 };
 
