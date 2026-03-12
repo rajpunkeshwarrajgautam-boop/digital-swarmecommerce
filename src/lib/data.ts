@@ -4,7 +4,7 @@ export const products: Product[] = [
   {
     id: "1000-web-apps",
     name: "1000 Manually Tested Web Applications",
-    description: "A comprehensive collection of 1000 manually tested web applications, including 20 free premium bonuses.",
+    description: "A comprehensive collection of 1000 manually tested web applications, including 20 free premium bonuses. This massive library covers everything from landing pages to full-scale SaaS templates, all verified for functionality and clean code.",
     price: 200,
     category: "Web Development",
     image: "/images/products/1000-web-apps.png",
@@ -13,12 +13,12 @@ export const products: Product[] = [
     features: ['1000+ Tested Applications', '20 Premium Bonuses', 'Diverse Use Cases', 'Clean Codebase', 'Instant Download'],
     specs: { Size: '1.2 GB', Format: 'PDF / Source Code', License: 'Personal & Commercial Use', Updates: 'Lifetime Access' },
     downloadUrl: "/downloads/854187065-1000-Manually-Tested-Web-Applications-With-20-Free-Premium-Bonuses-Ro6wlx.pdf",
-    installGuide: "#"
+    installGuide: "### Installation\n1. Download and extract the ZIP file.\n2. Browse the included PDF catalog to find the app you need.\n3. Navigate to the specific source folder and open the `index.html` or project file.\n\n### Usage\n- Use these templates as foundations for client work or personal projects. Each app includes its own specific readme for setup."
   },
   {
     id: "ultimate-web-dev-bundle",
     name: "Ultimate Web Development Bundle",
-    description: "The ultimate bundle for web developers, curated by Glexmedia. Includes premium templates, scripts, UI kits.",
+    description: "The ultimate bundle for web developers, curated by Glexmedia. Includes premium templates, high-performance scripts, UI kits, and development tools to speed up your workflow. Everything is designed for modern web standards.",
     price: 300,
     category: "Bundles",
     image: "/images/products/ultimate-web-dev-bundle.png",
@@ -27,12 +27,12 @@ export const products: Product[] = [
     features: ['Premium Templates', 'UI Kits', 'Scripts & Plugins', 'Developer Tools', 'Regular Updates'],
     specs: { Format: 'ZIP / PDF', License: 'Royalty Free', Support: 'Priority Email Support', Components: '500+' },
     downloadUrl: "/downloads/863374232-Ultimate-Web-Devlopment-Bundle-by-Glexmedia-in-Vppalw-2.pdf",
-    installGuide: "#"
+    installGuide: "### Installation\n1. Extract the primary bundle file.\n2. Check the `documentation` folder for specific module assets.\n3. Install necessary NPM dependencies for projects using `npm install`.\n\n### Usage\n- Ideal for agencies looking to stock up on reliable components. Licenses allow for unlimited commercial usage on client projects."
   },
   {
     id: "ultimate-mega-bundle",
     name: "Ultimate Mega Bundle",
-    description: "A massive collection of digital assets. Your one-stop shop for premium creative content.",
+    description: "A massive collection of digital assets. Your one-stop shop for premium creative content, including graphics, UI elements, and code snippets. This bundle is built to be the ultimate creative companion.",
     price: 400,
     category: "Bundles",
     image: "/images/products/ultimate-mega-bundle.png",
@@ -41,26 +41,12 @@ export const products: Product[] = [
     features: ['Huge Asset Library', 'Diverse Categories', 'High-Res Graphics', 'Ready-to-use Code', 'Exclusive Content'],
     specs: { Download: 'Instant', Categories: 'Design, Code', 'File Types': 'PSD, AI, HTML', 'Total Files': '5000+' },
     downloadUrl: "/downloads/Ultimate%20Mega%20Bundle.pdf",
-    installGuide: "#"
-  },
-  {
-    id: "web-apps-collection",
-    name: "Web Applications Collection",
-    description: "A curated selection of high-quality functional web apps for your projects.",
-    price: 250,
-    category: "Web Development",
-    image: "/images/products/web-apps-collection.png",
-    inStock: true,
-    rating: 4.7,
-    features: ['Modern Tech Stack', 'Responsive Designs', 'Well-Documented', 'Easy Customization', 'Performance Optimized'],
-    specs: { DB: 'SQL/NoSQL', Backend: 'Node.js', Frameworks: 'React, Vue', 'Apps Included': '50+' },
-    downloadUrl: "/downloads/Web-Applications-dxz4w4_260202_014423.pdf",
-    installGuide: "#"
+    installGuide: "### Quick Start\n1. Follow the link in the provided PDF to access the cloud-hosted MEGA drive.\n2. Download the categories relevant to your current project.\n\n### Usage\n- All assets are royalty-free. Perfect for social media marketing, web design, and digital advertising."
   },
   {
     id: "ai-legal-agent",
-    name: "AI Legal Agent Team (Autonomous Contract Review)",
-    description: "A multi-agent legal department that handles contract review, legal research, risk assessment, and compliance checks via specialized researcher and strategist agents.",
+    name: "AI Legal Agent Team (Autonomous)",
+    description: "A multi-agent legal department that handles contract review, legal research, risk assessment, and compliance checks. It uses autonomous researcher and strategist agents to synthesize complex legal documents into easy-to-read reports.",
     price: 2499,
     category: "AI Agents",
     image: "/images/products/ai-legal-agent.png",
@@ -69,12 +55,12 @@ export const products: Product[] = [
     features: ["Contract Review Engine", "Legal Research Synthesis", "Risk Assessment Agent", "Specialize Legal Strategists", "Streamlit Command Center"],
     specs: { API: 'OpenAI / Anthropic', Framework: 'Phidata / Agno', Format: 'Python / Streamlit', License: 'Resell Rights', Support: 'Documentation Provided' },
     downloadUrl: "/downloads/ai-legal-agent.zip",
-    installGuide: "#"
+    installGuide: "### Deployment Guide\n1. **Prerequisites**: Install Python 3.10+ and get an OpenAI API key.\n2. **Setup**: \n   ```bash\n   pip install -r requirements.txt\n   cp .env.example .env\n   ```\n3. **Configure**: Add your API key to the `.env` file.\n4. **Launch**: Run `streamlit run app.py` to open the command center.\n\n### How to Use\nUpload any PDF/DOCX contract. The 'Review Agent' will scan for liabilities, while the 'Risk Agent' generates a compliance scorecard. You can then use the 'Strategist Agent' to ask follow-up questions about specific clauses."
   },
   {
     id: "tripcraft-ai",
     name: "TripCraft AI - Autonomous Travel Planner",
-    description: "An autonomous travel planning system that creates personalized itineraries by researching destinations, flights, and hotels across the web using specialized agents.",
+    description: "An autonomous travel planning system that creates personalized itineraries by researching destinations, flights, and hotels across the live web. It coordinates a team of researcher agents to find the best deals and hidden gems.",
     price: 1499,
     category: "AI Agents",
     image: "/images/products/tripcraft-ai.png",
@@ -83,12 +69,12 @@ export const products: Product[] = [
     features: ["Autonomous Itinerary Generation", "Web-scale Destination Research", "Flight/Hotel Sourcing Intelligence", "Phidata Framework Powered", "Customizable Planner UI"],
     specs: { API: 'OpenAI, DuckDuckGo', Framework: 'Phidata', Format: 'Python / Streamlit', Support: 'Priority Email Support', Components: '3+ Agents' },
     downloadUrl: "/downloads/tripcraft-ai.zip",
-    installGuide: "#"
+    installGuide: "### Installation\n1. Extract the folder and open it in VS Code.\n2. Install dependencies: `pip install -r requirements.txt`.\n3. Add your OpenAI API key to the `.env` file.\n4. Run the application: `python app.py`.\n\n### Usage\nEnter your budget, duration, and interests. The agents will browse DuckDuckGo to find real-time events and flight prices, then generate a downloadable PDF itinerary for you."
   },
   {
     id: "audio-tour-agent",
     name: "AI Audio Tour Agent (Voice-Enabled)",
-    description: "A voice-enabled AI agent that generates automated, narrated audio tours for any location using GPT-4 scriptwriting and TTS for delivery.",
+    description: "A voice-enabled AI agent that generates automated, narrated audio tours for any location. It uses GPT-4 scriptwriting and high-fidelity Text-to-Speech (TTS) to deliver a bespoke narrative experience.",
     price: 1999,
     category: "Voice AI",
     image: "/images/products/audio-tour-agent.png",
@@ -97,12 +83,12 @@ export const products: Product[] = [
     features: ["Location-aware Script Writing", "OpenAI TTS Voice Synthesis", "Interactive Map Markers Ready", "Bespoke Narrative Engine", "Ready for Mobile Deployment"],
     specs: { API: 'OpenAI GPT-4 & TTS', UI: 'Streamlit', Format: 'Python', Requirements: 'Python 3.10+', Logic: 'Narrative Synthesis' },
     downloadUrl: "/downloads/audio-tour-agent.zip",
-    installGuide: "#"
+    installGuide: "### Setup\n1. Install Python 3.10.6+.\n2. Install requirements: `pip install openai streamlit pydantic`.\n3. Add your `OPENAI_API_KEY` to secrets.\n\n### Operation\nType in the name of a city or museum. The Narrative Agent builds a script, and the Voice Synth Agent generates MP3 chapters. You can preview the tour live in the dashboard and export the audio files."
   },
   {
     id: "ai-services-agency",
     name: "AI Services Agency (Swarm-in-a-Box)",
-    description: "A fully automated 'agency-in-a-box' using CrewAI to simulate roles like Sales Manager and Solution Architect to handle professional service inquiries.",
+    description: "A fully automated 'agency-in-a-box' using CrewAI. This system simulates a professional team with roles like Sales Manager and Solution Architect to handle incoming client inquiries and generate project proposals.",
     price: 2999,
     category: "Business Transformation",
     image: "/images/products/ai-services-agency.png",
@@ -111,12 +97,12 @@ export const products: Product[] = [
     features: ["CrewAI Multi-agent Swarm", "Automated Solution Architecture", "Intelligent Sales Workflow", "Client Requirement Synthesis", "Enterprise Ready Framework"],
     specs: { API: 'OpenAI / Claude', Framework: 'CrewAI', Format: 'Python', Logic: 'Multi-Agent Coordination', Dashboard: 'Included' },
     downloadUrl: "/downloads/ai-services-agency.zip",
-    installGuide: "#"
+    installGuide: "### Deploying Your Agency\n1. **Environment**: `python -m venv venv` and activate it.\n2. **Install**: `pip install 'crewai[tools]'`.\n3. **Keys**: Add `CERIBRAL_API_KEY` and `OPENAI_API_KEY` to `.env`.\n4. **Run**: `python main.py`.\n\n### Workflow\nFeed the agent a client email. The 'Sales Manager' agent identifies the pain points, the 'Architect' agent designs the solution, and the 'Writer' agent drafts a professional PDF proposal ready for sending."
   },
   {
     id: "recruitment-agent-team",
     name: "AI Recruitment Agent Team (HR Automation)",
-    description: "An HR automation system that uses a Job Spec Agent to define roles and a Resume Screener Agent to score and filter candidates automatically.",
+    description: "An HR automation system that uses specialized agents to handle the hiring pipeline. Includes a Job Spec Agent to define roles and a Resume Screener Agent to score and filter candidates based on technical requirements.",
     price: 1799,
     category: "AI Agents",
     image: "/images/products/recruitment-agent-team.png",
@@ -125,12 +111,12 @@ export const products: Product[] = [
     features: ["Job Spec Automation Agent", "Candidate Screening Scorecard", "Automated Interview Scheduling", "Resume Selection Intelligence", "Team Orchestration Ready"],
     specs: { API: 'OpenAI, Phidata', Framework: 'Agno', Target: 'HR / Recruiters', Format: 'Python', Support: 'Lifetime Updates' },
     downloadUrl: "/downloads/recruitment-agent-team.zip",
-    installGuide: "#"
+    installGuide: "### Installation Guide\n1. Create a Python virtual environment.\n2. Install dependencies: `pip install agno phi pypdf2`.\n3. Set your API keys in the dashboard.\n\n### Usage\nDrop a folder of 100+ resumes into the `/input` directory. Run `python recruiter.py`. The system will generate an Excel sheet with candidates ranked by score, including justifications and suggested interview questions for each."
   },
   {
     id: "ai-finance-agent",
-    name: "AI Finance Agent Team (Market Intelligence)",
-    description: "A sophisticated technical market oracle that synthesizes real-time stock, crypto, and market metrics into actionable intelligence reports using multi-agent coordination.",
+    name: "AI Finance Agent Team",
+    description: "A sophisticated technical market oracle that synthesizes real-time stock, crypto, and market metrics into actionable intelligence reports. Coordinates market data retrieval and technical analysis across multiple agents.",
     price: 2499,
     category: "AI Agents",
     image: "/images/products/ai-finance-agent.png",
@@ -139,12 +125,12 @@ export const products: Product[] = [
     features: ["Real-time Market Telemetry", "Technical Analysis Engine", "Automated Report Synthesis", "Multi-Agent Risk Assessment", "Streamlit Financial Dashboard"],
     specs: { API: 'xAI / OpenAI / YFinance', Framework: 'Agno', Format: 'Python', Support: 'Priority Support', Components: '3 Agents' },
     downloadUrl: "/downloads/ai-finance-agent.zip",
-    installGuide: "#"
+    installGuide: "### Financial Setup\n1. Install libraries: `pip install yfinance agno streamlit pandas`.\n2. Configure your Technical Oracle credentials in the UI.\n\n### Operation\nEnter a ticker (e.g., AAPL or BTC). The 'Data Agent' pulls technical indicators (RSI, MACD), the 'News Agent' sentiment-scans Twitter/X, and the 'Analyst Agent' produces a Buy/Sell/Hold recommendation with confidence intervals."
   },
   {
     id: "real-estate-agent",
     name: "AI Real Estate Agent (Property Analyst)",
-    description: "An autonomous property market analyzer that researches real estate listings, trends, and neighborhood metrics to provide comprehensive investment advice.",
+    description: "An autonomous property market analyzer that researches real estate listings, trends, and neighborhood metrics. It provides comprehensive investment advice by comparing live listings against historical data.",
     price: 1999,
     category: "AI Agents",
     image: "/images/products/real-estate-agent.png",
@@ -153,12 +139,12 @@ export const products: Product[] = [
     features: ["Neighborhood Data Scraping", "Investment ROI Calculator", "Property Value Predictor", "Market Trend Analysis", "Automated Listing Research"],
     specs: { API: 'OpenAI, Zillow API Ready', Framework: 'Phidata', Format: 'Python / Streamlit', Support: 'Lifetime Access', Components: 'Real Estate Oracle' },
     downloadUrl: "/downloads/real-estate-agent.zip",
-    installGuide: "#"
+    installGuide: "### Deployment\n1. Get a Zillow Scraper API key (optional but recommended).\n2. Run `pip install phidata streamlit googlemaps`.\n3. Launch via `streamlit run real-estate.py`.\n\n### Usage\nPut in a zip code. The agent will pull all active listings, calculate the average price per sq ft, and flag 'Underpriced' opportunities based on historical market trends in that specific area."
   },
   {
     id: "competitor-intel-agent",
     name: "AI Competitor Intelligence Agent",
-    description: "A deep-web intelligence agent that monitors competitor activities, product launches, and pricing changes to give you a strategic edge in your niche.",
+    description: "A deep-web intelligence agent that monitors competitor activities, product launches, and pricing changes. It gives you a strategic edge by identifying market gaps and predicting competitor moves.",
     price: 2799,
     category: "AI Agents",
     image: "/images/products/competitor-intel-agent.png",
@@ -167,12 +153,12 @@ export const products: Product[] = [
     features: ["Autonomous Competitor Monitoring", "Pricing Strategy Analysis", "Brand Perception Tracking", "Market Gap Identification", "Strategic SWOT Generation"],
     specs: { API: 'Perplexity / Firecrawl', Framework: 'Agno', Format: 'Python', Context: 'Business Intelligence', Support: 'Priority Email' },
     downloadUrl: "/downloads/competitor-intel-agent.zip",
-    installGuide: "#"
+    installGuide: "### Strategy Setup\n1. Install `firecrawl-py` and `agno`.\n2. Set your Perplexity API key for deep web research.\n3. Run: `python intel.py`.\n\n### Usage\nProvide 3 competitor URLs. The agent will 'crawl' their changelogs, pricing tables, and social sentiment, delivering a weekly 'Intelligence Brief' highlighting their weaknesses and your specific points of leverage."
   },
   {
     id: "vc-due-diligence-agent",
     name: "AI VC Due Diligence Agent",
-    description: "The ultimate tool for investors and VCs. Automatically researches startups, analyzes pitch decks, and provides objective due diligence reports on any company.",
+    description: "The ultimate tool for investors and VCs. This agent automatically researches startups, analyzes pitch decks using Vision AI, and provides objective due diligence reports on any company within minutes.",
     price: 3499,
     category: "Finance & Investment",
     image: "/images/products/vc-due-diligence-agent.png",
@@ -181,12 +167,12 @@ export const products: Product[] = [
     features: ["Pitch Deck Vision Analysis", "Company Valuation Modeling", "Founder Background Check", "Competitive Landscape Scan", "Automated Due Diligence Docs"],
     specs: { API: 'Gemini Vision / OpenAI', Framework: 'Agno', Format: 'Python / Streamlit', License: 'Agency Whitelabel', Support: '1-on-1 Setup' },
     downloadUrl: "/downloads/vc-due-diligence-agent.zip",
-    installGuide: "#"
+    installGuide: "### Venture Setup\n1. Install `google-generativeai` and `streamlit`.\n2. Configure your Gemini 1.5 Pro API key (required for Vision).\n3. Run `streamlit run investor.py`.\n\n### Usage\nUpload a Pitch Deck PDF. The Vision Agent 'reads' the slides, while the Research Agent verifies founder claims on LinkedIn/Crunchbase. The final output is a 5-page Investment Committee memo."
   },
   {
     id: "seo-audit-team",
     name: "AI SEO Audit Team (Growth Engine)",
-    description: "A multi-agent SEO agency that performs deep technical audits, keyword research, and content optimization recommendations to scale your organic traffic.",
+    description: "A multi-agent SEO agency that performs deep technical audits, keyword research, and content optimization. It coordinates between a Crawler Agent and a Strategist Agent to scale your organic traffic.",
     price: 1599,
     category: "Marketing",
     image: "/images/products/seo-audit-team.png",
@@ -195,12 +181,12 @@ export const products: Product[] = [
     features: ["Technical Crawler Agent", "Keyword Research strategist", "Content Optimization engine", "Backlink Analysis tools", "Growth Roadmap generation"],
     specs: { API: 'Anthropic / OpenAI / SerpApi', Framework: 'CrewAI / Phidata', Format: 'Python', Target: 'Digital Marketers', Support: 'Community Discord' },
     downloadUrl: "/downloads/seo-audit-team.zip",
-    installGuide: "#"
+    installGuide: "### Setup\n1. `pip install beautifulsoup4 serpapi crewai`.\n2. Enter your domain in the `config.yaml` file.\n3. Execute: `python audit.py`.\n\n### Usage\nInput your website URL. The Crawler Agent finds broken links and H1 issues, while the Keyword Agent finds 'Low Hanging Fruit' keywords from Google SERP. You get a prioritized roadmap of actions."
   },
   {
     id: "game-design-agent",
     name: "AI Game Design Agent Team",
-    description: "A creative power-house for game developers. Coordinates between Narrative Architects and Mechanics Engineers to build complex game worlds and rulebooks.",
+    description: "A creative power-house for game developers. Coordinates between Narrative Architects and Mechanics Engineers to build complex game worlds, character archetypes, and balanced rulebooks autonomously.",
     price: 1299,
     category: "Game Dev",
     image: "/images/products/game-design-agent.png",
@@ -209,6 +195,6 @@ export const products: Product[] = [
     features: ["Narrative World Building", "Game Mechanics balancing", "Character Archetype design", "Rulebook Synthesis agent", "Unity/Unreal prompt generation"],
     specs: { API: 'OpenAI GPT-4', Framework: 'Agno', Target: 'Indie Game Devs', Format: 'Python', Support: 'Project Templates' },
     downloadUrl: "/downloads/game-design-agent.zip",
-    installGuide: "#"
+    installGuide: "### Creative Setup\n1. Install Python requirements: `pip install agno openai pydantic`.\n2. Add your GPT-4 key for best creative results.\n\n### Usage\nProvide a high-level game concept (e.g., 'Cyberpunk RPG'). The Narrative Agent generates the lore and the Mechanics Agent builds a combat balancing formula in Python code that you can copy into Unity or Unreal."
   }
 ];

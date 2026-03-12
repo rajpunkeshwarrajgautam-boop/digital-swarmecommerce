@@ -10,6 +10,7 @@ import { LiveSalesNotification } from "@/components/home/LiveSalesNotification";
 import { PromoBanner } from "@/components/layout/PromoBanner";
 import { GeoPricing } from "@/components/layout/GeoPricing";
 import { JsonLd } from "@/components/layout/JsonLd";
+import Script from "next/script";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -103,6 +104,10 @@ export default function RootLayout({
           <ExitIntentPopup />
           <LiveSalesNotification />
           <JsonLd />
+          <Script 
+            src="https://cdnjs.cloudflare.com/ajax/libs/lottie-player/2.0.4/lottie-player.min.js" 
+            strategy="afterInteractive"
+          />
         </body>
       </html>
     </ClerkProvider>

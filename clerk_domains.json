@@ -1,0 +1,42 @@
+﻿{
+    "data":  [
+                 {
+                     "object":  "domain",
+                     "id":  "dmn_39w6MPXET2fvd2dmZomxWu6VYbi",
+                     "name":  "digitalswarm.in",
+                     "is_satellite":  false,
+                     "is_provider_domain":  false,
+                     "frontend_api_url":  "https://clerk.digitalswarm.in",
+                     "accounts_portal_url":  "https://accounts.digitalswarm.in",
+                     "development_origin":  "",
+                     "cname_targets":  [
+                                           {
+                                               "host":  "clerk.digitalswarm.in",
+                                               "value":  "frontend-api.clerk.services",
+                                               "required":  true
+                                           },
+                                           {
+                                               "host":  "accounts.digitalswarm.in",
+                                               "value":  "accounts.clerk.services",
+                                               "required":  true
+                                           },
+                                           {
+                                               "host":  "clkmail.digitalswarm.in",
+                                               "value":  "mail.2shbcctuy3o9.clerk.services",
+                                               "required":  true
+                                           },
+                                           {
+                                               "host":  "clk._domainkey.digitalswarm.in",
+                                               "value":  "dkim1.2shbcctuy3o9.clerk.services",
+                                               "required":  true
+                                           },
+                                           {
+                                               "host":  "clk2._domainkey.digitalswarm.in",
+                                               "value":  "dkim2.2shbcctuy3o9.clerk.services",
+                                               "required":  true
+                                           }
+                                       ]
+                 }
+             ],
+    "total_count":  1
+}

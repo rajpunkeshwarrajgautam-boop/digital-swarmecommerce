@@ -1,61 +1,34 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 /**
  * Animated Logo: "The Digital Core"
- * Combines "The Pulse" (orbiting/breathing core) and "The Swarm" (grid array/data points).
- * 
- * Concept:
- * A central singularity (Pulse) that is feeding energy into a surrounding matrix (Swarm).
+ * Replaced with custom Lottie animation from user.
  */
 export function Logo({ className = "" }: { className?: string }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   return (
     <div className={cn("flex items-center gap-3 select-none group", className)}>
-      {/* Symbol Container */}
-      <div className="relative w-10 h-10 flex items-center justify-center">
-        
-        {/* layer 1: The Swarm Grid (Background Field) */}
-        <div className="absolute inset-0 grid grid-cols-2 grid-rows-2 gap-[2px] opacity-30 group-hover:opacity-60 transition-opacity duration-500">
-             {[...Array(4)].map((_, i) => (
-                <motion.div 
-                    key={i}
-                    animate={{ 
-                        scale: [1, 0.8, 1],
-                        opacity: [0.4, 0.8, 0.4],
-                    }}
-                    transition={{ 
-                        duration: 3, 
-                        repeat: Infinity, 
-                        delay: i * 0.5,
-                        ease: "easeInOut" 
-                    }}
-                    className="rounded-sm bg-primary"
-                />
-             ))}
-        </div>
-
-        {/* Layer 2: The Core Pulse (Singularity) */}
-        <motion.div 
-            className="w-4 h-4 rounded-full bg-primary relative z-10 shadow-[0_0_15px_rgba(0,229,255,0.5)]"
-            animate={{ scale: [1, 1.2, 1], opacity: [0.8, 1, 0.8] }}
-            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-        >
-            <div className="absolute inset-0 bg-white rounded-full opacity-20 animate-ping" />
-        </motion.div>
-
-        {/* Layer 3: The Orbiting Data Stream */}
-        <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 rounded-full border border-primary/10 group-hover:border-primary/30 transition-colors"
-        >
-             <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-[2px] w-1 h-1 bg-primary rounded-full shadow-[0_0_5px_currentColor]" />
-             <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-[2px] w-1 h-1 bg-primary/50 rounded-full" />
-        </motion.div>
-
+      {/* Symbol Container: Replaced with Lottie Animation */}
+      <div className="relative w-12 h-12 flex items-center justify-center">
+        {mounted && (
+          /* @ts-expect-error - lottie-player is a web component */
+          <lottie-player
+            src="/logo-animation.json"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay
+            style={{ width: '100%', height: '100%' }}
+          />
+        )}
       </div>
 
       {/* Text Branding */}
