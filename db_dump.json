@@ -1,0 +1,92 @@
+[
+  {
+    "id": "a0338cf7-0d4f-47bf-a424-c3d71f70ddcd",
+    "name": "1000 Manually Tested Web Applications",
+    "price": 200,
+    "category": "Web Development"
+  },
+  {
+    "id": "4dbc8fa2-f727-452a-ae8e-387092fab6fc",
+    "name": "Ultimate Web Development Bundle",
+    "price": 300,
+    "category": "Bundles"
+  },
+  {
+    "id": "02386f5e-0f34-456a-911c-1fb986e768f4",
+    "name": "Ultimate Mega Bundle",
+    "price": 400,
+    "category": "Bundles"
+  },
+  {
+    "id": "001874e3-0e05-443e-a0e5-bdb9cccab688",
+    "name": "Web Applications Collection",
+    "price": 250,
+    "category": "Web Development"
+  },
+  {
+    "id": "d011fcd5-bdef-48b2-ad7c-89049b5d1110",
+    "name": "AI Legal Agent Team (Autonomous Contract Review)",
+    "price": 2499,
+    "category": "AI Agents"
+  },
+  {
+    "id": "2c0823ec-7eab-4f8d-92b9-871912a1cbc1",
+    "name": "TripCraft AI - Autonomous Travel Planner",
+    "price": 1499,
+    "category": "AI Agents"
+  },
+  {
+    "id": "1eb0164d-c6df-4cf9-b4fc-869f133f3bd9",
+    "name": "AI Audio Tour Agent (Voice-Enabled)",
+    "price": 1999,
+    "category": "Voice AI"
+  },
+  {
+    "id": "d24c1370-f8ba-483e-ba01-2004212c9170",
+    "name": "AI Services Agency (Swarm-in-a-Box)",
+    "price": 2999,
+    "category": "Business Transformation"
+  },
+  {
+    "id": "af1ae487-fc0a-4819-af20-74fadbf5a007",
+    "name": "AI Recruitment Agent Team (HR Automation)",
+    "price": 1799,
+    "category": "AI Agents"
+  },
+  {
+    "id": "02d04678-886b-4244-b258-1dfa0efd9459",
+    "name": "AI Finance Agent Team (Market Intelligence)",
+    "price": 2499,
+    "category": "AI Agents"
+  },
+  {
+    "id": "0d58d5a9-ca8e-45a9-805b-f29c84ec4beb",
+    "name": "AI Real Estate Agent (Property Analyst)",
+    "price": 1999,
+    "category": "AI Agents"
+  },
+  {
+    "id": "bec08e30-bc22-4ef1-a0c5-c77d089e0f04",
+    "name": "AI Competitor Intelligence Agent",
+    "price": 2799,
+    "category": "AI Agents"
+  },
+  {
+    "id": "c91e177e-0450-4cb2-9721-0c5076dc5a4c",
+    "name": "AI VC Due Diligence Agent",
+    "price": 3499,
+    "category": "Finance & Investment"
+  },
+  {
+    "id": "7a88b3e9-2c70-4145-9465-ebac44129930",
+    "name": "AI SEO Audit Team (Growth Engine)",
+    "price": 1599,
+    "category": "Marketing"
+  },
+  {
+    "id": "d384d722-49d3-47b0-937e-c8e71d0a44f0",
+    "name": "AI Game Design Agent Team",
+    "price": 1299,
+    "category": "Game Dev"
+  }
+]
