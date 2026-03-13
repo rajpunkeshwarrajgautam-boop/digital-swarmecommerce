@@ -2,6 +2,9 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono, Space_Grotesk, Inter } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
+import { AdTracking } from "@/components/layout/AdTracking";
+import { Suspense } from "react";
+
 import { Footer } from "@/components/layout/Footer";
 import { PageTransition } from "@/components/layout/PageTransition";
 import { HiveMindChat } from "@/components/chat/HiveMindChat";
@@ -93,6 +96,9 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-black`}
         >
+          <Suspense fallback={null}>
+            <AdTracking />
+          </Suspense>
           <GeoPricing />
           <PromoBanner />
           <Header />
