@@ -32,11 +32,10 @@ export function Logo({ className = "" }: { className?: string }) {
       </div>
 
       {/* Text Branding */}
-      <div className="flex flex-col justify-center h-10">
-        <span className="text-lg font-bold tracking-tight leading-none bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70 group-hover:from-primary group-hover:to-accent transition-all duration-500 uppercase">
+      <div className="flex items-center">
+        <span className="text-xl font-bold tracking-tighter leading-none bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70 group-hover:from-primary group-hover:to-accent transition-all duration-500 uppercase flex items-center gap-1.5">
             DIGITAL
-        </span>
-        <span className="text-[9px] font-mono text-muted-foreground tracking-[0.15em] uppercase opacity-70 group-hover:opacity-100 group-hover:tracking-[0.25em] transition-all duration-500">
+            <span className="text-primary group-hover:text-accent transition-colors duration-500 inline-block scale-x-125 font-black">/</span>
             SWARM
         </span>
       </div>

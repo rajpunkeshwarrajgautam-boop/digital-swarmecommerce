@@ -68,6 +68,17 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </Link>
 
+        {/* Dynamic Badge */}
+        {product.sales > 50 ? (
+          <div className="absolute top-3 inset-x-0 mx-auto w-fit bg-primary text-black text-[10px] font-black px-3 py-1 rounded-full shadow-[0_0_15px_rgba(204,255,0,0.4)] z-20 uppercase tracking-widest animate-pulse">
+            Best Seller
+          </div>
+        ) : product.sales < 5 && (
+          <div className="absolute top-3 inset-x-0 mx-auto w-fit bg-blue-500 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-[0_0_15px_rgba(59,130,246,0.4)] z-20 uppercase tracking-widest">
+            New!
+          </div>
+        )}
+
         {/* Wishlist Button */}
         <button 
           onClick={toggleWishlist}

@@ -28,8 +28,8 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 p-4 pointer-events-none">
-        <div className="container mx-auto flex items-center justify-between pointer-events-auto">
+      <header className="fixed top-0 left-0 right-0 z-50 p-4 bg-background/50 backdrop-blur-md border-b border-border/20">
+        <div className="container mx-auto flex items-center justify-between">
           <div className="flex items-center gap-2">
              <Button 
                 variant="ghost" 
@@ -41,10 +41,19 @@ export function Header() {
              </Button>
           </div>
 
-          {/* Center: Logo */}
-          <Link href="/">
-            <Logo />
-          </Link>
+          {/* Center: Logo & Nav */}
+          <div className="flex items-center gap-8">
+            <Link href="/">
+              <Logo />
+            </Link>
+            
+            <nav className="hidden lg:flex items-center gap-6">
+              <Link href="/products" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Store</Link>
+              <Link href="/bundle-builder" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Bundles</Link>
+              <Link href="/freebies" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Freebies</Link>
+              <Link href="/about" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">About</Link>
+            </nav>
+          </div>
 
           {/* Right: Actions & Auth */}
           <div className="flex items-center gap-2 sm:gap-4">

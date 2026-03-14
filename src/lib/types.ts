@@ -14,6 +14,7 @@ export interface Product {
   downloadUrl?: string; // Link to the asset
   scarcityStock?: number;
   isFeatured?: boolean;
+  sales: number;
 }
 
 export interface CartItem extends Product {
