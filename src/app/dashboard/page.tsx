@@ -1,6 +1,7 @@
 "use client";
 
 import { useUser, RedirectToSignIn } from "@clerk/nextjs";
+import Link from "next/link";
 import { Copy, Download, Key, Package, ShieldCheck, Mail, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
@@ -20,6 +21,11 @@ interface Order {
   created_at: string;
   status: string;
   total: number;
+  order_items?: Array<{
+    product_id: string;
+    price: number;
+    quantity: number;
+  }>;
 }
 
 export default function DashboardPage() {
@@ -127,8 +133,21 @@ export default function DashboardPage() {
                  Deciphering license vectors...
               </div>
             ) : licenses.length === 0 ? (
-              <div className="text-center py-12 text-muted-foreground border border-border rounded-2xl bg-secondary/10">
-                No assets found in your secure vault.
+              <div className="text-center py-20 px-6 border border-dashed border-primary/20 rounded-3xl bg-primary/5 flex flex-col items-center gap-6">
+                <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center border border-primary/20">
+                  <Package className="w-10 h-10 text-primary opacity-50" />
+                </div>
+                <div className="max-w-md mx-auto">
+                  <h3 className="text-2xl font-bold mb-2">Initialize Your Swarm</h3>
+                  <p className="text-muted-foreground mb-8">
+                    Your secure digital vault is currently empty. Start building your ecosystem with our elite AI agents and developer kits.
+                  </p>
+                  <Link href="/products">
+                    <Button size="lg" className="w-full md:w-auto gap-2">
+                       Explore The Hive <Package className="w-4 h-4" />
+                    </Button>
+                  </Link>
+                </div>
               </div>
             ) : licenses.map((purchase) => (
               <div key={purchase.id} className="bg-card border border-border rounded-2xl p-6 md:p-8 flex flex-col md:flex-row gap-6 md:items-center hover:border-primary/50 transition-colors shadow-sm relative overflow-hidden group">
@@ -165,10 +184,16 @@ export default function DashboardPage() {
                       )}
                     </button>
                   </div>
+                  <p className="text-[10px] text-muted-foreground mt-2 flex items-center gap-1 italic">
+                    <ShieldCheck className="w-3 h-3" /> Use this key to activate your agent in the terminal or config.env
+                  </p>
                 </div>
                 
                 <div className="flex flex-col gap-3 shrink-0 mt-4 md:mt-0">
-                  <Button className="w-full md:w-auto h-12 flex items-center justify-center gap-2 border-none bg-linear-to-r from-primary to-green-500 text-black shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all">
+                  <Button 
+                    onClick={() => purchase.downloadUrl !== "#" ? window.open(purchase.downloadUrl, "_blank") : alert("Processing payload... Download link will be active shortly.")}
+                    className="w-full md:w-auto h-12 flex items-center justify-center gap-2 border-none bg-linear-to-r from-primary to-green-500 text-black shadow-lg shadow-primary/20 hover:shadow-primary/40 hover:-translate-y-0.5 transition-all cursor-pointer"
+                  >
                     <Download className="w-4 h-4" /> Download Asset
                   </Button>
                   {purchase.licenseType.includes("Whitelabel") && (
@@ -200,9 +225,22 @@ export default function DashboardPage() {
                   {order.status}
                 </div>
 
-                <div className="flex-1 space-y-2">
-                  <h3 className="text-xl font-bold font-mono">Order ID: {order.cashfree_order_id || order.id?.split('-')[0].toUpperCase()}</h3>
-                  <p className="text-sm text-muted-foreground font-mono">Date: {new Date(order.created_at).toLocaleDateString()}</p>
+                <div className="flex-1 space-y-4">
+                  <div>
+                    <h3 className="text-xl font-bold font-mono">Order: {order.cashfree_order_id || order.id?.split('-')[0].toUpperCase()}</h3>
+                    <p className="text-sm text-muted-foreground font-mono">Timestamp: {new Date(order.created_at).toLocaleString()}</p>
+                  </div>
+
+                  {order.order_items && order.order_items.length > 0 && (
+                    <div className="space-y-2 border-t border-white/5 pt-4">
+                      {order.order_items.map((item: { product_id: string; quantity: number; price: number }, idx: number) => (
+                        <div key={idx} className="flex justify-between text-xs font-mono text-muted-foreground">
+                          <span className="truncate max-w-[200px]">{item.product_id} × {item.quantity}</span>
+                          <span className="text-primary/70">₹{item.price}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex flex-col gap-2 shrink-0 text-right mt-4 md:mt-0">

@@ -17,10 +17,10 @@ export async function GET() {
 
     const email = user.primaryEmailAddress?.emailAddress || user.emailAddresses[0]?.emailAddress;
 
-    // Fetch orders from Supabase exactly matching the real user's email
+    // Fetch orders with their items from Supabase
     const { data: dbOrders, error } = await supabase
       .from('orders')
-      .select('*')
+      .select('*, order_items(*)')
       .eq('customer_email', email)
       .order('created_at', { ascending: false });
 
