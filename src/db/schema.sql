@@ -77,17 +77,31 @@ create table if not exists public.contact_messages (
   created_at timestamptz default now()
 );
 
--- ── 5. Row Level Security ────────────────────────────────────────────────────
+-- ── 5. Product Reviews Table ────────────────────────────────────────────────
+create table if not exists public.reviews (
+  id         uuid default gen_random_uuid() primary key,
+  product_id text not null,
+  user_name  text not null,
+  rating     integer not null check (rating >= 1 and rating <= 5),
+  comment    text not null,
+  verified   boolean default false,
+  created_at timestamptz default now()
+);
 
-alter table public.products        enable row level security;
-alter table public.orders          enable row level security;
-alter table public.order_items     enable row level security;
-alter table public.contact_messages enable row level security;
+-- ── 6. Row Level Security ────────────────────────────────────────────────────
 
--- Products: public read
+alter table public.products         enable row level security;
+alter table public.orders           enable row level security;
+alter table public.order_items      enable row level security;
+alter table public.contact_messages  enable row level security;
+alter table public.reviews          enable row level security;
+
+-- Products & Reviews: public read
 drop policy if exists "Public products are viewable by everyone" on public.products;
-create policy "Public products are viewable by everyone"
-  on public.products for select using (true);
+create policy "Public products are viewable by everyone" on public.products for select using (true);
+
+drop policy if exists "Public reviews are viewable by everyone" on public.reviews;
+create policy "Public reviews are viewable by everyone" on public.reviews for select using (true);
 
 -- Orders and contact messages: service role only (bypasses RLS)
 -- No public read/write policies. Backend uses supabaseAdmin (service role).

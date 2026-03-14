@@ -35,7 +35,7 @@ export default function FAQPage() {
           />
            <AccordionItem 
             title="How can I contact support?" 
-            content="You can reach our technical support team at +91 8810777573 or email support@digitalswarm.com. We aim to respond to all developer queries within 24 hours." 
+            content="You can reach our technical support team at +91 8810777573 or email support@digitalswarm.in. We aim to respond to all developer queries within 24 hours." 
           />
         </div>
       </motion.div>

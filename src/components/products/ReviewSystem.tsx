@@ -23,47 +23,47 @@ export function ReviewSystem({ productId }: { productId: string }) {
 
   useEffect(() => {
     async function loadReviews() {
-      // Load deployment reports
-      setReviews([
-        {
-          id: "1",
-          user_name: "Alex Dev",
-          rating: 5,
-          comment: "The codebase is exceptionally clean. Saved me at least 40 hours of boilerplate setup.",
-          verified: true,
-          created_at: new Date().toISOString(),
-        },
-        {
-          id: "2",
-          user_name: "Sarah K.",
-          rating: 4,
-          comment: "Solid stack, though I had to tweak the Tailwind config for my specific needs.",
-          verified: true,
-          created_at: new Date().toISOString(),
+      try {
+        const res = await fetch(`/api/reviews?productId=${productId}`);
+        const data = await res.json();
+        if (Array.isArray(data)) {
+          setReviews(data);
         }
-      ]);
+      } catch (err) {
+        console.error("Failed to load reviews:", err);
+      }
     }
     loadReviews();
   }, [productId]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
-    // Simulate API call
-    setTimeout(() => {
-      const review: Review = {
-        id: Math.random().toString(),
-        user_name: "You",
-        rating: newReview.rating,
-        comment: newReview.comment,
-        verified: false,
-        created_at: new Date().toISOString(),
-      };
-      setReviews([review, ...reviews]);
+    
+    try {
+      const res = await fetch("/api/reviews", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          product_id: productId,
+          user_name: "Anonymous Developer",
+          rating: newReview.rating,
+          comment: newReview.comment,
+          verified: false
+        })
+      });
+
+      if (res.ok) {
+        const addedReview = await res.json();
+        setReviews([addedReview, ...reviews]);
+        setShowForm(false);
+        setNewReview({ rating: 5, comment: "" });
+      }
+    } catch (err) {
+      console.error("Failed to submit review:", err);
+    } finally {
       setLoading(false);
-      setShowForm(false);
-      setNewReview({ rating: 5, comment: "" });
-    }, 1000);
+    }
   };
 
   return (
