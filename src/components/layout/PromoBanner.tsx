@@ -49,7 +49,7 @@ export function PromoBanner() {
             
             <div className="flex items-center gap-2">
               <span className="bg-black/20 p-1 rounded-full"><Tag className="w-4 h-4" /></span>
-              <span className="uppercase tracking-wider">Flash Sale: 40% Off All AI Agents</span>
+              <span className="uppercase tracking-wider">Flash Sale: 40% Off All AI Agents (GOD TIER)</span>
             </div>
 
             <div className="flex items-center gap-1.5 font-mono text-base bg-black/20 px-3 py-1 rounded-lg">
@@ -61,7 +61,7 @@ export function PromoBanner() {
               <span>{String(timeLeft.seconds).padStart(2, "0")}s</span>
             </div>
 
-            <Link href="/products?category=AI Agents">
+            <Link href="/products?category=AI+Agents">
               <button className="bg-white text-black px-4 py-1 rounded-full text-xs uppercase tracking-widest hover:bg-gray-100 transition-colors shadow-sm cursor-pointer whitespace-nowrap">
                 Shop Now
               </button>

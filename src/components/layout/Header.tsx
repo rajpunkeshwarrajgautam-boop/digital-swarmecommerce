@@ -94,7 +94,7 @@ export function Header() {
                 <Link href="/products" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>All Products</Link>
                 <Link href="/products?category=Web+Development" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Web Dev Kits</Link>
                 <Link href="/products?category=AI+Agents" className="text-xl font-space text-white/70 hover:text-primary hover:translate-x-2 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
-                  AI Agent Starters
+                  AI Agents (GOD TIER)
                   <span className="text-[9px] bg-primary/10 text-primary border border-primary/20 px-2 py-0.5 rounded-full font-bold">HOT</span>
                 </Link>
                 <Link href="/bundle-builder" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>

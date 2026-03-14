@@ -30,7 +30,7 @@ export function Footer() {
             <ul className="space-y-3 text-sm text-muted-foreground">
               <li><Link href="/products" className="hover:text-primary transition-colors">All Products</Link></li>
               <li><Link href="/products?category=Web+Development" className="hover:text-primary transition-colors">Web Development</Link></li>
-              <li><Link href="/products?category=AI+Agents" className="hover:text-primary transition-colors">AI Agents</Link></li>
+              <li><Link href="/products?category=AI+Agents" className="hover:text-primary transition-colors">AI Agents (GOD TIER)</Link></li>
               <li><Link href="/bundle-builder" className="hover:text-primary transition-colors">Bundle Builder</Link></li>
             </ul>
           </div>
