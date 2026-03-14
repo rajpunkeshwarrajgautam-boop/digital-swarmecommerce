@@ -7,12 +7,13 @@ import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store";
 import { CartDrawer } from "@/components/cart/CartDrawer";
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import { Logo } from "@/components/ui/Logo";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { items, toggleCart } = useCartStore();
+  const { user, isLoaded } = useUser();
   
   // Handle hydration mismatch for cart count
   const [mounted, setMounted] = useState(false);
@@ -45,14 +46,15 @@ export function Header() {
 
           {/* Right: Cart & Auth */}
           <div className="flex items-center gap-4">
-            <SignedOut>
+            {!isLoaded ? (
+              <div className="w-24 h-10 bg-gray-100 animate-pulse rounded-full" />
+            ) : !user ? (
               <SignInButton mode="modal">
                 <Button className="font-bold border border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
                     Sign In
                 </Button>
               </SignInButton>
-            </SignedOut>
-            <SignedIn>
+            ) : (
               <div className="flex items-center gap-3">
                 <Link href="/dashboard">
                   <Button variant="outline" className="font-bold border-2 border-primary/20 bg-white text-primary hover:bg-primary hover:text-white transition-all rounded-full px-6 shadow-md shadow-primary/10">
@@ -67,7 +69,7 @@ export function Header() {
                     </UserButton>
                 </div>
               </div>
-            </SignedIn>
+            )}
             
             <Button 
                 variant="outline" 
@@ -113,11 +115,11 @@ export function Header() {
                 <Link href="/contact" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Contact</Link>
                 <Link href="/affiliate" className="text-xl font-space text-white/70 hover:text-primary hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Partner Program</Link>
                 <Link href="/faq" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>FAQ</Link>
-                <SignedIn>
+                {user && (
                    <Link href="/dashboard" className="mt-4 p-4 border border-primary/20 bg-primary/5 rounded-xl text-primary font-bold text-center" onClick={() => setIsMenuOpen(false)}>
                       ACCESS DASHBOARD
                    </Link>
-                </SignedIn>
+                )}
               </nav>
             </motion.div>
           )}
