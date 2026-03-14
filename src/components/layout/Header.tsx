@@ -55,7 +55,7 @@ export function Header() {
             <SignedIn>
               <div className="flex items-center gap-3">
                 <Link href="/dashboard">
-                  <Button variant="outline" className="hidden md:flex font-bold border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
+                  <Button variant="outline" className="font-bold border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
                     Dashboard
                   </Button>
                 </Link>
