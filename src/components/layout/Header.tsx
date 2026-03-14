@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, X, Package } from "lucide-react";
+import { ShoppingCart, Menu, X, Package, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import { useCartStore } from "@/lib/store";
+import { useWishlistStore } from "@/lib/wishlist-store";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import { Logo } from "@/components/ui/Logo";
@@ -13,16 +14,17 @@ import { Logo } from "@/components/ui/Logo";
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { items, toggleCart } = useCartStore();
+  const { items: wishlistItems } = useWishlistStore();
   const { user, isLoaded } = useUser();
   
-  // Handle hydration mismatch for cart count
+  // Handle hydration mismatch for counts
   const [mounted, setMounted] = useState(false);
   useEffect(() => {
-    const init = async () => setMounted(true);
-    init();
+    setMounted(true);
   }, []);
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
+  const totalWishlist = wishlistItems.length;
 
   return (
     <>
@@ -44,20 +46,20 @@ export function Header() {
             <Logo />
           </Link>
 
-          {/* Right: Cart & Auth */}
-          <div className="flex items-center gap-4">
+          {/* Right: Actions & Auth */}
+          <div className="flex items-center gap-2 sm:gap-4">
             {!isLoaded ? (
-              <div className="w-24 h-10 bg-gray-100 animate-pulse rounded-full" />
+              <div className="w-24 h-10 bg-gray-100 animate-pulse rounded-full hidden sm:block" />
             ) : !user ? (
               <SignInButton mode="modal">
-                <Button className="font-bold border border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
+                <Button className="hidden sm:flex font-bold border border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
                     Sign In
                 </Button>
               </SignInButton>
             ) : (
               <div className="flex items-center gap-3">
                 <Link href="/dashboard">
-                  <Button variant="outline" className="font-bold border-2 border-primary/20 bg-white text-primary hover:bg-primary hover:text-white transition-all rounded-full px-6 shadow-md shadow-primary/10">
+                  <Button variant="outline" className="hidden sm:flex font-bold border-2 border-primary/20 bg-white text-primary hover:bg-primary hover:text-white transition-all rounded-full px-6 shadow-md shadow-primary/10">
                     Dashboard
                   </Button>
                 </Link>
@@ -65,25 +67,43 @@ export function Header() {
                     <UserButton>
                       <UserButton.MenuItems>
                         <UserButton.Link label="My Orders" labelIcon={<Package className="w-4 h-4" />} href="/dashboard" />
+                        <UserButton.Link label="My Wishlist" labelIcon={<Heart className="w-4 h-4" />} href="/wishlist" />
                       </UserButton.MenuItems>
                     </UserButton>
                 </div>
               </div>
             )}
             
-            <Button 
-                variant="outline" 
-                size="icon" 
-                className="relative bg-white border border-border rounded-full h-12 w-12 hover:border-primary transition-colors shadow-sm group" 
-                onClick={toggleCart}
-            >
-              <ShoppingCart className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
-              {mounted && totalItems > 0 && (
-                <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary border border-black text-[10px] font-bold text-black shadow-[0_0_10px_var(--primary)]">
-                  {totalItems}
-                </span>
-              )}
-            </Button>
+            <div className="flex items-center gap-2">
+              <Link href="/wishlist">
+                <Button 
+                    variant="outline" 
+                    size="icon" 
+                    className="relative bg-white border border-border rounded-full h-12 w-12 hover:border-red-500 transition-colors shadow-sm group"
+                >
+                  <Heart className="w-5 h-5 text-foreground group-hover:text-red-500 transition-colors" />
+                  {mounted && totalWishlist > 0 && (
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 border border-black text-[10px] font-bold text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                      {totalWishlist}
+                    </span>
+                  )}
+                </Button>
+              </Link>
+
+              <Button 
+                  variant="outline" 
+                  size="icon" 
+                  className="relative bg-white border border-border rounded-full h-12 w-12 hover:border-primary transition-colors shadow-sm group" 
+                  onClick={toggleCart}
+              >
+                <ShoppingCart className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
+                {mounted && totalItems > 0 && (
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary border border-black text-[10px] font-bold text-black shadow-[0_0_10px_var(--primary)]">
+                    {totalItems}
+                  </span>
+                )}
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -98,6 +118,10 @@ export function Header() {
             >
               <nav className="flex flex-col gap-6 min-w-[220px]">
                 <Link href="/products" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>All Products</Link>
+                <Link href="/wishlist" className="text-xl font-space text-white/70 hover:text-red-500 hover:translate-x-2 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
+                  My Wishlist
+                  {mounted && totalWishlist > 0 && <span className="bg-red-500/20 text-red-500 px-2 py-0.5 rounded text-[10px] font-bold border border-red-500/20">{totalWishlist}</span>}
+                </Link>
                 <Link href="/products?category=Web+Development" className="text-xl font-space text-white/70 hover:text-white hover:translate-x-2 transition-all" onClick={() => setIsMenuOpen(false)}>Web Dev Kits</Link>
                 <Link href="/products?category=AI+Agents" className="text-xl font-space text-white/70 hover:text-primary hover:translate-x-2 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
                   AI Agents (GOD TIER)
