@@ -49,7 +49,7 @@ const nextConfig: NextConfig = {
             // Added *.clerk.accounts.dev for local dev, sdk.cashfree.com for payments
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://sdk.cashfree.com https://*.stripe.com https://challenges.cloudflare.com https://unpkg.com",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://sdk.cashfree.com https://*.stripe.com https://challenges.cloudflare.com https://unpkg.com https://cdnjs.cloudflare.com",
               "connect-src 'self' https://*.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://api.cashfree.com https://*.stripe.com https://ipapi.co https://*.lottiefiles.com",
               "img-src 'self' data: blob: https:",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",

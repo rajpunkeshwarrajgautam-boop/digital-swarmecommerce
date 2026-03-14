@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, X } from "lucide-react";
+import { ShoppingCart, Menu, X, Package } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -55,12 +55,16 @@ export function Header() {
             <SignedIn>
               <div className="flex items-center gap-3">
                 <Link href="/dashboard">
-                  <Button variant="outline" className="font-bold border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
+                  <Button variant="outline" className="font-bold border-2 border-primary/20 bg-white text-primary hover:bg-primary hover:text-white transition-all rounded-full px-6 shadow-md shadow-primary/10">
                     Dashboard
                   </Button>
                 </Link>
                 <div className="bg-white p-1 rounded-full border border-border shadow-sm">
-                    <UserButton />
+                    <UserButton>
+                      <UserButton.MenuItems>
+                        <UserButton.Link label="My Orders" labelIcon={<Package className="w-4 h-4" />} href="/dashboard" />
+                      </UserButton.MenuItems>
+                    </UserButton>
                 </div>
               </div>
             </SignedIn>
