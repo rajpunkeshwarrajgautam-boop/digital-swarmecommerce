@@ -63,7 +63,10 @@ export function Footer() {
               </li>
               <li className="flex items-center gap-3">
                 <Mail className="w-5 h-5 text-primary shrink-0" />
-                <a href="mailto:support@digitalswarm.in" className="hover:text-primary transition-colors">support@digitalswarm.in</a>
+                <div className="flex flex-col">
+                  <a href="mailto:support@digitalswarm.in" className="hover:text-primary transition-colors font-medium">support@digitalswarm.in</a>
+                  <a href="mailto:partnerships@digitalswarm.in" className="text-xs hover:text-primary transition-colors">partnerships@digitalswarm.in</a>
+                </div>
               </li>
             </ul>
           </div>

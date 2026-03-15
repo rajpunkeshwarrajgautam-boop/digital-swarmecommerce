@@ -89,9 +89,11 @@ export default function ContactPage() {
                   <div className="p-3 bg-primary/10 rounded-full text-primary shrink-0">
                     <Mail className="w-5 h-5" />
                   </div>
-                  <div>
-                    <p className="text-sm text-muted-foreground">Email</p>
-                    <p className="font-medium">support@digitalswarm.in</p>
+                  <div className="flex flex-col">
+                    <p className="text-sm text-muted-foreground">Support & Inquiries</p>
+                    <a href="mailto:support@digitalswarm.in" className="font-medium hover:text-primary transition-colors">support@digitalswarm.in</a>
+                    <a href="mailto:partnerships@digitalswarm.in" className="text-xs text-muted-foreground hover:text-primary transition-colors">partnerships@digitalswarm.in</a>
+                    <a href="mailto:founder@digitalswarm.in" className="text-xs text-muted-foreground hover:text-primary transition-colors">founder@digitalswarm.in</a>
                   </div>
                 </div>
 
