@@ -48,6 +48,21 @@ function SuccessContent() {
     verifyPayment();
   }, [orderId]);
 
+  // Track Purchase Event on success
+  useEffect(() => {
+    if (paymentStatus === 'paid' && orderId) {
+      if (typeof window !== 'undefined' && window.fbq) {
+        window.fbq('track', 'Purchase', {
+          value: purchasedItems.reduce((acc, item) => acc + item.price, 0),
+          currency: 'INR',
+          content_ids: purchasedItems.map(item => item.id),
+          content_type: 'product',
+          order_id: orderId
+        });
+      }
+    }
+  }, [paymentStatus, orderId, purchasedItems]);
+
   if (isVerifying) {
     return (
       <div className="flex flex-col items-center gap-6">

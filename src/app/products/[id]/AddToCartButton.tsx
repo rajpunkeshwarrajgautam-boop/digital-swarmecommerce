@@ -3,9 +3,7 @@
 import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store";
 import { Product } from "@/lib/types";
-import { ShoppingCart } from "lucide-react";
 import { useState } from "react";
-
 import { BadgeCheck, Building2 } from "lucide-react";
 
 export default function AddToCartButton({ product }: { product: Product }) {
@@ -28,6 +26,18 @@ export default function AddToCartButton({ product }: { product: Product }) {
     };
 
     addItem(cartProduct);
+
+    // Track AddToCart Event
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'AddToCart', {
+        content_ids: [cartProduct.id],
+        content_name: cartProduct.name,
+        content_type: 'product',
+        value: finalPrice,
+        currency: 'INR'
+      });
+    }
+
     setTimeout(() => setIsAdding(false), 500);
   };
 
