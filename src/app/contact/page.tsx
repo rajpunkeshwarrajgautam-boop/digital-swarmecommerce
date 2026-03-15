@@ -85,15 +85,21 @@ export default function ContactPage() {
                   </div>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-start gap-4">
                   <div className="p-3 bg-primary/10 rounded-full text-primary shrink-0">
                     <Mail className="w-5 h-5" />
                   </div>
                   <div className="flex flex-col">
-                    <p className="text-sm text-muted-foreground">Support & Inquiries</p>
-                    <a href="mailto:support@digitalswarm.in" className="font-medium hover:text-primary transition-colors">support@digitalswarm.in</a>
-                    <a href="mailto:partnerships@digitalswarm.in" className="text-xs text-muted-foreground hover:text-primary transition-colors">partnerships@digitalswarm.in</a>
-                    <a href="mailto:founder@digitalswarm.in" className="text-xs text-muted-foreground hover:text-primary transition-colors">founder@digitalswarm.in</a>
+                    <p className="text-sm text-muted-foreground mb-1">Electronic Correspondence</p>
+                    <a href="mailto:support@digitalswarm.in" className="font-medium hover:text-primary transition-colors flex items-center gap-2">
+                       support@digitalswarm.in <span className="text-[10px] uppercase border border-primary/30 px-1 rounded text-primary">General</span>
+                    </a>
+                    <a href="mailto:partnerships@digitalswarm.in" className="text-sm hover:text-primary transition-colors flex items-center gap-2 mt-1">
+                       partnerships@digitalswarm.in <span className="text-[10px] uppercase border border-blue-400/30 px-1 rounded text-blue-400">Business</span>
+                    </a>
+                    <a href="mailto:founder@digitalswarm.in" className="text-sm hover:text-primary transition-colors flex items-center gap-2 mt-1">
+                       founder@digitalswarm.in <span className="text-[10px] uppercase border border-amber-400/30 px-1 rounded text-amber-400">Direct</span>
+                    </a>
                   </div>
                 </div>
 

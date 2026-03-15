@@ -29,6 +29,22 @@ const freebies = [
     icon: <Zap className="w-8 h-8 text-primary" />,
     stats: "3.2k Downloads",
     type: "Code"
+  },
+  {
+    id: "tech-stack-audit",
+    name: "SaaS Tech Stack Audit 2025",
+    description: "A deep-dive research report on the most efficient tools for building high-scale startups in 2025.",
+    icon: <Target className="w-8 h-8 text-blue-400" />,
+    stats: "New Release",
+    type: "Guide"
+  },
+  {
+    id: "design-system-tokens",
+    name: "Digital Swarm Design System",
+    description: "Figma and CSS design tokens for the ultimate cyberpunk aesthetic. Includes neon palettes and UI elements.",
+    icon: <Sparkles className="w-8 h-8 text-amber-400" />,
+    stats: "Featured",
+    type: "Asset"
   }
 ];
 

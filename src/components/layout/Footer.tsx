@@ -61,8 +61,8 @@ export function Footer() {
                 <Phone className="w-5 h-5 text-primary shrink-0" />
                 <a href="tel:+918810777573" className="hover:text-primary transition-colors">+91 88107 77573</a>
               </li>
-              <li className="flex items-center gap-3">
-                <Mail className="w-5 h-5 text-primary shrink-0" />
+              <li className="flex items-start gap-3">
+                <Mail className="w-5 h-5 text-primary shrink-0 mt-0.5" />
                 <div className="flex flex-col">
                   <a href="mailto:support@digitalswarm.in" className="hover:text-primary transition-colors font-medium">support@digitalswarm.in</a>
                   <a href="mailto:partnerships@digitalswarm.in" className="text-xs hover:text-primary transition-colors">partnerships@digitalswarm.in</a>
