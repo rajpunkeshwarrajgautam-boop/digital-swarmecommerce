@@ -49,12 +49,12 @@ const nextConfig: NextConfig = {
             // Added *.clerk.accounts.dev for local dev, sdk.cashfree.com for payments
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://sdk.cashfree.com https://*.stripe.com https://challenges.cloudflare.com https://unpkg.com https://cdnjs.cloudflare.com",
-              "connect-src 'self' https://*.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://api.cashfree.com https://*.stripe.com https://ipapi.co https://*.lottiefiles.com",
-              "img-src 'self' data: blob: https:",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://sdk.cashfree.com https://*.stripe.com https://challenges.cloudflare.com https://unpkg.com https://cdnjs.cloudflare.com https://connect.facebook.net",
+              "connect-src 'self' https://*.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://api.cashfree.com https://*.stripe.com https://ipapi.co https://*.lottiefiles.com https://www.facebook.com",
+              "img-src 'self' data: blob: https: https://www.facebook.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
-              "frame-src 'self' https://sdk.cashfree.com https://*.stripe.com https://checkout.razorpay.com https://challenges.cloudflare.com",
+              "frame-src 'self' https://sdk.cashfree.com https://*.stripe.com https://checkout.razorpay.com https://challenges.cloudflare.com https://www.facebook.com",
               "worker-src 'self' blob:",
             ].join('; '),
           }
