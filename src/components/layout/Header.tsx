@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, X, Package, Heart } from "lucide-react";
+import { ShoppingCart, Menu, X, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -28,25 +28,25 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 p-4 bg-background/50 backdrop-blur-md border-b border-border/20">
-        <div className="container mx-auto flex items-center justify-between">
-          <div className="flex items-center gap-2">
+      <header className="fixed top-0 left-0 right-0 z-50 p-2 sm:p-4 bg-background/50 backdrop-blur-md border-b border-border/20">
+        <div className="container mx-auto flex items-center justify-between gap-2">
+          <div className="flex items-center">
              <Button 
                 variant="ghost" 
                 size="icon" 
-                className="bg-white border border-border rounded-full h-12 w-12 hover:border-primary transition-colors shadow-sm"
+                className="bg-white border border-border rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:border-primary transition-colors shadow-sm"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
              >
-               {isMenuOpen ? <X className="w-6 h-6 text-foreground" /> : <Menu className="w-6 h-6 text-foreground" />}
+               {isMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />}
              </Button>
           </div>
-
+ 
           {/* Center: Logo & Nav */}
-          <div className="flex items-center gap-8">
-            <Link href="/">
+          <div className="flex items-center gap-4 md:gap-8 overflow-hidden">
+            <Link href="/" className="shrink-0">
               <Logo />
             </Link>
-            
+             
             <nav className="hidden lg:flex items-center gap-6">
               <Link href="/products" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Store</Link>
               <Link href="/bundle-builder" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Bundles</Link>
@@ -54,60 +54,55 @@ export function Header() {
               <Link href="/about" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">About</Link>
             </nav>
           </div>
-
+ 
           {/* Right: Actions & Auth */}
-          <div className="flex items-center gap-2 sm:gap-4">
+          <div className="flex items-center gap-1.5 sm:gap-4">
             {!isLoaded ? (
-              <div className="w-24 h-10 bg-gray-100 animate-pulse rounded-full hidden sm:block" />
+              <div className="w-10 h-10 sm:w-24 sm:h-10 bg-gray-100 animate-pulse rounded-full" />
             ) : !user ? (
-              <SignInButton mode="modal">
+               <SignInButton mode="modal">
                 <Button className="hidden sm:flex font-bold border border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
                     Sign In
                 </Button>
               </SignInButton>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link href="/dashboard">
-                  <Button variant="outline" className="hidden sm:flex font-bold border-2 border-primary/20 bg-white text-primary hover:bg-primary hover:text-white transition-all rounded-full px-6 shadow-md shadow-primary/10">
+              <div className="flex items-center gap-1 sm:gap-3">
+                <Link href="/dashboard" className="hidden sm:block">
+                  <Button variant="outline" className="font-bold border-2 border-primary/20 bg-white text-primary hover:bg-primary hover:text-white transition-all rounded-full px-6 shadow-md shadow-primary/10">
                     Dashboard
                   </Button>
                 </Link>
-                <div className="bg-white p-1 rounded-full border border-border shadow-sm">
-                    <UserButton>
-                      <UserButton.MenuItems>
-                        <UserButton.Link label="My Orders" labelIcon={<Package className="w-4 h-4" />} href="/dashboard" />
-                        <UserButton.Link label="My Wishlist" labelIcon={<Heart className="w-4 h-4" />} href="/wishlist" />
-                      </UserButton.MenuItems>
-                    </UserButton>
+                <div className="bg-white p-0.5 sm:p-1 rounded-full border border-border shadow-sm shrink-0">
+                    <UserButton />
                 </div>
               </div>
             )}
-            
-            <div className="flex items-center gap-2">
+             
+            <div className="flex items-center gap-1.5 sm:gap-2">
               <Link href="/wishlist">
                 <Button 
                     variant="outline" 
                     size="icon" 
-                    className="relative bg-white border border-border rounded-full h-12 w-12 hover:border-red-500 transition-colors shadow-sm group"
+                    className="relative bg-white border border-border rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:border-red-500 transition-colors shadow-sm group"
                 >
-                  <Heart className="w-5 h-5 text-foreground group-hover:text-red-500 transition-colors" />
+                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-foreground group-hover:text-red-500 transition-colors" />
                   {mounted && totalWishlist > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-500 border border-black text-[10px] font-bold text-white shadow-[0_0_10px_rgba(239,68,68,0.5)]">
+                    <span className="absolute -top-1 -right-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-red-500 border border-black text-[8px] sm:text-[10px] font-bold text-white">
                       {totalWishlist}
                     </span>
                   )}
                 </Button>
               </Link>
-
+ 
               <Button 
                   variant="outline" 
                   size="icon" 
-                  className="relative bg-white border border-border rounded-full h-12 w-12 hover:border-primary transition-colors shadow-sm group" 
+                  className="relative bg-white border border-border rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:border-primary transition-colors shadow-sm group" 
                   onClick={toggleCart}
               >
-                <ShoppingCart className="w-5 h-5 text-foreground group-hover:text-primary transition-colors" />
+                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-foreground group-hover:text-primary transition-colors" />
                 {mounted && totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary border border-black text-[10px] font-bold text-black shadow-[0_0_10px_var(--primary)]">
+                  <span className="absolute -top-1 -right-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-primary border border-black text-[8px] sm:text-[10px] font-bold text-black">
                     {totalItems}
                   </span>
                 )}

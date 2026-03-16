@@ -50,7 +50,7 @@ export function ParallaxHero() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-foreground leading-[0.9] italic uppercase"
+          className="text-3xl sm:text-5xl md:text-7xl lg:text-8xl font-black tracking-tighter text-foreground leading-[1.1] sm:leading-[0.9] italic uppercase"
         >
           Build Faster.<br/>
           <span className="text-gradient">Ship Smarter.</span>

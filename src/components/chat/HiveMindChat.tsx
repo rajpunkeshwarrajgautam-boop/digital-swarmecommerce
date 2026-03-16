@@ -125,7 +125,7 @@ export function HiveMindChat() {
             setIsOpen(!isOpen);
             setHasInteracted(true);
           }}
-          className={`pointer-events-auto p-4 rounded-full shadow-lg border border-border/50 transition-all duration-500 ${
+          className={`pointer-events-auto p-3 sm:p-4 rounded-full shadow-lg border border-border/50 transition-all duration-500 ${
             isOpen
               ? "bg-primary text-white opacity-100"
               : !hasInteracted
@@ -133,7 +133,7 @@ export function HiveMindChat() {
                 : "bg-white/60 backdrop-blur-md text-foreground opacity-30 hover:opacity-100"
           }`}
         >
-          {isOpen ? <X className="w-6 h-6" /> : <Cpu className="w-6 h-6" />}
+          {isOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6" /> : <Cpu className="w-5 h-5 sm:w-6 sm:h-6" />}
         </motion.button>
       </div>
 

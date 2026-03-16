@@ -49,7 +49,8 @@ export function PromoBanner() {
             
             <div className="flex items-center gap-2">
               <span className="bg-black/20 p-1 rounded-full"><Tag className="w-4 h-4" /></span>
-              <span className="uppercase tracking-wider">Flash Sale: 40% Off All AI Agents (GOD TIER)</span>
+              <span className="uppercase tracking-wider hidden sm:inline">Flash Sale: 40% Off All AI Agents (GOD TIER)</span>
+              <span className="uppercase tracking-wider sm:hidden">Flash Sale: 40% Off</span>
             </div>
 
             <div className="flex items-center gap-1.5 font-mono text-base bg-black/20 px-3 py-1 rounded-lg">

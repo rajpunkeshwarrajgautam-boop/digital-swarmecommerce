@@ -69,7 +69,7 @@ export function LiveSalesNotification() {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: -50, scale: 0.9 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="fixed bottom-6 left-6 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-3 flex gap-4 max-w-sm pointer-events-none"
+          className="fixed bottom-6 left-6 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-3 hidden md:flex gap-4 max-w-sm pointer-events-none"
         >
           <div className="w-12 h-12 rounded-md overflow-hidden shrink-0 border border-gray-100 bg-gray-50 relative">
             {/* eslint-disable-next-line @next/next/no-img-element */}
