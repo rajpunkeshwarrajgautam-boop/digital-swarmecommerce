@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 @theme inline {
-  --background: #fcfcfc; /* Premium Off-White */
-  --foreground: #0f172a; /* Slate 900 for high contrast text */
-  --primary: #3b82f6; /* Electric Blue */
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --accent: #ec4899; /* Vibrant Pink for Gradients */
-  --accent-foreground: #ffffff;
-  --muted: #f8fafc;
-  --muted-foreground: #64748b;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --border: #e2e8f0;
-  --radius: 1rem;
+  --background: #050505;
+  --foreground: #ffffff;
+  --primary: #ccff00;
+  --primary-foreground: #000000;
+  --secondary: #111111;
+  --secondary-foreground: #ffffff;
+  --accent: #ccff00;
+  --accent-foreground: #000000;
+  --muted: #0a0a0a;
+  --muted-foreground: #737373;
+  --card: #080808;
+  --card-foreground: #ffffff;
+  --border: rgba(255, 255, 255, 0.1);
+  --radius: 0rem;
 
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -60,7 +60,6 @@
 
 /* Default variables already defined in @theme above */
 
-
 .light {
   /* Ultra Modern Light Mode (Backup) */
   --background: #ffffff;
@@ -99,14 +98,19 @@ h4,
 h5,
 h6 {
   font-family: var(--font-space), display;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.06em;
+  text-transform: uppercase;
+  font-style: italic;
+  font-weight: 900;
 }
 
-/* Swarm Pattern Background - Clean Dot Grid for Light Mode */
+/* Obsidian Grid Background - PlanetOno vibe */
 .bg-swarm-pattern {
-  background-image: radial-gradient(var(--border) 1.5px, transparent 1.5px);
-  background-size: 24px 24px;
-  mask-image: linear-gradient(to bottom, black 50%, transparent 100%);
+  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+    linear-gradient(90deg, var(--border) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(circle at 2px 2px, black 1px, transparent 0);
+  opacity: 0.15;
 }
 
 /* Stunning Text Gradient */
@@ -268,7 +272,11 @@ h6 {
 .btn-cyberpunk:after {
   padding: 16px 20px;
   font-size: 18px;
-  background: linear-gradient(45deg, transparent 5%, #60a5fa 5%); /* Muted blue */
+  background: linear-gradient(
+    45deg,
+    transparent 5%,
+    #60a5fa 5%
+  ); /* Muted blue */
   border: 0;
   color: #fff;
   letter-spacing: 3px;
@@ -295,8 +303,16 @@ h6 {
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(45deg, transparent 3%, #a3e635 3%, #a3e635 5%, #fb7185 5%); /* Muted green and pink */
-  text-shadow: -3px -3px 0px #f8f005, 3px 3px 0px #a3e635; /* Yellow and muted green */
+  background: linear-gradient(
+    45deg,
+    transparent 3%,
+    #a3e635 3%,
+    #a3e635 5%,
+    #fb7185 5%
+  ); /* Muted green and pink */
+  text-shadow:
+    -3px -3px 0px #f8f005,
+    3px 3px 0px #a3e635; /* Yellow and muted green */
   clip-path: var(--slice-0);
 }
 
@@ -353,7 +369,7 @@ h6 {
     0 4px 6px -1px rgba(0, 0, 0, 0.05),
     0 2px 4px -1px rgba(0, 0, 0, 0.03);
   transition: all 0.3s ease;
-  border: 1px solid rgba(0,0,0,0.05); /* clean light border */
+  border: 1px solid rgba(0, 0, 0, 0.05); /* clean light border */
 }
 
 .cyber-shadow:hover {
@@ -372,7 +388,7 @@ body::before {
 /* ----------------------------------------------------
    UIVERSE.IO PREMIUM LIGHT UI ELEMENTS
    ---------------------------------------------------- */
-   
+
 /* 1. Uiverse Premium Glowing Button */
 .uiverse-glow-btn {
   position: relative;
@@ -392,7 +408,7 @@ body::before {
 }
 
 .uiverse-glow-btn::before {
-  content: '';
+  content: "";
   position: absolute;
   inset: 0;
   left: -2px;
@@ -444,8 +460,9 @@ body::before {
   height: 100%;
   border-radius: 12px;
   background: #f8fafc; /* Crisp off-white */
-  box-shadow: rgba(50, 50, 93, 0.1) 0px 30px 50px -12px inset, 
-              rgba(0, 0, 0, 0.05) 0px 18px 26px -18px inset;
+  box-shadow:
+    rgba(50, 50, 93, 0.1) 0px 30px 50px -12px inset,
+    rgba(0, 0, 0, 0.05) 0px 18px 26px -18px inset;
   position: relative;
   overflow: hidden;
   display: flex;

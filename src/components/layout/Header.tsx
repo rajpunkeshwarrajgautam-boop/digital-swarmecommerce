@@ -28,81 +28,81 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 p-2 sm:p-4 bg-background/50 backdrop-blur-md border-b border-border/20">
-        <div className="container mx-auto flex items-center justify-between gap-2">
+      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-background/50 backdrop-blur-2xl border-b border-white/5">
+        <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center">
              <Button 
                 variant="ghost" 
                 size="icon" 
-                className="bg-white border border-border rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:border-primary transition-colors shadow-sm"
+                className="bg-zinc-950 border border-white/10 rounded-none h-12 w-12 hover:border-primary transition-all duration-300"
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
              >
-               {isMenuOpen ? <X className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" /> : <Menu className="w-5 h-5 sm:w-6 sm:h-6 text-foreground" />}
+               {isMenuOpen ? <X className="w-6 h-6 text-white" /> : <Menu className="w-6 h-6 text-white" />}
              </Button>
           </div>
- 
+  
           {/* Center: Logo & Nav */}
-          <div className="flex items-center gap-4 md:gap-8 overflow-hidden">
-            <Link href="/" className="shrink-0">
+          <div className="flex items-center gap-12 overflow-hidden">
+            <Link href="/" className="shrink-0 brightness-0 invert opacity-90 hover:opacity-100 transition-opacity">
               <Logo />
             </Link>
              
-            <nav className="hidden lg:flex items-center gap-6">
-              <Link href="/products" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Store</Link>
-              <Link href="/bundle-builder" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Bundles</Link>
-              <Link href="/freebies" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">Freebies</Link>
-              <Link href="/about" className="text-sm font-bold uppercase tracking-widest text-foreground/60 hover:text-primary transition-colors">About</Link>
+            <nav className="hidden lg:flex items-center gap-10">
+              <Link href="/products" className="text-xs font-black uppercase tracking-[0.2em] text-white/50 hover:text-primary transition-all duration-300">Store</Link>
+              <Link href="/bundle-builder" className="text-xs font-black uppercase tracking-[0.2em] text-white/50 hover:text-primary transition-all duration-300">Bundles</Link>
+              <Link href="/freebies" className="text-xs font-black uppercase tracking-[0.2em] text-white/50 hover:text-primary transition-all duration-300">Freebies</Link>
+              <Link href="/about" className="text-xs font-black uppercase tracking-[0.2em] text-white/50 hover:text-primary transition-all duration-300">About</Link>
             </nav>
           </div>
- 
+  
           {/* Right: Actions & Auth */}
-          <div className="flex items-center gap-1.5 sm:gap-4">
+          <div className="flex items-center gap-4">
             {!isLoaded ? (
-              <div className="w-10 h-10 sm:w-24 sm:h-10 bg-gray-100 animate-pulse rounded-full" />
+              <div className="w-12 h-12 bg-white/5 animate-pulse" />
             ) : !user ? (
                <SignInButton mode="modal">
-                <Button className="hidden sm:flex font-bold border border-border bg-white text-foreground hover:bg-gray-100 hover:text-black transition-colors rounded-full px-6 shadow-sm">
+                <Button className="hidden sm:flex font-black uppercase tracking-widest border border-white/10 bg-white text-black hover:bg-primary transition-all duration-300 rounded-none px-8">
                     Sign In
                 </Button>
               </SignInButton>
             ) : (
-              <div className="flex items-center gap-1 sm:gap-3">
+              <div className="flex items-center gap-3">
                 <Link href="/dashboard" className="hidden sm:block">
-                  <Button variant="outline" className="font-bold border-2 border-primary/20 bg-white text-primary hover:bg-primary hover:text-white transition-all rounded-full px-6 shadow-md shadow-primary/10">
-                    Dashboard
+                  <Button variant="outline" className="font-black uppercase tracking-widest border border-primary/20 bg-zinc-900 text-primary hover:bg-primary hover:text-black transition-all duration-300 rounded-none px-8">
+                    Portal
                   </Button>
                 </Link>
-                <div className="bg-white p-0.5 sm:p-1 rounded-full border border-border shadow-sm shrink-0">
+                <div className="bg-zinc-950 p-1 border border-white/10">
                     <UserButton />
                 </div>
               </div>
             )}
              
-            <div className="flex items-center gap-1.5 sm:gap-2">
+            <div className="flex items-center gap-3">
               <Link href="/wishlist">
                 <Button 
                     variant="outline" 
                     size="icon" 
-                    className="relative bg-white border border-border rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:border-red-500 transition-colors shadow-sm group"
+                    className="relative bg-zinc-950 border border-white/10 rounded-none h-12 w-12 hover:border-red-500 transition-all duration-300 group"
                 >
-                  <Heart className="w-4 h-4 sm:w-5 sm:h-5 text-foreground group-hover:text-red-500 transition-colors" />
+                  <Heart className="w-5 h-5 text-white/50 group-hover:text-red-500 transition-colors" />
                   {mounted && totalWishlist > 0 && (
-                    <span className="absolute -top-1 -right-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-red-500 border border-black text-[8px] sm:text-[10px] font-bold text-white">
+                    <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center bg-red-500 text-[10px] font-black text-white">
                       {totalWishlist}
                     </span>
                   )}
                 </Button>
               </Link>
- 
+  
               <Button 
                   variant="outline" 
                   size="icon" 
-                  className="relative bg-white border border-border rounded-full h-10 w-10 sm:h-12 sm:w-12 hover:border-primary transition-colors shadow-sm group" 
+                  className="relative bg-zinc-950 border border-white/10 rounded-none h-12 w-12 hover:border-primary transition-all duration-300 group" 
                   onClick={toggleCart}
               >
-                <ShoppingCart className="w-4 h-4 sm:w-5 sm:h-5 text-foreground group-hover:text-primary transition-colors" />
+                <ShoppingCart className="w-5 h-5 text-white/50 group-hover:text-primary transition-colors" />
                 {mounted && totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 flex h-4 w-4 sm:h-5 sm:w-5 items-center justify-center rounded-full bg-primary border border-black text-[8px] sm:text-[10px] font-bold text-black">
+                  <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center bg-primary text-[10px] font-black text-black">
                     {totalItems}
                   </span>
                 )}

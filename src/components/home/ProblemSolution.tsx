@@ -1,7 +1,6 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { AlertCircle, CheckCircle2 } from "lucide-react";
 
 const pains = [
   {
@@ -20,36 +19,44 @@ const pains = [
 
 export function ProblemSolution() {
   return (
-    <section className="py-24 bg-background border-t border-border/40">
-      <div className="container mx-auto px-4">
-        <div className="text-center mb-16">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">
-            Stop Rebuilding. <span className="text-primary">Start Shipping.</span>
+    <section className="py-40 bg-background border-t border-white/5 relative overflow-hidden">
+      <div className="absolute inset-0 bg-swarm-pattern opacity-5" />
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="text-left mb-24 max-w-4xl">
+          <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8">
+            Operational<br/>
+            <span className="text-primary">Efficiency</span>
           </h2>
-          <p className="text-muted-foreground text-lg max-w-xl mx-auto">
-            Every developer hits the same walls. Here&apos;s how Digital Swarm knocks them down.
+          <p className="text-white/50 text-xl font-bold italic uppercase tracking-tighter max-w-xl">
+            Legacy development pipelines are slow. We distribute optimized architectural solutions for immediate system integration.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-white/10">
           {pains.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="rounded-2xl border border-border bg-card overflow-hidden"
+              transition={{ delay: i * 0.2, duration: 0.8 }}
+              className="border-r border-b border-white/10 bg-zinc-950/20 backdrop-blur-sm group hover:bg-primary/5 transition-colors"
             >
               {/* Problem */}
-              <div className="p-6 bg-red-500/5 border-b border-border/50 flex gap-3">
-                <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-                <p className="text-sm text-muted-foreground leading-relaxed">{item.problem}</p>
+              <div className="p-10 border-b border-white/5">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-2 h-2 bg-red-500 rounded-none shadow-[0_0_10px_#ef4444]" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Anomaly Detected</span>
+                </div>
+                <p className="text-lg font-bold uppercase italic tracking-tighter text-white/40 leading-tight">{item.problem}</p>
               </div>
               {/* Solution */}
-              <div className="p-6 flex gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 shrink-0 mt-0.5" />
-                <p className="text-sm font-medium leading-relaxed">{item.solution}</p>
+              <div className="p-10">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="w-2 h-2 bg-primary rounded-none shadow-[0_0_10px_#CCFF00]" />
+                  <span className="text-[10px] font-black uppercase tracking-widest text-primary">Protocol Applied</span>
+                </div>
+                <p className="text-xl font-black uppercase italic tracking-tighter leading-tight">{item.solution}</p>
               </div>
             </motion.div>
           ))}

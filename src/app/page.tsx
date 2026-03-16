@@ -40,29 +40,34 @@ export default function Home() {
         <Testimonials />
       </div>
 
-      {/* Benefits Grid — jargon-free & premium */}
-      <section className="py-24 md:py-40 bg-zinc-950 text-white relative overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_50%,rgba(59,130,246,0.05),transparent)] pointer-events-none" />
-        <div className="container px-4 mx-auto relative z-10">
-          <div className="text-center mb-20">
-            <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter mb-4">Why Digital Swarm?</h2>
-            <p className="text-zinc-400 text-lg max-w-xl mx-auto">The gold standard for modern developers who refuse to settle for mediocre boilerplate.</p>
+      {/* Benefits Grid — PlanetOno Brutalist Style */}
+      <section className="py-40 bg-background text-white relative overflow-hidden">
+        <div className="absolute inset-0 bg-swarm-pattern opacity-10" />
+        <div className="container px-6 mx-auto relative z-10">
+          <div className="text-left mb-24 max-w-4xl">
+            <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8 italic">
+              System<br/>
+              <span className="text-primary">Integrity</span>
+            </h2>
+            <p className="text-white/50 text-xl font-bold uppercase tracking-tighter italic max-w-xl">
+              Engineered for speed. Audited for scale. Digital Swarm provides the architectural skeleton for the next generation of software.
+            </p>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-white/10">
             <FeatureCard
-              icon={<Download className="h-10 w-10 text-primary" />}
-              title="Instant Acquisition"
-              description="Zero wait time. Your purchase is processed through secure protocols and delivered as a high-speed download link instantly."
+              icon={<Download className="h-12 w-12 text-primary" />}
+              title="Instant Pulse"
+              description="Eliminate latency. Direct architectural sync is processed through secure protocols and delivered instantly."
             />
             <FeatureCard
-              icon={<Shield className="h-10 w-10 text-primary" />}
-              title="Code Integrity"
-              description="Every kit is audited for performance, security, and cleanliness. If it's not production-grade, we don't list it. Period."
+              icon={<Shield className="h-12 w-12 text-primary" />}
+              title="Hardened Code"
+              description="Every blueprint is stress-tested for production environments. We do not distribute insecure boilerplate."
             />
             <FeatureCard
-              icon={<Zap className="h-10 w-10 text-primary" />}
-              title="Rapid Integration"
-              description="Stop wrestling with documentation. Our kits include step-by-step guides to get you from 'git clone' to 'deploy' in minutes."
+              icon={<Zap className="h-12 w-12 text-primary" />}
+              title="Rapid Sync"
+              description="Bypass documentation fatigue. Our frameworks include deployment-ready manifests for minute-one launches."
             />
           </div>
         </div>
@@ -77,20 +82,23 @@ export default function Home() {
       <HomeFAQ />
 
       {/* Freebie Banner */}
-      <section className="py-24 relative overflow-hidden">
-        <div className="container px-4 mx-auto">
-          <div className="relative p-12 rounded-[2.5rem] bg-zinc-950 border border-white/10 flex flex-col items-center text-center overflow-hidden">
-             <div className="absolute top-0 right-0 p-8 opacity-10 blur-xl bg-primary w-64 h-64 rounded-full" />
-             <div className="relative z-10 space-y-6">
-                <span className="px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-bold uppercase tracking-widest">Limited Offer</span>
-                <h2 className="text-4xl md:text-6xl font-black italic tracking-tight">NOT READY TO BUY?</h2>
-                <p className="text-xl text-zinc-400 max-w-xl mx-auto leading-relaxed">
-                  Grab our <span className="text-white italic font-bold">&quot;Ultimate SaaS Launch Checklist&quot;</span> and a selection of premium UI components for ₹0.
+      <section className="py-40 relative overflow-hidden bg-background">
+        <div className="container px-6 mx-auto">
+          <div className="relative p-16 bg-zinc-950 border-4 border-white flex flex-col items-start text-left overflow-hidden">
+             <div className="absolute top-0 right-0 p-8 opacity-20 blur-3xl bg-primary w-96 h-96 rounded-none translate-x-1/2 -translate-y-1/2" />
+             <div className="relative z-10 space-y-10 max-w-3xl">
+                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic border-b-2 border-primary pb-2">Active Transmission</span>
+                <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.8] mb-6">
+                  Zero Cost<br/>
+                  <span className="text-white">Mainframe</span>
+                </h2>
+                <p className="text-2xl text-white/50 font-bold uppercase italic tracking-tighter leading-tight">
+                  Access the <span className="text-white">&quot;SaaS Launch Manifest&quot;</span> and architectural blueprints for ₹0. Immediate sync available.
                 </p>
-                <div className="pt-4">
+                <div className="pt-8">
                   <Link href="/freebies">
-                    <Button variant="cyberpunk" size="lg" className="h-16 px-10 text-lg">
-                      Explore Free Resources <Zap className="w-4 h-4 ml-2 fill-current" />
+                    <Button className="h-20 px-12 bg-white text-black font-black uppercase tracking-widest rounded-none text-xl hover:bg-primary transition-all duration-300 shadow-[12px_12px_0px_#000]">
+                      Sync Free Resources <Zap className="w-6 h-6 ml-4" />
                     </Button>
                   </Link>
                 </div>
@@ -105,34 +113,16 @@ export default function Home() {
   );
 }
 
-import { CardBody, CardContainer, CardItem } from "@/components/ui/3d-card";
+// FeatureCard component for the Benefits Grid
 
 function FeatureCard({ icon, title, description }: { icon: React.ReactNode; title: string; description: string }) {
   return (
-    <CardContainer className="inter-var w-full">
-      <div className="neon-border-wrapper w-full h-full">
-        <div className="neon-border-content p-8">
-          <CardBody className="bg-transparent relative group/card w-full h-auto">
-            <CardItem translateZ="50" className="mb-4 inline-flex items-center justify-center w-12 h-12 rounded-lg bg-secondary">
-              {icon}
-            </CardItem>
-            <CardItem
-              as="h3"
-              translateZ="60"
-              className="text-xl font-bold text-neutral-600 dark:text-white"
-            >
-              {title}
-            </CardItem>
-            <CardItem
-              as="p"
-              translateZ="40"
-              className="text-neutral-500 text-sm max-w-sm mt-2 dark:text-neutral-300"
-            >
-              {description}
-            </CardItem>
-          </CardBody>
-        </div>
+    <div className="p-12 border-r border-b border-white/10 group hover:bg-white/5 transition-all duration-300">
+      <div className="mb-8 p-4 bg-zinc-950 border border-white/10 w-fit">
+        {icon}
       </div>
-    </CardContainer>
+      <h3 className="text-3xl font-black uppercase italic tracking-tighter mb-4 leading-none">{title}</h3>
+      <p className="text-white/40 font-bold uppercase italic tracking-tighter text-sm max-w-xs">{description}</p>
+    </div>
   );
 }

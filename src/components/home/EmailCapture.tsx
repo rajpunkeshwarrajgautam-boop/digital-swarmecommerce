@@ -21,79 +21,87 @@ export function EmailCapture() {
   };
 
   return (
-    <section className="py-28 bg-background border-t border-border/40">
-      <div className="container mx-auto px-4">
-        <div className="max-w-2xl mx-auto text-center">
+    <section className="py-40 bg-background border-t border-white/5 relative overflow-hidden">
+      <div className="absolute inset-0 bg-swarm-pattern opacity-5" />
+      <div className="container mx-auto px-6 relative z-10">
+        <div className="max-w-4xl mx-auto flex flex-col items-start text-left">
           {/* Final CTA */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5 }}
-            className="mb-16"
+            transition={{ duration: 0.8 }}
+            className="mb-24 w-full"
           >
-            <h2 className="text-4xl md:text-5xl font-bold mb-4">
-              Ready to Ship Faster?
+            <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8">
+              System<br/>
+              <span className="text-primary">Engagement</span>
             </h2>
-            <p className="text-muted-foreground text-lg mb-8">
-              Browse our full catalogue of production-ready digital products.
+            <p className="text-white/50 text-xl font-bold italic uppercase tracking-tighter mb-12 max-w-xl">
+              Access the full architectural mainframe. All protocols are ready for immediate deployment.
             </p>
             <Link href="/products">
-              <button className="group inline-flex items-center gap-2 bg-primary text-black font-black text-lg px-10 py-4 rounded-full border-4 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] hover:shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 transition-all duration-200">
-                Browse Products
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              <button className="group inline-flex items-center gap-6 bg-white text-black font-black text-2xl px-12 py-6 rounded-none shadow-[15px_15px_0px_#000] hover:shadow-[20px_20px_0px_#000] hover:-translate-y-1 transition-all duration-300 uppercase tracking-[0.2em] italic">
+                Enter Void
+                <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
               </button>
             </Link>
           </motion.div>
 
           {/* Email capture divider */}
-          <div className="relative flex items-center gap-4 my-12">
-            <div className="flex-1 h-px bg-border" />
-            <span className="text-xs text-muted-foreground uppercase tracking-widest">or</span>
-            <div className="flex-1 h-px bg-border" />
+          <div className="w-full h-px bg-white/5 mb-24 flex items-center justify-center">
+            <span className="bg-background px-8 text-xs font-black uppercase tracking-[0.5em] text-white/20 italic">Alternative Connection</span>
           </div>
 
           {/* Email form */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 20 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.5, delay: 0.15 }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="w-full flex flex-col md:flex-row justify-between items-end gap-12"
           >
-            <h3 className="text-2xl font-bold mb-2">Get Free Delivery Guides</h3>
-            <p className="text-sm text-muted-foreground mb-6">
-              Join 1,500+ developers who get our free monthly newsletter — new products, discounts, and tutorials.
-            </p>
+            <div className="max-w-md">
+              <h3 className="text-3xl font-black italic uppercase tracking-tight mb-4 text-primary">Transmission Protocol</h3>
+              <p className="text-white/40 font-bold uppercase tracking-tighter text-sm">
+                Secure a direct link to the Digital Swarm intelligence network. 
+                Receive weekly system updates and architectural advancements.
+              </p>
+            </div>
 
-            {submitted ? (
-              <div className="flex items-center justify-center gap-2 text-green-500 font-semibold py-4">
-                <Send className="w-5 h-5" />
-                You&apos;re in! Check your inbox for a welcome email.
-              </div>
-            ) : (
-              <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder="your@email.com"
-                  required
-                  className="flex-1 px-5 py-3 rounded-full border border-border bg-card focus:outline-none focus:ring-2 focus:ring-primary text-sm"
-                />
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex items-center justify-center gap-2 bg-primary text-black font-bold px-6 py-3 rounded-full border border-black hover:opacity-90 disabled:opacity-60 transition-opacity text-sm"
-                >
-                  {loading ? "..." : (
-                    <>
-                      Subscribe <Send className="w-4 h-4" />
-                    </>
-                  )}
-                </button>
-              </form>
-            )}
-            <p className="text-xs text-muted-foreground mt-3">No spam. Unsubscribe anytime.</p>
+            <div className="flex-1 w-full max-w-xl">
+              {submitted ? (
+                <div className="flex items-center justify-start gap-4 text-primary font-black uppercase italic py-8 border-b-4 border-primary">
+                  <Send className="w-8 h-8" />
+                  Link Established. Check Command Center.
+                </div>
+              ) : (
+                <form onSubmit={handleSubmit} className="flex flex-col gap-0 w-full">
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="ENTER_EMAIL_IDENTIFIER"
+                    required
+                    className="w-full px-0 py-8 bg-transparent border-b-4 border-white/10 text-white font-black text-2xl uppercase italic focus:outline-none focus:border-primary transition-all placeholder:text-white/10"
+                  />
+                  <div className="flex justify-between items-center mt-6">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/20 italic">No Tracking. Zero Latency.</p>
+                    <button
+                      type="submit"
+                      disabled={loading}
+                      className="flex items-center justify-center gap-4 bg-primary text-black font-black px-12 py-4 rounded-none border-b-4 border-black hover:bg-white transition-all text-sm uppercase tracking-widest"
+                    >
+                      {loading ? "LINKING..." : (
+                        <>
+                          Establish Link <Send className="w-4 h-4" />
+                        </>
+                      )}
+                    </button>
+                  </div>
+                </form>
+              )}
+            </div>
           </motion.div>
         </div>
       </div>
