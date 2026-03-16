@@ -26,8 +26,20 @@ export default function CheckoutPage() {
       setCashfree(cf);
     };
     initCashfree();
+
+    // Meta Pixel InitiateCheckout
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'InitiateCheckout', {
+        value: total,
+        currency: 'INR',
+        content_ids: items.map(i => i.id),
+        content_type: 'product',
+        num_items: items.length
+      });
+    }
+
     return () => cancelAnimationFrame(id);
-  }, []);
+  }, [items, total]);
 
   const [formData, setFormData] = useState({
     firstName: "",

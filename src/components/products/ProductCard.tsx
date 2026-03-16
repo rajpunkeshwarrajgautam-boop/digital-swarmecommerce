@@ -127,7 +127,19 @@ export function ProductCard({ product }: ProductCardProps) {
           <div className="flex-1">
             {product.inStock ? (
               <button
-                onClick={(e) => { e.preventDefault(); addItem(product); }}
+                onClick={(e) => { 
+                  e.preventDefault(); 
+                  if (typeof window !== 'undefined' && window.fbq) {
+                    window.fbq('track', 'AddToCart', {
+                      content_ids: [product.id],
+                      content_name: product.name,
+                      content_type: 'product',
+                      value: product.price,
+                      currency: 'INR'
+                    });
+                  }
+                  addItem(product); 
+                }}
                 className="uiverse-glow-btn h-11 shadow-sm"
               >
                 <ShoppingCart className="w-4 h-4 mr-2" /> Buy
