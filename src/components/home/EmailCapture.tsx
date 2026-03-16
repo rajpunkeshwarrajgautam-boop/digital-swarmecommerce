@@ -34,10 +34,10 @@ export function EmailCapture() {
             className="mb-24 w-full"
           >
             <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8">
-              System<br/>
-              <span className="text-primary">Engagement</span>
+              <span className="ono-text-split"><span>System</span></span><br/>
+              <span className="text-primary ono-text-split"><span>Engagement</span></span>
             </h2>
-            <p className="text-white/50 text-xl font-bold italic uppercase tracking-tighter mb-12 max-w-xl">
+            <p className="text-white/50 text-xl font-bold italic uppercase tracking-tighter mb-12 max-w-xl silk-reveal-mask">
               Access the full architectural mainframe. All protocols are ready for immediate deployment.
             </p>
             <Link href="/products">

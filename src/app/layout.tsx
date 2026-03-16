@@ -80,6 +80,7 @@ export const viewport: Viewport = {
 };
 
 import { ClerkProvider } from "@clerk/nextjs";
+import { VisualQuality } from "@/components/layout/VisualQuality";
 
 export default function RootLayout({
   children,
@@ -89,13 +90,14 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        variables: { colorPrimary: '#3b82f6' },
+        variables: { colorPrimary: '#CCFF00', colorBackground: '#050505', colorText: '#ffffff' },
       }}
     >
-      <html lang="en">
+      <html lang="en" className="dark">
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-black`}
         >
+          <VisualQuality />
           <Suspense fallback={null}>
             <AdTracking />
           </Suspense>

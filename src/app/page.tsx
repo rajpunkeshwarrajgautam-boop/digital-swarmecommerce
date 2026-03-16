@@ -45,11 +45,11 @@ export default function Home() {
         <div className="absolute inset-0 bg-swarm-pattern opacity-10" />
         <div className="container px-6 mx-auto relative z-10">
           <div className="text-left mb-24 max-w-4xl">
-            <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8 italic">
-              System<br/>
-              <span className="text-primary">Integrity</span>
+            <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8">
+              <span className="ono-text-split"><span>System</span></span><br/>
+              <span className="text-primary ono-text-split"><span>Integrity</span></span>
             </h2>
-            <p className="text-white/50 text-xl font-bold uppercase tracking-tighter italic max-w-xl">
+            <p className="text-white/50 text-xl font-bold uppercase tracking-tighter italic max-w-xl silk-reveal-mask">
               Engineered for speed. Audited for scale. Digital Swarm provides the architectural skeleton for the next generation of software.
             </p>
           </div>

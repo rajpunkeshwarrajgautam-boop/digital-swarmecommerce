@@ -24,10 +24,10 @@ export function ProblemSolution() {
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-left mb-24 max-w-4xl">
           <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8">
-            Operational<br/>
-            <span className="text-primary">Efficiency</span>
+            <span className="ono-text-split"><span>Operational</span></span><br/>
+            <span className="text-primary ono-text-split"><span>Efficiency</span></span>
           </h2>
-          <p className="text-white/50 text-xl font-bold italic uppercase tracking-tighter max-w-xl">
+          <p className="text-white/50 text-xl font-bold italic uppercase tracking-tighter max-w-xl silk-reveal-mask">
             Legacy development pipelines are slow. We distribute optimized architectural solutions for immediate system integration.
           </p>
         </div>
