@@ -1,18 +1,19 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 
-const CLIENT_ID = process.env.CASHFREE_APP_ID;
-const CLIENT_SECRET = process.env.CASHFREE_SECRET_KEY;
-const ENV = process.env.CASHFREE_ENV || 'TEST';
-
-const BASE_URL = ENV === 'PROD'
-  ? 'https://api.cashfree.com/pg'
-  : 'https://sandbox.cashfree.com/pg';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { items, total, customer } = body;
+
+    const CLIENT_ID = process.env.CASHFREE_APP_ID?.trim();
+    const CLIENT_SECRET = process.env.CASHFREE_SECRET_KEY?.trim();
+    const ENV = process.env.CASHFREE_ENV || 'TEST';
+
+    const BASE_URL = ENV === 'PROD'
+      ? 'https://api.cashfree.com/pg'
+      : 'https://sandbox.cashfree.com/pg';
 
     if (!items || !items.length || !total || !customer?.email) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
