@@ -7,9 +7,13 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { items, total, customer } = body;
 
-    const CLIENT_ID = process.env.CASHFREE_APP_ID?.trim();
-    const CLIENT_SECRET = process.env.CASHFREE_SECRET_KEY?.trim();
-    const ENV = process.env.CASHFREE_ENV || 'TEST';
+    const CLIENT_ID = process.env.CASHFREE_APP_ID?.trim() || '';
+    const CLIENT_SECRET = process.env.CASHFREE_SECRET_KEY?.trim() || '';
+    
+    // Auto-detect environment based on the Secret Key prefix
+    // Sandbox keys start with 'cfsk_ma_test_', Production keys start with 'cfsk_ma_prod_'
+    const isProdKey = CLIENT_SECRET.startsWith('cfsk_ma_prod_');
+    const ENV = isProdKey ? 'PROD' : (process.env.CASHFREE_ENV || 'TEST');
 
     const BASE_URL = ENV === 'PROD'
       ? 'https://api.cashfree.com/pg'
