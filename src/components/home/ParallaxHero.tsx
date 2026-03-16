@@ -27,7 +27,7 @@ export function ParallaxHero() {
     <div ref={containerRef} className="w-full min-h-[95vh] relative overflow-hidden bg-background border-b border-white/5 flex flex-col items-center justify-center pt-24 perspective-[1000px]">
       
       {/* Ono Grid Overlay */}
-      <div className="absolute inset-0 z-0 bg-swarm-pattern opacity-[0.03] pointer-events-none" />
+      <div className="absolute inset-0 z-0 bg-swarm-pattern opacity-[0.05] pointer-events-none" />
       
       {/* Floating 3D Element Sim (Advanced CSS 3D) */}
       <motion.div 

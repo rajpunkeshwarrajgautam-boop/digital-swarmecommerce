@@ -16,7 +16,7 @@ export default function Home() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center overflow-hidden bg-background border-b border-border/20">
+      <section className="relative flex items-center justify-center overflow-hidden bg-background border-b border-white/5">
         <ParallaxHero />
       </section>
 
@@ -26,7 +26,7 @@ export default function Home() {
       </div>
 
       {/* Featured Products */}
-      <div className="py-16 md:py-32 bg-secondary/10">
+      <div className="py-16 md:py-32">
         <FeaturedSection />
       </div>
 

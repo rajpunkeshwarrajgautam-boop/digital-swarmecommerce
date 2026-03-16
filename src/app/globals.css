@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme inline {
-  --background: #050505;
+  --background: #020202;
   --foreground: #ffffff;
   --primary: #ccff00;
   --primary-foreground: #000000;
-  --secondary: #111111;
+  --secondary: #0a0a0a;
   --secondary-foreground: #ffffff;
   --accent: #ccff00;
   --accent-foreground: #000000;
-  --muted: #0a0a0a;
-  --muted-foreground: #737373;
-  --card: #080808;
+  --muted: #050505;
+  --muted-foreground: #555555;
+  --card: #050505;
   --card-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.05);
   --radius: 0rem;
 
   --color-background: var(--background);
@@ -33,54 +33,6 @@
 
   --font-space: var(--font-space);
   --font-inter: var(--font-inter);
-
-  /* Moblinks Animations */
-  --animate-float: float 6s ease-in-out infinite;
-  --animate-wiggle: wiggle 1s ease-in-out infinite;
-
-  @keyframes float {
-    0%,
-    100% {
-      transform: translateY(0);
-    }
-    50% {
-      transform: translateY(-20px);
-    }
-  }
-  @keyframes wiggle {
-    0%,
-    100% {
-      transform: rotate(-3deg);
-    }
-    50% {
-      transform: rotate(3deg);
-    }
-  }
-}
-
-/* Default variables already defined in @theme above */
-
-.light {
-  /* Ultra Modern Light Mode (Backup) */
-  --background: #ffffff;
-  --foreground: #0a0a0a;
-
-  --primary: #ccff00;
-  --primary-foreground: #0a0a0a;
-
-  --secondary: #4a00ff;
-  --secondary-foreground: #ffffff;
-
-  --accent: #ff0055;
-  --accent-foreground: #ffffff;
-
-  --muted: #f5f5f5;
-  --muted-foreground: #737373;
-
-  --card: #ffffff;
-  --card-foreground: #0a0a0a;
-
-  --border: #e5e5e5;
 }
 
 body {
@@ -88,57 +40,71 @@ body {
   color: var(--foreground);
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
+  overflow-x: hidden;
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
+h1, h2, h3, h4, h5, h6 {
   font-family: var(--font-space), display;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.08em;
   text-transform: uppercase;
   font-style: italic;
   font-weight: 900;
+  line-height: 0.8;
 }
 
-/* Obsidian Grid Background - PlanetOno vibe */
+/* ONO Cinematic Grid */
 .bg-swarm-pattern {
-  background-image: linear-gradient(var(--border) 1px, transparent 1px),
+  background-image: 
+    linear-gradient(var(--border) 1px, transparent 1px),
     linear-gradient(90deg, var(--border) 1px, transparent 1px);
-  background-size: 50px 50px;
-  mask-image: radial-gradient(circle at 2px 2px, black 1px, transparent 0);
-  opacity: 0.15;
+  background-size: 100px 100px;
+  background-position: center;
+}
+
+/* Custom Scrollbar - ONO Style */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--background);
+}
+::-webkit-scrollbar-thumb {
+  background: #333;
+  border-radius: 0px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary);
+}
+
+/* CRT Scanline Effect */
+body::before {
+  content: " ";
+  display: block;
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.06), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.06));
+  z-index: 10000;
+  background-size: 100% 4px, 3px 100%;
+  pointer-events: none;
+  opacity: 0.05;
+}
+/* ONO Motion Engine Utility */
+.preserve-3d {
+  transform-style: preserve-3d;
 }
 
 /* Stunning Text Gradient */
 .text-gradient {
-  background: linear-gradient(135deg, #3b82f6 0%, #ec4899 50%, #8b5cf6 100%);
+  background: linear-gradient(135deg, #ccff00 0%, #ffffff 50%, #ccff00 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
   color: transparent;
   display: inline-block;
-}
-
-/* Custom Scrollbar */
-/* Custom Scrollbar */
-::-webkit-scrollbar {
-  width: 12px;
-}
-::-webkit-scrollbar-track {
-  background: var(--background);
-  border-left: 2px solid var(--border);
-}
-::-webkit-scrollbar-thumb {
-  background: var(--primary);
-  border: 2px solid var(--border);
-  border-radius: 9999px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: var(--accent);
 }
 
 /* ----------------------------------------------------
@@ -188,261 +154,14 @@ body::after {
 }
 
 .bg-swarm-pattern {
-  background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+  background-image: 
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
     linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
-  background-size: 80px 80px;
+  background-size: 100px 100px;
   background-position: center;
 }
 
-/* ----------------------------------------------------
-   UIVERSE.IO INSPIRED CYBERPUNK ELEMENTS
-   ---------------------------------------------------- */
-
-@keyframes glitch {
-  0% {
-    clip-path: inset(80% 0 0 0);
-    transform: translate(-5px, -5px);
-  }
-  10% {
-    clip-path: inset(10% 0 80% 0);
-    transform: translate(5px, 5px);
-  }
-  20% {
-    clip-path: inset(80% 0 0 0);
-    transform: translate(-5px, -5px);
-  }
-  30% {
-    clip-path: inset(10% 0 80% 0);
-    transform: translate(5px, 5px);
-  }
-  40% {
-    clip-path: inset(80% 0 0 0);
-    transform: translate(-5px, -5px);
-  }
-  50% {
-    clip-path: inset(10% 0 80% 0);
-    transform: translate(5px, 5px);
-  }
-  60% {
-    clip-path: inset(80% 0 0 0);
-    transform: translate(-5px, -5px);
-  }
-  70% {
-    clip-path: inset(10% 0 80% 0);
-    transform: translate(5px, 5px);
-  }
-  80% {
-    clip-path: inset(80% 0 0 0);
-    transform: translate(-5px, -5px);
-  }
-  90% {
-    clip-path: inset(10% 0 80% 0);
-    transform: translate(5px, 5px);
-  }
-  100% {
-    clip-path: inset(80% 0 0 0);
-    transform: translate(-5px, -5px);
-  }
-}
-/* Modern Uiverse Gradient Button (Off-White Theme) */
-.btn-cyberpunk,
-.btn-cyberpunk:after {
-  padding: 16px 20px;
-  font-size: 18px;
-  background: linear-gradient(
-    45deg,
-    transparent 5%,
-    #60a5fa 5%
-  ); /* Muted blue */
-  border: 0;
-  color: #fff;
-  letter-spacing: 3px;
-  line-height: 1;
-  box-shadow: 6px 0px 0px #fb7185; /* Muted pink */
-  outline: transparent;
-  position: relative;
-  font-weight: bold;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.btn-cyberpunk:after {
-  --slice-0: inset(50% 50% 50% 50%);
-  --slice-1: inset(80% -6px 0 0);
-  --slice-2: inset(50% -6px 30% 0);
-  --slice-3: inset(10% -6px 85% 0);
-  --slice-4: inset(40% -6px 43% 0);
-  --slice-5: inset(80% -6px 5% 0);
-  content: "OFF-WHITE DRIP";
-  display: block;
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 3%,
-    #a3e635 3%,
-    #a3e635 5%,
-    #fb7185 5%
-  ); /* Muted green and pink */
-  text-shadow:
-    -3px -3px 0px #f8f005,
-    3px 3px 0px #a3e635; /* Yellow and muted green */
-  clip-path: var(--slice-0);
-}
-
-.btn-cyberpunk:hover:after {
-  animation: 1s glitch;
-  animation-timing-function: steps(2, end);
-}
-
-/* Neon Border Animation for Cards */
-@keyframes border-rotate {
-  100% {
-    transform: rotate(1turn);
-  }
-}
-
-.neon-border-wrapper {
-  position: relative;
-  overflow: hidden;
-  padding: 4px;
-  border-radius: var(--radius);
-  background: #ffffff;
-}
-
-.neon-border-wrapper::before {
-  content: "";
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: conic-gradient(
-    transparent,
-    #3b82f6,
-    #ec4899,
-    #8b5cf6,
-    transparent
-  );
-  animation: border-rotate 4s linear infinite;
-  z-index: 0;
-}
-
-.neon-border-content {
-  position: relative;
-  z-index: 1;
-  background: #ffffff;
-  border-radius: calc(var(--radius) - 4px);
-  width: 100%;
-  height: 100%;
-}
-
-/* Elegant Light Drop Shadow */
-.cyber-shadow {
-  box-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.05),
-    0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  transition: all 0.3s ease;
-  border: 1px solid rgba(0, 0, 0, 0.05); /* clean light border */
-}
-
-.cyber-shadow:hover {
-  box-shadow:
-    0 20px 25px -5px rgba(59, 130, 246, 0.15),
-    0 8px 10px -6px rgba(59, 130, 246, 0.1);
-  transform: translateY(-4px) scale(1.01);
-  border-color: rgba(59, 130, 246, 0.3);
-}
-
-/* Remove Dark Mode Scanlines overlay for clean light mode */
-body::before {
-  display: none !important;
-}
-
-/* ----------------------------------------------------
-   UIVERSE.IO PREMIUM LIGHT UI ELEMENTS
-   ---------------------------------------------------- */
-
-/* 1. Uiverse Premium Glowing Button */
-.uiverse-glow-btn {
-  position: relative;
-  width: 100%;
-  height: 44px;
-  background-color: #ffffff;
-  display: flex;
-  align-items: center;
-  color: #0f172a;
-  justify-content: center;
-  border: 1px solid #e2e8f0;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.3s ease;
-  z-index: 1;
-}
-
-.uiverse-glow-btn::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  left: -2px;
-  top: -2px;
-  width: calc(100% + 4px);
-  height: calc(100% + 4px);
-  border-radius: 10px;
-  background: linear-gradient(-45deg, #3b82f6 0%, #ec4899 50%, #8b5cf6 100%);
-  z-index: -1;
-  pointer-events: none;
-  transition: all 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-  opacity: 0;
-}
-
-.uiverse-glow-btn::after {
-  content: "";
-  z-index: -2;
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(-45deg, #3b82f6 0%, #ec4899 50%, #8b5cf6 100%);
-  transform: translate3d(0, 0, 0) scale(0.95);
-  filter: blur(20px);
-  opacity: 0;
-  transition: all 0.4s ease;
-}
-
-.uiverse-glow-btn:hover {
-  color: white;
-  background-color: transparent;
-  border-color: transparent;
-}
-
-.uiverse-glow-btn:hover::before,
-.uiverse-glow-btn:hover::after {
-  opacity: 1;
-}
-
-.uiverse-glow-btn:hover::after {
-  filter: blur(15px);
-}
-
-.uiverse-glow-btn:active::before {
-  transform: scale(0.95);
-}
-
-/* 2. Uiverse Minimalist Inset Card */
-.minimalist-card {
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  background: #f8fafc; /* Crisp off-white */
-  box-shadow:
-    rgba(50, 50, 93, 0.1) 0px 30px 50px -12px inset,
-    rgba(0, 0, 0, 0.05) 0px 18px 26px -18px inset;
-  position: relative;
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+/* Removal of redundant elements */
+.uiverse-glow-btn, .minimalist-card, .cyber-shadow {
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }

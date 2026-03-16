@@ -28,7 +28,7 @@ export function Header() {
 
   return (
     <>
-      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-background/50 backdrop-blur-2xl border-b border-white/5">
+      <header className="fixed top-0 left-0 right-0 z-50 py-4 bg-[#020202] border-b border-white/5">
         <div className="container mx-auto px-6 flex items-center justify-between gap-4">
           <div className="flex items-center">
              <Button 
