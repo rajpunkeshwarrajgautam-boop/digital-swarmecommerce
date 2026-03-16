@@ -7,11 +7,10 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { items, total, customer } = body;
 
-    const CLIENT_ID = process.env.CASHFREE_APP_ID?.trim() || '';
-    const CLIENT_SECRET = process.env.CASHFREE_SECRET_KEY?.trim() || '';
+    const CLIENT_ID = process.env.CASHFREE_APP_ID?.replace(/['"]+/g, '').trim() || '';
+    const CLIENT_SECRET = process.env.CASHFREE_SECRET_KEY?.replace(/['"]+/g, '').trim() || '';
     
-    // Auto-detect environment based on the Secret Key prefix
-    // Sandbox keys start with 'cfsk_ma_test_', Production keys start with 'cfsk_ma_prod_'
+    // Hard-detect environment based on the Secret Key signature
     const isProdKey = CLIENT_SECRET.startsWith('cfsk_ma_prod_');
     const ENV = isProdKey ? 'PROD' : (process.env.CASHFREE_ENV || 'TEST');
 

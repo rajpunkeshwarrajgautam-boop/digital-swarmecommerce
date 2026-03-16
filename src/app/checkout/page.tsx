@@ -20,9 +20,11 @@ export default function CheckoutPage() {
   useEffect(() => {
     const id = requestAnimationFrame(() => setIsClient(true));
     const initCashfree = async () => {
-      const cf = await load({
-        mode: (process.env.NEXT_PUBLIC_CASHFREE_ENV as "sandbox" | "production") || "sandbox",
-      });
+      const mode = (process.env.NEXT_PUBLIC_CASHFREE_ENV === "production" || process.env.NEXT_PUBLIC_CASHFREE_ENV === "PROD") 
+        ? "production" 
+        : "sandbox";
+      
+      const cf = await load({ mode: mode as "sandbox" | "production" });
       setCashfree(cf);
     };
     initCashfree();
