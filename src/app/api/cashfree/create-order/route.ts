@@ -1,21 +1,18 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 
-
 export async function POST(request: Request) {
   try {
     const body = await request.json();
     const { items, total, customer } = body;
 
-    const CLIENT_ID = process.env.CASHFREE_APP_ID?.replace(/['"]+/g, '').trim() || '';
-    const CLIENT_SECRET = process.env.CASHFREE_SECRET_KEY?.replace(/['"]+/g, '').trim() || '';
+    const CLIENT_ID = (process.env.CASHFREE_APP_ID || '').replace(/['"]+/g, '').trim();
+    const CLIENT_SECRET = (process.env.CASHFREE_SECRET_KEY || '').replace(/['"]+/g, '').trim();
     
     // Hard-detect environment based on the Secret Key signature
     const isProdKey = CLIENT_SECRET.startsWith('cfsk_ma_prod_');
-    const ENV = isProdKey ? 'PROD' : (process.env.CASHFREE_ENV || 'TEST');
-
-    const BASE_URL = ENV === 'PROD'
-      ? 'https://api.cashfree.com/pg'
+    const BASE_URL = isProdKey 
+      ? 'https://api.cashfree.com/pg' 
       : 'https://sandbox.cashfree.com/pg';
 
     if (!items || !items.length || !total || !customer?.email) {
@@ -34,7 +31,7 @@ export async function POST(request: Request) {
         user_id: customer.email,
         cashfree_order_id: orderId,
         customer_email: customer.email,
-        customer_name: `${customer.firstName} ${customer.lastName}`,
+        customer_name: `${customer.firstName} ${customer.lastName}`.trim(),
         customer_phone: customer.phone.replace(/[^0-9]/g, '') || '9999999999',
       })
       .select()
@@ -42,10 +39,10 @@ export async function POST(request: Request) {
 
     if (orderError) {
       console.error('[DB Error]', orderError);
-      return NextResponse.json({ error: 'Database record failed', details: orderError.message }, { status: 500 });
+      return NextResponse.json({ error: 'Database record failed' }, { status: 500 });
     }
 
-    // 3. Create Order Items (Async, don't block if minor failure)
+    // 3. Create Order Items (Async)
     const orderItems = items.map((item: any) => ({
       order_id: order.id,
       product_id: item.id,
@@ -59,13 +56,13 @@ export async function POST(request: Request) {
     // 4. Create Cashfree Order
     const cfPayload = {
       order_id: orderId,
-      order_amount: parseFloat(total).toFixed(2), // Cashfree expects string/number with decimals
+      order_amount: parseFloat(total).toFixed(2),
       order_currency: 'INR',
       customer_details: {
-        customer_id: customer.email.replace(/[^a-zA-Z0-9]/g, '_'),
+        customer_id: customer.email.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 45),
         customer_email: customer.email,
-        customer_phone: customer.phone.replace(/[^0-9]/g, '') || '9999999999',
-        customer_name: `${customer.firstName} ${customer.lastName}`.trim(),
+        customer_phone: customer.phone.replace(/[^0-9]/g, '').slice(-10) || '9999999999',
+        customer_name: `${customer.firstName} ${customer.lastName}`.trim().slice(0, 100),
       },
       order_meta: {
         return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order_id={order_id}`,
@@ -75,10 +72,11 @@ export async function POST(request: Request) {
     const cfRes = await fetch(`${BASE_URL}/orders`, {
       method: 'POST',
       headers: {
-        'x-client-id': CLIENT_ID!,
-        'x-client-secret': CLIENT_SECRET!,
+        'x-client-id': CLIENT_ID,
+        'x-client-secret': CLIENT_SECRET,
         'x-api-version': '2023-08-01',
         'Content-Type': 'application/json',
+        'Accept': 'application/json',
       },
       body: JSON.stringify(cfPayload),
     });
@@ -86,9 +84,13 @@ export async function POST(request: Request) {
     const cfData = await cfRes.json();
 
     if (!cfRes.ok) {
-      console.error('[Cashfree API Error]', cfData);
+      console.error('[Cashfree Error Response]', {
+        status: cfRes.status,
+        data: cfData,
+        keysUsed: `${CLIENT_ID.substring(0, 5)}... / ${CLIENT_SECRET.substring(0, 12)}...`
+      });
       return NextResponse.json({ 
-        error: cfData.message || 'Payment authentication failed',
+        error: cfData.message || 'Payment Gateway Authentication Failed',
         code: cfData.code,
         type: cfData.type
       }, { status: 500 });
