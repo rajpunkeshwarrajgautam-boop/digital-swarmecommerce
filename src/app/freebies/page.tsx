@@ -66,7 +66,7 @@ export default function FreebiesPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-black mb-8 tracking-tighter"
+            className="text-3xl sm:text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[1.1]"
           >
             Fuel Your Growth Without <span className="text-primary italic">Spending a Rupee.</span>
           </motion.h1>
@@ -118,26 +118,26 @@ export default function FreebiesPage() {
         </div>
 
         {/* Community Section */}
-        <div className="mt-32 p-12 rounded-[3rem] bg-secondary/10 border border-border/50 text-center relative overflow-hidden">
+        <div className="mt-20 sm:mt-32 p-6 sm:p-12 rounded-[2rem] sm:rounded-[3rem] bg-secondary/10 border border-border/50 text-center relative overflow-hidden">
           <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 blur-[120px] rounded-full" />
           <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-accent/20 blur-[120px] rounded-full" />
 
-          <div className="relative z-10 max-w-2xl mx-auto space-y-8">
-            <h2 className="text-4xl font-black tracking-tight italic">Join the Swarm</h2>
-            <p className="text-lg text-muted-foreground">
+          <div className="relative z-10 max-w-2xl mx-auto space-y-6 sm:space-y-8">
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight italic">Join the Swarm</h2>
+            <p className="text-base sm:text-lg text-muted-foreground">
               We ship new freebies every Saturday. Join 4,200+ developers getting the edge in their inbox.
             </p>
             <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
               <input 
                 type="email" 
                 placeholder="Enter your email" 
-                className="w-full sm:w-80 h-14 rounded-full bg-background border border-border px-6 focus:outline-hidden focus:ring-2 focus:ring-primary/50 transition-all"
+                className="w-full sm:w-80 h-12 sm:h-14 rounded-full bg-background border border-border px-6 focus:outline-hidden focus:ring-2 focus:ring-primary/50 transition-all text-sm"
               />
-              <Button className="h-14 px-8 rounded-full gap-2">
+              <Button className="w-full sm:w-auto h-12 sm:h-14 px-8 rounded-full gap-2 text-sm">
                 Join the List <ArrowRight className="w-4 h-4" />
               </Button>
             </div>
-            <p className="text-xs text-muted-foreground opacity-50 italic">
+            <p className="text-[10px] sm:text-xs text-muted-foreground opacity-50 italic">
               No spam. Just code, assets, and value. Unsubscribe anytime.
             </p>
           </div>
