@@ -15,6 +15,8 @@ export async function POST(request: Request) {
       ? 'https://api.cashfree.com/pg' 
       : 'https://sandbox.cashfree.com/pg';
 
+    const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://digitalswarm.in';
+
     if (!items || !items.length || !total || !customer?.email) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
     }
@@ -65,7 +67,7 @@ export async function POST(request: Request) {
         customer_name: `${customer.firstName} ${customer.lastName}`.trim().slice(0, 100),
       },
       order_meta: {
-        return_url: `${process.env.NEXT_PUBLIC_SITE_URL}/success?order_id={order_id}`,
+        return_url: `${SITE_URL}/success?order_id={order_id}`,
       },
     };
 
