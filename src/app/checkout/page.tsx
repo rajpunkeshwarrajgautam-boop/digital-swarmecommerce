@@ -274,6 +274,22 @@ export default function CheckoutPage() {
                     </div>
                   </div>
 
+                  {/* Certification Badges */}
+                  <div className="flex justify-center gap-8 py-4 opacity-40 grayscale hover:grayscale-0 transition-all duration-500">
+                    <div className="flex flex-col items-center gap-1">
+                        <Lock className="w-4 h-4 text-primary" />
+                        <span className="text-[7px] font-black uppercase tracking-widest text-primary">SSL_SECURED</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                        <ShieldCheck className="w-4 h-4 text-primary" />
+                        <span className="text-[7px] font-black uppercase tracking-widest text-primary">PCI_COMPLIANT</span>
+                    </div>
+                    <div className="flex flex-col items-center gap-1">
+                        <Check className="w-4 h-4 text-primary" />
+                        <span className="text-[7px] font-black uppercase tracking-widest text-primary">GST_VERIFIED</span>
+                    </div>
+                  </div>
+
                   {/* Order summary */}
                   <div className="p-8 border border-white/5 rounded-none bg-black/40 space-y-4">
                     <p className="text-[9px] uppercase tracking-[0.5em] text-white/30 font-black italic border-b border-white/5 pb-4">Order_Summary_v2.4</p>

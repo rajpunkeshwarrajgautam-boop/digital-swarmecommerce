@@ -98,6 +98,33 @@ export default function TermsPage() {
               in connection with these terms.
             </p>
           </section>
+
+          {/* Section 6: Compliance */}
+          <section className="space-y-4 pt-8 border-t border-border">
+            <h2 className="text-2xl font-bold flex items-center gap-2">
+              <Shield className="w-6 h-6 text-primary" />
+              6. Grievance Redressal
+            </h2>
+            <div className="bg-secondary/20 p-6 rounded-xl border border-border space-y-4">
+              <p className="text-sm text-muted-foreground">
+                In accordance with Consumer Protection (E-Commerce) Rules, 2020, the name and contact details of the Grievance Officer are provided below:
+              </p>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm font-mono uppercase tracking-tight">
+                <div>
+                  <span className="text-primary block text-[10px] mb-1">Grievance_Officer</span>
+                  [Name of Officer]
+                </div>
+                <div>
+                  <span className="text-primary block text-[10px] mb-1">Comms_Relay</span>
+                  grievance@digitalswarm.in
+                </div>
+                <div className="md:col-span-2">
+                  <span className="text-primary block text-[10px] mb-1">Transmission_Node</span>
+                  Cyber City Innovation Hub, Haryana 122002, IND
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </motion.div>
     </div>

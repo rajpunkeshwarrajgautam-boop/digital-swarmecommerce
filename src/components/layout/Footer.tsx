@@ -72,14 +72,21 @@ export function Footer() {
           </div>
         </div>
 
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-8">
-          <p className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 italic">
-            © {new Date().getFullYear()} Digital_Swarm. Secure_Transmission_Certified.
-          </p>
-          <div className="flex gap-10">
-            <Link href="/privacy" className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-primary transition-colors italic">Privacy</Link>
-            <Link href="/terms" className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-primary transition-colors italic">Legal</Link>
-            <Link href="/refund" className="text-[9px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-primary transition-colors italic">Refunds</Link>
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-start gap-12">
+          <div className="space-y-4">
+             <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">
+               © {new Date().getFullYear()} Digital_Swarm. All rights reserved.
+             </p>
+             <div className="flex flex-wrap gap-x-6 gap-y-2 text-[9px] font-black uppercase tracking-[0.2em] text-white/20 italic">
+                <span>GSTIN: [PENDING_REGISTRATION]</span>
+                <span>Udyam: [UDYAM-HR-XX-XXXXXXX]</span>
+                <span>MSME Certified Node</span>
+             </div>
+          </div>
+          <div className="flex flex-wrap gap-10">
+            <Link href="/privacy" className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-primary transition-colors italic border-b border-primary/20 pb-1">Privacy_Protocol</Link>
+            <Link href="/terms" className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-primary transition-colors italic border-b border-primary/20 pb-1">Usage_Terms</Link>
+            <Link href="/refund" className="text-[9px] font-black uppercase tracking-[0.3em] text-white/40 hover:text-primary transition-colors italic border-b border-primary/20 pb-1">Refund_Policy</Link>
           </div>
         </div>
       </div>
