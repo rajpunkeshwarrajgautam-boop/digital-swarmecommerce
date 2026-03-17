@@ -5,27 +5,28 @@ import { cva, type VariantProps } from "class-variance-authority"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-none text-xs font-black uppercase italic tracking-[0.2em] ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-primary disabled:pointer-events-none disabled:opacity-50 active:scale-[0.98]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-primary-foreground hover:bg-primary/90 shadow-md",
+        default: "bg-primary text-black hover:bg-white transition-all shadow-none border border-primary hover:border-white",
         destructive:
-          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+          "bg-red-500 text-white hover:bg-red-600 transition-all",
         outline:
-          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+          "border border-white/10 bg-transparent text-white/50 hover:text-white hover:border-white transition-all",
         secondary:
-          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
-        ghost: "hover:bg-accent hover:text-accent-foreground",
-        link: "text-primary underline-offset-4 hover:underline",
-        neon: "bg-transparent border border-primary text-primary shadow-[0_0_10px_rgba(204,255,0,0.5)] hover:bg-primary/10 hover:shadow-[0_0_20px_rgba(204,255,0,0.8)] transition-all duration-300 transform hover:scale-105", 
-        cyberpunk: "btn-cyberpunk",
+          "bg-white/5 text-white hover:bg-white/10 border border-white/5 hover:border-white/10",
+        ghost: "text-white/40 hover:text-white hover:bg-white/5 transition-all",
+        link: "text-primary border-b border-primary/0 hover:border-primary transition-all pb-0.5",
+        neon: "bg-transparent border border-primary text-primary shadow-[0_0_15px_rgba(204,255,0,0.1)] hover:bg-primary/5 hover:shadow-[0_0_30px_rgba(204,255,0,0.2)]", 
+        cyberpunk: "uiverse-glow-btn",
       },
       size: {
-        default: "h-10 px-4 py-2",
-        sm: "h-9 rounded-md px-3",
-        lg: "h-12 rounded-full px-8 text-lg font-bold tracking-wide", // Updated lg size for improved hero CTA
-        icon: "h-10 w-10",
+        default: "h-11 px-6",
+        sm: "h-9 px-4",
+        lg: "h-14 px-10 text-sm tracking-[0.3em]",
+        xl: "h-16 px-12 text-base tracking-[0.4em]",
+        icon: "h-11 w-11",
       },
     },
     defaultVariants: {

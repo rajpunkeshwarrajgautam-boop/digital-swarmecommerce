@@ -33,16 +33,16 @@ export function ParallaxHero() {
       <motion.div 
         animate={{ 
           rotateY: [0, 360],
-          z: [0, 50, 0]
+          z: [0, 20, 0]
         }}
-        transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-        className="absolute top-1/2 right-[10%] -translate-y-1/2 w-80 h-80 hidden xl:block preserve-3d"
+        transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+        className="absolute top-1/2 right-[10%] -translate-y-1/2 w-80 h-80 hidden xl:block preserve-3d pointer-events-none"
       >
-        <div className="absolute inset-0 border-[0.5px] border-primary/20 bg-zinc-950/20 backdrop-blur-3xl transform rotate-45 flex items-center justify-center">
+        <div className="absolute inset-0 border-[0.5px] border-primary/20 bg-zinc-950/80 transform rotate-45 flex items-center justify-center">
             <div className="w-full h-full border border-primary/10 animate-pulse" />
             <div className="absolute text-[8px] font-black tracking-[1em] text-primary transform -rotate-45 opacity-20">SYSTEM_RECOVERY_LOADED</div>
         </div>
-        <div className="absolute inset-2 border border-primary/40 bg-transparent transform -rotate-12" />
+        <div className="absolute inset-2 border border-primary/40 bg-zinc-900/40 transform -rotate-12" />
         <div className="absolute inset-8 border border-white/5 bg-zinc-900/40 transform rotate-90" />
       </motion.div>
 
@@ -77,7 +77,7 @@ export function ParallaxHero() {
             initial={{ opacity: 0, rotateX: 90 }}
             animate={{ opacity: 1, rotateX: 0 }}
             transition={{ duration: 1, delay: 0.8 }}
-            className="mt-16 max-w-xl border-l-[1px] border-white/10 pl-10"
+            className="mt-16 max-w-xl border-l border-white/10 pl-10"
           >
             <p className="text-lg md:text-xl text-white/50 font-bold leading-tight uppercase italic tracking-tighter">
                 The absolute standard in algorithmic source code. 
@@ -93,12 +93,12 @@ export function ParallaxHero() {
           className="mt-12 flex flex-wrap gap-6"
         >
           <Link href="/products">
-            <Button className="h-24 px-16 bg-white text-black font-black uppercase tracking-[0.2em] rounded-none text-2xl hover:bg-primary hover:scale-[1.02] transition-all duration-500 shadow-[20px_20px_0px_rgba(0,0,0,0.8)] active:shadow-none active:translate-x-2 active:translate-y-2">
+            <Button size="xl" className="shadow-[20px_20px_0px_rgba(0,0,0,0.8)] active:shadow-none active:translate-x-2 active:translate-y-2">
               Sync Vault
             </Button>
           </Link>
           <Link href="/about">
-            <Button variant="outline" className="h-24 px-16 border-[1px] border-white/20 text-white/50 font-black uppercase tracking-[0.2em] rounded-none text-2xl hover:border-white hover:text-white transition-all duration-300">
+            <Button variant="outline" size="xl">
               Operations
             </Button>
           </Link>
@@ -133,7 +133,7 @@ export function ParallaxHero() {
         className="absolute bottom-12 left-6 hidden md:flex flex-col items-center gap-4 opacity-20"
       >
         <span className="text-[9px] font-black uppercase tracking-[0.4em] rotate-90 origin-left ml-4">Scroll_Down</span>
-        <div className="w-px h-24 bg-gradient-to-b from-white to-transparent" />
+        <div className="w-px h-24 bg-linear-to-b from-white to-transparent" />
       </motion.div>
     </div>
   );

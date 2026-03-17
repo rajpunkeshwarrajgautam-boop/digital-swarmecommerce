@@ -22,20 +22,11 @@ export function VisualQuality() {
       });
     }, observerOptions);
 
+    // Intersection Observer for reveals stays as it is efficient
     const elementsToObserve = document.querySelectorAll(".silk-reveal-mask, .ono-text-split, .ono-reveal");
     elementsToObserve.forEach(el => revealObserver.observe(el));
 
-    // Add noise grain movement animation via JS
-    const updateGrainPosition = () => {
-      const x = Math.random() * 100;
-      const y = Math.random() * 100;
-      document.body.style.setProperty('--grain-x', `${x}%`);
-      document.body.style.setProperty('--grain-y', `${y}%`);
-    };
-
-    const interval = setInterval(updateGrainPosition, 50);
     return () => {
-      clearInterval(interval);
       revealObserver.disconnect();
     };
   }, []);

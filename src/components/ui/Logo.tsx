@@ -11,7 +11,8 @@ export function Logo({ className = "" }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    const handle = requestAnimationFrame(() => setMounted(true));
+    return () => cancelAnimationFrame(handle);
   }, []);
   
   return (
@@ -33,9 +34,9 @@ export function Logo({ className = "" }: { className?: string }) {
 
       {/* Text Branding - Hidden on mobile */}
       <div className="hidden sm:flex items-center">
-        <span className="text-xl font-bold tracking-tighter leading-none bg-clip-text text-transparent bg-linear-to-r from-foreground to-foreground/70 group-hover:from-primary group-hover:to-accent transition-all duration-500 uppercase flex items-center gap-1.5">
+        <span className="text-2xl font-black italic tracking-tighter leading-none text-white transition-all duration-300 uppercase flex items-center gap-2">
             DIGITAL
-            <span className="text-primary group-hover:text-accent transition-colors duration-500 inline-block scale-x-125 font-black">/</span>
+            <span className="text-primary font-black not-italic">/</span>
             SWARM
         </span>
       </div>

@@ -37,6 +37,7 @@ export function CustomCursor() {
         zIndex: 10000,
         translateX: "-50%",
         translateY: "-50%",
+        willChange: "transform",
       }}
       className="hidden md:block"
     >
@@ -52,8 +53,8 @@ export function CustomCursor() {
         />
         
         {/* Technical crosshairs */}
-        <div className="absolute w-20 h-[1px] bg-primary/10" />
-        <div className="absolute h-20 w-[1px] bg-primary/10" />
+        <div className="absolute w-20 h-px bg-primary/10" />
+        <div className="absolute h-20 w-px bg-primary/10" />
       </div>
     </motion.div>
   );

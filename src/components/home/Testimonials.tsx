@@ -54,7 +54,7 @@ export function Testimonials() {
               transition={{ delay: i * 0.1, duration: 0.6 }}
               className="uiverse-glass-container h-full"
             >
-                <div className="uiverse-glass-inner p-6 flex flex-col h-full bg-white">
+                <div className="uiverse-glass-inner p-6 flex flex-col h-full bg-card border border-white/5">
                     <div className="flex gap-1 mb-4">
                         {[...Array(t.rating)].map((_, idx) => (
                             <Star key={idx} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
