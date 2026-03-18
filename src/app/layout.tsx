@@ -37,26 +37,31 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "Digital Swarm | Source Code, UI Kits & Digital Templates for Developers",
-    template: "%s | Digital Swarm"
+    default: "Digital Swarm | Scale to 7-Figures with Data-Driven Marketing & AI Agents",
+    template: "%s | Digital_Swarm_v2"
   },
-  description: "Buy production-ready source code, UI kits, and digital templates. Used by 2,000+ indie developers. Instant download, setup guide included. Start building faster today.",
-  keywords: ["source code", "UI kits", "digital templates", "Next.js starter", "React components", "developer tools", "AI agent boilerplate", "web development", "instant download", "digital products India"],
-  authors: [{ name: "Digital Swarm Team" }],
+  description: "The absolute standard in algorithmic growth. Download production-ready AI agents, UI kits, and strategic source code. Optimized for Indian businesses scaling to 7-figures. Deploy in minutes, not weeks.",
+  keywords: [
+    "buy AI agents for developers", "React UI kits for sale", "source code bundles web dev", 
+    "SaaS launch checklist template", "developer design system Figma", "pre-built legal AI agent for startups", 
+    "customizable React dashboard UI kit", "full-stack web app source code MERN", "performance marketing India",
+    "data-driven marketing agency", "buy digital products India", "AI sales automation"
+  ],
+  authors: [{ name: "Digital Swarm Engineering & Marketing Team" }],
   metadataBase: new URL('https://digitalswarm.in'),
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: 'https://digitalswarm.in',
-    title: 'Digital Swarm | Source Code, UI Kits & Templates — Download & Ship Faster',
-    description: 'Production-ready source code, UI kits, and digital templates trusted by 2,000+ developers. Instant download, 30-day guarantee.',
+    title: 'Digital Swarm | Scale to 7-Figures with AI & Strategic Code',
+    description: 'Production-ready AI agents and UI kits trusted by elite growth pods. Instant sync — stop building, start scaling.',
     siteName: 'Digital Swarm',
-    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Digital Swarm — Premium Digital Products for Developers' }]
+    images: [{ url: '/opengraph-image', width: 1200, height: 630, alt: 'Digital Swarm — Tactical Infrastructure for Rapid Growth' }]
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Digital Swarm | Source Code, UI Kits & Templates',
-    description: 'Production-ready source code, UI kits, and digital templates trusted by 2,000+ developers. Instant download — start shipping faster.',
+    title: 'Digital Swarm | Tactical AI Agents & UI Infrastructure',
+    description: 'The absolute standard in algorithmic performance. Download production-ready source code and ship faster.',
     images: ['/opengraph-image'],
   },
   robots: {

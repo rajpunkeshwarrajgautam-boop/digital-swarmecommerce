@@ -7,28 +7,42 @@ import { Button } from "@/components/ui/Button";
 
 declare global {
   interface Window {
-    fbq?: (command: string, event: string, params?: Record<string, unknown>) => void;
+    fbq?: (command: string, event: string, params?: object) => void;
   }
 }
+
+import { captureLead } from "@/lib/email-service";
 
 export function LeadMagnet() {
   const [url, setUrl] = useState("");
   const [email, setEmail] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    // Simulate API call
-    setTimeout(() => {
-      setIsSubmitting(false);
-      setIsSuccess(true);
-      // Track event if needed
-      if (typeof window !== 'undefined' && window.fbq) {
-        window.fbq('track', 'Lead', { content_name: 'Free Audit' });
+    setError(null);
+    
+    try {
+      const res = await captureLead(email, { url, source: "FREE_AUDIT" });
+      if (res.success) {
+        setIsSuccess(true);
+      } else {
+        throw new Error(res.message);
       }
-    }, 2000);
+    } catch (err) {
+      setError("TRANSMISSION_FAILED_RETRY_LATER");
+      console.error(err);
+    } finally {
+      setIsSubmitting(false);
+    }
+
+    // Track event if needed
+    if (typeof window !== 'undefined' && window.fbq) {
+      window.fbq('track', 'Lead', { content_name: 'Free Audit' });
+    }
   };
 
   return (
@@ -93,6 +107,11 @@ export function LeadMagnet() {
                     className="w-full bg-zinc-900 border border-white/10 p-5 text-sm font-black uppercase italic tracking-tighter focus:border-primary/50 outline-none transition-all"
                   />
                 </div>
+                {error && (
+                  <div className="p-4 bg-red-500/10 border border-red-500/50 text-red-500 text-[10px] font-black uppercase italic tracking-widest text-center">
+                    {error}
+                  </div>
+                )}
 
                 <Button 
                   disabled={isSubmitting}
