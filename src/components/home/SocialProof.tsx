@@ -31,38 +31,59 @@ const testimonials = [
 ];
 
 const stats = [
-  { value: "2,000+", label: "Happy Customers" },
-  { value: "98%", label: "5-Star Reviews" },
-  { value: "50+", label: "Products" },
-  { value: "< 5 min", label: "Avg. Setup Time" },
+  { value: "50,000+", label: "Leads Generated" },
+  { value: "₹1 Cr+", label: "Managed Ad Spend" },
+  { value: "300%", label: "Avg. ROAS Increase" },
+  { value: "100+", label: "Scaling Partners" },
+];
+
+const brands = [
+  "ALPHA_TECH", "SWARM_LOGISTICS", "NEON_CLOTHING", "CYBER_RETAIL", "NEXUS_FINANCE"
 ];
 
 export function SocialProof() {
   return (
-    <section className="py-24 bg-secondary/20 border-t border-border/40">
-      <div className="container mx-auto px-4">
+    <section className="py-32 bg-secondary/5 border-y border-white/5 relative overflow-hidden">
+      {/* Background decoration */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
+      
+      <div className="container mx-auto px-6 relative z-10">
+        
+        {/* Trusted By Strip */}
+        <div className="mb-24 text-center">
+            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-10 italic">Trusted_By_Elite_Growth_Pods</p>
+            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+                {brands.map((brand, i) => (
+                    <span key={i} className="text-xl md:text-2xl font-black italic tracking-tighter uppercase text-white hover:text-primary transition-colors cursor-default">
+                        {brand}
+                    </span>
+                ))}
+            </div>
+        </div>
+
         {/* Stats */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 mb-20 max-w-3xl mx-auto">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-32 max-w-6xl mx-auto border-y border-white/5 py-12">
           {stats.map((stat, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.08, duration: 0.4 }}
-              className="text-center"
+              transition={{ delay: i * 0.1, duration: 0.6 }}
+              className="text-center md:text-left border-l border-primary/20 pl-8"
             >
-              <p className="text-3xl md:text-4xl font-black text-primary">{stat.value}</p>
-              <p className="text-sm text-muted-foreground mt-1">{stat.label}</p>
+              <p className="text-4xl md:text-6xl font-black italic tracking-tighter text-primary leading-none mb-2">{stat.value}</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">{stat.label}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Section title */}
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold">
-            What Our Customers Say
+        <div className="mb-20">
+          <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-white leading-none">
+            Success_Logs
           </h2>
+          <p className="text-primary font-black uppercase tracking-[0.4em] text-[10px] mt-4 italic">Audited_Partner_Performance</p>
         </div>
 
         {/* Testimonials */}

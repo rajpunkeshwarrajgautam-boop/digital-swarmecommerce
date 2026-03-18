@@ -196,5 +196,33 @@ export const products: Product[] = [
     specs: { Download: 'Instant', 'File Types': 'PSD, AI, HTML', 'Total Files': '5000+' },
     downloadUrl: "/downloads/ultimate-mega-bundle.pdf",
     installGuide: "### Access\n1. Download the PDF. 2. Use the private Mega.nz link inside to access the repository."
+  },
+  {
+    id: "agency-seo-framework",
+    name: "Scale-SEO Framework (Monthly Managed)",
+    description: "A complete 4-step SEO framework designed for Indian e-commerce. Includes technical audit, keyword infiltration, and high-authority backlink building. We don't just 'do SEO' — we dominate search results.",
+    price: 4999,
+    category: "Agency Services",
+    image: "/images/products/agency-seo.png",
+    inStock: true,
+    rating: 5.0,
+    features: ['Technical Audit Protocol', 'Zero-Volume Keyword Strategy', 'High-DR Link Building', 'Monthly PDF Intel Report', 'Dedicated Account Oracle'],
+    specs: { Type: 'Managed Service', Duration: 'Monthly', Targets: 'Search Dominance', Support: '24/7 Comms', Pricing: 'Starting From ₹4,999' },
+    downloadUrl: "service_contract.pdf",
+    installGuide: "### Strategic Onboarding\n1. **Uplink**: Book your strategy call after checkout.\n2. **Audit**: Our agents perform a technical sweep of your URL.\n3. **Deploy**: Content and links are deployed across our network."
+  },
+  {
+    id: "agency-ppc-lab",
+    name: "Elite-PPC Performance Lab (Ad Spend Management)",
+    description: "High-velocity Meta and Google Ads management. We focus on ROAS (Return on Ad Spend) above all else. Optimized for scaling Indian brands from 10 to 1000 orders/day.",
+    price: 2999,
+    category: "Agency Services",
+    image: "/images/products/agency-ppc.png",
+    inStock: true,
+    rating: 5.0,
+    features: ['Real-time ROAS Tracking', 'A/B Creative Synthesis', 'Audience Infiltration', 'Competitor Ad Scraping', 'Weekly Performance Sync'],
+    specs: { Platform: 'Meta / Google / LinkedIn', Target: 'Direct Response', Budget: 'Min. ₹2L/mo Managed', Support: 'Priority Support', License: 'Managed' },
+    downloadUrl: "service_contract.pdf",
+    installGuide: "### Performance Initiation\n1. **Protocol**: Shared access to your Ad Manager.\n2. **Creative**: We design the high-impact visual protocols.\n3. **Launch**: Scaling begins within 72 hours."
   }
 ];

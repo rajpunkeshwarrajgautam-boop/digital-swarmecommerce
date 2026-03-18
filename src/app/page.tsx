@@ -8,9 +8,8 @@ import { SocialProof } from "@/components/home/SocialProof";
 import { Testimonials } from "@/components/home/Testimonials";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
+import { LeadMagnet } from "@/components/home/LeadMagnet";
 import { EmailCapture } from "@/components/home/EmailCapture";
-import Link from "next/link";
-import { Button } from "@/components/ui/Button";
 
 export default function Home() {
   return (
@@ -81,31 +80,8 @@ export default function Home() {
       {/* FAQ */}
       <HomeFAQ />
 
-      {/* Freebie Banner */}
-      <section className="py-40 relative overflow-hidden bg-background">
-        <div className="container px-6 mx-auto">
-          <div className="relative p-16 bg-zinc-950 border-4 border-white flex flex-col items-start text-left overflow-hidden">
-             <div className="absolute top-0 right-0 p-8 opacity-20 blur-3xl bg-primary w-96 h-96 rounded-none translate-x-1/2 -translate-y-1/2" />
-             <div className="relative z-10 space-y-10 max-w-3xl">
-                <span className="text-[10px] font-black uppercase tracking-[0.5em] text-primary italic border-b-2 border-primary pb-2">Active Transmission</span>
-                <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.8] mb-6">
-                  Zero Cost<br/>
-                  <span className="text-white">Mainframe</span>
-                </h2>
-                <p className="text-2xl text-white/50 font-bold uppercase italic tracking-tighter leading-tight">
-                  Access the <span className="text-white">&quot;SaaS Launch Manifest&quot;</span> and architectural blueprints for ₹0. Immediate sync available.
-                </p>
-                <div className="pt-8">
-                  <Link href="/freebies">
-                    <Button className="h-20 px-12 bg-white text-black font-black uppercase tracking-widest rounded-none text-xl hover:bg-primary transition-all duration-300 shadow-[12px_12px_0px_#000]">
-                      Sync Free Resources <Zap className="w-6 h-6 ml-4" />
-                    </Button>
-                  </Link>
-                </div>
-             </div>
-          </div>
-        </div>
-      </section>
+      {/* Lead Magnet Section */}
+      <LeadMagnet />
 
       {/* Email Capture + Final CTA */}
       <EmailCapture />

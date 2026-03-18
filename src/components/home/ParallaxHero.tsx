@@ -66,7 +66,7 @@ export function ParallaxHero() {
                   variants={letterVariants}
                   initial="initial"
                   animate="animate"
-                  className="text-7xl sm:text-9xl md:text-[11rem] lg:text-[13rem] font-black italic uppercase leading-[0.75] tracking-[-0.08em] inline-block"
+                  className="text-7xl sm:text-9xl md:text-[10rem] lg:text-[12rem] font-black italic uppercase leading-[0.75] tracking-[-0.08em] inline-block"
                 >
                   {char === "_" ? <span className="text-primary">_</span> : char}
                 </motion.span>
@@ -77,11 +77,16 @@ export function ParallaxHero() {
             initial={{ opacity: 0, rotateX: 90 }}
             animate={{ opacity: 1, rotateX: 0 }}
             transition={{ duration: 1, delay: 0.8 }}
-            className="mt-16 max-w-xl border-l border-white/10 pl-10"
+            className="mt-12 max-w-3xl border-l border-primary/40 pl-10"
           >
-            <p className="text-lg md:text-xl text-white/50 font-bold leading-tight uppercase italic tracking-tighter">
-                The absolute standard in algorithmic source code. 
-                Optimized blueprints for the high-performance developer ecosystem.
+            <h2 className="text-3xl md:text-6xl font-black italic uppercase tracking-tighter leading-[0.9] mb-6">
+                We Help Indian Businesses <br/> 
+                <span className="text-primary underline underline-offset-[12px] decoration-2">Scale to 7-Figures</span> <br/>
+                with Data-Driven Marketing.
+            </h2>
+            <p className="text-sm md:text-base text-white/40 font-bold uppercase italic tracking-[0.2em] leading-relaxed max-w-xl">
+                The absolute standard in algorithmic growth. 
+                Optimized blueprints for high-performance market dominance.
             </p>
           </motion.div>
         </div>
@@ -89,17 +94,17 @@ export function ParallaxHero() {
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 1 }}
+          transition={{ duration: 0.8, delay: 1.2 }}
           className="mt-12 flex flex-wrap gap-6"
         >
-          <Link href="/products">
-            <Button size="xl" className="shadow-[20px_20px_0px_rgba(0,0,0,0.8)] active:shadow-none active:translate-x-2 active:translate-y-2">
-              Sync Vault
+          <Link href="/contact">
+            <Button size="xl" className="shadow-[20px_20px_0px_rgba(var(--primary-rgb),0.1)] active:shadow-none active:translate-x-2 active:translate-y-2 bg-primary text-black hover:bg-white transition-all font-black uppercase italic tracking-[0.2em]">
+              Get Free Strategy Call
             </Button>
           </Link>
-          <Link href="/about">
-            <Button variant="outline" size="xl">
-              Operations
+          <Link href="/products">
+            <Button variant="outline" size="xl" className="border-white/10 hover:border-primary hover:text-primary transition-all font-black uppercase italic tracking-[0.2em]">
+              View Protocols
             </Button>
           </Link>
         </motion.div>
