@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 import { products } from '@/lib/data';
+import { blogPosts } from '@/lib/blog';
 
 // Auto-generating Programmatic SEO Pages via Sitemap
 export default function sitemap(): MetadataRoute.Sitemap {
@@ -16,17 +17,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     '/license',
     '/terms',
     '/affiliate',
-    '/bundle-builder'
+    '/bundle-builder',
+    '/blog'
   ].map((route) => ({
     url: `${baseUrl}${route}`,
     lastModified: new Date(),
     changeFrequency: 'weekly' as const,
-    priority: route === '' ? 1 : (route === '/freebies' ? 0.9 : 0.8),
+    priority: route === '' ? 1 : (route === '/freebies' || route === '/blog' ? 0.9 : 0.8),
   }));
 
   // Auto-generate deep Programmable SEO Product Pages
   const dynamicProductPages = products.map((product) => ({
     url: `${baseUrl}/products/${product.id}`,
+    lastModified: new Date(),
+    changeFrequency: 'monthly' as const,
+    priority: 0.9,
+  }));
+
+  // Auto-generate deep Intelligence Logs (Blog)
+  const dynamicBlogPages = blogPosts.map((post) => ({
+    url: `${baseUrl}/blog/${post.slug}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.9,
@@ -41,5 +51,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     priority: 0.8,
   }));
 
-  return [...staticPages, ...dynamicProductPages, ...categoryHubs];
+  return [...staticPages, ...dynamicProductPages, ...dynamicBlogPages, ...categoryHubs];
 }
