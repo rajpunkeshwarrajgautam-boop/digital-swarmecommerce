@@ -19,8 +19,8 @@ const steps = [
   {
     step: "03",
     icon: <Rocket className="w-7 h-7 text-primary" />,
-    title: "Use & Launch",
-    description: "Follow the included setup guide and have your project running in 5 minutes. Ship something you're proud of.",
+    title: "One-Click Launch",
+    description: "Execute the included .BAT protocol to launch your Unified Tactical Dashboard. Zero configuration. Instant AI intelligence.",
   },
 ];
 
