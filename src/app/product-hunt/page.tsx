@@ -1,7 +1,6 @@
 "use client";
 
-import { Star, ArrowRight, Download, ShieldCheck, Zap, CheckCircle, Gift, Terminal } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Download, ShieldCheck, Zap, CheckCircle, Gift, Terminal } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
@@ -11,8 +10,8 @@ export default function ProductHuntHub() {
       
       {/* ONO Industrial Hero */}
       <section className="relative pt-48 pb-32 overflow-hidden border-b border-white/5">
-        <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/20" />
-        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-primary/20" />
+        <div className="absolute top-0 left-0 w-full h-px bg-primary/20" />
+        <div className="absolute bottom-0 left-0 w-full h-px bg-primary/20" />
         
         <div className="container mx-auto px-6 relative z-10">
           <div className="flex flex-col gap-8">
@@ -109,10 +108,10 @@ export default function ProductHuntHub() {
             <div className="flex justify-center gap-4">
               <Gift className="w-16 h-16" />
             </div>
-            <h2 className="text-5xl md:text-9xl font-black italic uppercase tracking-[0.1em] leading-none">READY_TO_SHIP?</h2>
+            <h2 className="text-5xl md:text-9xl font-black italic uppercase tracking-widest leading-none">READY_TO_SHIP?</h2>
             <div className="max-w-xl mx-auto py-8 border-y-2 border-black/20">
                <p className="text-lg font-black uppercase tracking-widest italic">
-                  USE_KEY: <span className="bg-black text-white px-4 py-2 mx-2">HUNTER40</span> // VALID_LIFETIME
+                  USE_KEY: <span className="bg-black text-white px-4 py-2 mx-2">HUNTER40</span> {/* VALID_LIFETIME */}
                </p>
             </div>
             <div className="pt-12">

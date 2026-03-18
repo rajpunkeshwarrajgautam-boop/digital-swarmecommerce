@@ -1,19 +1,19 @@
 @import "tailwindcss";
 
 @theme inline {
-  --background: #020202;
-  --foreground: #ffffff;
-  --primary: #ccff00;
-  --primary-foreground: #000000;
-  --secondary: #0a0a0a;
-  --secondary-foreground: #ffffff;
-  --accent: #ccff00;
-  --accent-foreground: #000000;
-  --muted: #050505;
-  --muted-foreground: #a1a1aa;
-  --card: #050505;
-  --card-foreground: #ffffff;
-  --border: rgba(255, 255, 255, 0.05);
+  --background: #1a1b26; /* Tokyo Night Storm Background */
+  --foreground: #cfc9c2; /* Tokyo Night Subtle Text */
+  --primary: #7dcfff;    /* Tokyo Night Cyan */
+  --primary-foreground: #1a1b26;
+  --secondary: #24283b;  /* Tokyo Night Surface */
+  --secondary-foreground: #a9b1d6;
+  --accent: #bb9af7;     /* Tokyo Night Magenta */
+  --accent-foreground: #1a1b26;
+  --muted: #1f2335;
+  --muted-foreground: #565f89;
+  --card: #24283b;
+  --card-foreground: #c0caf5;
+  --border: rgba(125, 207, 255, 0.15);
   --radius: 0rem;
 
   --color-background: var(--background);
@@ -37,6 +37,10 @@
 
 body {
   background-color: var(--background);
+  background-image: 
+    radial-gradient(circle at 50% -20%, rgba(125, 207, 255, 0.05), transparent 70%),
+    radial-gradient(circle at 0% 100%, rgba(187, 154, 247, 0.03), transparent 50%);
+  background-attachment: fixed;
   color: var(--foreground);
   font-family: var(--font-inter), sans-serif;
   -webkit-font-smoothing: antialiased;
