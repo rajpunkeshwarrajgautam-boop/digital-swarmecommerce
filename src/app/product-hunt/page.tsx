@@ -1,142 +1,133 @@
 "use client";
 
-import { Star, ArrowRight, Download, ShieldCheck, Zap, CheckCircle } from "lucide-react";
+import { Star, ArrowRight, Download, ShieldCheck, Zap, CheckCircle, Gift, Terminal } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { motion } from "framer-motion";
 
 export default function ProductHuntHub() {
   return (
-    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black">
+    <div className="min-h-screen bg-black text-white selection:bg-primary selection:text-black font-mono">
       
-      {/* Hero Section */}
-      <section className="relative pt-32 pb-20 overflow-hidden">
-        <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_50%_-20%,#3b82f633,transparent_70%)]" />
+      {/* ONO Industrial Hero */}
+      <section className="relative pt-48 pb-32 overflow-hidden border-b border-white/5">
+        <div className="absolute top-0 left-0 w-full h-[1px] bg-primary/20" />
+        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-primary/20" />
         
-        <div className="container mx-auto px-4 relative z-10 text-center">
-          <motion.div
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-orange-500/10 border border-orange-500/20 text-orange-500 text-sm font-bold mb-8"
-          >
-            <Star className="w-4 h-4 fill-orange-500" /> WELCOME PRODUCT HUNT COMMUNITY
-          </motion.div>
-          
-          <h1 className="text-6xl md:text-8xl font-black mb-8 tracking-tight italic">
-            STOP BUILDING <br /> <span className="text-primary tracking-tighter not-italic">START SHIPPING.</span>
-          </h1>
-          
-          <p className="text-xl text-zinc-400 max-w-2xl mx-auto mb-12 leading-relaxed">
-            You found us! As a &quot;Thank You&quot; for checking out Digital Swarm via Product Hunt, we&apos;ve unlocked an exclusive **40% DISCOUNT** across our entire catalog of production-ready code.
-          </p>
-
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link href="/products">
-              <Button variant="cyberpunk" className="h-16 px-10 text-lg group">
-                Claim 40% Off Now <ArrowRight className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" />
-              </Button>
-            </Link>
-            <div className="text-left">
-              <div className="flex -space-x-3 mb-2">
-                {[1,2,3,4].map(i => (
-                  <div key={i} className="w-10 h-10 rounded-full border-2 border-black bg-zinc-800 flex items-center justify-center text-[10px] font-bold">
-                    User {i}
+        <div className="container mx-auto px-6 relative z-10">
+          <div className="flex flex-col gap-8">
+            <motion.div
+              initial={{ opacity: 0, x: -20 }}
+              animate={{ opacity: 1, x: 0 }}
+              className="bg-primary text-black px-4 py-1 text-[10px] font-black uppercase tracking-[0.5em] w-fit italic"
+            >
+              [ PH_IDENTIFIED_v2.0 ]
+            </motion.div>
+            
+            <h1 className="text-6xl md:text-9xl font-black italic uppercase tracking-tighter leading-[0.85]">
+              ST0P_BUILDING <br /> <span className="text-primary tracking-tighter not-italic">START_SHIPPING.</span>
+            </h1>
+            
+            <div className="flex flex-col md:flex-row justify-between items-end gap-12 pt-12">
+               <p className="text-2xl text-white/40 max-w-2xl font-bold uppercase italic tracking-tighter leading-tight">
+                  Welcome, Hunter. You&apos;ve bypassed the noise. <br/>
+                  Exclusive <span className="text-white">40% DISCOUNT</span> unlocked for the PH community.
+               </p>
+               
+               <div className="flex flex-col gap-6 w-full md:w-auto">
+                  <Link href="/products">
+                    <button className="bg-primary text-black font-black px-12 py-6 uppercase italic tracking-[0.3em] hover:bg-white transition-all text-xs border-none shadow-[20px_20px_0px_rgba(var(--primary-rgb),0.1)] active:shadow-none w-full md:w-auto">
+                      CLAIM_PH_DISCOUNT_v40
+                    </button>
+                  </Link>
+                  <div className="flex items-center gap-4 text-[10px] font-black uppercase tracking-widest text-primary/40 italic">
+                    <Terminal className="w-4 h-4" /> AUTH_TOKEN: HUNTER40
                   </div>
-                ))}
-                <div className="w-10 h-10 rounded-full border-2 border-black bg-primary text-black flex items-center justify-center text-[10px] font-bold">
-                  +2k
-                </div>
-              </div>
-              <p className="text-xs text-zinc-500 font-medium">Trusted by 2,100+ PH Hunters</p>
+               </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* The "Why" Section */}
-      <section className="py-24 bg-zinc-950 border-y border-white/5">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-12">
-            <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
-                    <Zap className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold italic">Bypass the &quot;Hello World&quot;</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed">
-                    Don&apos;t waste 40 hours setting up Auth, DB, and UI. Every template comes with production-grade Clerk, Supabase, and Tailwind pre-configured.
+      {/* Industrial Grid */}
+      <section className="py-24 border-b border-white/5 bg-zinc-950">
+        <div className="container mx-auto px-6">
+          <div className="grid md:grid-cols-3 divide-x divide-white/5 border border-white/5">
+            <div className="p-12 space-y-6 hover:bg-primary/5 transition-colors group">
+                <Zap className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+                <h3 className="text-2xl font-black italic uppercase tracking-tighter">Bypass_Setup</h3>
+                <p className="text-white/40 text-sm font-bold uppercase italic tracking-tighter leading-relaxed">
+                    Zero manual boilerplate. Production-grade Clerk_Auth, Supabase_Cloud, and Tailwind_Core integrated into every protocol.
                 </p>
             </div>
-            <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-emerald-500/10 flex items-center justify-center text-emerald-500">
-                    <ShieldCheck className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold italic">Clean, Scalable Code</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed">
-                    No spaghetti code. Built with TypeScript, Next.js 15, and the latest server components. Every repo is a blueprint for scaling.
+            <div className="p-12 space-y-6 hover:bg-primary/5 transition-colors group">
+                <ShieldCheck className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+                <h3 className="text-2xl font-black italic uppercase tracking-tighter">Scalable_Kernal</h3>
+                <p className="text-white/40 text-sm font-bold uppercase italic tracking-tighter leading-relaxed">
+                    Clean TypeScript blueprints. Next.js 15+ Server Components. Built for high-velocity scaling, not just demo scripts.
                 </p>
             </div>
-            <div className="space-y-4">
-                <div className="w-12 h-12 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-500">
-                    <Download className="w-6 h-6" />
-                </div>
-                <h3 className="text-xl font-bold italic">Commercial License</h3>
-                <p className="text-zinc-500 text-sm leading-relaxed">
-                    Build for yourself or build for clients. Our simple license allows you to ship unlimited commercial projects with one purchase.
+            <div className="p-12 space-y-6 hover:bg-primary/5 transition-colors group">
+                <Download className="w-8 h-8 text-primary group-hover:scale-110 transition-transform" />
+                <h3 className="text-2xl font-black italic uppercase tracking-tighter">Universal_License</h3>
+                <p className="text-white/40 text-sm font-bold uppercase italic tracking-tighter leading-relaxed">
+                    Commercial rights included. Ship unlimited sub-mainframes for yourself or clients without recurring taxation.
                 </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Stats Section */}
-      <section className="py-24 relative">
-        <div className="container mx-auto px-4 text-center">
-            <div className="inline-block p-8 border border-white/5 rounded-[3rem] bg-zinc-900/50 backdrop-blur-xl">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-12 md:gap-24">
-                    <div>
-                        <p className="text-4xl font-black text-primary">₹3.5M+</p>
-                        <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Saved by Devs</p>
-                    </div>
-                    <div>
-                        <p className="text-4xl font-black text-white">4.2k</p>
-                        <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Downloads</p>
-                    </div>
-                    <div>
-                        <p className="text-4xl font-black text-white">15+</p>
-                        <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Premium Kits</p>
-                    </div>
-                    <div>
-                        <p className="text-4xl font-black text-emerald-400">24h</p>
-                        <p className="text-xs text-zinc-500 uppercase tracking-widest mt-2">Support Response</p>
-                    </div>
+      {/* Tactical Stats */}
+      <section className="py-32 relative border-b border-white/5">
+        <div className="container mx-auto px-6">
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-12">
+                <div>
+                    <p className="text-5xl font-black tracking-tighter italic">₹3.5M+</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mt-4 italic">DEV_TIME_SAVED</p>
+                </div>
+                <div>
+                    <p className="text-5xl font-black tracking-tighter italic">4.2k</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mt-4 italic">UNITS_DEPLOYED</p>
+                </div>
+                <div>
+                    <p className="text-5xl font-black tracking-tighter italic">18+</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mt-4 italic">ELITE_PROTOCOLS</p>
+                </div>
+                <div>
+                    <p className="text-5xl font-black tracking-tighter italic text-primary">24h</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.5em] text-primary/50 mt-4 italic">SUPPORT_SLA</p>
                 </div>
             </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-32 bg-primary relative overflow-hidden">
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-10" />
-        <div className="container mx-auto px-4 relative z-10 text-center">
-            <h2 className="text-4xl md:text-6xl font-black text-black mb-8 italic">READY TO SHIP?</h2>
-            <p className="text-black/70 max-w-xl mx-auto mb-12 font-medium">
-                Use code <span className="p-2 bg-black text-white font-mono rounded-lg">HUNTER40</span> at checkout to unlock your lifetime discount.
-            </p>
-            <div className="flex flex-col items-center gap-4">
+      {/* CTA Transmition */}
+      <section className="py-48 bg-primary text-black relative overflow-hidden group">
+        <div className="absolute top-0 right-0 p-32 opacity-10 blur-3xl bg-black w-[500px] h-[500px] rounded-none translate-x-1/2 -translate-y-1/2 transition-all group-hover:scale-150 duration-700" />
+        <div className="container mx-auto px-6 relative z-10 text-center space-y-12">
+            <div className="flex justify-center gap-4">
+              <Gift className="w-16 h-16" />
+            </div>
+            <h2 className="text-5xl md:text-9xl font-black italic uppercase tracking-[0.1em] leading-none">READY_TO_SHIP?</h2>
+            <div className="max-w-xl mx-auto py-8 border-y-2 border-black/20">
+               <p className="text-lg font-black uppercase tracking-widest italic">
+                  USE_KEY: <span className="bg-black text-white px-4 py-2 mx-2">HUNTER40</span> // VALID_LIFETIME
+               </p>
+            </div>
+            <div className="pt-12">
                 <Link href="/products">
-                    <Button size="lg" className="bg-black text-white hover:bg-zinc-900 h-16 px-12 rounded-full font-black text-xl">
-                        BROWSE THE CATALOG
-                    </Button>
+                    <button className="bg-black text-white font-black px-16 py-8 uppercase italic tracking-[0.4em] hover:bg-zinc-900 transition-all text-xl border-none shadow-[20px_20px_0px_rgba(0,0,0,0.1)] active:shadow-none">
+                        ENTER_CATALOG
+                    </button>
                 </Link>
-                <div className="flex items-center gap-6 mt-8">
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-black" />
-                        <span className="text-sm text-black font-bold">Secure Stripe Gateway</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <CheckCircle className="w-5 h-5 text-black" />
-                        <span className="text-sm text-black font-bold">Instant Email Delivery</span>
-                    </div>
+            </div>
+            <div className="flex flex-wrap justify-center gap-12 pt-12 opacity-50">
+                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest italic">
+                   <CheckCircle className="w-5 h-5" /> SECURE_STRIPE_GATEWAY
+                </div>
+                <div className="flex items-center gap-3 text-xs font-black uppercase tracking-widest italic">
+                   <CheckCircle className="w-5 h-5" /> INSTANT_PROTO_DELIVERY
                 </div>
             </div>
         </div>
