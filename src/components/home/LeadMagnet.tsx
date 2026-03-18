@@ -5,12 +5,6 @@ import { motion } from "framer-motion";
 import { Search, Zap, CheckCircle, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
-declare global {
-  interface Window {
-    fbq?: (command: string, event: string, params?: object) => void;
-  }
-}
-
 import { captureLead } from "@/lib/email-service";
 
 export function LeadMagnet() {
