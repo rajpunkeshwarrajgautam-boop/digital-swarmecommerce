@@ -233,3 +233,207 @@ body::after {
   border-color: var(--primary);
   box-shadow: 0 0 20px rgba(204, 255, 0, 0.1);
 }
+
+/* ============================================================
+   RESPONSIVE LAYOUT SYSTEM
+   CSS Breakpoints Made Simple (Coding Sameer Standard)
+   ─────────────────────────────────────────────────────────────
+   MOBILE       @media (max-width: 767px)
+   TABLET       @media (min-width: 768px) and (max-width: 1023px)
+   DESKTOP      @media (min-width: 1024px) and (max-width: 1439px)
+   EXTRA LARGE  @media (min-width: 1440px)
+   ============================================================ */
+
+/* Override Tailwind v4 xl breakpoint to 1440px */
+@theme inline {
+  --breakpoint-xl: 1440px;
+}
+
+/* ── BASE CONTAINER ───────────────────────────────────────── */
+.container {
+  width: 100%;
+  margin-inline: auto;
+}
+
+/* MOBILE: max 767px → 10px padding */
+@media (max-width: 767px) {
+  .container {
+    padding-inline: 10px;
+    max-width: 100%;
+  }
+}
+
+/* TABLET: 768px – 1023px → 20px padding */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .container {
+    padding-inline: 20px;
+    max-width: 960px;
+  }
+}
+
+/* DESKTOP: 1024px – 1439px → 30px padding */
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .container {
+    padding-inline: 30px;
+    max-width: 1280px;
+  }
+}
+
+/* EXTRA LARGE: 1440px+ → 40px padding */
+@media (min-width: 1440px) {
+  .container {
+    padding-inline: 40px;
+    max-width: 1600px;
+  }
+}
+
+/* ── TYPOGRAPHY SCALING ───────────────────────────────────── */
+@media (max-width: 767px) {
+  h1 { font-size: clamp(2.5rem, 12vw, 4rem); line-height: 0.85; }
+  h2 { font-size: clamp(1.75rem, 8vw, 2.5rem); }
+  h3 { font-size: clamp(1.25rem, 5vw, 1.75rem); }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  h1 { font-size: clamp(4rem, 8vw, 7rem); }
+  h2 { font-size: clamp(2rem, 4vw, 3rem); }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  h1 { font-size: clamp(6rem, 8vw, 10rem); }
+  h2 { font-size: clamp(2.5rem, 3vw, 4rem); }
+}
+
+@media (min-width: 1440px) {
+  h1 { font-size: clamp(9rem, 10vw, 14rem); }
+  h2 { font-size: clamp(3rem, 3.5vw, 5rem); }
+}
+
+/* ── NAVIGATION (HEADER) ──────────────────────────────────── */
+@media (max-width: 767px) {
+  nav .nav-links { display: none; }
+  nav .nav-cta   { display: none; }
+  nav .mobile-menu-btn { display: flex; }
+  nav { padding-block: 12px; }
+}
+
+@media (min-width: 768px) {
+  nav .mobile-menu-btn { display: none; }
+}
+
+/* ── PRODUCT GRID ─────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .product-grid { grid-template-columns: 1fr !important; gap: 16px !important; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .product-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 20px !important; }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  .product-grid { grid-template-columns: repeat(3, 1fr) !important; gap: 24px !important; }
+}
+
+@media (min-width: 1440px) {
+  .product-grid { grid-template-columns: repeat(4, 1fr) !important; gap: 32px !important; }
+}
+
+/* ── HERO SECTION ─────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .hero-section { min-height: 100svh; padding-top: 80px; }
+  .hero-cta-group { flex-direction: column; gap: 12px; width: 100%; }
+  .hero-cta-group a, .hero-cta-group button { width: 100%; text-align: center; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .hero-section { min-height: 90vh; }
+}
+
+@media (min-width: 1024px) {
+  .hero-section { min-height: 100vh; }
+}
+
+/* ── SECTION VERTICAL SPACING ─────────────────────────────── */
+@media (max-width: 767px) {
+  section { padding-block: 48px; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  section { padding-block: 72px; }
+}
+
+@media (min-width: 1024px) and (max-width: 1439px) {
+  section { padding-block: 96px; }
+}
+
+@media (min-width: 1440px) {
+  section { padding-block: 128px; }
+}
+
+/* ── CART DRAWER ──────────────────────────────────────────── */
+@media (max-width: 767px) {
+  [data-role="cart-drawer"] { width: 100vw !important; }
+}
+
+@media (min-width: 768px) {
+  [data-role="cart-drawer"] { width: 480px !important; }
+}
+
+/* ── PRODUCT DETAIL (2-COLUMN LAYOUT) ────────────────────── */
+@media (max-width: 767px) {
+  .product-detail-grid { grid-template-columns: 1fr !important; }
+  .product-detail-image { height: 320px; }
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .product-detail-grid { grid-template-columns: 1fr 1fr !important; }
+}
+
+@media (min-width: 1024px) {
+  .product-detail-grid { grid-template-columns: 1fr 1fr !important; }
+}
+
+/* ── CHECKOUT / FORMS ─────────────────────────────────────── */
+@media (max-width: 767px) {
+  .checkout-grid { grid-template-columns: 1fr !important; }
+  .form-row-2col { grid-template-columns: 1fr !important; }
+}
+
+@media (min-width: 768px) {
+  .checkout-grid { grid-template-columns: 1fr 400px; gap: 32px; }
+  .form-row-2col { grid-template-columns: 1fr 1fr; gap: 16px; }
+}
+
+/* ── PROMO BANNER ─────────────────────────────────────────── */
+@media (max-width: 767px) {
+  .promo-banner { font-size: 11px; padding-block: 8px; }
+}
+
+/* ── FEATURED STATS / METRICS GRID ───────────────────────── */
+@media (max-width: 767px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 16px !important; }
+}
+
+@media (min-width: 1024px) {
+  .stats-grid { grid-template-columns: repeat(4, 1fr) !important; }
+}
+
+/* ── GENERAL UTILITIES FOR BREAKPOINTS ───────────────────── */
+.mobile-only  { display: block; }
+.tablet-up    { display: none; }
+.desktop-up   { display: none; }
+.xl-only      { display: none; }
+
+@media (min-width: 768px) {
+  .mobile-only  { display: none; }
+  .tablet-up    { display: block; }
+}
+
+@media (min-width: 1024px) {
+  .desktop-up   { display: block; }
+}
+
+@media (min-width: 1440px) {
+  .xl-only      { display: block; }
+}
+
