@@ -1,0 +1,5212 @@
+ 
+ 
+1 
+ A Final  Year  Report  Project  on 
+E-COMMERCE  ONLINE  SHOPPING  
+WEBSITE  
+ 
+Submitted  in partial  fulfillment  for the 
+award  of the Degree in  
+BACHELOR IN COMPUTER  APPLICATION  
+By 
+  
+          NISHA BHARTI  
+                ENROLLMENT  NO. : AJU/191470  
+ 
+ 
+Under  the esteemed  guidance  of 
+ 
+      Miss.  Divya  Paikaray  
+ 
+ 
+DEPARTMENT  OF COMPUTER  SCIENCE  & IT 
+ARKA  JAIN  UNIVERSITY,  JHARKHAND , 
+JAMSHEDPUR  
+
+ 
+ 
+2 
+ 
+ 
+GUIDED  BY: 
+ SUBMITTED  BY: 
+ 
+Paikaray  
+Nisha Bharti (AJU/191470)  
+ 
+ 
+SUBMITTED TO  
+DEPARTMENT OF COMPUTER SCIENCE &  IT 
+ARKA  JAIN UNIVERSITY            A Final Year Project Report  On 
+E-COMMERCE ONLINE SHOPPING  
+           WEBSITE  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+  
+   IN PARTIAL FULLFILMENT OF REQUIREMENT OF  
+BACHEOR OF COMPUTER APPLICATION  
+BATCH -2019 -2022  
+Miss. Divya Paikaray  
+ 
+ 
+ 
+3 
+ BSUBMITT  
+A Final  year  Report  Project  on 
+E-COMMERCE  ONLINE  SHOPPING  
+WEBSITE  
+ 
+Submitted  in partial  fulfilment  for the 
+award  of the Degree  in 
+         BACHLOR OF COMPUTER APPLICATION  
+By 
+ 
+ 
+ 
+NISHA BHARTI  
+        ENROLLMENT  NO. : AJU/191470  
+ 
+ 
+Under  the esteemed  guidance  of 
+ 
+      Miss. Divya Paikaray  
+ 
+ 
+DEPARTMENT  OF COMPUTER  SCIENCE  & IT 
+ARKA  JAIN  UNIVERSITY,  JHARKHAND  
+Jamshedpur  
+ 
+
+ 
+ 
+4 
+ 
+
+ 
+ 
+5   
+ 
+ 
+ 
+ 
+ABSTRACT  
+ 
+ 
+ 
+ 
+ 
+This Project is a Business to Consumer based E -commerce shopping Website which developed using  
+PHP and MySQL.  The project  objective  is to deliver  the online  shopping  
+This project is an attempt to provide the advantages of online shopping to customers of a real  shop.  The 
+primary  goal of  an e-commerce  site is to sell goods  and services  online. This  project is  a web based  
+shopping  system  for an existing  shop.  The project  objective  is to deliver  the online  shopping  application. 
+This project is an attempt to provide the advantages of online shopping to customers of a  real shop. It 
+helps buying the products in the shop anywhere through internet by using a web site. Thus  the customer 
+will get the service of online shopping and home delivery from this shop. E -commerce is  mainly useful 
+for ho haven’t time to go shopping or for comfortably to the customers. Those are just  entered into this 
+website and bought they want at any time they can visit the web -site. Customer will  choose different 
+items like mobile, laptops, etc. This website is based on this formal. After chosen  items  they pay bill 
+thorough  Razor pay  process.  Customer  will get  their items just  sitting  at home.  
+If shops  are providing  an online  portal  where  their customers  can enjoy  easy shopping  from  anywhere,  
+the shops won’t be losing any more customers to the trending online shops such  as flipkart or eBay.  
+Since  the application  is available  in the Smartphone  it is easily  accessible  and always  available.  
+From  this project,  vendor  can handle  the details  of customer,  stock,  sales,  shop  billing  and login  details.  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ ACKNOWLEDGEMENT  
+ 
+I would like  to express my sincere  gratitude  to several  individuals and organization for  supporting me 
+throughout the completion of my project. First, I wish to express my sincere  gratitude  to my mentor  Miss  
+Divya  Paikaray  for her enthusiasm  patience,  insightful  comments, helpful information, practical advices 
+and unceasing ideas that have helped me  tremendously at all times in my Project and writ ing of these 
+thesis. Her immense knowledge,  profound experience and professional expertise in Backend has enabled 
+me to complete this  project successfully. Without his/her support and guidance, this project would not 
+have been  possible. I am also thankful to our respected H.O.D Dr. Arvind Kumar Pandey  and all faculty 
+members for loving  inspiration  and timely  guidance.  
+I also wish  to express  my sincere  thanks  to the Department  of Computer  science  & Information 
+technology of ARKA  JAIN  UNIVERSITY  for accepting this project. Thanks for  all your 
+encouragement!  
+ 
+  
+ 
+ 
+ 
+ 
+
+ 
+ 
+  
+INTERNSHIP CERTIFICATE  
+ 
+ 
+9 
+  
+Contents  
+ 
+1. INTRODUCTION………………………………………….. .10 
+ 
+2. OVERVIEW  ………………………………………………... .11   
+ 
+3. SYSTEM  REQUIREMENT………………………………… .14 
+ 
+4. SYSTEM  ANALYSIS  ……………………………………… ..16 
+ 
+5. SYSTEM  DESIGNING  SPECIFICATION  ………… ………. 18 
+ 
+6. DATABASE DESGIN……………………………………… .28 
+ 
+ CONTEX LEVEL DFD  
+ LVEEL 1 DFD  
+ LEVEL 2 DFD  
+ 
+7. USE CASE DAIGRAM………………………………………34  
+ 
+8. ER DAIGRAM………………………………………………..36  
+ 
+9. DATA NORMALIZATION…………………………………..37         
+ 
+10. DATA  DICTIONARY  ………………………………………...38  
+ 
+11. SCREENSHOOTS  ………………………………………...... 41  
+ 
+12. CODING  …………………………………… ………………...54  
+ 
+13. SYSTEM  TESTING  & MAINTANANCE ………………… ...126            
+ 14. FUTURE  SCOPE………………………………………… ….130 
+15. CONCLUSION  …………………………………………… ….131 
+ 
+16. REFERENCE…………………………………………….... ......132 
+ 
+ 
+ 
+10   
+INTRODUCTION  
+ 
+ 
+What  is E – commerce?  
+ 
+Electronic commerce, commonly known as E -commerce, is a trading in products or services using  
+network, such as Internet. Electronic commerce draws on technologies such as mobile commerce,  
+electronic  funds  transfer,  supply  chain  management,  Internet  marketi ng, online  transaction  processing, 
+electronic data interchange, inventory management system and automate data collection  systems. 
+Modern electronic commerce typically uses the World Wide Web for at least one part of the  transaction  
+life cycle,  although  it may also use other  technologies  such as e-mail.  
+ 
+E- Commerce  business  some  or All of the following:  
+ 
+ 
+ Online  shopping  web site for  retail  sale direct  to consumer  
+ Providing  or participating  in online  marketplace,  which  process  third  party  business  to customer  
+and customer  to business  sales  
+ Marketing  to prospective  and established  customer  by e-mail or by fax. 
+ Engaging  in retail  for launching  new products  and services  
+ 
+ 
+ 
+India has always been a land  of great potential. The socioeconomic condition of  the 
+country has improved many folds and now India is emerging as one of the leading countries in the  
+world. Moreover, with the population of 100 crore and growth a growth it can be compared to  marketing 
+giant. Hence it can be well judged in India why online s hopping in India is growing at such  rate. As 
+technologies are spreading in in the remote villages and many Job opportunity are presenting  themselves 
+as to the youth and more people are gaining awareness and customer is growing one  commerce site. It 
+also pr ovides an opportunity for the large and small seller to come forward and sell  their products  on 
+the online  market  by providing  them  space  to sell their goods  at a reasonable  price.  
+ 
+ 
+11   
+OVERVIEW  
+ 
+The project  entitled  E-COMMERCE  ONLINE  SHOPPING  WEBSITE  enables  customer  to buy mobiles 
+or accessories from anywhere through online. This web application  advertises some of the  products for 
+shopping. To buy products, customer has to create an  account. Those who does not have  an account, 
+they can only view the available product. They  can’t buy it. Once the customer has  created account, 
+not only he can view the products, he can   also add t he product to the cart and also,  he can place an 
+order to buy those products. This  application then generates bill for that particular  customer. After the 
+confirmation, the customer  has to enter his credit card details to buy those  products.  
+Overall  descri ption:  
+ 
+1. Product  Perspective  
+ 
+The product will be developed completely independent and dynamic website. Customer must  have an  
+account to purchase the product. This application stores all the information in the  database which can  
+be retrieved  whenever  needed  and all the  validations are  performed  during  the entry  of the  data by the 
+user thus ensuring  that the user cannot  enter  any wrong  data which  could  cause  problem  later.  
+2. Product  Function  
+ 
+Initially customer has to register to the website to access most of the features of the application.  The 
+customer has to enter the details like username, password…etc. After registration customer  will be  able 
+to purchase products and the purchased product can be added to the cart. Later  customer has to  enter 
+his credit car d details to buy the products. The confirmation of debit card  numbers will be  handled  by 
+the Pay pal website.  
+1. User Characteristics: The user of this product is supposed to be fairly educated about  the usage 
+of the computers. He should understand how to sto re products and he should have  knowledge  
+about  various  products  so that they could  be saved.  A person  who has no knowledge of 
+computers will find it difficult to understand the system. But with a little  knowledge  it will be 
+very easy to handle  the project.  
+2. Admin: Admin adds the new product and accessories and stores in the database  which can be  
+retrieved and used whenever needed and all the validation are performed during the entry of  the 
+data. Thus, it ensures that the user cannot enter any  wrong data whic h would cause  problem  
+later.  
+ 
+ 
+12  2. User: This application allows the user to access all the products available. To buy  the products,  
+customer  must  create  an account  in this  website.  
+3. General constraints: The constraints of this project are - system must support the  runtime  files 
+of visual  studio 2008  and must  be able to run  all the web pages.  
+4. Assumption and dependencies: The project depends on the user’s ability to  understand the 
+features of the online shopping and able to use the best of it. If the internet  connection is not  
+proper  then this application  will not work.  
+2. Functional  requirements:  
+ 
+Login  Module:  
+ 
+Input:  Admin  enters  the Login  Id and password.  
+ 
+Process  Definition:  Check’s  login Id  and password  is valid  or not. 
+ 
+Output:  Admin  is directed  to next page  where  he can  add, delete  or update  the products.  
+ 
+New  user Module:  
+ 
+Input:  Customer  enters  their details  to create  new account.  
+ 
+Process  Definition:  Checks  whether  he entered  all the details  or not. 
+ 
+Output:  Customer  is directed  to the next  page  where  he can  view all  the available  products  
+ 
+Product  Module:  
+Input:  Admin  adds the new product  which  can be  viewed  by the  users.  Process  
+Definition: Checks whether all the fields are entered properly or not.  Output:  
+Records  will be added  to the  database.  
+Search  Module:  
+ 
+Input:  This module  helps  the customer  to ease his search  based  on his interest.  The search  can 
+be done on different categories like mobile model name, model number, color , price  etc. 
+Process  Definition:  It retrieves  the selected  category  from  the database  
+ 
+ 
+13   
+ 
+ 
+Output:  Displays  what  the subscribers  like to search.  
+ 
+Cart  Module:  
+ 
+Input:  User  can select  any number  of Mobile  and add to the cart. He can also remove  
+from  the cart if he dislikes  it later.  
+Process  Definition:  Checks  whether  all the fields  are entered  properly  or not. 
+Output:  Records  will be added  to the  database.  
+Payment  Module:  
+ 
+Input:  This module  describes  the payment  done  by the customer.  The payment  information  
+can include  information  like the model  purchased,  quantity,  mode  of payment  etc. 
+Process  Definition:  Checks  whether  all the fields  are entered  or not. 
+Output:  Displays  the payment  done by  the customer.  
+ 
+ 
+ 
+Objective  of the project:  
+This website helps customer to find different products, their features, and new updates  easily. 
+It is designed such a way that one can view all the updates of the products from any  place  
+through online. The software will help in easy maintaining and updating products in  the 
+website  for the administrator.  Also,  quick  and easy comparison  of different  products  for the 
+customers.  
+Scope  of the project:  
+This system  will reduce  the manual  operation  required  to maintain  all the records  of 
+booking  information. And also generates the various reports for analysis. Main concept of  
+the project is  to enter transaction reports and to maintain customer records. Hence this  
+software  can be used  in any mobile  showroom  to maintain  their record  easily.  
+ 
+ 
+14  Processor  Intel  CORE  i3 
+RAM  4.0 GB 
+Hard  Disk  Drive  Space  require  Upto  32 GB  
+Hardware  Requirements:  
+ 
+The selection  of hardware  is very important  in the existence  and proper  
+working  of any software.  When  selecting  hardware,  the size and requirements  are 
+also important  
+ 
+ 
+ 
+ 
+Software  Requirement:  
+ 
+ 
+Number  Description  
+1 Windows  7,8,10  
+ 
+2  
+HTML/Css/Ajax/JavaScript/  Bootstrap.  
+3 Apache  server/  XAMPSERVER  
+4 PHP 8.0.9  
+4 MySQL  
+ 
+ 
+5  
+ 
+Compiler:  MSVC11 (Visual C++  2012)  
+ 
+ 
+6  
+Apache  version:  Apache/3.2.4  (Win32)OpenSSL  
+PHP/5.5.38  
+ 
+Space  require  Upto  32 GB 
+Hard Disk  
+Drive  
+4.0 GB 
+ RAM  
+ 
+Intel CORE  i3 
+ 
+Processor  
+ 
+ 
+15   
+ Language  Used:  
+ 
+ 
+ 
+ 
+ 
+ 
+Front  End:   
+HTML,  CSS,  BOOTSTRAP  , 
+JavaScript  
+ 
+Back  End:   
+PHP,  MySQL  
+ 
+Local  host:   
+XAMPP  
+ 
+ 
+16  SYSTEM  ANALYSIS  
+ 
+System analysis is the process of gathering and interpreting facts, diagnosing problems and  
+using the information  to recommend  improvements  on the system. System analysis  is a 
+probl em-solving activity that requires intensive communication between the system users and  
+system  developers.  System  analysis  or study  is an important  phase  of any system  development  
+process.  The system is  viewed as  a whole,  the inputs  are identified  and the system is  subjected  
+to close  study  to identify  the problem  areas.  The solutions  are given  as a proposal.  The proposal  
+is reviewed on user request and suitable changes are made. This loop ends as soon as the user  
+is satisfied  with the  proposal.  
+1. Existing  system  
+ 
+The current system for shopping is to visit the shop manually and from the available product  
+choose  the item customer  want  and buying  the item  by payment  of the price  of the  item.  
+ User  must  go to shop and  select  products.  
+ 
+ It is difficult  to identify  the required product.  
+ 
+ Description  of the  product  is limited.  
+ 
+ It is a time-consuming  process.  
+ 
+ Not in reach  of distant  users.  
+ 
+2.. Proposed  system  
+ 
+In the proposed  system  customer  need not go to the shop  for buying  the products.  He can order  
+the product he wish to buy through the website in his Smartphone. The shop owner will be  
+admin of the system. Shop owner can appoint moderators who will help owner in managing  
+the customers and product orders. The system also recommends a home delivery system for the 
+purchased  products.  
+4. Feasibility  study  
+ 
+Feasibility requirements are undertaken to have a view of understanding the features that are  
+incorporated in terms of the requirements to design and implementation. The references of the  
+feasibility  study will be divided  into multiple  sections  so that the understandability  can be 
+ 
+ 
+17  Organized  so for example  if we have to design  software  the required  investment  and flow of 
+cash has to be properly analyzed  in the same way technical associations are acquired to be  
+discussed.  
+ Technical  feasibility.  
+ 
+ Operational  feasibility.  
+ 
+ Economic  feasibility.  
+ 
+5. Technical  feasibility  
+ 
+The customization that has to be operational when a particular identity or field is changed has  to 
+be replicated in real time which has to be properly designed and tested for the workability.  All 
+types  of working  references  are provided  in terms  of the resources  within  the company  premises. 
+The integrated settings that are required for the accompanied sharing and alert system  will also be 
+associated  properly  and the vendor  integrations  will be tested  for security  provisions. The 
+accessibility of the standards that are required will be properly define so as to  acknowledge the 
+formats of r eports which has to be in -clubbed in different types of reporting  sections  that are 
+incorporated.  
+6. Operational  feasibility  
+ 
+Apprehension of working is required to be properly planed as when the system will be provided  
+to multiple users a proper support has to be provided as multiple integrated functionalities are  
+provided.  The web  applications  that may arise  has to be  drafted  it so that in  the real  time working 
+it can be properly acknowledged as multiple Global finance will be incorporated to the  system.  A 
+proper documentation will be provided with all variations of report and the standing  in the 
+customization  options that  are provided  under  the setting  
+7. Financial  feasibility  
+ 
+Financial return on investment calculation so will be done by the financial team wi th the help  of 
+multiple associated software that are available will be used. Considerations of the cash flow  will 
+be determined  as the source  of income  has to be properly  acknowledged  
+ 
+ 
+18  SYSTEM  DESIGN  
+ 
+System design is the solution for the creation of a new system. This phase focuses on the  
+detailed  implementation  of the feasible  system.  It emphasis  on translating  design.  Specifications  
+to performance  specification.  System  design  has two phases  of development  
+ Logical  design  
+ 
+ Physical  design  
+ 
+During logical design phase the analyst describes inputs (sources), output s(destinations),  
+databases  (data  sores)  and procedures  (data  flows)  all in a format  that meets  the user 
+requirements.  The analyst  also specifies  the needs  of the user at a level  that virtually  determines  
+the information  flow in and out of the system and  the data resources.  Here  the logical  design  is 
+done through data flow diagrams and database design. The physical design is followed by  
+physical  design  or coding.  Physical  design  produces  the working  system  by defining  the design  
+specifications,  which  specify  
+exactly what the candidate system must do. The programmers write the necessary programs  
+that accept  input  from  the user,  perform  necessary  processing  on accepted  data and produce  the 
+required  report  on a hard copy  or display  it on the screen.  
+ 
+ 
+INPUT  AND  OUTPUT  DESIGN  
+ 
+ 
+1. INPUT  DESIGN:  
+ 
+Input  design  is the link  that ties  the information  system  into the world  of its users.  
+ 
+The input  design  involves  determining  the inputs,  validating  the data,  minimizing  the data entry  
+and provides a multi -user facility. Inaccurate inputs are the most common cause of errors in  
+data processing. Errors entered by the data entry operators can be controlled by input design.  
+The user-originated  inputs  are converted  to a computer -based  format  in the input  design.  Input  
+ 
+ 
+19   
+data are collected and organized into groups of similar data. Once identified, the appropriate  
+input  media  are selected  for processing.  All the input  data are validated  and if any data violates  
+any conditions, the user is warned by a message. If the data satisfies all the conditions, it is  
+transferred to the appropriate tables in the database. In this project the student details are to be  
+entered at the time of registration. A page is designed for this purpose which is user friendly  
+and easy to use. The design is done such that users get appropriate messages when exceptions  
+occur.  
+2. OUTPUT  DESIGN:  
+ 
+Computer output is the most important and direct source of information to the user. Output  
+design is a very important phase since the output needs to be in an efficient manner. Efficient  
+and intelligible output design improves the system relationship with the user and helps in  
+decision making. Allowing the user to view the sample screen is important because  the user is  
+the ultimate judge of the quality of output. The output module of this system is the selected  
+notifications.  
+3. DATABASE  DESIGN:  
+ 
+Databases  are the storehouses  of data used in the software  systems.  The data is stored  in tables  
+inside the database. Several tables are created for the manipulation of the data for the system.  
+Two essential  settings  for a database  are 
+ the field  that is unique  for all  the record occurrences.  
+ 
+ the field  used to set relation  between  tables.  
+ 
+ Normalization  is a technique  to avoid  redundancy  in the tables  
+ 
+ 
+20  
+FRONT  END:  
+ 
+-- HTML,  CSS,  JAVA  SCRIPT  are utilized  to implement  the frontend.  
+ 
+ 
+HTML  
+ 
+ 
+ 
+ 
+Every  webpage  you look at is written in  a language  called  HTML.  You can think  of HTML  
+as the skeleton  that gives  every  webpage  structure.  In this course,  we'll use HTML  to add 
+paragraphs,  headings,  images  and links  to a webpage.  In the editor  to the right, there's  a tab 
+called test.html. This is the file we'll type our  HTML into. Like any language, it has its own  
+special syntax. A browser's job is to transform the code in test.html into a recognizable  
+webpage!  It knows  how to lay out the page  by following  the HTML  syntax.  
+ 
+ 
+CSS 
+ 
+ 
+ 
+ 
+ 
+Cascading  Style  Sheets  (CSS)  is a style sheet  language  used for describing  the presentation  
+of a document  written  in a markup  language.[1]  Most  often used  to set  the visual  style of web 
+pages  and user interfaces  written  in HTML  and XHTML,  and is applicable  to rendering  in 
+speech, or on other media. Along with HTML and JavaScript, CSS is a cornerstone  
+technology  used by most  websites to  create  visually  engaging  webpages,  user interfaces  for 
+web applications,  and user interfaces  for many  mobile applications.  CSS is designed  
+primarily  to enable  the separation  of document  content  from  document  presentation,  
+including  aspects  such as  the layout,  colors,  and fonts.[3]  This separation  can improve  
+content  accessibility,  provide  more flexibility  and control  in the specification  of presentation  
+characteristics,  enable  multiple  HTML  pages  to share  formatting  by specifying  the relevant  
+CSS in a separate  .CSS  file, and reduce  complexity  and repetition  in the structural  content.  
+
+ 
+ 
+21   
+ 
+JAVA  SCRIPT  
+ 
+ 
+ 
+ 
+ 
+ 
+JS is a dynamic computer programming language. It is most commonly used  
+as part of web browsers, whose implementations allow client -side scripts to  
+interact  with the user,  control  the browser,  communicate  asynchronously,and  
+alter the document  content  that is displayed.  
+Java Script  is used to create pop -up windows  displaying  different  alerts  in the 
+system  like “User  registered  successfully”,”  Product  added  to cart”  etc. 
+ 
+ 
+ 
+Html,  Css, Java Script  Relationship:  
+ 
+ 
+
+ 
+ 
+22   
+BACK  END  
+ 
+ 
+ 
+ 
+ MySQL  
+ 
+ 
+ 
+The back end is implemented  using  MySQL  which  is used to design  the databases.  
+What  is a database?  
+Quite simply, it’s an organized collection of data. A database management system (DBMS) such as  
+Access, FileMaker Pro, Oracle or SQL Server provides you with the software tools you need to  
+organize that data in a flexible manner. It includes facilities to add, modify or delete data from the  
+database, ask questions (or queries) a bout the data stored in the database and produce reports  
+summarizing  selected  contents.  
+MySQL is  a multithreaded  multi -user SQL database  management  system(DBMS).  The basic  
+program runs as a server providing multi -user access to a number of databases. Origi nally financed  
+in a similar fashion to the JBoss model, MySQL was owned and sponsored by a single for -profit  
+firm, the Swedish company MySQLAB now a subsidiary of Sun Microsystem , which holds the  
+copyright to most of the codebase. The project’s source cod e is available under terms of the GNU  
+General  Public  License, as  well as under  a variety  of proprietary  agreements.  
+ 
+Queries  
+A query  is a question  or a request.  With  MySQL,  we can query  a database  for 
+specific  information  and have a record  set returned.  
+Create  a connection  to a database  
+Before  you can access  data in a database,  you must  create  a connection  to the 
+database.  In PHP,  this is done  with the mysqli_connect()  function.  
+ 
+Syntax:  
+
+ 
+ 
+23   
+ 
+ 
+Example:  
+ 
+In the following  example we  store the connection  in a variable  ($con)  for later use in the script.  
+The “die”  part will be  executed  if the connection  fails 
+ 
+ 
+ 
+Closing  a Connection  
+The connection  will be closed  automatically  when  the script  ends.  To close the connection  before,  
+use the mysqli_close()  function : 
+ 
+ 
+ 
+ 
+
+ 
+ 
+24   
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+PHP  
+ 
+The term PHP is an acronym  for PHP:  Hypertext  Preprocessor . PHP is a server -side scripting  language  
+designed specifically for web development. It is open -source which means it is free to download and  use. 
+It is very simple  to learn  and use. The files have  the extension  “.php”.  
+Rasmus Lerdorf inspired the first version of PHP and participating in the later versions. It is an  interpreted  
+language  and it does not  require  a compiler.  
+• PHP code  is executed  in the server.  
+• It can be integrated  with many  databases  such as Oracle,  Microsoft  SQL  Server,  MySQL,  
+PostgreSQL,  Sybase,  Informix.  
+• It is powerful  to hold a content  management  system  like WordPress  and can be used to control  user 
+access.  
+• It supports  main  protocols  like HTTP  Basic,  HTTP  Digest,  IMAP,  FTP,  and others.  
+• Websites  like www.facebook.com,  www.yahoo.com  are also built on PHP.  
+• One of the main reasons behind this is that PHP can be easily embedded in HTML files and HTML  
+codes  can also be  written  in a PHP file. 
+• The thing that differentiates PHP from the client -side language like HTML is, PHP codes are executed  
+on the server whereas HTML codes are directly rendered on the browser. PHP codes are first executed  
+on the server  and then the result  is returned  to the browser.  
+
+ 
+ 
+25  
+• The only information that the client or browser knows is the result returned after executing the  PHP 
+script on the server and not the actual PHP codes present in the PHP file. Also, PHP files can  support  
+other  client -side scripting  languages  like CSS and JavaScript.  
+Other characteristics  of PHP are as follows.  
+• Simple  and fast 
+• Efficient  
+• Secured  
+• Flexible  
+• Cross -platform,  it works  with major operating  systems  like Windows,  Linux,  MacOS.  
+Syntax:  
+<?php  PHP code  goes here ?> 
+Example:  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+Output:  
+ 
+ 
+Hello,  World!  This is PHP  code  
+ 
+ 
+26   
+ 
+ 
+ 
+Xampp  is a free and open  source  cross  platform  web server  solution  stack  package  
+developed  by Apache  Friends,  consisting  mainly  of the Apache  HTTP  Server,  MariaDB  database  
+.and interpreters for scripts written in the PHP and Perl programming languages   XAMPP stands  for 
+Cross -Platform  (X), Apache  (A), MariaDB  (M), PHP (P) and Perl (P). It is a simple,  lightweight 
+Apache distribution that makes it extremely easy for developers to create a local web  server for testing 
+and deployment purposes. Everything needed to set up a web server – server  application  (Apache), 
+database (MariaDB), and  scripting language (PHP) – is included in  an extractable file. XAMPP is 
+also cross - platform, which means it works equally well on Linux, Mac  and Windows. Since most 
+actual web server deployments use the same components as XAMPP, it  makes  transitioning  from  a 
+local  test server to a live  server  extremely  easy as well.  
+FEATURES  
+XAMPP is regularly updated to the latest releases of Apache, MariaDB, PHP and Perl. It  also 
+comes  with a number  of other  modules  including OpenSSL,  phpMyAdmin,  MediaWiki,  Joomla, 
+WordPress and more. Self -contained, multiple instances of XAMPP can exist on a single  computer, 
+and any given instance can be copied from one computer to another. XAMPP is offered  in both a  full 
+and a  standard  version  (Smaller  version).  
+USAGE  
+Officially, XAMPP's designers intended it for use only as a development tool, to allow  website  
+designers  and programmers  to test their work  on their own computers  without  any access  to the 
+Internet. To make this as easy as possible, many important security features are disabled by  default. 
+XAMPP has the ability to serve web pages on the World Wide Web. A special tool is  provided  to 
+password -protect  the most  important  parts  of the package.  
+XAMPP also provides support for creating and manipulating databases in MariaDB and  
+SQLite among others. Once XAMPP is installed,  it is possible to treat  a localhost  like a remote  host 
+by connecting using an FTP client. Using a program like FileZilla has many advantages when  
+installing a content management system (CMS) like Joomla or WordPress. It is also possible to  
+connect to localhost via FTP with an HTML editor  
+
+ 
+ 
+27   
+ 
+ 
+phpM yAdmin  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+phpMyAdmin is an open source tool written in PHP intended to handle the administration of  MySQL 
+over the World  Wide Web. phpMyAdmin supports a wide range of operations with  
+MySQL.Currently it can create and drop databases, create/drop/alter tables, delete/edit/add fields,  
+execute any SQL statement, manage users and permissions, and manage keys on fields. while you  
+still have the ability to directly execute any SQL statement. phpMyAdmin can manage a whole  
+MySQL server (needs a super -user) as well as a single database. To accomplish the latter you’ll  need 
+a properly set up MySQL user who can read/write only the desired database. It’s up to you to  look 
+up the  appropriate  part in the MySQL  manual.  
+ 
+phpMyAdmin  can: 
+ 
+· browse  and drop databases,  tables, views,  fields and  indexes  
+ 
+· create,  copy,  drop,  rename and  alter databases,  tables,  fields  and indexes  
+ 
+· maintenance  server,  databases  and tables,  with proposals  on server configuration  
+ 
+· execute,  edit and bookmark  any SQL -statement,  even batch -queries  
+ 
+· load text files  into tables  
+ 
+· create  and read dumps of  tables  
+ 
+ 
+· export  data to various  formats:  CSV,  XML,  PDF,  ISO/IEC  26300  - OpenDocument  Text and 
+Spreadsheet,  Word,  Excel  and LATEX formats  
+
+ 
+ 
+28  DFD  Diagram  
+ 
+ 
+DATA  FLOW  DIAGRAM  
+ 
+A Data Flow Diagram (DFD) is a structured analysis and design tool that can be used for  flowcharting.  A 
+DFD is a network that describes the flow of data and the proc esses that change  or transform the data  
+throughout a system. This network is constructed by using a set of  symbols that do not imply any  physical 
+implementation. It has the purpose of clarifying system  requirements and identifying major  
+transformations. So , it is the starting point of the design  phase that functionally decomposes the  
+requirements specifications down to the lowest level  of detail. DFD can be considered to an abstraction  
+of the logic of an information oriented or a process -oriented system flo w-chart. For these reasons DFD’s  
+are often  referred to as  logical  data flow diagrams.  
+ 
+ 
+ 
+EXTERNAL  ENTITY  
+ 
+An external entity is a source or destination of a data flow. Only those entities which originate   or  receive  
+data are represented  on a data  flow diagram.  The symbol  used is a rectangular  box. 
+ 
+ 
+ 
+Entity  
+ 
+ 
+PROCESS  
+ 
+A process shows a transformation or manipulation of data flow within the system. The symbol  used is  an 
+oval shape.  
+ 
+ 
+ 
+Process  
+ 
+ 
+29  DATAFLOW  
+ 
+The data flow shows the flow of information from a source to its destination. Data flow is  represented  by 
+a line, with arrowheads showing the direction of flow. Information always flows to or from a process  and 
+may be written, verbal or electronic. Each data flow may be referenced  by the processes or data  stores  at 
+its head and  tail, or by a description  of its contents.  
+ 
+ 
+ 
+Data  Flow  
+ 
+DATA  STORE  
+ 
+A data store is a holding place for information within the system: It is represented by an open - ended  
+narrow rectangle. Data stores may be long -term files such as sales ledgers, or may be  short -term 
+accumulations: for example, batches of documents that are waiting to be processed.  Each data store  should  
+be given  a reference  followed  by an  arbitrary number.  
+ 
+ 
+Data  store  
+ 
+ 
+ 
+ 
+ 
+Context  level  Data  Flow  Diagram  
+ 
+ 
+30  Admin.  Data  Flow  Diagram  level  1 
+
+ 
+ 
+31 
+  
+  
+
+ 
+ 
+32 
+  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+33  fig 3.0 Data  Flow  Diagram  level  1 USER  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+34 
+  
+ 
+
+ 
+ 
+35 
+ USE  CASE  DAIGRAM  
+ 
+ 
+A use case diagram is a graphical depiction of a user's possible interactions with a  
+system. A use case diagram shows various use cases and different types of users the  
+system has and will often be accompanied by other types of diagrams as well. The use  
+cases  are represented  by either  circles or  ellipses.  
+ 
+ 
+ 
+ 
+ 
+ 
+
+ 
+ 
+36 
+  
+ 
+
+ 
+ 
+37 
+ 
+Entity  Relationship  
+ 
+ 
+38 
+      Data  Normalization  
+ 
+Normalization  is a database  design  technique  that reduces  data redundancy  and eliminates  
+Undesirable characteristics  like insertion Update and Deletion  anomalies. Normalization  rules  
+divides  larger  table  into smaller  tables  and links  then using  relationship . The Purpose  of 
+Normalization  in SQL  is to eliminate  redundant  (repetitive)  data and ensure  data is stored  legally  
+ 
+ 
+ 
+
+ 
+ 
+39  Database  Design  
+ 
+ 
+The data in the system has to be stored and retrieved from database. Designing the  database is part 
+of system design. Data elements and data structures to be stored  have been identified at analysis 
+stage. They are structured and put together to  design  the data storage  and retrieval  system.  
+A database is a collection of interrelated data stored with minimum redundancy to  serve  many  
+users  quickly  and efficiently.  The general  objective  is to make  database access easy, quick, 
+inexpensive and flexible for the user. Relationships  are established between the data items and 
+unnecessary data items are removed.  Normalization is done to get an internal consistency of data 
+and to have minim um redundancy  and maximum  stability.  This ensures  minimizing  data storage  
+required, minimizing chances of data inconsistencies and optimizing for updates.  The MS Access  
+database  has been  chosen  for developing  the relevant  databases.  
+ 
+E-Commerce  Shopping  Website  (ECSS)  contains  10 MySQL  tables :  
+ 
+admins  table  Structure  : This table  store the login  details  of admin.  
+ 
+   
+       categories table structure : This table store categories of products.  
+
+ 
+ 
+40  customers  table  structure  : This table store  order  details  of users.  
+ 
+ 
+ 
+ 
+products table  structure  : This table  store order  details  of products.  
+
+ 
+ 
+41  pending_orders  table  structure  : This table  store  tracking  details  of pending  
+order.  
+ 
+ 
+wishlist  table  structure  : This table  store  user wish  lists.  
+ 
+ 
+contact table structure  : This table  store  admin  contact.  
+ 
+ 
+
+ 
+ 
+42  SCREENSHOTS  
+ 
+ 
+ADMIN  LOGIN  PAGE:  
+ 
+ 
+ 
+
+ 
+ 
+43 
+ 
+ADMIN  DASHBOARD:  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+44  HOME  PAGE:  
+ 
+ 
+
+ 
+ 
+45  REGISTER  PAGE:  
+ 
+ 
+
+ 
+ 
+46  LOGIN  PAGE:  
+ 
+ 
+
+ 
+ 
+47  SHOP:  
+ 
+ 
+ 
+
+ 
+ 
+48  ADD  TO CART:  
+ 
+ 
+ 
+
+ 
+ 
+49  CART  
+ 
+ 
+ 
+ 
+
+ 
+ 
+50  My Order  
+ 
+ 
+ 
+
+ 
+ 
+51   Checkout  
+ 
+ 
+
+ 
+ 
+52         Payment  Page:  
+ 
+ 
+ 
+ 
+  
+
+ 
+ 
+53   
+       QR Scanner Page    
+
+ 
+ 
+54         Payment Page  
+ 
+
+ 
+ 
+55  SOURCE  CODE:  
+ 
+ 
+Index.php  
+<?php  
+session_start();  
+include("includes/db.php");  
+include("includes/header.php");  
+include("functions/functions.php");  
+include("includes/main.php");  
+ 
+?> 
+ 
+ 
+<!-- Cover --> 
+<main>  
+<div class="hero">  
+<a href="shop.php"  class="btn1">View all  products  
+</a> 
+</div>  
+<!-- Main --> 
+<div class="wrapper">  
+<h1>Featured  Collection<h1>  
+ 
+</div>  
+ 
+ 
+ 
+<div id="content"  class="container"><! -- container  Starts  --> 
+ 
+<div class="row"><! -- row Starts  --> 
+ 
+<?php  
+getPro();  
+?> 
+ 
+</div><! -- row Ends  --> 
+ 
+</div><! -- container  Ends  --> 
+<!-- FOOTER --> 
+<footer  class="page -footer">  
+ 
+ 
+56  <div class="footer -nav">  
+<div class="container  clearfix">  
+ 
+<div class="footer -nav col footer -nav   col--info">  
+<div class="footer -nav heading">Information</div>  
+<ul class="footer -nav list">  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">The  brand</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#" class="footer -nav link">Local  stores</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Customer  service</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Privacy  &amp;  cookies</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Site  map</a>  
+</li>  
+</ul>  
+</div>  
+ 
+<div class="footer -nav col footer -nav   col--whybuy">  
+<div class="footer -nav heading">Why  buy from  us</div>  
+<ul class="footer -nav list">  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Shipping  &amp;  returns</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Secure  shipping</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#" class="footer -nav link">Testimonials</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Award  winning</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Ethical  trading</a>  
+</li>  
+</ul>  
+</div>  
+ 
+ 
+57  <div class="footer -nav col footer -nav   col--account">  
+<div class="footer -nav heading">Your  account</div>  
+<ul class="footer -nav list">  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Sign  in</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Register</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#" class="footer -nav link">View  cart</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#" class="footer -nav link">View  your lookbook</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Track  an order</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Update  information</a>  
+</li>  
+</ul>  
+</div>  
+ 
+ 
+<div class="footer -nav col footer -nav   col--contacts">  
+<div class="footer -nav heading">Contact  details</div>  
+<address class="address">  
+Head Office: ShopCART<br>  
+ArkaJain,Gamharia  Jharkhand.  
+</address>  
+<div class="phone">  
+Telephone:  
+<a class="phone  number"  href="7004877301">700 4877301</a>  
+</div>  
+<div class="email">  
+Email:  
+<a href=" vikashpanther@gmai.com"  class="email  addr"> vikashpanther@gmai.com</ a> 
+</div>  
+</div>  
+ 
+</div>  
+</div>  
+ 
+ 
+58  <div class="banners">  
+<div class="container  clearfix">  
+ 
+<div class="banner -award">  
+<span>Welcome  to</span><br>  ShopCART  
+</div>  
+ 
+<div class="banner -social">  
+<a href=" http://www.facebook.com"  class="banner -social  link">  
+<i class="icon -facebook"></i>  
+</a> 
+<a href=" http://www.twitter.com" class="banner -social  link">  
+<i class="icon -twitter"></i>  
+</a> 
+<a href=" http://www.instagram.com " class="banner -social  link">  
+<i class="icon -instagram"></i>  
+</a> 
+<a href=" http://www.pinterest.com " class="banner -social  link">  
+<i class="icon -pinterest -circled"></i>  
+</a> 
+</div>  
+ 
+</div>  
+</div>  
+ 
+<div class="page -footer  subline">  
+<div class="container  clearfix">  
+ 
+<div class="copyright">  
+&copy;<b>  2022  ShopCART  </b>&trade;  
+</div>  
+ 
+ 
+ 
+<div class="designby">  
+<b> Design by  Vikash  Das</b>  
+</div>  
+ 
+</div>  
+</div>  
+</footer>  
+</body>  
+ 
+</html>  
+ 
+ 
+59  customer_login.php  
+ 
+<div class="box">  
+<!-- box Starts --> 
+<div class="box -header">  
+<!-- box-header  Starts  --> 
+<center>  
+<h1>Login</h1>  
+<p class="lead">Already  our Customer</p>  
+</center>  
+<p class="text -muted">  
+Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Vestibulum  
+tortor  quam,  feugiat  vitae,  ultricies  eget, tempor  sit amet,  ante. Donec  eu libero sit amet  quam  egestas semper.  
+Aenean  ultricies  mi vitae  est. Mauris  placerat  eleifend  leo. 
+ 
+</p>  
+</div><! -- box-header  Ends  --> 
+<form  action="checkout.php"  method="post">  
+<!--form  Starts  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+<label>Email</label>  
+<input  type="text"  class="form -control"  name="c_email"  required>  
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+<label>Password</label>  
+<input  type="password"  class="form -control"  name="c_pass"  required>  
+<h4 align="center">  
+<a href="forgot_pass.php">  Forgot  Password  </a> 
+</h4>  
+</div><! -- form -group  Ends  --> 
+<div class="text -center">  
+<!-- text-center  Starts  --> 
+<button  name="login"  value="Login" class="btn  btn-primary">  
+ 
+<i class="fa  fa-sign-in">< /i> Log in 
+</button>  
+</div><! -- text-center  Ends  --> 
+</form>  
+<!--form  Ends  --> 
+<center>  
+<!-- center  Starts  --> 
+<a href="customer_register.php">  
+ 
+<h3>New  ? Register  Here</h3>  
+</a> 
+</center><! -- center Ends  --> 
+</div><! -- box Ends  --> 
+<?php  
+ 
+if (isset($_POST['login']))  { 
+$customer_email  = $_POST['c_email'];  
+$customer_pass  = $_POST['c_pass'];  
+$select_customer = "select * from customers where customer_email='$customer_email' AND  
+customer_pass='$customer_pass'";  
+ 
+ 
+60  $run_customer  = mysqli_query($con,  $select_customer);  
+ 
+$get_ip  = getRealUserIp();  
+ 
+$check_customer  = mysqli_num_rows($run_customer);  
+ 
+$select_cart  = "select  * from  cart where  ip_add='$get_ip'";  
+ 
+$run_cart  = mysqli_query($con,  $select_cart);  
+ 
+$check_cart = mysqli_num_rows($run_cart);  
+if ($check_customer  == 0) { 
+ 
+echo  "<script>alert('password  or email  is wrong')</script>";  
+exit();  
+} 
+ 
+if ($check_customer  == 1 and $check_cart  == 0) { 
+ 
+$_SESSION['customer_email'] = $customer_email;  
+echo  "<script>alert('You  are Logged  In')</script>";  
+echo  "<script>window.open('customer/my_account.php?my_orders','_self')</script>";  
+} else { 
+ 
+$_SESSION['customer_email'] = $customer_email;  
+echo  "<script>alert('You  are Logged  In')</script>";  
+echo  "<script>window.open('checkout.php','_self')</script>";  
+} 
+} 
+?> 
+ 
+change_pass.php  
+ 
+<h1 align="center">Change  Password  </h1>  
+<form  action="" method="post">  
+<!-- form Starts  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label>Enter  Your  Current  Password</label>  
+<input  type="text"  name="old_pass" class="form -control"  required>  
+</div><! -- form -group Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+ 
+61  <label>Enter  Your  New Password</label>  
+<input  type="text"  name="new_pass"  class="form -control"  required>  
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+<label>Ent er Your  New Password  Again</label>  
+<input  type="text"  name="new_pass_again"  class="form -control"  required>  
+</div><! -- form -group  Ends  --> 
+ 
+<div class="text -center">  
+<!-- text-center  Starts  --> 
+<button  type="submit"  name="submit"  class="btn  btn-primary">  
+ 
+<i class="fa  fa-user-md"> </i>  Change Password  
+</button>  
+ 
+</div><! -- text-center  Ends  --> 
+</form><! -- form  Ends  --> 
+<?php  
+if (isset($_POST['submit']))  { 
+ 
+$c_email  = $_SESSION['customer_email'];  
+$old_pass  = $_POST['old_pass'];  
+ 
+$new_pass  = $_POST['new_pass'];  $new_pass_again  = $_POST['new_pass_again'];  
+ 
+$sel_old_pass  = "select  * from  customers  where  customer_pass='$old_pass'";  
+ 
+$run_old_pass  = mysqli_query($con,  $sel_old_pass);  
+$check_old_pass  = mysqli_num_rows($run_old_pass);  
+ 
+if ($check_old_pass  == 0) { 
+echo "<script>alert('Your Current Password is not valid try again')</script>";  
+exit();  } 
+if ($new_pass  != $new_pass_again)  { 
+ 
+echo "<script>alert('Your New Password dose not match')</script>";  
+exit();  
+} 
+ 
+$update_pass  = "update  customers  set customer_pass='$new_pass'  where  
+customer_email='$c_email'";  
+ 
+$run_pass = mysqli_query($con, $update_pass);  
+if ($run_pass)  { 
+echo "<script>alert('your Password Has been Changed Successfully')</script>";  
+echo "<script>window.open('my_account.php?my_orders','_self')</script>";  
+} 
+} 
+ 
+?> 
+ 
+ 
+62  customer_register.php  
+ 
+ 
+<?php  
+session_start();  
+include("includes/db.php");  
+include("includes/header.php");  
+include("functio ns/functions.php");  
+include("includes/main.php");  
+?> 
+<!-- MAIN --> 
+<main>  
+<!-- HERO  --> 
+<div class="nero">  
+<div class="nero  heading">  
+<span  class="nero  bold">Register</span>  AT AVE  
+</div>  
+<p class="nero    text">  
+</p>  
+</div>  
+</main>  
+<div id="content">  
+<!-- content  Starts  --> 
+<div class="container">  
+<!-- container  Starts  --> 
+<div class="col -md-12">  
+<!-- col-md-12 Starts  --> 
+ 
+<div class="box">  
+<!-- box Starts  --> 
+ 
+<div class="box -header">  
+<!-- box-header  Starts  --> 
+ 
+<center>  
+<!-- center  Starts  --> 
+ 
+<h2>  Register  A New  Account  </h2>  
+</center><! -- center  Ends  --> 
+</div><! -- box-header  Ends  --> 
+<form  action="customer_register.php"  method="post"  enctype="multipart/form -data">  
+<!-- form  Starts  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label>Customer  Name</label>  
+ 
+<input  type="text"  class="form -control"  name="c_name"  required>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+ 
+63  <label>  Customer  Email</label>  
+<input  type="text"  class="form -control"  name="c_email"  required>  
+</div><! -- form -group Ends  --> 
+<div class="form -group">  <!-- form -group Starts  --> 
+<label>  Customer  Password  </label>  
+<div class="input -group">  
+<!-- input -group Starts  --> 
+<span  class="input -group -addon">  
+<!-- input -group -addon  Starts  --> 
+<i class="fa  fa-check  tick1"> </i>  
+<i class="fa  fa-times  cross1">  </i> 
+ 
+</span><! -- input -group -addon  Ends  --> 
+<input  type="password"  class="form -control"  id="pass"  name="c_pass"  required>  
+<span  class="input -group -addon">  
+<!-- input -group -addon  Starts  --> 
+<div id="meter_wrapper">  
+<!-- meter_wrapper  Starts  --> 
+ 
+<span  id="pass_type">  </span>  
+<div id="meter">  </div>  
+ 
+</div><! -- meter_wrapper  Ends  --> 
+</span><! -- input -group -addon  Ends  --> 
+</div><! -- input -group  Ends  --> 
+</div><! -- form -group Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label>  Confirm Password  </label>  
+ 
+<div class="input -group">  <!-- input -group  Starts  --> 
+ 
+<span  class="input -group -addon">  
+<!-- input -group -addon  Starts  --> 
+<i class="fa  fa-check  tick2"> </i>  
+ 
+<i class="fa  fa-times  cross2">  </i> 
+</span><! -- input -group -addon  Ends  --> 
+<input  type="password"  class="form -control  confirm" id ="con_pass"  required>  
+ 
+</div><! -- input -group  Ends  --> 
+ 
+</div><! -- form -group Ends  --> 
+ 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+ 
+64  <label>  Customer  Country  </label>  
+<input  type="text"  class="form -control"  name="c_country"  required>  
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label>  Customer  City </label>  
+<input  type="text"  class="form -control"  name="c_city"  required>  
+ 
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  <!-- form -group  Starts  --> 
+ 
+<label>  Customer  Contact  </label>  
+<input  type="text"  class="form -control"  name="c_contact"  required>  
+ 
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+<label>  Custom er Address  </label>  
+ 
+<input  type="text"  class="form -control"  name="c_address"  required>  
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label>  Customer  Image  </label>  
+<input  type="file"  class="form -control"  name="c_image"  required>  
+ 
+</div><! -- form -group  Ends  --> 
+<div class="text -center">  
+<!-- text-center  Starts  --> 
+ 
+<button  type="submit"  name="register"  class="btn  btn-primary">  
+<i class="fa  fa-user-md"></i>  Register  
+ 
+</button>  
+</div><! -- text-center  Ends  --> 
+</form><! -- form  Ends  --> 
+</div><! -- box Ends  --> 
+</div><! -- col-md-12 Ends  --> 
+</div><! -- container  Ends  --> 
+</div><! -- content  Ends  --> 
+ 
+<?php  
+include("includes/footer.php");  
+?> 
+ 
+<script  src="js/jquery.min.js">  </script>  
+ 
+<script  src="js/bootstrap.min.js"></script>  
+ 
+ 
+65  <script>  
+$(document).ready(function()  { 
+$('.tick1').hide();  
+$('.cross1').hide();  
+$('.tick2').hide();  
+$('.cross2').hide();  
+$('.confirm').focusout(function()  { 
+var password = $('#pass').val();  
+var confirmPassword  = $('#con_pass').val();  
+if (password  == confirmPassword)  { 
+$('.tick1').show();  
+$('.cross1').hide();  
+$('.tick2').show();  $('.cross2').hide();  
+} else { 
+$('.tick1').hide();  
+$('.cross1').show();  
+$('.tick2').hide();  
+$('.cross2').show();  } 
+}); }); 
+</script><script>  
+$(document).ready(function()  { 
+ 
+$("#pass").keyup(function()  { 
+check_pass();  
+});}); 
+function  check_pass()  { 
+var val = document.getElementById("pass").value;  
+var meter = document.getElementById("meter");  
+var no = 0; 
+if (val != "") { 
+// If the password  length is less than or equal to 6 
+if (val.length  <= 6) no = 1; 
+// If the password  length is greater than 6 and contain any lowercase  
+alphabet  or any number or any special character  
+if (val.length  > 6 && (val.match(/[a -z]/) || val.match(/ \d+/) || 
+val.match(/.[!,@,#,$,%,^,&,*,?,_,~, -,(,)]/)))  no = 2; 
+ 
+// If the password  length is greater than 6 and contain 
+alphabet,number,special  character  respectively  
+if (val.length  > 6 && ((val.match(/[a -z]/) && val.match(/ \d+/)) || 
+(val.match(/ \d+/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~, -,(,)]/))  || 
+(val.match(/[a -z]/) && val.match(/.[!,@,#,$,%,^,&,*,?,_,~, -,(,)]/))))  no = 3; 
+ 
+// If the password  length is greater than 6 and must contain 
+alphabets,numbers  and special characters  
+if (val.length  > 6 && val.match(/[a -z]/) && val.match(/ \d+/) && 
+val.match(/.[!,@,#,$,%,^,&,*,?,_,~, -,(,)]/))  no = 4; 
+ 
+if (no == 1) { 
+$("#meter").animate({  
+width: '50px' 
+}, 300); 
+ 
+ 
+66  meter.style.backgroundColor = "red";  
+document.getElementById("pass_type").innerHTML  = "Very  Weak";  
+} 
+if (no == 2) { 
+$("#meter").animate({  
+width:  '100px'  }, 300);  
+meter.style.backgroundColor  = "#F5BCA9";  
+document.getElementById("pass_type").innerHTML  = "Weak";  
+} 
+if (no == 3) { 
+$("#meter").animate({  
+width:  '150px'  
+}, 300);  
+meter.style.backgroundColor = "#FF8000";  
+document.getElementById("pass_type").innerHTML  = "Good";  
+} 
+if (no == 4) { 
+$("#meter").animate({  
+width:  '200px'  
+}, 300);  
+meter.style.backgroundColor = "#00FF40";  
+document.getElementById("pass_type").innerHTML  = "Strong";  
+} 
+} else {  
+meter.style.backgroundColor  = ""; 
+document.getElementById("pass_type").innerHTML  = ""; 
+} 
+} 
+</script > 
+</body>  
+</html>  
+<?php  
+if (isset($_POST['register']))  { 
+$c_name  = $_POST['c_name'];  
+$c_email  = $_POST['c_email'];  
+$c_pass  = $_POST['c_pass'];  
+$c_country  = $_POST['c_country'];  
+$c_city  = $_POST['c_city'];  
+ 
+$c_contact  = $_POST['c_contact'];  
+ 
+$c_address  = $_POST['c_address'];  
+ 
+$c_image  = $_FILES['c_image']['name'];  
+ 
+$c_image_tmp  = $_FILES['c_image']['tmp_name'];  
+ 
+$c_ip  = getRealUserIp();  
+ 
+move_uploaded_file($c_image_tmp,  "customer/customer_images/$c_image");  
+ 
+$get_email  = "select  * from  customers  where  customer_email='$c_email'";  
+ 
+$run_email  = mysqli_query($con,  $get_email);  
+ 
+ 
+67  $check_email  = mysqli_num_rows($run_email);  
+ 
+if ($check_email  == 1)  { 
+ 
+echo "<script>alert('This  email  is already  registered,  try another  one')</script>";  
+ 
+exit();  
+} 
+ 
+ 
+ 
+$headers  = "From:  $from  \r\n"; 
+ 
+$headers .= "Content -type: text/html \r\n"; 
+mail($c_email,  $subject,  $message,  $headers);  
+$insert_customer = "insert into customers  
+(customer_name,customer_email,customer_pass,customer_country,customer_city,customer_conta  
+ct,customer_address,customer_image,customer_ip,customer_confirm_code) values  
+('$c_name','$c_email','$c_pass','$c_country','$c_city','$c_contact','$c_address','$c_imag e','$c_ip','$  
+customer_confirm_code')";  
+ 
+ 
+$run_customer  = mysqli_query($con,  $insert_customer);  
+ 
+$sel_cart  = "select  * from  cart where  ip_add='$c_ip'";  
+ 
+$run_cart  = mysqli_query($con,  $sel_cart);  
+ 
+$check_cart  = mysqli_num_rows($run_cart);  
+if ($check_cart  > 0) { 
+$_SESSION['customer_email']  = $c_email;  
+echo "<script>alert('You  have been Registered  Successfully')</script>";  
+echo "<script>window.open('checkout.php','_self')</script>";  
+} else { 
+ 
+$_SESSION['customer_email']  = $c_email;  
+ 
+echo "<script>alert('You  have been Registered  Successfully')</script>";  
+ 
+echo "<script>window.open('index.php','_self')</script>";  
+} 
+} else  { 
+ 
+echo "<script>alert('  Try Again')</script>";  
+} 
+ 
+ 
+68  cart.php  
+ 
+<?php  
+session_start();  
+include("includes/db.php");  
+include("includes/header.php");  
+include("functions/functions.php");  
+include("includes/main.php");  
+?> 
+<!-- MAIN --> 
+<main>  
+<!-- HERO  --> 
+<div class="nero">  
+<div class="nero  heading">  
+<span  class="nero  bold">SHOP</span>  Cart 
+</div>  
+<p class="nero  text">  
+</p>  
+</div>  
+</main>  
+<div id="content">  
+<!-- content  Starts  --> 
+<div class="container">  
+<!-- container  Starts  --> 
+<div class="col -md-9" id="cart">  
+<!-- col-md-9 Starts  --> 
+<div class="box">  
+<!-- box Starts  --> 
+<form  action="cart.php"  method="post"  enctype="multipart -form -data">  
+<!-- form  Starts  --> 
+<h1>  Shopping  Cart </h1>  
+<?php  
+$ip_add  = getRealUserIp();  
+$select_cart  = "select  * from  cart where  ip_add='$ip_add'";  
+$run_cart  = mysqli_query($con,  $select_cart);  
+$count  = mysqli_num_rows($run_cart);  
+?> 
+<p class="text -muted"> You  currently  have <?php  echo $count;  ?> item(s)  in your cart. </p>  
+<div class="table -responsive">  
+<!-- table -responsive  Starts  --> 
+<table  class="table">  
+<!-- table  Starts  --> 
+<thead>  
+<!-- thead  Starts  --> 
+<tr> 
+<th colspan="2">Product</th>  
+<th>Quantity</th>  
+<th>Unit  Price</th>  
+<th>Size</th>  
+<th colspan="1">Delete</th>  
+<th colspan="2">  Sub Total  </th>  
+</tr>  
+</thead><! -- thead  Ends  --> 
+<tbody>  
+ 
+ 
+69  <!-- tbody  Starts  --> 
+<?php  
+$total  = 0; 
+while  ($row_cart  = mysqli_fetch_array($run_cart))  { 
+$pro_id  = $row_cart['p_id'];  
+$pro_size  = $row_cart['size'];  
+$pro_qty  = $row_cart['qty'];  
+$only_price  = $row_cart['p_price'];  
+$get_products  = "select  * from  products  where  product_id='$pro_id'";  
+$run_products  = mysqli_query($con,  $get_products);  
+while  ($row_products  = mysqli_fetch_array($run_products))  { 
+$product_title  = $row_products['product_title'];  
+$product_img1  = $row_products['product_img1'];  
+$sub_total  = $only_price  * $pro_qty;  
+$_SESSION['pro_qty']  = $pro_qty;  
+$total  += $sub_total;  ?> 
+<tr> 
+<!-- tr Starts  --> 
+<td>  
+<img  src="admin_area/product_images/<?php  echo $product_img1;  ?>">  </td>  
+<td>  
+<a href="#">  <?php  echo $product_title;  ?> </a> 
+</td>  
+<td>  
+<input  type="text"  name="quantity"  value="<?php  echo $_SESSION['pro_qty'];  ?>" data- 
+product_id="<?php  echo $pro_id;  ?>" class="quantity  form -control">  
+</td>  
+<td>  
+$<?php  echo $only_price;  ?>.00  
+</td>  
+<td>  
+<?php  echo $pro_size;  ?> 
+</td>  
+<td>  
+<input  type="checkbox"  name="remove[]"  value="<?php  echo $pro_id;  ?>">  
+</td>  
+<td>  
+$<?php  echo $sub_total;  ?>.00  
+</td>  
+</tr><! -- tr Ends  --> 
+<?php  } 
+} ?> 
+</tbody><! -- tbody  Ends  --> 
+<tfoot>  
+<!-- tfoot Starts  --> 
+<tr> 
+<th colspan="5">  Total  </th>  
+<th colspan="2">  $<?php  echo $total;  ?>.00  </th>  
+</tr>  
+</tfoot><! -- tfoot Ends  --> 
+</table><! -- table  Ends  --> 
+<div class="form -inline  pull-right">  
+<!-- form -inline  pull-right  Starts  --> 
+ 
+ 
+70  <div class="form -group">  
+<!-- form -group  Starts  --> 
+<label>Coupon  Code  : </label>  
+<input  type="text"  name="code"  class="form -control">  
+</div><! -- form -group  Ends  --> 
+<input  class="btn  btn-primary"  type="submit"  name="apply_coupon"  value="Apply  Coupon  
+Code">  
+</div><! -- form -inline  pull-right Ends  --> 
+</div><! -- table -responsive  Ends  --> 
+<div class="box -footer">  
+<!-- box-footer  Starts  --> 
+<div class="pull -left">  
+<!-- pull-left Starts  --> 
+<a href="inde x.php"  class="btn  btn-default">  
+<i class="fa  fa-chevron -left"></i>  Continue  Shopping  
+</a> 
+</div><! -- pull-left Ends  --> 
+ 
+<div class="pull -right">  
+<!-- pull-right  Starts  --> 
+ 
+<button  class="btn  btn-default"  type="submit"  name="update"  value="Update  Cart">  
+<i class="fa  fa-refresh"></i>  Update  Cart 
+</button>  
+<a href="checkout.php" class="btn btn -primary">  
+Proceed  to checkout  <i class="fa  fa-chevron -right"></i>  
+</a> 
+</div><! -- pull-right  Ends  --> 
+</div><! -- box-footer  Ends  --> 
+</form><! -- form  Ends  --> 
+</div><! -- box Ends  --> 
+<?php  
+if (isset($_POST['apply_coupon']))  { 
+$code  = $_POST['code'];  
+if ($code  == "") { 
+} else  { 
+$get_coupons  = "select  * from  coupons  where  coupon_code='$code'";  
+$run_coupons  = mysqli_query($con,  $get_coupons);  
+$check_coupons = mysqli_num_rows($run_coupons);  
+if ($check_coupons  == 1)  { 
+$row_coupons  = mysqli_fetch_array($run_coupons);  
+$coupon_pro = $row_coupons['product_id'];  
+if ($coupon_limit  == $coupon_used)  { 
+echo "<script>alert('Your  Coupon  Code  Has Been  Expired')</script>";  
+} else { 
+ 
+$get_cart  = "select  * from  cart where  p_id='$coupon_pro'  AND  ip_add='$ip_add'";  
+ 
+$run_cart  = mysqli_query($con,  $get_cart);  
+$check_cart  = mysqli_num_rows($run_cart);  
+if ($check_cart  == 1) { $add_used = "update coupons set coupon_used=coupon_used+1  
+where  coupon_code='$code'";  
+ 
+ 
+71  $run_used  = mysqli_query($con,  $add_used);  
+ 
+$update_cart  = "update  cart set p_price='$coupon_price'  where  p_id='$coupon_pro'  AND  
+ip_add='$ip_add'";  
+ 
+$run_update  = mysqli_query($con,  $update_cart);  
+ 
+echo "<script>alert('Your  Coupon  Code  Has Been  Applied')</script>";  
+echo "<script>window.open('cart.php','_self')</script>";  
+echo "<script>alert('Product  Does  Not Exist  In Cart')</script>";  
+} 
+} 
+} else  { 
+echo "<script>  alert('Your  Coupon Code Is  Not Valid')  </script>";  
+} 
+} 
+} 
+?> 
+<?php  
+function  update_cart()  
+{ 
+ 
+global  $con;  
+if (isset($_POST['update']))  { 
+foreach  ($_POST['remove']  as $remove_id)  { 
+$delete_product  = "delete  from  cart where  p_id='$remove_id'";  
+$run_delete  = mysqli_query($con,  $delete_product);  
+if ($run_delete)  { 
+echo "<script>window.open('cart.php','_self')</script>";  
+} 
+} 
+} 
+} 
+echo @$up_cart  = update_cart();  
+?> <div id="row  same -height -row">  
+<!-- row same -height -row Starts  --> 
+<div class="col -md-3 col-sm-6"> 
+<!-- col-md-3 col-sm-6 Starts  --> 
+<div class="box  same -height  headline">  
+<!-- box same -height  headline  Starts  --> 
+ 
+<h3 class="text -center">  You also like these  Products  </h3>  
+</div><! -- box same -height  headline  Ends  --> 
+</div><! -- col-md-3 col-sm-6 Ends  --> 
+<?php  
+ 
+$get_products  = "select  * from  products  order  by rand()  LIMIT  0,3";  
+ 
+$run_products  = mysqli_query($con,  $get_products);  
+while  ($row_products  = mysqli_fetch_array($run_products))  { 
+ 
+ 
+72  $pro_pri ce = $row_products['product_price'];  
+$pro_img1  = $row_products['product_img1'];  
+ 
+$pro_label  = $row_products['product_label'];  
+ 
+$manufacturer_id  = $row_products['manufacturer_id'];  
+ 
+$get_manufacturer  = "select  * from  manufacturers  where  manufacturer_id='$manufacturer_id'";  
+ 
+$run_manufacturer  = mysqli_query($db,  $get_manufacturer);  
+ 
+$row_manufacturer  = mysqli_fetch_array($run_manufacturer);  
+ 
+$manufacturer_name  = $row_manufacturer['manufacturer_title'];  
+ 
+$pro_psp_price  = $row_products['prod uct_psp_price'];  
+ 
+$pro_url  = $row_products['product_url'];  
+ 
+ 
+if ($pro_label  == "Sale"  or $pro_label  == "Gift")  { 
+ 
+$product_price  = "<del>  ₹$pro_price  </del>";  
+ 
+$product_psp_price  = "| ₹$pro_psp_price";  
+} else  { 
+ 
+$product_psp_price  = "";  
+} else { 
+$.ajax({  
+url: "change.php",  
+method: "POST",  
+data:  { 
+id: id, 
+quantity:  quantity  
+}, 
+success:  function(data)  { 
+$("body").load('cart_body.php');  
+} 
+}); 
+} 
+}); 
+}); 
+</script>  
+ 
+</body>  
+ 
+</html>  
+ 
+ 
+73   
+ 
+ 
+<?php  my_account.php  
+ 
+session_start();  
+if (!isset($_SESSION['customer_email']))  { 
+echo "<script>window.open('../checkout.php','_self')</script>";  
+} else  { 
+ 
+include("includes/db.php");  
+include("includes/header.php");  
+include("functions/functions.php");  
+include("includes/main.php");  
+?> 
+<main>  
+<!-- HERO --> 
+<div class="nero">  
+<div class="nero    heading">  
+<span  class="nero    bold">My  </span>Account  
+</div>  
+<p class="nero  text">  
+</p>  
+</div>  
+</main>  
+<div id="content">  
+<!-- content  Starts  --> 
+<div class="container">  
+<!-- container  Starts  --> 
+<div class="col -md-12">  
+<!-- col-md-12 Starts  --> 
+<?php  
+ 
+$c_email  = $_SESSION['customer_email'];  
+$get_customer  = "select  * from customers  where  customer_email='$c_email'";  
+ 
+$run_customer  = mysqli_query($con,  $get_customer);  
+$row_customer  = mysqli_fetch_array($run_customer);  
+ 
+$customer_confirm_code  = $row_customer['customer_confirm_code'];  
+$c_name  = $row_customer['customer_name'];  
+ 
+if (!empty($customer_confirm_code))  { 
+?> 
+<div class="alert  alert-danger">  
+<!-- alert alert-danger  Starts  --> 
+<strong>  Warning!  </strong>  Please  Confirm  Your  Email  and if you have not  received  your 
+confirmation  email  
+<a href="my_account.php?send_email"  class="alert -link">  
+ 
+Send  Email  Again  
+</a> 
+</div><! -- alert alert-danger  Ends  --> 
+ 
+ 
+74  </div><! -- col-md-3 Ends  --> 
+ 
+<div class="col -md-9"> 
+<!--- col-md-9 Starts  --> 
+\ <div class="box">  
+<!-- box Starts  --> 
+\\\\\\\ 
+<?php  
+\ \ if (isset($_GET[$customer_confirm_code]))  { 
+ 
+$update_customer  = "update  customers  set customer_confirm_code=''  where  
+customer_confirm_code='$customer_confirm_code'";  
+$run_confirm  = mysqli_query($con,  $update_customer);  
+ 
+echo "<script>alert('Your  Email  Has Been  Confirmed')</script>";  
+ 
+echo "<script>window.open('my_account.php?my_orders','_self')</script>";  
+} 
+if (isset($_GET['send_email']))  { 
+ 
+$subject  = "Email  Confirmation  Message";  
+ 
+$from  = "vikashpanther@gmail.com "; 
+ 
+$message  = " 
+ 
+<h2>  
+ 
+Email  Confirmation  By Computerfever.com  $c_name  
+ 
+</h2>  
+ 
+<a href='localhost/ecom_store/customer/my_account.php?$customer_confirm_code'>  
+ 
+Click  Here  To Confirm  Email  
+ 
+</a> 
+"; 
+$headers  = "From:  $from  \r\n"; 
+ 
+$headers .= "Content -type: text/html \r\n"; 
+mail($c_email,  $subject,  $message,  $headers);  
+echo "<script>alert('Your  Confirmation  Email  Has Been  sent to you, check  your inbox')</script>";  
+ 
+echo "<script>window.o pen('my_account.php?my_orders','_self')</script>";  
+} 
+ 
+ 
+75  if (isset($_GET['my_orders']))  { 
+include("my_orders.php");  
+} 
+if (isset($_GET['pay_offline']))  { 
+include("pay_offline.php");  
+} 
+ 
+if (isset($_GET['edit_account']))  { 
+include("edit_account.php");  
+} 
+ 
+if (isset($_GET['change_pass']))  { 
+include("change_pass.php");  
+} 
+ 
+if (isset($_GET['delete_account']))  { 
+include("delete_account.php");  
+} 
+ 
+if (isset($_GET['my_wishlist']))  { 
+include("my_wishlist.php");  
+} 
+ 
+if (isset($_GET['delete_wishlist']))  { 
+include("delete_wishlist.php");  
+} 
+ 
+?> 
+</div><! -- box Ends  --> 
+ 
+ 
+</div>  
+<!--- col-md-9 Ends  --> 
+ 
+</div><! -- container  Ends  --> 
+</div><! -- content  Ends  --> 
+ 
+<?php  
+ 
+include("includes/footer.php");  
+ 
+?> 
+ 
+<script  src="js/jquery.min.js">  </script>  
+ 
+<script  src="js/bootstrap.min.js"></script>  
+ 
+</body>  
+ 
+</html>  
+<?php  } ?> 
+ 
+ 
+76  my_orders.php  
+<center>  
+<!-- center  Starts  --> 
+ 
+<h1>My  Orders</h1>  
+ 
+<p class="lead">  Your orders  on one place.</p>  
+ 
+<p class="text -muted">  
+ 
+If you have any  questions,  please  feel free to <a href="../contact.php">  contact  us,</a>  our 
+customer  service  center  is working  for you 24/7.  
+</p>  
+</center><! -- center  Ends  --> 
+ 
+<hr>  
+ 
+<div class="table -responsive">  
+<!-- table -responsive  Starts  --> 
+ 
+<table  class="table  table -bordered  table -hover">  
+<!-- table  table -bordered  table -hover  Starts  --> 
+ 
+<thead>  
+<!-- thead  Starts  --> 
+<tr> 
+ 
+<th>O  N:</th>  
+<th>Due  Amount:</th>  
+<th>Invoice  No:</th>  
+<th>Qty:</th>  
+<th>Size:</th>  
+<th>Order  Date:</th>  
+<th>Paid/Unpaid:</th>  
+<th>Status:</th>  
+</tr>  
+ 
+</thead><! -- thead  Ends  --> 
+<tbody>  <!--- tbody  Starts  ---> 
+ 
+<?php  
+$customer_session  = $_SESSION['customer_email'];  
+ 
+$get_customer  = "select  * from  customers  where  customer_email='$customer_session'";  
+ 
+$run_customer  = mysqli_query($con,  $get_customer);  
+$row_customer  = mysqli_fetch_array($run_customer);  
+ 
+$customer_id  = $row_customer['customer_id'];  
+$get_orders  = "select  * from  customer_orders  where  customer_id='$customer_id'";  
+ 
+$run_orders  = mysqli_query($con,  $get_orders);  
+$i = 0; 
+ 
+ 
+77  while  ($row_orders  = mysqli_fetch_array($run_orders))  { 
+$order_id  = $row_orders['order _id'];  
+ 
+$due_amount  = $row_orders['due_amount'];  
+$invoice_no  = $row_orders['invoice_no'];  
+ 
+$qty = $row_orders['qty'];  
+$size  = $row_orders['size'];  
+ 
+$order_date  = substr($row_orders['order_date'],  0, 11); 
+$order_status  = $row_orders['order_status'];  
+ 
+$i++;  
+if ($order_status  == 'pending')  { 
+ 
+$order_status  = "Unpaid";  
+} else { 
+$order_status  = "Paid";  
+} 
+ 
+?> 
+<tr> 
+<!-- tr Starts  --> 
+ 
+<th><?php  echo $i; ?></th>  
+ 
+<td>₹<?php  echo $due_amount;  ?></td>  
+ 
+<td><?php  echo $invoice_no;  ?></td>  
+ 
+<td><?php  echo $qty; ?></td>  
+ 
+<td><?php  echo $size;  ?></td>  
+ 
+<td><?php  echo $order_date;  ?></td>  
+ 
+<td><?php  echo $order_status;  ?></td>  
+ 
+<td>  
+<a href="confirm.php?order_id=<?php  echo $order_id;  ?>" target="blank"  class="btn  
+btn-primary  btn-sm">  Confirm  If Paid </a> 
+</td>  
+ 
+ 
+</tr><! -- tr Ends  --> 
+ 
+<?php  } ?> 
+ 
+</tbody>  
+<!--- tbody  Ends  ---> 
+ 
+ 
+78  customer_delete.php  
+<?php  
+if (!isset($_SESSION['admin_email']))  { 
+echo "<script>window.open('login.php','_self')</script>";  
+} else  { 
+?><?php  
+if (isset($_GET['customer_delete']))  { 
+$delete_id  = $_GET['customer_delete'];  
+$delete_customer  = "delete  from  customers  where  customer_id='$delete_id'";  
+$run_delete  = mysqli_query($con,  $delete_customer);  
+if ($run_delete)  { 
+echo "<script>alert('Customer  Has Been  Deleted')</script>";  
+echo "<script>window.open('index.php?view_customers','_self')</script>";  
+} } 
+?><?php  } ?> 
+my_wishlist.php  
+<center>  
+<!-- center  Starts  --> 
+<h1>  My Wishlist  </h1>  
+<p class="lead">  Your  all Wishlist  Products  on one place.  </p>  
+</center><! -- center  Ends  --> 
+ 
+<hr>  
+<div class="table -responsive">  
+<!-- table -responsive  Starts  --> 
+<table  class="table  table -bordered  table -hover">  
+<!-- table  table -bordered  table -hover  Starts  --> 
+<thead>  
+<tr> 
+ 
+<th>  Wishlist  No: </th>  
+<th>  Wishlist Product  </th>  
+<th>  Delete  Wishlist  </th>  
+ 
+</tr>  
+</thead>  
+<tbody>  
+ 
+<?php  
+ 
+$customer_session  = $_SESSION['customer_email'];  
+$get_customer  = "select  * from  customers  where  customer_email='$customer_session'";  
+ 
+$run_customer  = mysqli_query($con,  $get_customer);  
+$row_customer  = mysqli_fetch_array($run_customer);  
+ 
+$customer_id  = $row_customer['customer_id'];  
+$i = 0; 
+ 
+ 
+79  while  ($row_wishlist  = mysqli_fetch_array($run_wishlist))  { 
+ 
+$wishlist_id  = $row_wishlist['wishlist_id'];  
+ 
+$product_id  = $row_wishlist['product_id'];  
+ 
+$get_products  = "select  * from  products  where  product_id='$product_id'";  
+$run_products  = mysqli_query($con,  $get_products);  
+ 
+$row_products  = mysqli_fetch_array($run_products);  
+$product_title  = $row_products['product_title'];  
+ 
+$product_url  = $row_products['product_url'];  
+$product_img1  = $row_products[ 'product_img1'];  
+ 
+$i++;  
+?> 
+<tr> 
+ 
+<td width="100">  <?php echo  $i; ?> </td>  
+<td>  
+<img  src="../admin_area/product_images/<?php  echo $product_img1;  ?>" width="60"  
+height="60">  
+ 
+&nbsp;&nbsp;&nbsp;  
+ 
+<a href="../<?php  echo $product_url;  ?>">  
+ 
+<?php  echo $product_title;  ?> 
+</a> 
+ 
+</td>  <td>  
+ 
+<a href="my_account.php?delete_wishlist=<?php  echo $wishlist_id;  ?>" class="btn  btn- 
+primary">  
+ 
+<i class="fa  fa-trash -o"> </i> Delete  
+ 
+</a> 
+ 
+</td>  
+ 
+</tr>  
+ 
+<?php  } ?> 
+ 
+</tbody>  
+ 
+</table><! -- table  table -bordered  table -hover  Ends  --> 
+ 
+</div><! -- table -responsive  Ends  --> 
+ 
+ 
+80   
+ 
+<?php  function.php  
+ 
+$db = mysqli_connect("localhost","root","root","ecom_store");  
+ 
+/// IP address  code starts  ///// 
+function  getRealUserIp(){  
+switch(true){  
+case (!empty($_SERVER['HTTP_X_REAL_IP']))  : return  $_SERVER['HTTP_X_REAL_IP'];  
+case (!empty($_SERVER['HTTP_CLIENT_IP'])) : return $_SERVER['HTTP_CLIENT_IP'];  
+case (!empty($_SERVER['HTTP_X_FORWARDED_FOR']))  : return  
+$_SERVER['HTTP_X_FORWARDED_FOR'];  
+default  : return  $_SERVER['REMOTE_ADDR'];  
+} 
+} 
+/// IP address  code Ends  ///// 
+// items  function  Starts  /// 
+ 
+function items(){  
+globa l $db; 
+ 
+$ip_add  = getRealUserIp();  
+$get_items  = "select  * from  cart where  ip_add='$ip_add'";  
+ 
+$run_items  = mysqli_query($db,$get_items);  
+$count_items  = mysqli_num_rows($run_items);  
+echo $count_items;  
+}// items  function  Ends  /// 
+ 
+// total_price  function  Starts  // 
+function  total_price(){  
+ 
+global  $db; 
+$ip_add  = getRealUserIp();  
+ 
+$total  = 0; 
+$select_cart  = "select  * from  cart where  ip_add='$ip_add'";  
+ 
+$run_cart = mysqli_query($db,$select_cart);  
+while($record=mysqli_fetch_array($run_cart)){  
+ 
+$pro_id  = $record['p_id'];  
+$pro_qty  = $record['qty'];  
+ 
+$sub_total  = $record['p_price']*$pro_qty;  
+$total  += $sub_total;  
+} 
+echo "₹" . $total;  
+} 
+// total_price  function  Ends  // 
+ 
+ 
+81  $get_products  = "select  * from  products  order  by 1 DESC  LIMIT  0,8";  
+$run_products  = mysqli_query($db,$get_products);  
+ 
+while($row_products=mysqli_fetch_array($run_products)){  
+$pro_id  = $row_products['product_id'];  
+ 
+$pro_title  = $row_products['product_title'];  
+$pro_price  = $row_products['product_price'];  
+ 
+$pro_img1  = $row_products['product_img1'];  
+$pro_label  = $row_products['product_label'];  
+$manufacturer_id  = $row_products['manufacturer_id'];  
+ 
+$get_manufacturer  = "select  * from  manufacturers  where  manufacturer_id='$manufact urer_id'";  
+ 
+$run_manufacturer  = mysqli_query($db,$get_manufacturer);  
+$row_manufacturer  = mysqli_fetch_array($run_manufacturer);  
+ 
+$manufacturer_name  = $row_manufacturer['manufacturer_title'];  
+$pro_psp_price  = $row_products['product_psp_price'];  
+ 
+$pro_url = $row_products['product_url'];  
+if($pro_label  == "Sale"  or $pro_label  == "Gift"){  
+ 
+$product_price  = "<del>  ₹$pro_price  </del>";  
+$product_psp_price  = "| ₹$pro_psp_price";  
+ 
+} 
+else{  
+$product_psp_price  = "";  
+$product_price  = "₹$pro_price";  
+} 
+if($pro_label  == ""){ 
+ 
+}else{  
+$product_label  = " 
+ 
+<a class='label  sale' href='#'  style='color:black;'>  
+<div class='thelabel'>$pro_label</div>  
+ 
+<div class='label -background'>  </div>  
+</a> 
+";}echo  " 
+<div class='col -md-4 col-sm-6 single'  > 
+<div class='product'  > 
+ 
+<a href='$pro_url'  > 
+<img  src='admin_area/product_images/$pro_img1'  class='img -responsive'  > 
+ 
+</a> 
+<div class='text'  > 
+<center>  
+<p class='btn  btn-primary'>  $manufacturer_name  </p>  
+ 
+ 
+82  </center>  
+<hr>  
+ 
+<h3><a  href='$pro_url'  >$pro_title</a></h3>  
+<p class='price'  > $product_price  $product_psp_price  </p>  
+ 
+<p class='buttons'  > 
+<a href='$pro_url'  class='btn  btn-default'  >View  details</a>  
+ 
+<a href='$pro_url'  class='btn  btn-primary'>  
+<i class='fa  fa-shopping -cart'></i>  Add to cart 
+ 
+</a> 
+</p>  
+ 
+</div>  
+$product_label  
+</div>  
+ 
+</div>  
+"; 
+} 
+} 
+function  getProducts(){  
+ 
+/// getProducts  function  Code  Starts  /// 
+global  $db; 
+ 
+$aWhere  = array();  
+/// Manufacturers  Code  Starts ///  
+ 
+if(isset($_REQUEST['man'])&&is_array($_REQUEST['man'])){  
+foreach($_REQUEST['man']  as $sKey=>$sVal){  
+ 
+if((int)$sVal!=0){  
+$aWhere[]  = 'manufacturer_id='.(int)$sVal;  
+}} 
+} 
+/// Manufacturers  Code  Ends  /// 
+ 
+/// Products Categories Code Starts ///  
+if(isset($_REQUEST['p_cat'])&&is_array($_REQUEST['p_cat'])){  
+foreach($_REQUEST['p_cat']  as $sKey=>$sVal){  
+ 
+if((int)$sVal!=0){  
+ 
+$aWhere[]  = 'p_cat_id='.(int)$sVal;  
+} 
+} 
+}if(isset($_REQUEST['cat'])&&is_array($_REQUEST['cat'])){  
+foreach($_REQUEST['cat'] as $sKey=>$sVal){  
+if((int)$sVal!=0){  
+$aWhere[]  = 'cat_id='.(int)$sVal;  
+ 
+ 
+83  }} 
+/// Categories  Code  Ends ///  
+$per_page=6;  
+ 
+if(isset($_GET['page'])){  
+$page  = $_GET['page'];  
+ 
+}else  { 
+$page=1;  
+if(isset($_REQUEST['man'])&&is_array($_REQUEST['man'])){  
+foreach($_REQUEST['man'] as $sKey=>$sVal){  
+if((int)$sVal!=0){  
+ 
+$aWhere[]  = 'manufacturer_id='.(int)$sVal;  
+$aPath  .= 'man[]='.(int)$s Val.'&';  
+}} 
+} 
+ 
+if(isset($_REQUEST['p_cat'])&&is_array($_REQUEST['p_cat'])){  
+ 
+foreach($_REQUEST['p_cat'] as $sKey=>$sVal){  
+if((int)$sVal!=0){  
+ 
+$aWhere[]  = 'p_cat_id='.(int)$sVal;  
+$aPath  .= 'p_cat[]='.(int)$sVal.'&';  
+ 
+}}} 
+ 
+ 
+if(isset($_REQUEST['cat'])&&is_array($_REQUEST['cat'])){  
+foreach($_REQUEST['cat']  as $sKey=>$sVal){  
+ 
+if((int)$sVal!=0){  
+$aWhere[]  = 'cat_id='.(int)$sVal;  
+$aPath  .= 'cat[]='.(int)$sVal.'&';  
+ 
+} 
+\ 
+\} 
+echo "' >".'Last  Page'."</a></li>";  
+ 
+/// getPaginator  Funct ion Code  Ends  /// 
+ 
+} 
+ 
+/// getPaginator  Function  Ends  /// 
+ 
+ 
+84  About.php  
+<?php  
+session_start();  
+include("includes/db.php");  
+include("includes/header.php");  
+include("functions/functions.php");  
+include("includes/main.php");  
+ 
+?> 
+<main>  
+<!-- HERO  --> 
+<div class="nero">  
+<div class="nero  heading">  
+<span  class="nero  bold">About</span>  us 
+</div>  
+<p class="nero  text">  
+</p>  
+</div>  
+</main>  
+<div id="content">  
+<!-- content  Starts  --> 
+<div class="container">  
+<!-- container  Starts  --> 
+<div class="col -md-12">  
+<!-- col-md-12 Starts  --> 
+<div class="box">  
+<!-- box Starts  --> 
+<?php  
+ 
+$get_about_us  = "select  * from  about_us";  
+$run_about_us  = mysqli_query($con,  $get_about_us);  
+ 
+$row_about_us  = mysqli_fetch_array($run_about_us);  
+$about_heading  = $row_about_us['about_heading'];  
+ 
+$about_short_desc  = $row_about_us['about_short_desc'];  
+$about_desc  = $row_about_us['about_desc'];  
+ 
+?> 
+<h1>  <?php  echo  $about_heading;  ?> </h1>  
+ 
+<p class="lead">  <?php  echo $about_short_desc;  ?> </p>  
+<p> <?php  echo $about_desc;  ?> </p>  
+ 
+</div><! -- box Ends  --> 
+</div><! -- col-md-12 Ends  --> 
+</div><! -- container  Ends  --> 
+</div><! -- content  Ends  --> 
+<?php  
+include("includes/footer.php");  
+?> 
+<script  src="js/jquery.min.js">  </script>  
+<script  src="js/bootstrap.min.js"></script>  
+</body>  
+ 
+ 
+85  footer.php  
+ 
+ 
+<footer  class="page -footer">  
+<div class="footer -nav">  
+<div class="container  clearfix">  
+ 
+<div class="footer -nav col footer -nav   col--info">  
+<div class="footer -nav heading">Information</div>  
+<ul class="footer -nav list">  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">The  brand</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Local  stores</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Customer  service</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Privacy  &amp;  cookies</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Site  map</a>  
+</li>  
+</ul>  
+</div>  
+<div class="footer -nav col footer -nav   col--whybuy">  
+<div class="footer -nav heading">Why  buy from  us</div>  
+<ul class="footer -nav list">  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Shipping  &amp;  returns</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Secure  shipping</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Testimonials</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Award  winning</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Ethical  trading</a>  
+</li>  
+</ul>  
+</div>  
+<div class=" footer -nav col footer -nav   col--account">  
+<div class="footer -nav heading">Your  account</div>  
+<ul class="footer -nav list">  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav   link">Sign  in</a>  
+</li>  
+ 
+ 
+86  <li class="footer -nav item">  
+<a href="#"  class="footer -nav link">Register</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">View  cart</a>  
+</li>  
+<li class="footer -nav item">  
+<a href="#"  class="footer -nav link">View  your lookbook</a>  
+ 
+</ul>  
+</div>  
+<div class="footer -nav   col footer -nav   col--contacts">  
+<div class="footer -nav   heading">Contact  details</div>  
+<address class="address">  
+Head Office: ShopCART<br>  
+ArkaJain,Gamharia  Jharkhand.  
+</address>  
+<div class="phone">  
+Telephone:  
+<a class="phone    number"  href="7004877301">7004877301</a>  
+</div>  
+<div class="email">  
+Email:  
+<a href=" vikashpanther@gmai.com " class="email  addr" >vikashpanther@gmai.com </a> 
+</div>  
+</div>  
+</div>  
+</div>  
+<div class="banners">  
+<div class="container  clearfix">  
+<div class="banner -award">  
+<span>Welcome  to</span><br>  ShopCART  
+</div>  
+<div class="banner -social">  
+<a href=" http://www.facebook.com " class="banner -social  link">  
+<i class="icon -facebook"></i>  
+</a> 
+<a href=" http://www.twitter. com" class="banner -social  link">  
+<i class="icon -twitter"></i>  
+</a> 
+<a href=" http://www.instagram.com " class="banner -social  link">  
+<i class="icon -instagram"></i>  
+<i class="icon -pinterest -circled"></i>  
+</a> 
+</div>  
+</div>  
+</div>  
+<div class="page -footer  subline">  
+<div class="container  clearfix">  
+ 
+<div class="copyright">  
+&copy;<b>  2022  ShopCART  </b>&trade;  
+</div>  
+<div class="designby">  
+<b> Design  by Vikash  Das</b>  
+</div>  </div>  
+ 
+ 
+87  header.php  
+<!DOCTYPE html>  
+<html lang="en">  
+ 
+<head>  
+<meta  charset="utf -8"> 
+<link  href="https://fonts.googleapis.com/css?family=Montserrat:400,700%7CRoboto"  rel="stylesheet">  
+<meta  http-equiv="x -ua-compatible"  content="IE=edge,  chrome=1">  
+<meta  name="viewport"  content="width=device -width,  initial -scale=1">  
+<link rel="shortcut icon"  
+href="//cdn.shopify.com/s/files/1/2484/9148/files/SDQSDSQ_32x32.png?v=1511436147"  
+type="image/png">  
+<title>ShopCART</title>  
+<link  href="styles/bootstrap.min.css"  rel="stylesheet">  
+<link  href="styles/backend.css"  rel="stylesheet">  
+<link  href="styles/style.css"  rel="stylesheet">  
+<link  href="font -awesome/css/font -awesome.min.css"  rel="stylesheet">  
+ 
+ 
+main.php  
+</head>  
+ 
+<body>  
+ 
+<header  class="page -header">  
+<!-- topline  --> 
+<div class="page -header  topline">  
+<div class="container  clearfix">  
+ 
+<div class="currency">  
+<a class="currency  change"  href="customer/my_account.php?my_orders">  
+<?php  
+if (!isset($_SESSION['customer_email']))  { 
+echo "Welcome  :Guest";  
+} else  { 
+echo "<b>Welcome</b>:  " . $_SESSION['customer_email']  . ""; 
+} 
+?> 
+</a> 
+</div>  
+ 
+<div class="basket">  
+<a href="cart.php"  class="btn  btn--basket">  
+<i class="icon -basket"></i>  
+<?php  items();  ?> items  
+</a> 
+</div>  
+<ul class="login">  
+ 
+<li class="login  item">  
+<?php  
+if (!isset($_SESSION['customer_email']))  { 
+echo '<a href="customer_register.php"  class="login  link">Register</a>';  
+ 
+ 
+88  <div class="logo">  
+<a class="logo  link"  href="index.php">  
+<img  class="logo  img"  src="images/logo.jpg"  alt="Avenue  fashion  logotype" width="190"  height="19">  
+</a> 
+</div>  
+ 
+<nav  class="main -nav">  
+<ul class="categories">  
+ 
+<li class="categories  item">  
+<a class="categories  link"  href="mens.php">  
+Mens  
+</a> 
+</li>  
+ 
+<li class="categories  item">  
+<a class="categories  link"  href="womens.php">  
+Womens  
+ 
+</a> 
+ 
+<li class="categories  item">  
+<a class="categories  link"  href="customer/my_account.php?my_orders">  
+My Account  
+<i class="icon -down -open -1"></i>  
+</a> 
+<div class="dropdown  dropdown --lookbook">  
+<div class="clearfix">  
+<li class="dropdown  item">  
+<a href="#"  class="dropdown    link">View  Shopping  Cart</a>  
+</li>  
+</ul>  
+</div>  
+<div class="dropdown  half">  
+<div class="dropdown  heading"></div>  
+<ul class="dropdown    items">  
+<li class="dropdown    item">  
+<a href="#"  class="dropdown    link">Edit  Your  Account</a>  
+</li>  
+<li class="dropdown  item">  
+<a href="#"  class="dropdown    link">Change  Password</a>  
+</li>  
+<li class="dropdown  item">  
+<a href="#"  class="dropdown  link">Delete  Account</a>  
+</li>  
+</ul>  
+</div>  
+</div>  
+</div>  
+</li>  
+</ul>  
+</nav>  
+</div>  
+</div>  
+</header>  
+ 
+ 
+89  checkout.php  
+<?php  
+session_start();  
+include("includes/db.php");  
+include("includes/header.php");  
+include("functions/functions.php");  
+include("includes/main.php");  
+ 
+?> 
+<!-- MAIN --> 
+<main>  
+<!-- HERO  --> 
+<div class="nero">  
+<div class="nero  heading">  
+<span  class="nero  bold">Checkout</span>  
+</div>  
+<p class="nero  text">  
+</p>  
+</div>  
+</main>  
+<div id="content">  
+<!-- content  Starts  --> 
+<div class="container">  
+<!-- container  Starts  --> 
+<div class="col -md-12">  
+<!-- col-md-12 Starts  --> 
+<?php  
+if (!isset($_SESSION['customer_email']))  { 
+include("customer/customer_login.php");  
+} else {  
+include("payment_options.php");  
+} 
+?> 
+ 
+ 
+</div><! -- col-md-12 Ends  --> 
+</div><! -- container  Ends  --> 
+</div><! -- content  Ends  --> 
+ 
+<?php  
+include("includes/footer.php");  
+?> 
+ 
+<script  src="js/jquery.min.js">  </script>  
+ 
+<script  src="js/bootstrap.min.js"></script>  
+ 
+</body>  
+ 
+</html>  
+ 
+ 
+90  Admin_Index,php  
+ 
+<?php  
+session_start();  
+include("includes/db.php");  
+ 
+if (!isset($_SESSION['admin_email']))  { 
+ 
+echo "<script>window.open('login.php','_self')</script>";  
+} else  { 
+ 
+ 
+?> 
+<?php  
+ 
+$admin_session  = $_SESSION['admin_email'];  
+$get_admin  = "select  * from  admins  where  admin_email='$admin_session'";  
+$run_admin  = mysqli_query($con,  $get_admin);  
+$row_admin  = mysqli_fetch_array($run_admin);  
+ 
+$admin_id  = $row_admin['admin_id'];  
+$admin_name  = $row_admin['admin_name'];  
+$admin_email  = $row_admin['admin_email'];  
+$admin_image  = $row_admin['admin_image'];  
+ 
+$admin_country  = $row_admin['admin_country'];  
+$admin_job  = $row_admin['admin_job'];  
+$admin_contact  = $row_admin['admin_contact'];  
+ 
+$admin_about  = $row_admin['admin_about'];  
+$get_products  = "select  * from  products";  
+$run_products  = mysqli_query($con,  $get_products);  
+$count_products  = mysqli_num_rows($run_products);  
+ 
+$get_customers  = "select  * from  customers";  
+$run_customers  = mysqli_query($con,  $get_customers);  
+$count_customers  = mysqli_num_rows($run_customers);  
+ 
+$get_p_categories  = "select  * from  product_categories";  
+$run_p_categories  = mysqli_query($con,  $get_p_categories);  
+$count_p_categories  = mysqli_num_rows($run_p_categories);  
+ 
+$get_pending_orders  = "select  * from  pending_orders";  
+$run_pending_orders  = mysqli_query($con,  $get_pending_orders);  
+$count_pending_orders  = mysqli_num_rows($run_pending_orders);  
+ 
+?> 
+<!DOCTYPE  html>  
+<html>  
+<head>  
+<title>Admin  Panel</title>  
+<link  href="css/bootstrap.min.css"  rel="stylesheet">  
+ 
+<link  href="css/style.css"  rel="stylesheet">  
+ 
+ 
+91  <link  href="font -awesome/css/font -awesome.min.css"  rel="stylesheet">  
+<link rel="shortcut icon"  
+href="//cdn.shopify.com/s/files/1/2484/9148/files/SDQSDSQ_32x32.png?v=1511436147"  
+type="image/png">  
+ 
+</head>  
+<body>  
+<div id="wrapper">  
+<!-- wrapper  Starts  --> 
+<?php  include("includes/sidebar.php");  ?> 
+ 
+<div id="page -wrapper">  
+<!-- page-wrapper  Starts  --> 
+ 
+<div class="container -fluid">  
+<!-- container -fluid Starts  --> 
+ 
+<?php  
+if (isset($_GET['dashboard']))  { 
+ 
+include("dashboard.php");  
+} 
+if (isset($_GET['insert_product']))  { 
+ 
+include("insert_product.php");  
+} 
+if (isset($_GET['view_products']))  { 
+ 
+include("view_products.php");  
+} 
+if (isset($_GET['delete_product']))  { 
+ 
+include("delete_product.php");  
+} 
+ 
+if (isset($_GET['edit_product']))  { 
+include("edit_product.php");  
+} 
+if (isset($_GET['insert_p_cat']))  { 
+ 
+include("insert_p_cat.php");  
+} 
+if (isset($_GET['view_p_cats']))  { 
+ 
+include("view_p_cats.php");  
+} 
+ 
+if (isset($_GET['delete_p_cat']))  { 
+ 
+include("delete_p_cat.php");  
+} 
+ 
+if (isset($_GET['edit_p_cat']))  { 
+include("edit_p_cat.php");  
+ 
+ 
+92  if (isset($_GET['insert_cat']))  { 
+ 
+include("insert_cat.php");  
+} 
+ 
+if (isset($_GET['view_cats']))  { 
+ 
+include("view_cats.php");  
+} 
+if (isset($_GET['delete_cat']))  { 
+ 
+include("delete_cat.php");  
+} 
+if (isset($_GET['edit_cat']))  { 
+ 
+include("edit_cat.php");  
+} 
+if (isset($_GET['insert_slide']))  { 
+ 
+include("insert_slide.php");  
+} 
+ 
+if (isset($_GET['view_slides']))  { 
+ 
+include("view_slides.php");  
+} 
+if (isset($_GET['delete_slide']))  { 
+ 
+include("delete_slide.php");  
+} 
+ 
+if (isset($_GET['edit_slide']))  { 
+ 
+include("edit_slide.php");  
+} 
+if (isset($_GET['view_customers']))  { 
+ 
+include("view_customers.php");  
+} 
+if (isset($_GET['customer_delete']))  { 
+ 
+include("customer_delete.php");  
+} 
+ 
+if (isset($_GET['view_orders']))  { 
+ 
+include("view_orders.php");  
+} 
+if (isset($_GET['order_delete']))  { 
+ 
+include("order_delete.php");  
+} 
+if (isset($_GET['view_payments']))  { 
+ 
+ 
+93  if (isset($_GET['delete_rel']))  { 
+ 
+include("delete_rel.php");  
+} 
+if (isset($_GET['edit_rel']))  { 
+ 
+include("edit_rel.php");  
+} 
+if (isset($_GET['edit_contact_us']))  { 
+ 
+include("edit_contact_us.php");  
+} 
+if (isset($_GET['insert_enquiry']))  { 
+ 
+include("insert_enquiry.php");  
+} 
+ 
+if (isset($_GET['view_enquiry']))  { 
+ 
+include("view_enquiry.php");  
+} 
+if (isset($_GET['delete_enquiry']))  { 
+ 
+include("delete_enquiry.php");  
+} 
+if (isset($_GET['edit_enquiry']))  { 
+ 
+include("edit_enquiry.php");  
+} 
+ 
+if (isset($_GET['edit_about_us']))  { 
+ 
+include("edit_about_us.php");  
+} 
+} 
+if (isset($_GET['view_store']))  { 
+ 
+include("view_store.php");  
+} 
+if (isset($_GET['delete_store']))  { 
+ 
+include("delete_store.php");  
+} 
+if (isset($_GET['edit_store']))  { 
+ 
+include("edit_store.php");  
+} 
+?> 
+</div><! -- container -fluid  Ends  --> 
+</div><! -- page-wrapper  Ends  --> 
+</div><! -- wrapper  Ends  --> 
+<script  src="js/jquery.min. js"></script>  
+ 
+ 
+94  insert_manufacture.php  
+ 
+<?php  
+ 
+ 
+if (!isset($_SESSION['admin_email']))  { 
+ 
+echo "<script>window.open('login.php','_self')</script>";  
+} else  { 
+?> 
+<div class="row">  
+<!-- 1 row Starts  --> 
+ 
+<div class="col -lg-12">  
+<!-- col-lg-12 Starts  --> 
+ 
+<ol class="breadcrumb">  
+<!-- breadcrumb  Starts  --> 
+ 
+<li class="active">  
+ 
+<i class="fa  fa-dashboard"></i>  Dashboard  / Insert  Manufacturer  
+ 
+</li>  
+ 
+</ol><! -- breadcrumb  Ends  --> 
+ 
+</div><! -- col-lg-12 Ends  --> 
+ 
+</div><! -- 1 row Ends  --> 
+ 
+ 
+<div class="row">  
+<!-- 2 row Starts  --> 
+ 
+<div class="col -lg-12">  
+<!-- col-lg-12 Starts  --> 
+ 
+<div class="panel  panel -default">  
+<!-- panel  panel -default  Starts  --> 
+ 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+ 
+<h3 class="panel -title">  
+<!-- panel -title Starts  --> 
+ 
+<i class="fa  fa-money fa -fw"> </i>  Insert  Manufacturer  
+ 
+</h3><! -- panel -title Ends  --> 
+ 
+</div><! -- panel -heading  Ends  --> 
+ 
+ 
+95  <div class="panel -body">  
+<!-- panel -body  Starts  --> 
+ 
+<form  class="form -horizontal"  action=""  method="post"  enctype="multipart/form -data">  
+<!-- form -horizontal  Starts  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Manufacturer  Name  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="text"  name="manufacturer_name"  class="form -control">  
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Show  as Top Manufacturers  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="radio"  name="manufacturer_top"  value="yes">  
+ 
+<label>  Yes </label>  
+ 
+<input  type="radio"  name="manufacturer_top"  value="no">  
+ 
+<label>  No </label>  
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Select  Manufacturer  Image  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="file"  name="manufacturer_image"  class="form -control">  
+ 
+ 
+96  </div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class= "col-md-3 control -label">  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="submit"  name="submit"  class="form -control  btn btn-primary"  
+value="  Insert  Manufacturer  "> 
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+</form><! -- form -horizontal  Ends  --> 
+ 
+</div><! -- panel -body  Ends  --> 
+</div><! -- panel  panel -default  Ends  --> 
+ 
+</div><! -- col-lg-12 Ends  --> 
+</div><! -- 2 row Ends  --> 
+ 
+<?php  
+if (isset($_POST['submit']))  { 
+ 
+$manufacturer_name  = $_POST['manufacturer_name'];  
+ 
+$manufacturer_top  = $_POST['manufacturer_top'];  
+ 
+$manufacturer_image  = $_FILES['manufacturer_image']['name'];  
+ 
+$tmp_name = $_FILES['manufacturer_image']['tmp_name'];  
+move_uploaded_file($tmp_name,  "other_images/$manufacturer_image");  
+$insert_manufacturer = "insert into manufacturers  
+(manufacturer_title,ma nufacturer_top,manufacturer_image) values  
+('$manufacturer_name','$manufacturer_top','$manufacturer_image')";  
+ 
+$run_manufacturer  = mysqli_query($con,  $insert_manufacturer);  
+if ($run_manufacturer)  { 
+echo "<script>alert('New  Manufacturer  Has Been  Inserted')</ script>";  
+ 
+echo "<script>window.open('index.php?view_manufacturers','_self')</script>";  
+} 
+} 
+?> 
+<?php  } ?> 
+ 
+ 
+97  insert_product.php  
+ 
+ 
+ 
+ 
+<?php  
+ 
+if (!isset($_SESSION['admin_email']))  { 
+ 
+echo  "<script>window.open('login.php','_self')</script>";  
+} else { 
+?> 
+<!DOCTYPE  html>  
+<html>  
+<head>  
+<title> Insert  Products  </title>  
+<script  src="//cdn.tinymce.com/4/tinymce.min.js"></script>  
+<script>  
+tinymce.init({  
+selector: '#product_desc,#product_features'  
+}); 
+</script>  
+</head>  
+<body>  
+<div class="row">  
+<!-- row Starts  --> 
+<div class="col -lg-12">  
+<!-- col-lg-12 Starts  --> 
+<ol class="breadcrumb">  
+<!-- breadcrumb  Starts  --> 
+<li class="active">  
+<i class="fa  fa-dashboard">  </i> Dashboard  / Insert  Products  
+</li>  
+</ol><! -- breadcrumb  Ends  --> 
+</div><! -- col-lg-12 Ends  --> 
+</div><! -- row Ends  --> 
+<div class="row">  
+<!-- 2 row Starts  --> 
+<div class="col -lg-12">  
+<!-- col-lg-12 Starts  --> 
+<div class="panel  panel -default">  
+<!-- panel  panel -default  Starts  --> 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+<h3 class="panel -title">  
+<i class="fa  fa-money  fa-fw"></i>  Insert  Products  
+</h3>  
+</div><! -- panel -heading  Ends  --> 
+ 
+ 
+98  <div class="panel -body">  
+<!-- panel -body  Starts  --> 
+ 
+<form  class="form -horizontal"  method="post"  enctype="multipart/form -data">  
+<!-- form -horizontal  Starts  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Title </label>  
+<div class="col -md-6"> 
+ 
+<input  type="text"  name="product_title"  class="form -control"  required>  
+</div>  
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Url </label>  
+<div class="col -md-6"> 
+ 
+<input  type="text"  name="product_url"  class="form -control"  required>  
+<br>  
+<p style="font -size:15px;  font-weight:bold;">  
+ 
+Product  Url Example  : navy -blue-t-shirt 
+ 
+</p>  
+ 
+</div>  
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Select  A Manufacturer  </label>  
+<div class="col -md-6"> 
+ 
+<select  class="form -control"  name="manufacturer">  
+<!-- select  manufacturer  Starts  --> 
+ 
+<option>  Select  A Manufacturer  </option>  
+ 
+<?php  
+ 
+$get_manufacturer  = "select  * from  manufacturers";  
+ 
+$run_manufacturer  = mysqli_query($con,  $get_manufacturer);  
+ 
+while  ($row_manufacturer  = mysqli_fetch_array($run_manufacturer))  { 
+ 
+$manufacturer_id  = $row_manufacturer['manufacturer_id'];  
+ 
+ 
+99  $manufacturer_title  = $row_manufacturer['manufacturer_title'];  
+ 
+echo "<option  value='$manufacturer_id'>  
+$manufacturer_title  
+</option>";  
+} 
+?> 
+</select><! -- select  manufacturer  Ends  --> 
+</div>  
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+<label  class="col -md-3 control -label">  Product  Category  </label>  
+ 
+<div class="col -md-6"> 
+<select  name="product_cat"  class="form -control">  
+ 
+<option>  Select  a Product  Category </option>  
+<?php  
+ 
+$get_p_cats  = "select  * from  product_categories";  
+ 
+$run_p_cats  = mysqli_query($con,  $get_p_cats);  
+while  ($row_p_cats  = mysqli_fetch_array($run_p_cats))  { 
+ 
+$p_cat_id  = $row_p_cats['p_cat_id'];  
+$p_cat_title  = $row_p_cats['p_cat_title'];  
+ 
+echo "<option  value='$p_cat_id'  >$p_cat_title</option>";  
+} 
+?> 
+</select>  
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Category  </label>  
+ 
+<div class="col -md-6"> 
+ 
+ 
+<select  name="cat"  class="form -control">  
+ 
+<option>  Select  a Category  </option>  
+ 
+<?php  
+ 
+$get_cat  = "select  * from  categories  "; 
+ 
+$run_cat  = mysqli_query($con,  $get_cat);  
+ 
+ 
+100  while  ($row_cat  = mysqli_fetch_array($run_cat))  { 
+ 
+$cat_id  = $row_cat['cat_id'];  
+$cat_title  = $row_cat['cat_title'];  
+ 
+echo "<option  value='$cat_id'>$cat_title</option>";  
+} 
+?> 
+</select>  
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Image  1 </label>  
+<div class="col -md-6"> 
+ 
+<input  type="file"  name="product_img1"  class="form -control"  required>  
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Image  2 </label>  
+<div class="col -md-6"> 
+ 
+<input  type="file"  name="product_img2"  class="form -control"  requir ed> 
+ 
+</div>  
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Image  3 </label>  
+<div class="col -md-6"> 
+ 
+<input  type="file"  name="product_img3"  class="form -control"  required>  
+ 
+</div>  
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+<label  class="col -md-3 control -label">  Product  Price  </label>  
+<div class="col -md-6"> 
+<input  type="text"  name="product_price"  class="form -control"  required>  
+ 
+</div>  
+</div><! -- form -group  Ends  --> 
+ 
+ 
+101  <div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Sale Price  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="text"  name="psp_price"  class="form -control"  required>  
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Keywords  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="text"  name="product_keywords"  class="form -control"  required>  
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">  Product  Tabs  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<ul class="nav  nav-tabs">  
+<!-- nav nav-tabs Starts  --> 
+ 
+<li class="active">  
+ 
+<a data-toggle="tab"  href="#description">  Product  Description  </a> 
+ 
+</li>  
+ 
+<li> 
+ 
+<a data -toggle="tab"  href="#features">  Product  Features  </a> 
+ 
+</li>  
+ 
+<li> 
+ 
+<a data -toggle="tab"  href="#video">  Sounds  And Videos  </a> 
+ 
+</li>  
+ 
+ 
+102  </ul><! -- nav nav-tabs Ends  --> 
+ 
+<div class="tab -content">  
+<!-- tab-content  Starts  --> 
+ 
+<div id="description"  class="tab -pane fade in active">  
+<!-- description  tab-pane fade in active  Starts  --> 
+ 
+<br>  
+ 
+<textarea  name="product_desc"  class="form -control"  rows="15"  id="product_desc">  
+ 
+ 
+</textarea>  
+ 
+</div><! -- description  tab-pane fade in active  Ends  --> 
+ 
+ 
+<div id="features"  class="tab -pane fade in"> 
+<!-- features  tab-pane fade in Starts  --> 
+ 
+<br>  
+ 
+<textarea  name="product_features"  class="form -control"  rows="15"  
+id="product_features">  
+ 
+ 
+</textarea>  
+ 
+</div><! -- features  tab-pane fade in Ends  --> 
+ 
+ 
+<div id="video"  class="tab -pane fade in"> 
+<!-- video  tab-pane fade in Starts  --> 
+ 
+<br>  
+ 
+ 
+ 
+</textarea>  
+ 
+</div><! -- video  tab-pane fade in Ends  --> 
+ 
+ 
+</div><! -- tab-content  Ends  --> 
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+ 
+103  <label  class="col -md-3 control -label">  Product  Label  </label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="text"  name="product_label"  class="form -control"  required>  
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label"></label>  
+ 
+<div class="col -md-6"> 
+ 
+<input  type="submit"  name="submit"  value="Insert  Product"  class="btn  btn-primary  form - 
+control">  
+ 
+</div>  
+ 
+</div><! -- form -group  Ends  --> 
+ 
+</form><! -- form -horizontal  Ends  --> 
+ 
+</div><! -- panel -body  Ends  --> 
+ 
+</div><! -- panel  panel -default  Ends  --> 
+ 
+</div><! -- col-lg-12 Ends  --> 
+ 
+</div><! -- 2 row Ends  --> 
+ 
+ 
+</body>  
+ 
+</html>  
+ 
+<?php  
+ 
+if (isset($_POST['submit']))  { 
+ 
+$product_title  = $_POST['product_title'];  
+$product_cat  = $_POST['product_cat'];  
+$cat = $_POST['cat'];  
+$manufacturer_id  = $_POST['manufacturer'];  
+$product_price  = $_POST['product_price'];  
+$product_desc  = $_POST['product_desc'];  
+$product_keywords  = $_POST['product_keywords'] ; 
+ 
+$psp_price  = $_POST['psp_price'];  
+ 
+ 
+104  $product_label  = $_POST['product_label'];  
+ 
+ 
+$product_url  = $_POST['product_url'];  
+$product_features  = $_POST['product_features'];  
+$product_video  = $_POST['product_video'];  
+$status  = "product";  
+$product_img1  = $_FILES['product_img1']['name'];  
+$product_img2  = $_FILES['product_img2']['name'];  
+$product_img3  = $_FILES['product_img3']['name'];  
+$temp_name1  = $_FILES['product_img1']['tmp_name'];  
+$temp_name2  = $_FILES['product_img2']['tmp_name'];  
+$temp_name3 = $_FILES['product_img3']['tmp_name'];  
+move_uploaded_file($temp_name1, "product_images/$product_img1");  
+move_uploaded_file($temp_name2, "product_images/$product_img2");  
+move_uploaded_file($temp_name3, "product_images/$product_img3");  
+$insert_product = "insert into products  
+(p_cat_id,cat_id,manufacturer_id,date,product_title,product_url,product_img1,product_img2,product_i  
+mg3,product_price,product_psp_price,product_desc,product_features,product_video,product _keyword  
+s,product_label,status) values  
+('$product_cat','$cat','$manufacturer_id',NOW(),'$product_title','$product_url','$product_img1','$produ  
+ct_img2','$product_img3','$product_price','$psp_price','$product_desc','$product_features','$product_v  
+ideo','$p roduct_keywords','$product_label','$status')";  
+ 
+$run_product  = mysqli_query($con,  $insert_product);  
+ 
+ 
+if ($run_product)  { 
+ 
+ 
+echo "<script>alert('Product has been inserted successfully')</script>";  
+echo "<script>window.open('index.php?view_products','_self')</script>";  
+} 
+ 
+ 
+?> 
+<?php  } ?> 
+ 
+ 
+105  inset_user.php  
+ 
+ 
+<?php  
+ 
+if (!isset($_SESSION['admin_email']))  { 
+ 
+echo "<script>window.open('login.php','_self')</script>";  
+} else  { 
+ 
+?> 
+ 
+ 
+<div class="row">  
+<!-- 1 row Starts  --> 
+ 
+<div class="col -lg-12">  
+<!-- col-lg-12 Starts  --> 
+ 
+<ol class="breadcrumb">  
+<!-- breadcrumb  Starts  --> 
+ 
+<li class="active">  
+ 
+<i class="fa  fa-dashboard"></i>  Dashboard  / Insert  User 
+ 
+</li>  
+ 
+</ol><! -- breadcrumb  Ends  --> 
+ 
+</div><! -- col-lg-12 Ends  --> 
+ 
+</div><! -- 1 row Ends --> 
+ 
+<div class="row">  
+<!-- 2 row Starts  --> 
+ 
+<div class="col -lg-12">  
+<!-- col-lg-12 Starts  --> 
+ 
+<div class="panel  panel -default">  
+<!-- panel  panel -default  Starts  --> 
+ 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+ 
+<h3 class="panel -title">  
+ 
+<i class="fa  fa-money fa -fw"></i>  Insert  User  
+ 
+</h3>  
+ 
+ 
+</div><! -- panel -heading  Ends  --> 
+ 
+ 
+106  <div class="panel -body">  
+<!-- panel -body  Starts  --> 
+ 
+<form  class="form -horizontal"  method="post"  enctype="multipart/form -data">  
+<!-- form -horizontal  Starts  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">User  Name:  </label>  
+<div class="col -md-6"> 
+<!-- col-md-6 Starts  --> 
+ 
+<input  type="text"  name="admin_name"  class="form -control"  required>  
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">User  Email:  </label>  
+<div class="col -md-6"> 
+<!-- col-md-6 Starts  --> 
+<input  type="text"  name="admin_email"  class="form -control"  required>  
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">User  Password:  </label>  
+ 
+<div class="col -md-6"> 
+<!-- col-md-6 Starts  --> 
+ 
+<input  type="password"  name="admin_pass"  class="form -control"  required>  
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">User  Country:  </label>  
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+107  <div class="col -md-6"> 
+ 
+<!-- col-md-6 Starts  --> 
+ 
+<input  type="text"  name="admin_country"  class="form -control"  required>  
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+ 
+<div class="form -group">  
+ 
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label">User  Job: </label>  
+ 
+<div class="col -md-6"> 
+<!-- col-md-6 Starts  --> 
+ 
+<input  type="text"  name="admin_job"  class="form -control"  required>  
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+ 
+<div class="form -group">  
+ 
+<!-- form -group  Starts  --> 
+ 
+<label class="col -md-3 control -label">User  Contact:  </label>  
+ 
+<div class="col -md-6"> 
+<!-- col-md-6 Starts  --> 
+ 
+<input  type="text"  name="admin_contact"  class="form -control"  required>  
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label class="col -md-3 control -label">User  About:  </label>  
+ 
+ 
+108  <div class="col -md-6"> 
+<!-- col-md-6 Starts  --> 
+ 
+<textarea  name="admin_about"  class="form -control"  rows="3">  </textarea>  
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+ 
+md-6"> 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+control">  <label  class="col -md-3 control -label">User  Image:  </label>  <div class="col - 
+ 
+<!-- col-md-6 Starts  --> 
+ 
+<input  type="file"  name="admin_image"  class="form -control"  required>  
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+ 
+<div class="form -group">  
+<!-- form -group  Starts  --> 
+ 
+<label  class="col -md-3 control -label"></label>  
+ 
+<div class="col -md-6"> 
+<!-- col-md-6 Starts  --> 
+ 
+<input  type="submit"  name="submit"  value="Insert  User"  class="btn  btn-primary  form - 
+ 
+</div><! -- col-md-6 Ends  --> 
+ 
+</div><! -- form -group  Ends  --> 
+ 
+ 
+</form><! -- form -horizontal  Ends  --> 
+ 
+</div><! -- panel -body  Ends  --> 
+ 
+</div><! -- panel  panel -default  Ends  --> 
+ 
+</div><! -- col-lg-12 Ends  --> 
+ 
+ 
+</div><! -- 2 row Ends  --> 
+ 
+<?php  
+ 
+ 
+109  if (isset($_POST['submit']))  { 
+ 
+$admin_name  = $_POST['admin_name'];  
+ 
+$admin_email  = $_POST['admin_email'];  
+ 
+$admin_pass  = $_POST['admin_pass'];  
+ 
+$admin_country =  $_POST['admin_country'];  
+ 
+$admin_job  = $_POST['admin_job'];  
+ 
+ 
+$admin_contact  = $_POST['admin_contact'];  
+ 
+$admin_about  = $_POST['admin_about'];  
+ 
+ 
+$admin_image  = $_FILES['admin_image']['name'];  
+ 
+$temp_admin_image  = $_FILES['admin_image']['tmp_name'];  
+move_uploaded_file($temp_admin_image,  "admin_images/$admin_image");  
+$insert_admin  = "insert  into admins  
+(admin_name,admin_email ,admin_pass,admin_image,admin_contact,admin_country,admin_job,admi  
+n_about) values  
+('$admin_name','$admin_email','$admin_pass','$admin_image','$admin_contact','$admin_country','$a  
+dmin_job','$admin_about')";  
+ 
+$run_admin  = mysqli_query($con,  $insert_admin);  
+ 
+ 
+if ($run_admin)  { 
+ 
+echo  "<script>alert('One  User  Has Been Inserted  successfully')</script>";  
+ 
+echo  "<script>window.open('index.php?view_users','_self')</script>";  
+} 
+} 
+ 
+ 
+?> 
+ 
+ 
+ 
+<?php  } ?> 
+ 
+ 
+110  dashboard.php  
+<?php  
+ 
+ 
+if (!isset($_SESSION['admin_email']))  { 
+ 
+echo "<script>window.open('login.php','_self')</script>";  
+} else  { 
+ 
+?> 
+<div class="row">  
+<!-- 1 row Starts  --> 
+<div class="col -lg-12">  
+<!-- col-lg-12 Starts  --> 
+<h1 class="page -header">Dashboard</h1>  
+<ol class="breadcrumb">  
+<!-- breadcrumb  Starts  --> 
+<li class="active">  
+ 
+<i class="fa  fa-dashboard"></i>  Dashboard  
+</li>  
+ 
+</ol><! -- breadcrumb  Ends  --> 
+ 
+</div><! -- col-lg-12 Ends  --> 
+</div><! -- 1 row Ends  --> 
+<div class="row">  
+<!-- 2 row Starts  --> 
+<div class="col -lg-3 col-md-6"> 
+<!-- col-lg-3 col-md-6 Starts  --> 
+<div class="panel  panel -primary">  
+<!-- panel  panel -primary  Starts  --> 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+<div class="row">  
+<!-- panel -heading  row Starts  --> 
+<div class="col -xs-3"> 
+<!-- col-xs-3 Starts  --> 
+ 
+<i class="fa  fa-tasks  fa-5x"> </i>  
+ 
+</div><! -- col-xs-3 Ends  --> 
+ 
+<div class="col -xs-9 text-right">  
+<!-- col-xs-9 text-right  Starts  --> 
+ 
+<div class="huge">  <?php  echo $count_products;  ?> </div>  
+ 
+<div>Products</div>  
+ 
+</div><! -- col-xs-9 text-right  Ends  --> 
+ 
+</div><! -- panel -heading  row Ends  --> 
+ 
+ 
+111  </div><! -- panel -heading  Ends  --> 
+ 
+<a href="index.php?view_products">  
+ 
+<div class="panel -footer">  
+<!-- panel -footer  Starts  --> 
+ 
+<span  class="pull -left">  View  Details  </span>  
+ 
+<span  class="pull -right">  <i class="fa  fa-arrow -circle -right"></i>  </span>  
+ 
+<div class="clearfix"></div>  
+ 
+</div><! -- panel-footer  Ends  --> 
+ 
+</a> 
+ 
+</div><! -- panel  panel -primary  Ends  --> 
+ 
+</div><! -- col-lg-3 col-md-6 Ends  --> 
+ 
+<div class="col -lg-3 col-md-6"> 
+<!-- col-lg-3 col-md-6 Starts  --> 
+ 
+<div class="panel  panel -green">  
+<!-- panel  panel -green  Starts  --> 
+ 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+ 
+<div class="row">  
+<!-- panel -heading  row Starts  --> 
+ 
+<div class="col -xs-3"> 
+<!-- col-xs-3 Starts  --> 
+ 
+<i class="fa  fa-comments  fa-5x">  </i> 
+ 
+</div><! -- col-xs-3 Ends  --> 
+ 
+<div class="col -xs-9 text-right">  
+<!-- col-xs-9 text-right Starts  --> 
+ 
+<div class="huge">  <?php echo  $count_customers;  ?> </div>  
+ 
+<div>Customers</div>  
+ 
+</div><! -- col-xs-9 text-right  Ends  --> </div><! -- panel -heading  row Ends  - 
+-> 
+</div><! -- panel -heading  Ends  --> 
+ 
+<a href="index.php?view_customers">  
+ 
+ 
+ 
+112  <div class="panel -footer">  
+ 
+<!-- panel -footer  Starts  --> 
+ 
+<span  class="pull -left">  View  Details  </span>  
+<span  class="pull -right">  <i class="fa  fa-arrow -circle -right"></i>  </span>  
+<div class="clearfix"></div>  
+</div><! -- panel -footer  Ends  --> 
+</a> 
+</div><! -- panel  panel -green  Ends  --> 
+ 
+</div><! -- col-lg-3 col-md-6 Ends  --> 
+<div class="col -lg-3 col-md-6"> 
+ 
+<!-- col-lg-3 col-md-6 Starts  --> 
+<div class="panel  panel -yellow">  
+ 
+<!-- panel  panel -yellow  Starts  --> 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+<div class="row">  
+<!-- panel -heading  row Starts  --> 
+<div class="col -xs-3"> 
+<!-- col-xs-3 Starts  --> 
+<i class="fa  fa-shopping -cart fa-5x">  </i> 
+</div><! -- col-xs-3 Ends  --> 
+ 
+<div class="col -xs-9 text-right">  
+<!-- col-xs-9 text-right Starts  --> 
+ 
+<div class="huge">  <?php echo  $count_p_categories;  ?> </div>  
+ 
+<div>Products  Categories</div>  
+ 
+</div><! -- col-xs-9 text-right  Ends  --> 
+ 
+</div><! -- panel -heading  row Ends  --> 
+ 
+</div><! -- panel -heading  Ends  --> 
+ 
+<a href="index.php?view_p_cats">  
+ 
+<div class="panel -footer">  
+<!-- panel -footer  Starts  --> 
+ 
+<span  class="pull -left">  View  Details  </span>  
+ 
+<span  class="pull -right">  <i class="fa  fa-arrow -circle -right"></i>  </span>  
+ 
+<div class="clearfix"></div>  
+ 
+</div><! -- panel -footer  Ends  --> 
+ 
+ 
+113  </a> 
+ 
+</div><! -- panel  panel -yellow  Ends  --> 
+ 
+</div><! -- col-lg-3 col-md-6 Ends  --> 
+ 
+ 
+<div class="col -lg-3 col-md-6"> 
+<!-- col-lg-3 col-md-6 Starts  --> 
+ 
+<div class="panel  panel -red">  
+<!-- panel  panel -red Starts  --> 
+ 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+ 
+<div class="row">  
+<!-- panel -heading  row Starts  --> 
+ 
+<div class="col -xs-3"> 
+<!-- col-xs-3 Starts  --> 
+ 
+<i class="fa  fa-support  fa-5x">  </i> 
+ 
+</div><! -- col-xs-3 Ends  --> 
+ 
+<div class="col -xs-9 text-right">  
+<!-- col-xs-9 text-right  Starts  --> 
+ 
+<div class="huge">  <?php  echo $count_pending_orders;  ?> </div>  
+ 
+<div>Orders</div>  
+ 
+</div><! -- col-xs-9 text-right  Ends  --> 
+ 
+</div><! -- panel -heading  row Ends  --> 
+ 
+</div><! -- panel -heading  Ends  --> 
+ 
+<a href="index.php?view_orders">  
+ 
+<div class="panel -footer">  
+<!-- panel -footer  Starts  --> 
+ 
+<span  class="pull -left">  View  Details  </span>  
+ 
+<span  class="pull -right">  <i class="fa  fa-arrow -circle -right"></i>  </span>  
+ 
+<div class="clearfix"></div>  
+ 
+ 
+114  </div><! -- panel -footer  Ends  --> 
+ 
+</a> 
+ 
+</div><! -- panel  panel -red Ends  --> 
+ 
+</div><! -- col-lg-3 col-md-6 Ends  --> 
+</div><! -- 2 row Ends  --> 
+ 
+<div class="row">  
+<!-- 3 row Starts  --> 
+ 
+<div class="col -lg-8"> 
+<!-- col-lg-8 Starts  --> 
+ 
+<div class="panel  panel -primary">  
+<!-- panel  panel -primary  Starts  --> 
+ 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  – 
+<div class="panel  panel -primary">  
+<!-- panel  panel -primary  Starts  --> 
+ 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  – 
+</div><! -- 2 row Ends  --> 
+ 
+<div class="row">  
+<!-- 3 row Starts  --> 
+ 
+<div class="col -lg-8"> 
+<!-- col-lg-8 Starts  --> 
+ 
+<div class="panel  panel -primary">  
+<!-- panel  panel -primary  Starts  --> 
+ 
+<div class="panel -heading">  
+<!-- panel -heading  Starts  --> 
+ 
+<h3 class="panel -title">  
+<!-- panel -title Starts  --> 
+ 
+<i class="fa  fa-money fa -fw"></i>  New Orders  
+ 
+</h3><! -- panel -title Ends  --> 
+ 
+</div><! -- panel -heading  Ends  --> 
+ 
+<div class="panel -body">  
+<!-- panel -body  Starts  --> 
+ 
+<div class="table -responsive">  
+<!-- table -responsive  Starts  --> 
+ 
+ 
+115  <table  class="t able table -bordered  table -hover  table -striped">  
+ 
+<!-- table  table -bordered  table -hover  table -striped  Starts  --> 
+ 
+<thead>  
+ 
+<!-- thead  Starts  --> 
+ 
+<tr> 
+<th>Order  No:</th>  
+<th>Customer  Email:</th>  
+<th>Invoice  No:</th>  
+<th>Product  ID:</th>  
+<th>Product  Qty:</th>  
+<th>Product  Size:</th>  
+<th>Status:</th>  
+</tr>  
+</thead><! -- thead  Ends  --> 
+<tbody>  
+<!-- tbody  Starts  --> 
+<?php  
+$i = 0; 
+<!-- panel -heading  Starts  – 
+$get_order  = "select  * from  pending_orders  order  by 1 DESC  LIMIT  0,5";  
+ 
+$run_order  = mysqli_query($con,  $get_order);  
+ 
+while  ($row_order  = mysqli_fetch_array($run_order))  { 
+ 
+ 
+$order_id  = $row_order['order_id'];  
+ 
+$c_id  = $row_order['customer_id'];  
+ 
+$invoice_no  = $row_order['invoice_no'];  
+ 
+$product_id  = $row_order['product_id'];  
+ 
+$qty = $row_ order['qty'];  
+ 
+$size  = $row_order['size'];  
+ 
+ 
+$i++;  $order_status  = $row_order['order_status'];  
+ 
+?> 
+<tr> 
+<td><?php  echo $i;  ?></td>  
+<td>  
+<?php  
+} 
+ 
+?> 
+</td>  
+ 
+ 
+116  <!-- col-md-4 Starts  --> 
+ 
+<div class="panel">  
+<!-- panel  Starts  --> 
+ 
+<div class="panel -body">  
+<!-- panel -body  Starts  --> 
+ 
+<div class="thumb -info mb-md">  
+<!-- thumb -info mb-md Starts  --> 
+ 
+<img  src="admin_images/<?php  echo $admin_image;  ?>" class="rounded  img-responsive">  
+ 
+<div class="thumb -info-title">  
+<!-- thumb -info-title Starts  --> 
+ 
+<span  class="thumb -info-inner">  <?php  echo $admin_name;  ?> </span>  
+ 
+<span  class="thumb -info-type">  <?php  echo $admin_job;  ?> </span>  
+ 
+</div><! -- thumb -info-title Ends  --> 
+ 
+</div><! -- thumb -info mb-md Ends  --> 
+ 
+<div class="mb -md">  
+<!-- mb-md Starts  --> 
+ 
+<div class="widget -content -expanded">  
+<!-- widget -content -expanded  Starts  --> 
+ 
+<i class="fa  fa-user"></i>  <span>Email:  </span>  <?php  echo $admin_email;  ?> <br>  
+<i class="fa  fa-user"></i>  <span>Country:  </span>  <?php  echo $admin_country;  ?> <br>  
+<i class="fa  fa-user"></i>  <span>Contact:  </span>  <?php  echo $admin_contact;  ?> <br>  
+ 
+</div><! -- widget -content -expan ded Ends  --> 
+ 
+<hr class="dotted  short">  
+ 
+<h5 class="text -muted">About</h5>  
+ 
+<p> 
+<?php  echo $admin_about;  ?> 
+</p>  
+ 
+</div><! -- mb-md Ends  --> 
+ 
+</div><! -- panel -body  Ends  --> 
+ 
+</div><! -- panel  Ends  --> 
+ 
+</div><! -- col-md-4 Ends  --> 
+ 
+</div><! -- 3 row Ends  --> 
+ 
+<?php  } ?> 
+ 
+ 
+117  DATA -BASE  
+ 
+ 
+ 
+-- phpMyAdmin  SQL  Dump  
+-- version  4.7.9  
+-- https:// www.phpmyadmin.net/  
+-- 
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";  
+SET AUTOCOMMIT  = 0; 
+START  TRANSACTION;  
+SET time_zone =  "+00:00";  
+ 
+CREATE  TABLE  `about_us`  ( 
+`about_id`  int(10)  NOT  NULL,  
+`about_heading`  text NOT  NULL,  
+`about_short_desc`  text NOT  NULL,  
+`about_desc`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT  INTO  `about_us`  (`about_id`,  `about_heading`,  `about_short_desc`,  `about_desc`)  VALUES  
+(1, 'About  Us - Our Story',  '\r\nIt is a long  established  fact that a reader  will be distracted  by the readable  content  
+of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more -or-less normal  
+distribution of letters, \r\n', 'Rhone was the collective vision of a small group of weekday warriors. For years, we  
+were frustrated by the lack of activewear designed for men and wanted something be tter. With that in mind, we  
+set out to design premium apparel that is made for motion and engineered to endure. \r\n\r\nAdvanced materials  
+and state of the art technology are combined with heritage craftsmanship to create a new standard in activewear.  
+Every  product  tells a story  of premium  performance,  reminding  its wearer  to push themselves  physically  without  
+having to sacrifice comfort and style. \r\n\r\nBeyond our product offering, Rhone is founded on principles of  
+progress and integrity. Just as we aim to  become better as a company, we invite men everywhere to raise the bar  
+and join us as we move  Forever  Forward.');  
+ 
+ 
+CREATE  TABLE  `admins`  ( 
+`admin_id`  int(10)  NOT NULL,  
+`admin_name`  varchar(255)  NOT  NULL,  
+`admin_email`  varchar(255)  NOT  NULL,  
+`admin_pass`  varchar(255)  NOT  NULL,  
+`admin_image`  text NOT  NULL,  
+`admin_contact`  varchar(255)  NOT  NULL,  
+`admin_country`  text NOT  NULL,  
+`admin_job`  varchar(255)  NOT NULL,  
+`admin_about`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT INTO  `admins`  (`admin_id`,  `admin_name`,  `admin_email`,  `admin_pass`,  `admin_image`,  
+`admin_contact`,  `admin_country`,  `admin_job`,  `admin_about`)  VALUES  
+(2, 'Test Name', 'admin@ave.com', '123', 'admin.jpg', '077885221', 'Morocco', 'Front -End Developer', ' Contrary  
+to popular  belief,  Lorem  Ipsum  is not simply  random  text. It has roots  in a piece  of classical  Latin  literature  from 
+45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden -Sydney College in  
+Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going  
+through  the cites of the word  in classical  '); 
+ 
+ 
+118  CREATE TABLE `bundle_product_relation`  ( 
+`rel_id`  int(10)  NOT  NULL,  
+`rel_title`  varchar(255)  NOT  NULL,  
+`product_id`  int(10)  NOT  NULL,  
+`bundle_id`  int(10)  NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+INSERT  INTO  `bundle_product_relation`  (`rel_id`,  `rel_title`,  `product_id`,  `bundle_id`)  VALUES  
+(8, 'jacket  bundle  relation  -1', 4, 11), 
+(9, 'jacket  bundle  relation  -2', 5, 11), 
+(10, 'jacket  bundle  relation  -3', 6, 11);  
+ 
+ 
+CREATE  TABLE  `cart`  ( 
+`p_id`  int(10)  NOT  NULL,  
+`ip_add`  varchar(255)  NOT NULL,  
+`qty`  int(10)  NOT  NULL,  
+`p_price`  varchar(255)  NOT  NULL,  
+`size`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+CREATE  TABLE  `categories`  ( 
+`cat_id`  int(10)  NOT  NULL,  
+`cat_title`  text NOT  NULL,  
+`cat_top`  text NOT  NULL,  
+`cat_image`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT  INTO  `categories`  (`cat_id`,  `cat_title`,  `cat_top`,  `cat_image`)  VALUES  
+(2, 'Feminine',  'no', 'zinta_preity.jpg'),  
+(3, 'Kids',  'no', 'image10.jpg'),  
+(4, 'Others',  'yes',  'cat_image.jpg'),  
+(5, 'Men',  'yes',  'image11.jpg');  
+ 
+ 
+CREATE  TABLE  `contact_us`  ( 
+`contact_id`  int(10)  NOT  NULL,  
+`contact_email`  text NOT  NULL,  
+`contact_heading`  text NOT  NULL,  
+`contact_desc`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+-- 
+ 
+-- 
+ 
+INSERT  INTO  `contact_us`  (`contact_id`,  `contact_email`,  `contact_heading`,  `contact_desc`)  VALUES  
+(1, 'sad.ahmed22224@gmail.com',  'Contact  To Us', 'If  you have any questions,  please  feel free to contact  us, 
+our customer  service  center  is working  for you 24/7.');  
+ 
+ 
+119  INSERT  INTO  `contact_us`  (`contact_id`,  `contact_email`,  `contact_heading`,  `contact_desc`)  VALUES  
+(1, 'sad.ahmed22224@gmail.com', 'Contact  To Us', 'If you have any questions,  please  feel free to contact  us, our 
+customer  service  center  is working  for you 24/7.');  
+ 
+ 
+CREATE  TABLE  `coupons`  ( 
+`coupon_id`  int(10)  NOT  NULL,  
+`product_id`  int(10)  NOT NULL,  
+`coupon_title`  varchar(255)  NOT  NULL,  
+`coupon_price`  varchar(255)  NOT NULL,  
+`coupon_code`  varchar(255)  NOT  NULL,  
+`coupon_limit`  int(100)  NOT  NULL,  
+`coupon_used`  int(100)  NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+INSERT  INTO `coupons`  (`coupon_id`,  `product_id`,  `coupon_title`,  `coupon_price`,  `coupon_code`,  `coupon_limit`,  
+`coupon_used`)  VALUES  
+(3, 9, 'Remind T -shirt',  '40', '333444',  5, 1); 
+ 
+ 
+CREATE  TABLE  `customers`  ( 
+`customer_id`  int(10)  NOT  NULL,  
+`customer_name`  varchar(255)  NOT  NULL,  
+`customer_email`  varchar(255)  NOT NULL,  
+`customer_pass`  varchar(255)  NOT  NULL,  
+`customer_country`  text NOT  NULL,  
+`customer_city`  text NOT  NULL,  
+`customer_contact`  varchar(255)  NOT  NULL,  
+`customer_address`  text NOT  NULL,  
+`customer_image`  text NOT  NULL,  
+`customer_ip`  varchar(255)  NOT  NULL,  
+`customer_confirm_code`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+INSERT  INTO  `customers`  (`customer_id`,  `customer_name`,  `customer_email`,  `customer_pass`,  
+`customer_country`,  `customer_city`,  `customer_contact`,  `customer_address`,  `customer_image`,  `customer_ip`,  
+`customer_confirm_code`)  VALUES  
+(2, 'user',  'user@ave.com',  '123',  'United  State',  'New York',  '0092334566931',  'new york',  'user.jpg',  '::1', ''); 
+ 
+ 
+CREATE  TABLE  `customer_orders`  ( 
+`order_id`  int(10)  NOT  NULL,  
+`customer_id`  int(10)  NOT  NULL,  
+`due_amount`  int(100)  NOT NULL,  
+`invoice_no`  int(100)  NOT  NULL,  
+`qty`  int(10)  NOT  NULL,  
+`size`  text NOT  NULL,  
+`order_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE  
+CURRENT_TIMESTAMP,  
+`order_status`  text NOT  NULL  
+ 
+ 
+120  ) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+INSERT  INTO  `customer_orders`  (`order_id`,  `customer_id`,  `due_amount`,  `invoice_no`,  `qty`,  `size`,  
+`order_date`,  `order_status`)  VALUES  
+(16, 2, 207, 1715523401,  3, 'Small',  '2017 -02-20 08:21:42',  'pending'),  
+(17, 2, 100, 1715523401,  2, 'Large',  '2017 -02-20 08:21:42',  'pending'),  
+(18, 2, 300, 1715523401,  1, 'Medium',  '2017 -02-20 08:21:42',  'pending'),  
+(19, 2, 150, 1068059025,  1, 'Medium',  '2017 -02-20 08:26:47',  'pending'),  
+(20, 2, 288, 909940689,  3, 'Large',  '2017 -02-27 11:06:32',  'complete'),  
+(21, 2, 400, 909940689,  2, 'Meduim',  '2017 -02-27 11:06:37',  'complete');  
+ 
+ 
+CREATE  TABLE  `enquiry_types`  ( 
+`enquiry_id`  int(10)  NOT  NULL,  
+`enquiry_title`  varchar(255)  NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+INSERT  INTO  `enquiry_types`  (`enquiry_id`, `enquiry_title`)  VALUES  
+(1, 'Order  and Delivery  Support'),  
+(2, 'Technical  Support'),  
+(3, 'Price  Concern');  
+ 
+ 
+CREATE  TABLE  `manufacturers`  ( 
+`manufacturer_id`  int(10)  NOT  NULL,  
+`manufacturer_title`  text NOT  NULL,  
+`manufacturer_top`  text NOT  NULL,  
+`manufacturer_image`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT  INTO  `manufacturers`  (`manufacturer_id`,  `manufacturer_title`,  `manufacturer_top`,  
+`manufacturer_image`)  VALUES  
+(2, 'Adidas', 'no', 'image2.jpg'),  
+(3, 'Nike',  'no', 'image3.jpg'),  
+(4, 'Philip  Plein',  'no', 'manufacturer.jpg'),  
+(5, 'Lacost',  'no', 'image6.jpg'),  
+(6, 'Gucci',  'yes',  'akshay -kumar.jpg');  
+ 
+ 
+CREATE  TABLE  `payments`  ( 
+`payment_id`  int(10)  NOT  NULL,  
+`invoice_no`  int(10)  NOT  NULL,  
+`amount`  int(10)  NOT  NULL,  
+`payment_mode`  text NOT  NULL,  
+`ref_no`  int(10)  NOT  NULL,  
+`code`  int(10)  NOT  NULL,  
+`payment_date`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+INSERT  INTO  `payments`  (`payment_id`,  `invoice_no`,  `amount`,  `payment_mode`,  `ref_no`,  `code`,  
+`paymen t_date`)  VALUES  
+(2, 1607603019,  447, 'UBL/Omni Paisa',  5678,  33, '11/1/2016'),  
+ 
+ 
+121  CREATE  TABLE  `pending_orders`  ( 
+`order_id`  int(10)  NOT  NULL,  
+`customer_id`  int(10)  NOT  NULL,  
+`invoice_no`  int(10)  NOT  NULL,  
+`product_id`  text NOT  NULL,  
+`qty`  int(10)  NOT NULL,  
+`size`  text NOT  NULL,  
+`order_status`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+-- 
+ 
+-- 
+INSERT  INTO  `pending_orders`  (`order_id`,  `customer_id`,  `invoice_no`,  `product_id`,  `qty`,  `size`,  
+`order_status`)  VALUES  
+(16, 2, 1715523401,  '2', 3, 'Small', 'pending'),  
+(17, 2, 1715523401,  '9', 2, 'Large',  'pending'),  
+(18, 2, 1715523401,  '11', 1, 'Medium',  'pending'),  
+(19, 2, 1068059025,  '7', 1, 'Medium',  'pending'),  
+(20, 2, 909940689,  '6', 3, 'Large',  'complete'),  
+(21, 2, 909940689,  '11', 2, 'Meduim',  'complete');  
+ 
+ 
+CREATE  TABLE  `products`  ( 
+`product_id`  int(10)  NOT NULL,  
+`p_cat_id`  int(10)  NOT  NULL,  
+`cat_id`  int(10)  NOT  NULL,  
+`manufacturer_id`  int(10)  NOT  NULL,  
+`date`  timestamp  NOT  NULL  DEFAULT  CURRENT_TIMESTAMP  ON UPDATE  
+CURRENT_TIMESTAMP,  
+`product_title`  text NOT  NULL,  
+`product_url`  text NOT  NULL,  
+`product_img1`  text NOT  NULL,  
+`product_img2`  text NOT  NULL,  
+`product_img3`  text NOT  NULL,  
+`product_price`  int(10)  NOT  NULL,  
+`product_psp_price`  int(100)  NOT  NULL,  
+`product_desc`  text NOT  NULL,  
+`product_features`  text NOT  NULL,  
+`product_video`  text NOT  NULL,  
+`product_keywords`  text NOT NULL,  
+`product_label`  text NOT  NULL,  
+`status`  varchar(255)  NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT  INTO  `products`  (`product_id`,  `p_cat_id`,  `cat_id`,  `manufacturer_id`,  `date`,  
+ 
+`product_title`,  `product_url`,  `product_img1`,  `product_img2`,  `product_img3`,  
+ 
+`product_price`,  `product_psp_price`,  `product_desc`,  `product_features`,  
+ 
+`product_video`,  `product_keywords`,  `product_label`,  `status`)  VALUES  
+( 
+ 
+ 
+122  CREATE  TABLE `product_categories`  ( 
+`p_cat_id`  int(10)  NOT NULL,  
+`p_cat_title`  text NOT  NULL,  
+`p_cat_top`  text NOT NULL,  
+`p_cat_image`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+-- 
+ 
+-- 
+ 
+INSERT  INTO  `product_categories`  (`p_cat_id`,  `p_cat_title`,  `p_cat_top`,  `p_cat_image`)  VALUES  
+(4, 'Coats',  'no', 'image3.jpg'),  
+(5, 'T-Shirts',  'no', 'image2.jpg'),  
+(6, 'Sweater',  'no', 'sweater.jpg'),  
+(7, 'jackets',  'yes',  'jacket.jpg');  
+ 
+ 
+ 
+-- 
+ 
+-- 
+ 
+CREATE  TABLE  `store`  ( 
+`store_id`  int(10)  NOT NULL,  
+`store_title`  varchar(255)  NOT  NULL,  
+`store_image`  varchar(255)  NOT  NULL,  
+`store_desc`  text NOT NULL,  
+`store_button`  varchar(255)  NOT  NULL,  
+`store_url`  varchar(255)  NOT NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+-- 
+ 
+-- 
+ 
+INSERT  INTO  `store`  (`store_id`,  `store_title`,  `store_image`,  `store_desc`,  `store_button`,  `store_url`)  
+VALUES  
+(4, 'London Stor e', 'store (3).jpg', '<p style= \"text -align: center; \"><strong>180 -182 RECENTS STREET,  
+LONDON,  W1B  5BT</strong></p> \r\n<p>Lorem  ipsum  dolor  sit amet,  consectetur  adipiscing  elit. Ut libero  
+erat, aliquet eget mauris ut, dictum sagittis libero. Nam at dui dapibus, semper dolor ac, malesuada mi. Duis  
+quis lobortis arcu. Vivamus sed sodales orci, non varius dolor.</p>', 'View Map',  
+'http://www.thedailylux.com/ecommerce'),  
+.</p>',  'View  Map',  'http://www.thedailylux.com/ecommerce'),  
+ 
+ 
+ 
+CREATE  TABLE  `terms`  ( 
+`term_id`  int(10)  NOT  NULL,  
+`term_title`  varchar(100)  NOT NULL,  
+`term_link`  varchar(100)  NOT NULL,  
+`term_desc`  text NOT NULL  
+) ENGIN E=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+123  INSERT  INTO  `terms`  (`term_id`,  `term_title`,  `term_link`,  `term_desc`)  VALUES  
+(1, 'Rules And  Regulations',  'rules', '<p>Contrary  to popular  belief,  Lorem  Ipsum  is not simply  random  text. It 
+has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard  
+McClintock, a Latin professor at Hampden -Sydney College in Virginia, looked up one of the more obscure  
+Latin words, consectetur , from a Lorem Ipsum passage, and going through the cites of the word in classical  
+literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of \"de 
+Finibus Bonorum et Malorum \" (The Extremes of Good and Evil) by Ci cero, written in 45 BC. This book is a  
+treatise  on the  theory  of ethics,  very popular  during  the Renaissance.&nbsp;</p>'),  
+(2, 'Refund Policy', 'link2',  'It is a long established  fact that a reader  will be distracted  by the readable  content  of 
+a page when looking at its layout. The point of using Lorem Ipsum is that it has a more -or-less normal  
+distribution  of letters,  as opposed  to using  \'Content  here,  content  here\', making it  look like readable  English.  
+Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and  
+a search for \'lorem ipsum \' will uncover many web sites still in their infancy. Various versions have evolved  
+over the years, sometimes by accident, sometimes on purpose (injected humour and the  like).Why do we use  
+it?It is a long established fact that a reader will be distracted by the readable content of a page when looking at  
+its layout.  The point  of using  Lorem  Ipsum is  that it has a more -or-less normal  distribution  of letters,  as opposed  
+to using \'Content here, content here \', making it look like readable English. Many desktop publishing packages  
+and web page editors now use Lorem Ipsum as their default model text, and a search for \'lorem ipsum \' will  
+uncover many web sites still in their i nfancy. Various versions have evolved over the years, sometimes by  
+accident,  sometimes  on'), 
+(3, 'Pricing  and Promotions  Policy', 'link3',  'It is a long established  fact that a reader  will be distracted  by the 
+readable  content  of a page when looking  at its layout.  
+ 
+CREATE  TABLE  `wishlist`  ( 
+`wishlist_id`  int(10)  NOT  NULL,  
+`customer_id`  int(10)  NOT  NULL,  
+`product_id`  int(10)  NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+ 
+INSERT  INTO  `wishlist`  (`wishlist_id`,  `customer_id`,  `product_id`)  VALUES  
+(2, 2, 8); 
+ 
+-- 
+ 
+ALTER  TABLE  `about_us`  
+ADD  PRIMARY  KEY  (`about_id`);  
+ 
+ALTER TABLE  `admins`  
+ADD  PRIMARY  KEY  (`admin_id`);  
+ 
+ALTER TABLE `bundle_product_relation`  
+ADD  PRIMARY  KEY  (`rel_id`);  
+ 
+ALTER  TABLE  `cart`  
+ADD  PRIMARY  KEY  (`p_id`);  
+ 
+ALTER  TABLE  `categories`  
+ADD  PRIMARY  KEY  (`cat_id`);  
+ 
+ALTER  TABLE  `contact_us`  
+ADD PRIMARY  KEY  (`contact_id`);  
+ 
+ 
+124  INSERT  INTO  `customer_orders`  (`order_id`,  `customer_id`,  `due_amount`, `invoice_no`,  `qty`,  
+`size`,  `order_date`,  `order_status`)  VALUES  
+(16, 2, 207, 1715523401,  3, 'Small',  '2017 -02-20 08:21:42',  'pending'),  
+(17, 2, 100, 1715523401,  2, 'Large',  '2017 -02-20 08:21:42',  'pending'),  
+(18, 2, 300, 1715523401,  1, 'Medium',  '2017 -02-20 08:21:42',  'pending'),  
+(19, 2, 150, 1068059025,  1, 'Medium',  '2017 -02-20 08:26:47',  'pending'),  
+(20, 2, 288, 909940689,  3, 'Large',  '2017 -02-27 11:06:32',  'complete'),  
+(21, 2, 400, 909940689,  2, 'Meduim', '2017 -02-27 11:06:37',  'complete');  
+ 
+CREATE  TABLE  `enquiry_types`  ( 
+`enquiry_id`  int(10)  NOT  NULL,  
+`enquiry_title`  varchar(255)  NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT  INTO  `enquiry_types`  (`enquiry_id`,  `enquiry_title`)  VALUES  
+(1, 'Order  and Delivery  Support'),  
+(2, 'Technical  Support'),  
+(3, 'Price  Concern');  
+ 
+CREATE  TABLE  `manufacturers`  ( 
+`manufacturer_id`  int(10)  NOT  NULL,  
+`manufacturer_title`  text NOT  NULL,  
+`manufacturer_top`  text NOT  NULL,  
+`manufacturer_image`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT  INTO  `manufacturers`  (`manufacturer_id`,  `manufacturer_title`,  `manufacturer_top`,  
+`manufacturer_image`)  VALUES  
+(2, 'Adidas',  'no', 'image2.jpg'),  
+(3, 'Nike', 'no',  'image3.jpg'),  
+(4, 'Philip  Plein',  'no', 'manufacturer.jpg'),  
+(5, 'Lacost',  'no', 'image6.jpg'),  
+(6, 'Gucci',  'yes',  'akshay -kumar.jpg');  
+ 
+CREATE  TABLE  `payments`  ( 
+`payment_id`  int(10)  NOT  NULL,  
+`invoice_no`  int(10)  NOT  NULL,  
+`amount`  int(10)  NOT  NULL,  
+`payment_mode`  text NOT  NULL,  
+`ref_no` int(10)  NOT  NULL,  
+`code`  int(10)  NOT  NULL,  
+`payment_date`  text NOT  NULL  
+) ENGINE=InnoDB  DEFAULT  CHARSET=latin1;  
+ 
+INSERT  INTO  `payments`  (`payment_id`, `invoice_no`,  `amount`,  `payment_mode`, `ref_no`,  
+`code`,  `payment_date`)  VALUES  
+(2, 1607603019,  447, 'UBL/Omni  Paisa',  5678,  33, '11/1/2016'),  
+(3, 314788500,  345, 'UBL/Omni  Paisa ', 443, 865, '11/1/2016');  
+ 
+ 
+125  -- 
+-- AUTO_INCREMENT  for table  `coupons`  
+-- 
+ALTER  TABLE  `coupons`  
+MODIFY  `coupon_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=4;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `customers`  
+-- 
+ALTER  TABLE  `customers`  
+MODIFY `customer_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=3;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `customer_orders`  
+-- 
+ALTER TABLE  `customer_orders`  
+MODIFY  `order_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=22;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `enquiry_types`  
+-- 
+ALTER  TABLE  `enquiry_types`  
+MODIFY  `enquiry_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=4;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `manufacturers`  
+-- 
+ALTER TABLE `manufacturers`  
+MODIFY ` manufacturer_id`  int(10)  NOT  NULL AUTO_INCREMENT,  AUTO_INCREMENT=7;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `payments`  
+-- 
+ALTER TABLE  `payments`  
+MODIFY `payment_id`  int(10)  NOT  NULL AUTO_INCREMENT,  AUTO_INCREMENT=4;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `pending_orders`  
+-- 
+ALTER  TABLE  `pending_orders`  
+MODIFY  `order_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=22;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `products`  
+-- 
+ALTER  TABLE  `products`  
+MODIFY  `product_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=12;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `product_categories`  
+-- 
+ALTER  TABLE  `product_categories`  
+MODIFY  `p_cat_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=8;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `store`   
+ 
+ 
+126  -- 
+-- AUTO_INCREMENT  for table  `categories`  
+-- 
+ALTER  TABLE  `categories`  
+MODIFY  `cat_id`  int(10)  NOT  NULL AUTO_INCREMENT,  AUTO_INCREMENT=6;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `contact_us`  
+-- 
+ALTER  TABLE  `contact_us`  
+MODIFY  `contact_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=2;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `coupons`  
+-- 
+ALTER  TABLE  `coupons`  
+MODIFY  `coupon_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=4;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `customers`  
+-- 
+ALTER  TABLE  `customers`  
+MODIFY `customer_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=3;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `customer_orders`  
+-- 
+ALTER  TABLE  `customer_orders`  
+MODIFY  `order_id`  int(10)  NOT  NULL  AUTO_INCREMENT,  AUTO_INCREMENT=22;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `enquiry_types`  
+-- 
+ALTER  TABLE  `enquiry_types`  
+MODIFY  `enquiry_id`  int(10)  NOT  NULL AUTO_INCREMENT,  AUTO_INCREMENT=4;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `manufacturers`  
+-- 
+ALTER  TABLE  `manufacturers`  
+MODIFY `manufacturer_id`  int(10)  NOT  NULL AUTO_INCREMENT,  AUTO_INCREMENT=7;  
+ 
+-- 
+-- AUTO_INCREMENT  for table  `payments`  
+-- 
+ALTER  TABLE  `payments`  
+MODIFY `payment_id`  int(10)  NOT  NULL AUTO_INCREMENT,  AUTO_INCREMENT=4;  
+ 
+ 
+/*!40101  SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT  */; 
+/*!40101  SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS  */; 
+/*!40101  SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION  */; 
+ 
+ 
+127  Software  Testing  
+ 
+Software Testing is the process of identifying the security, correctness, completeness and quality of the  
+developed computer software. Testing is a process of technical searching/investigation, performed on  
+behalf of stakeholder, which is to reveal quality related information about the product with respect to  the 
+circumstances in which it is meant to operate. This includes and is not limited to the process of  executing 
+a program or application with the purpose of finding the errors. Quality is a value to some  person and not 
+absolute. Testing can never completely begin the correctness of arbitrary computer  software.[7] One of 
+the e -commerce products that is popular nowadays  is online shopping. Online  shopping has been 
+experiencing its golden years and becoming one of the potential contributions in e - commerce. The 
+implication of this phenomenon is the spread of online shopping websites across the  regional. One website 
+origin ating from Egypt for example will be accessed and used by the people of  all around the world. There 
+will be a lot of advantages caused by this. Besides companies, customers  gain their profits  or advantages  
+as well.  E-commerce  has been considered  as knowled ge-based  economy  that can support  the economy  of 
+the countries  applying  it [2]. The importance  of e- commerce has caused high competitiveness among the 
+online business doers. Many efforts have been  done  to discover  the factors  behind  both success  and failure  
+of e-commerce  specifically  online  shopping adoption. This includes the abundant studies which are related 
+with online shopping, e - commerce, or cultural values in e -commerce and website design conducted by 
+many researchers and  practitioners. One of  the important factors in the online shopping is the cultural 
+factors.[8] Online  Shopping  Procedure:  
+ 
+ 
+
+ 
+ 
+128  POINTS NEED  TO COVER IN E -SHOPPING  WEBSITE  TESTING  
+ 
+--For testing  online shopping  website the following  important  functions  or pages  to be tested:  
+Main  pages,  Product  category  pages,  Product  detail  pages,  Product  search,  Shopping  basket,  
+Checkout  and Payment  Systems.  
+--In other  important  conditions  need to  be tested are;  
+Browser  Compatibility,  Mobile  Device  Compatibility,  Performance,  
+ 
+ 
+1 Main  Pages  Testing  Components  
+• Home page  
+• Featured  products  
+• Special offers  
+•Information  pages - About  page,  Shipping  information,  Returns  policy,  Terms  page,  Privacy  policy  
+ 
+ 
+2 Product  Category  Pages  Testing  Components  
+•Any filters  such as product  filters, colors,  sizes,  types  of product,  etc. 
+• Any ability  to sort products  by name,  price,  size, etc.  
+• Add to shortlist  or wish list facility.  
+• Add to basket.  
+ 
+ 
+3 Product  Detail  Pages  Testing  Components  
+• Product  title 
+• Product  description  
+• Product  images  
+• Enlarge  image  
+• Related  products  
+• Any further  product  information,  colors , sizes,  options,  extras.  
+• Add to shopping  basket  
+ 
+ 
+4 Product  Search  Testing  Component  
+• Keyword  search - It may contains  different  options  to select  search  categories  
+ 
+ 
+5 Shopping  Basket  Testing  Components  
+• Add products  to basket   
+ 
+ 
+ 
+129  
+• Remove  product from  basket  
+• Change  quantities  
+• Select  delivery  option  
+• Check  VAT  and delivery  costs  add up correctly  
+ 
+ 
+6 Checkout  and Payment  Systems  
+As this is a testing plan for an ecommerce site then a specific section of the plan should be devoted to  
+the checkout and payment area of  the website. Test the checkout process including the following  
+aspects: Final amount to pay – make sure that this value is correct, after the price of the products,  VAT, 
+delivery and any other charges. Test making changes to the products being ordered, ch anging  delivery  
+options, etc.  and make  sure that this final  amount  updates  correctly  
+ 
+Next  is payments:  
+Carry out a test payment using each payment method that you are offering such as debit cards,  credit 
+cards, PayPal , Google Checkout, etc. Your payment system will most likely still be in test mode  before  
+you launch so  all test payments  will be carried out using the test payment details. An  example  list of 
+payment  types  is as follows:  
+• Place  PayPal  payment  
+• Place  UPI payment  
+• Place  Rupay  Debit  card  payment  
+ 
+ 
+7 Browser  Compatibility  
+Extremely important, especially for ecommerce sites, as if the site doesn’t work in a particular  
+browser then nobody using that browser can buy anything from you. This list of browsers will  change, 
+as new browsers are released and older browsers aren’t used as much (here’s hoping that  IE7 goes 
+away soon). Currently, we are testing all of the functionality listed above in each of the  following web 
+browsers:  Internet Explorer 7  Internet Explorer 8   Internet Explorer 9   Mozilla  Firefox  (latest  version)  
+Google  Chrome  (latest  version)  Safari  
+ 
+8 Mobile Device  Compatibility  
+If you wish your website to be used by visitors viewing it on their smartphone or tablet then you  also 
+need  to test all of the functionality  on each  of the following  mobile  devices:  
+ 
+ 
+130  • Apple  iPhone  – 5, 5S/5C,  6 and 6 Plus  
+• Apple  iPad  – iPad  2, 3, 4, iPad  Air and  iPad  Air 2) 
+• Apple  iPad  Mini  – 1, 2 and 3 
+• Android  Smartphone  – such  as Samsung  Galaxy S5  
+• Android  Tablet  – such  as Google  Nexus  7 
+• Windows  Phone  – such  as Nokia Lumia  635 
+ 
+ 
+9 Performance  Testing  
+Your  ecommerce  website  needs  to load  quickly  in order  for potential  customers  to not get frustrated  
+and head elsewhere. Carry out a performance test using an online tool such as Webpage test and  pay 
+attention to what it tells you. For doing performance testing majority we can use Win runner  and 
+Load  runner  tools.  
+ 
+ 
+ 
+Why  E-commerce  Application  Testing  is Important?  
+ 
+The first  and primary reason is because e -commerce is, by its very nature, business critical  and highly 
+visible to its user’s. Any failure can be immediately expensive in terms of lost revenue and  even more 
+expensive in the longer term if disaffected users seek alternat ive sites. E -commerce is a  massive  and 
+growing  market  place  but one which  requires  large  up-front  investment  to enter  successfully. The 
+history of e -commerce development has been littered with expensive failures, at  least some of which 
+could have been avoi ded by better testing before the site was opened to the  general  public.  Quality  
+Assurance  of the software  or application  developed  Verification  and validating the product/application 
+before it goes live in the market to prevent it from intruders and  hacker s. Defect  free and user friendly  
+application  
+ 
+ 
+131 
+ Future  Scope  
+ 
+• Our designed  online  shopping  system  provides  a 24×7  service that  is customers  can surf the 
+website, place orders anytime they wish to. Also,  the delivery system works  24×7  hours  a 
+week.  
+ 
+• If shops are providing an online portal where their customers can enjoy easy shopping  from 
+anywhere, the shops won’t be losing any more customers to the trending online  shops such as 
+flipkart or eBay. Since the application is available in the Smartphone it is  easily  accessible  and 
+always  available.  
+ 
+• Some of the features that can be modified and added to this system in the future involve  its 
+implementation  by local  shopkeepers,  where  shops  will be providing  an online  interface to 
+customers for shopping and placing orders. Then some delivery persons can  perform their work. 
+This will be adding on benefit for the customers as it will save their  time, plus  it adds on for the  
+shopkeepers  . 
+ 
+•  In future  our job management  system  will have  extra  facilities and  more  companies for  
+more employees.  
+ 
+• It will grant  more  easy access.  
+ 
+ 
+•  We are going  to include  recommendation system  to this project  so it will be helpful  for 
+the user to search  and apply  for jobs as they wish.  
+ 
+ 
+132  Conclusion  
+ 
+ 
+ 
+ 
+Technology has made significant progress over the years to provide consumers a better online  
+shopping experience and will continue to do so for  years to come.  With the rapid growth of  
+products  and brands,  people  have  speculated  that online  shopping  will overtake  in-store  
+shopping.  While this has been the case in some areas, there is still demand for Products stores in  
+market areas where the consumer feels more comfortable seeing and touching the product being  
+bought.  
+However, the availability of online shopping has produced a more educated consumer that can  
+shop around with relative ease without having to spend a large amount of time.  In exch ange,  
+online shopping has opened up doors to many small retailers that would never be in business if  
+they had to incur the high cost of owning a Products store.  At the end, it has been a win -win 
+situation  for both  consumer  and sellers  
+E-Commerce  is not an IT issue  but a whole  business  undertaking.  
+Companies that use it as a reason for completely re -designing their business processes are likely 
+to reap the greatest benefits. Moreover, E -Commerce is a helpful technology that gives the 
+consumer  access  to business  and companies  all over the  world  
+  
+ 
+ 
+133  REFERENCES  
+ 
+ 
+For CRM:  
+https://github.com  
+https://laravel.com/docs/5.1/quickstart  
+https://www.w3schools.com/js/DEFAULT.asp  
+https://www.linkedin.com/learning/  
+https://www.w3schools.com/html/  
+https://www.w3schools.com/css/  
+https://www.w3schools.com/bootstrap/  
+https://www.codecademy.com/learn/learn - 
+bootstrap  
+  
+For MySQL:  
+https://www.mysql.com/  
+http://www.mysqltutorial.org  
+For XAMP:  
+https://www.xampserver.com/download - 
+wampserver -64bits/  
+ 
+ 
+134 
+  

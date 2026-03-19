@@ -1,21 +1,19 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { QrReader } from "react-qr-reader";
-import { ArrowRight, QrCode, ShieldAlert, Cpu } from "lucide-react";
+import { ArrowRight, QrCode, ShieldAlert, Cpu, Terminal, Key } from "lucide-react";
 
 export default function QRScannerPage() {
   const [scanResult, setScanResult] = useState<string | null>(null);
   const [isScanning, setIsScanning] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleResult = (result: any, error: any) => {
-    if (!!result) {
-      setScanResult(result?.text);
+  const [manualInput, setManualInput] = useState("");
+
+  const handleManualSubmit = () => {
+    if (manualInput.trim()) {
+      setScanResult(manualInput.trim());
       setIsScanning(false);
-    }
-    if (!!error) {
-      // Ignore routine errors like no code found in frame
     }
   };
 
@@ -55,16 +53,32 @@ export default function QRScannerPage() {
                        <p className="font-black uppercase tracking-widest text-xs text-white/40 italic">Awaiting Input Stream</p>
                     </div>
                 ) : (
-                    <div className="w-full h-full">
-                       <QrReader
-                          onResult={handleResult}
-                          constraints={{ facingMode: 'environment' }}
-                          videoStyle={{ objectFit: 'cover' }}
-                          containerStyle={{ width: '100%', height: '100%' }}
-                       />
-                       {/* Scanner Overlay */}
-                       <div className="absolute inset-0 pointer-events-none border-4 border-[#CCFF00] opacity-50 z-10">
-                           <div className="w-full h-1 bg-[#CCFF00] absolute top-1/2 animate-pulse shadow-[0_0_15px_#CCFF00]" />
+                    <div className="w-full h-full p-8 flex flex-col justify-center gap-6">
+                       <div className="flex items-center gap-3 bg-[#111] border-2 border-[#CCFF00] p-4 text-[#CCFF00]">
+                          <Terminal className="w-5 h-5 shrink-0" />
+                          <span className="text-[10px] font-mono leading-none">ROOT_ACCESS_LEVEL: 1 // SECURE_SOCKET_OPEN</span>
+                       </div>
+                       
+                       <div className="space-y-4">
+                          <label className="text-white text-[10px] uppercase font-black tracking-widest block italic">Manual_Payload_Entry</label>
+                          <input 
+                            type="text"
+                            value={manualInput}
+                            onChange={(e) => setManualInput(e.target.value)}
+                            placeholder="PASTE_UPLINK_HASH_HERE"
+                            className="w-full bg-black border-4 border-[#CCFF00] text-[#CCFF00] p-4 font-mono text-sm placeholder:text-[#CCFF00]/30 selection:bg-[#CCFF00] selection:text-black focus:outline-none"
+                          />
+                          <button 
+                            onClick={handleManualSubmit}
+                            className="w-full bg-[#CCFF00] text-black font-black uppercase italic p-4 text-xs shadow-[4px_4px_0_#fff] hover:shadow-none hover:translate-y-1 transition-all"
+                          >
+                             AUTHORIZE_HANDSHAKE
+                          </button>
+                       </div>
+
+                       <div className="flex items-center gap-2 opacity-30">
+                          <div className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></div>
+                          <span className="text-[10px] text-white font-mono uppercase">Streaming_Encrypted_Packets_v4.2...</span>
                        </div>
                     </div>
                 )}
