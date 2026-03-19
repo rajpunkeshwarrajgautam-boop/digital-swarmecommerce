@@ -63,20 +63,37 @@ export async function POST(request: Request) {
     if (resend) {
       try {
         await resend.emails.send({
-          // You must have a verified domain in Resend to send from it, otherwise use 'onboarding@resend.dev' for testing to your verified email.
           from: 'Digital Swarm <onboarding@resend.dev>', 
           to: payload.customerEmail,
-          subject: 'Access Granted: Your Digital Swarm License Key',
+          subject: '[Payload_Uplink] Access granted for Digital Swarm Assets',
           html: `
-            <div style="font-family: sans-serif; padding: 20px; color: #111;">
-              <h2 style="color: #6366f1;">Welcome to the Swarm.</h2>
-              <p>Your transaction has been securely processed. Here is your permanent asset access key:</p>
-              <div style="background: #f4f4f5; padding: 15px; border-radius: 8px; font-family: monospace; font-size: 14px; margin: 20px 0; word-break: break-all;">
-                ${licenseKey}
+            <div style="font-family: monospace; background-color: #050505; color: #ffffff; padding: 40px; border: 8px solid #000;">
+              <h1 style="color: #CCFF00; font-style: italic; text-transform: uppercase; border-bottom: 4px solid #CCFF00; padding-bottom: 10px; margin-bottom: 20px;">UPLINK_ESTABLISHED</h1>
+              
+              <div style="border-left: 4px solid #CCFF00; padding-left: 20px; margin-bottom: 30px;">
+                <p style="font-size: 16px; margin: 0;">
+                  Greetings, Operator.<br/><br/>
+                  Your transaction for <strong>${payload.productId || "Digital Swarm Assets"}</strong> has been successfully verified in our core ledger. 
+                  The tactical data packets are ready for deployment.
+                </p>
               </div>
-              <p>You can use this key to unlock and deploy your digital products instantly.</p>
-              <br/>
-              <p>To your success,<br/><strong>The Digital Swarm Engine</strong></p>
+              
+              <div style="background-color: #ffffff; color: #000; padding: 30px; border: 4px solid #000; margin-top: 30px; box-shadow: 12px 12px 0 #CCFF00;">
+                <p style="font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; opacity: 0.6;">SYSTEM_ACCESS_KEY</p>
+                <div style="background: #000; color: #CCFF00; padding: 20px; border: 2px solid #000; font-family: monospace; font-size: 11px; word-break: break-all; margin-bottom: 20px;">
+                  ${licenseKey}
+                </div>
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL}/dashboard" style="display: block; background-color: #CCFF00; color: #000; text-decoration: none; padding: 20px; text-align: center; font-weight: 900; text-transform: uppercase; font-size: 18px; border: 4px solid #000; box-shadow: 6px 6px 0 #000; font-style: italic;">
+                  SECURE_UPLINK_DASHBOARD ->
+                </a>
+              </div>
+
+              <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #333;">
+                <p style="font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px;">
+                  [SECURE_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}]<br/>
+                  This is an automated system response from the Digital Swarm Engine. Do not reply.
+                </p>
+              </div>
             </div>
           `
         });
