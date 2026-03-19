@@ -98,7 +98,28 @@ export default function RootLayout({
   return (
     <ClerkProvider
       appearance={{
-        variables: { colorPrimary: '#CCFF00', colorBackground: '#050505', colorText: '#ffffff' },
+        variables: { 
+          colorPrimary: '#CCFF00', 
+          colorBackground: '#050505', 
+          colorText: '#ffffff',
+          colorInputBackground: '#111111',
+          colorInputText: '#ffffff',
+        },
+        elements: {
+          formButtonPrimary: "bg-[#CCFF00] text-black hover:bg-white transition-all border-4 border-black shadow-[4px_4px_0_#000]",
+          card: "bg-black border-4 border-[#CCFF00] shadow-[10px_10px_0_#CCFF00]",
+          headerTitle: "text-white font-black italic uppercase tracking-tighter",
+          headerSubtitle: "text-white/60 font-bold uppercase text-[10px]",
+          socialButtonsBlockButton: "bg-white text-black border-4 border-black font-black uppercase tracking-tighter shadow-[4px_4px_0_#CCFF00]",
+          socialButtonsBlockButtonText: "text-black font-black",
+          formFieldLabel: "text-white font-black uppercase text-[10px] tracking-widest",
+          formFieldInput: "bg-[#111] border-2 border-[#CCFF00] text-[#CCFF00] focus:ring-0 rounded-none",
+          footerActionLink: "text-[#CCFF00] font-black hover:text-white underline decoration-2",
+          identityPreviewText: "text-white",
+          identityPreviewEditButtonIcon: "text-[#CCFF00]",
+          dividerLine: "bg-white/20",
+          dividerText: "text-white/40 font-black uppercase text-[10px]"
+        }
       }}
     >
       <html lang="en" className="dark">

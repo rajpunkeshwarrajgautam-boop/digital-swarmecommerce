@@ -146,18 +146,18 @@ export function HiveMindChat() {
             initial={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
             animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
             exit={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
-            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[500px] bg-white border border-border rounded-xl shadow-2xl z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[500px] bg-[#050505] border-4 border-[#CCFF00] shadow-[10px_10px_0_#CCFF00] z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-gray-50/80 backdrop-blur-md p-4 border-b border-border flex items-center gap-3 cursor-grab active:cursor-grabbing">
-              <div className="p-2 rounded-lg bg-primary/10 text-primary">
+            <div className="bg-[#111] p-4 border-b-4 border-[#CCFF00] flex items-center gap-3 cursor-grab active:cursor-grabbing">
+              <div className="p-2 bg-[#CCFF00] text-black">
                 <Terminal className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="font-titan text-sm tracking-widest text-foreground">AI ASSISTANT</h3>
+                <h3 className="font-black italic text-sm tracking-widest text-[#CCFF00]">AI ASSISTANT</h3>
                 <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                  <span className="text-[10px] text-muted-foreground font-bold uppercase">Online</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse" />
+                  <span className="text-[10px] text-white font-bold uppercase">Online</span>
                 </div>
               </div>
             </div>
@@ -173,10 +173,10 @@ export function HiveMindChat() {
               {history.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === "user" ? "justify-end" : "justify-start"}`}>
                   <div className={`max-w-[85%] space-y-3 ${msg.role === "user" ? "flex flex-col items-end" : "flex flex-col items-start"}`}>
-                    <div className={`p-3 rounded-2xl text-sm ${
+                    <div className={`p-3 border-2 text-sm font-bold ${
                       msg.role === "user" 
-                        ? "bg-primary text-white font-medium" 
-                        : "bg-gray-100 text-foreground border border-border/50"
+                        ? "bg-[#CCFF00] text-black border-black shadow-[4px_4px_0_#fff]" 
+                        : "bg-black text-[#CCFF00] border-[#CCFF00] shadow-[4px_4px_0_#CCFF00]"
                     }`}>
                       {msg.text}
                     </div>
@@ -207,19 +207,19 @@ export function HiveMindChat() {
             </div>
 
             {/* Input */}
-            <form onSubmit={handleChat} className="p-4 bg-white border-t border-border">
+            <form onSubmit={handleChat} className="p-4 bg-black border-t-4 border-[#CCFF00]">
               <div className="relative">
                 <input
                   type="text"
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Ask me anything..."
-                  className="w-full bg-gray-50 border border-border rounded-xl py-3 pl-4 pr-12 text-sm focus:outline-none focus:border-primary transition-all text-foreground"
+                  className="w-full bg-[#111] border-2 border-[#CCFF00] py-3 pl-4 pr-12 text-sm focus:outline-none focus:bg-[#222] transition-all text-[#CCFF00] font-bold placeholder:text-[#CCFF00]/40"
                 />
                 <button 
                   type="submit"
                   disabled={loading || !message.trim()}
-                  className="absolute right-2 top-1.5 p-2 rounded-lg bg-gray-200 text-foreground hover:bg-primary hover:text-white transition-all disabled:opacity-50"
+                  className="absolute right-2 top-2 p-1.5 bg-[#CCFF00] text-black hover:bg-white transition-all disabled:opacity-50"
                 >
                   <Send className="w-4 h-4" />
                 </button>
