@@ -165,9 +165,11 @@ export function HiveMindChat() {
             {/* Messages */}
             <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
               {history.length === 0 && (
-                <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4 opacity-50">
-                  <Zap className="w-12 h-12 text-primary" />
-                  <p className="text-sm">Ask me anything about our products, or just say &ldquo;buy&rdquo; to get started!</p>
+                <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
+                  <Zap className="w-12 h-12 text-[#CCFF00]" />
+                  <p className="text-sm text-white font-bold italic uppercase tracking-widest bg-black border-2 border-[#CCFF00] p-4 shadow-[4px_4px_0_#CCFF00]">
+                    Ask me anything about our products, or just say &ldquo;buy&rdquo; to get started!
+                  </p>
                 </div>
               )}
               {history.map((msg, i) => (
