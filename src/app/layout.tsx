@@ -16,6 +16,7 @@ import { JsonLd } from "@/components/layout/JsonLd";
 import Script from "next/script";
 import { CustomCursor } from "@/components/ui/CustomCursor";
 import { SmoothScroll } from "@/components/ui/SmoothScroll";
+import { MainWrapper } from "@/components/layout/MainWrapper";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -113,9 +114,9 @@ export default function RootLayout({
             <GeoPricing />
             <PromoBanner />
             <Header />
-            <main className="flex-1 w-full pt-16">
+            <MainWrapper>
               <PageTransition>{children}</PageTransition>
-            </main>
+            </MainWrapper>
             <HiveMindChat />
             <Footer />
             <ExitIntentPopup />

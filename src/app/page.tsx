@@ -13,31 +13,21 @@ import { EmailCapture } from "@/components/home/EmailCapture";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen -mt-16 relative z-10">
+    <div className="flex flex-col min-h-screen relative z-10 w-full">
       {/* Hero Section */}
-      <section className="relative flex items-center justify-center overflow-hidden bg-background border-b border-white/5">
-        <ParallaxHero />
-      </section>
+      <ParallaxHero />
 
       {/* Problem / Solution */}
-      <div className="py-16 md:py-32">
-        <ProblemSolution />
-      </div>
+      <ProblemSolution />
 
       {/* Featured Products */}
-      <div className="py-16 md:py-32">
-        <FeaturedSection />
-      </div>
+      <FeaturedSection />
 
       {/* Social Proof */}
-      <div className="py-16 md:py-32">
-        <SocialProof />
-      </div>
+      <SocialProof />
 
       {/* Trust Signals: Testimonials */}
-      <div className="py-16 md:py-32">
-        <Testimonials />
-      </div>
+      <Testimonials />
 
       {/* Benefits Grid — PlanetOno Brutalist Style */}
       <section className="py-40 bg-background text-white relative overflow-hidden">
@@ -73,9 +63,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <div className="py-16 md:py-32 bg-background">
-        <HowItWorks />
-      </div>
+      <HowItWorks />
 
       {/* FAQ */}
       <HomeFAQ />
