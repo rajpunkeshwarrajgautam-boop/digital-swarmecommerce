@@ -122,6 +122,12 @@ export default function RootLayout({
           dividerText: "text-white font-black uppercase text-[10px] bg-black px-2",
           formFieldSuccessText: "text-[#CCFF00]",
           formFieldErrorText: "text-red-500 font-bold italic uppercase text-[10px]",
+          userButtonPopoverCard: "bg-black border-4 border-[#CCFF00] shadow-[10px_10px_0_#CCFF00] rounded-none",
+          userButtonPopoverActionButtonText: "text-white font-black uppercase tracking-widest text-[10px]",
+          userButtonPopoverActionButtonIcon: "text-[#CCFF00]",
+          userButtonPopoverFooter: "hidden",
+          userPreviewMainIdentifier: "text-white font-black uppercase italic tracking-tighter",
+          userPreviewSecondaryIdentifier: "text-[#CCFF00] font-bold text-[10px] opacity-70"
         }
       }}
     >

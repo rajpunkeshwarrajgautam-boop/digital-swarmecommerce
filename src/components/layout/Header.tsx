@@ -71,8 +71,8 @@ export function Header() {
               </SignInButton>
             ) : (
               <div className="flex items-center gap-3">
-                <Link href="/dashboard" className="hidden sm:block">
-                  <Button variant="outline" className="font-black uppercase tracking-widest border border-primary/20 bg-zinc-900 text-primary hover:bg-primary hover:text-black transition-all duration-300 rounded-none px-8">
+                <Link href="/dashboard" className="hidden sm:block cursor-pointer">
+                  <Button variant="outline" className="font-black uppercase tracking-widest border border-primary/20 bg-zinc-900 text-primary hover:bg-primary hover:text-black transition-all duration-300 rounded-none px-8 relative z-[60]">
                     Portal
                   </Button>
                 </Link>
