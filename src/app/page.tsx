@@ -13,7 +13,7 @@ import { EmailCapture } from "@/components/home/EmailCapture";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen -mt-16 relative z-10">
       {/* Hero Section */}
       <section className="relative flex items-center justify-center overflow-hidden bg-background border-b border-white/5">
         <ParallaxHero />

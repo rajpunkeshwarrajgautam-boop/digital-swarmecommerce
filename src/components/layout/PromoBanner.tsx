@@ -4,14 +4,18 @@ import { useEffect, useState } from "react";
 import { Clock, Tag } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 export function PromoBanner() {
+  const pathname = usePathname();
   const [timeLeft, setTimeLeft] = useState({ hours: 0, minutes: 0, seconds: 0 });
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
     // Show banner only on client to avoid hydration mismatch
-    setTimeout(() => setIsVisible(true), 0);
+    if (pathname !== "/") {
+      setTimeout(() => setIsVisible(true), 0);
+    }
     
     // Set an expiration time 4 hours from now
     // In a real app, this would come from a database or a secure daily reset
@@ -35,7 +39,9 @@ export function PromoBanner() {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, []);
+  }, [pathname]);
+
+  if (pathname === "/") return null;
 
   return (
     <AnimatePresence>

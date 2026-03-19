@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react";
 import { Globe } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 
 export function GeoPricing() {
+  const pathname = usePathname();
   const [country, setCountry] = useState<string | null>(null);
   const [currency, setCurrency] = useState<string | null>(null);
 
@@ -36,6 +38,8 @@ export function GeoPricing() {
   }, []);
 
   const isForeign = country && country !== "India";
+
+  if (pathname === "/") return null;
 
   return (
     <AnimatePresence>

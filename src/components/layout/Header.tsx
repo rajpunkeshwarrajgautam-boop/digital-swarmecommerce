@@ -5,6 +5,7 @@ import { ShoppingCart, Menu, X, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { CartDrawer } from "@/components/cart/CartDrawer";
@@ -16,6 +17,7 @@ export function Header() {
   const { items, toggleCart } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
   const { user, isLoaded } = useUser();
+  const pathname = usePathname();
   
   // Handle hydration mismatch for counts
   const [mounted, setMounted] = useState(false);
@@ -25,6 +27,8 @@ export function Header() {
 
   const totalItems = items.reduce((acc, item) => acc + item.quantity, 0);
   const totalWishlist = wishlistItems.length;
+
+  if (pathname === "/") return null;
 
   return (
     <>
