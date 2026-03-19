@@ -437,3 +437,31 @@ body::after {
   .xl-only      { display: block; }
 }
 
+
+/* ============================================================
+   CLERK & AI CHAT VISIBILITY OVERRIDES
+   ============================================================ */
+
+/* Force Google Login Button Text Visibility */
+.cl-socialButtonsBlockButton {
+  background-color: #ffffff !important;
+  color: #000000 !important;
+}
+
+.cl-socialButtonsBlockButtonText {
+  color: #000000 !important;
+  font-weight: 900 !important;
+}
+
+/* AI Assistant Message Contrast */
+.chat-helper-text {
+  color: #ffffff !important;
+  opacity: 1 !important;
+  font-weight: 700 !important;
+}
+
+/* Ensure form input text is sharp */
+.cl-formFieldInput {
+  color: #CCFF00 !important;
+  background-color: #000000 !important;
+}

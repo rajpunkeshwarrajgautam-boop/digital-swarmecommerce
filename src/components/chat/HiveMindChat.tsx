@@ -167,7 +167,7 @@ export function HiveMindChat() {
               {history.length === 0 && (
                 <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
                   <Zap className="w-12 h-12 text-[#CCFF00]" />
-                  <p className="text-sm text-white font-bold italic uppercase tracking-widest bg-black border-2 border-[#CCFF00] p-4 shadow-[4px_4px_0_#CCFF00]">
+                  <p className="text-sm text-white font-bold italic uppercase tracking-widest bg-black border-2 border-[#CCFF00] p-4 shadow-[4px_4px_0_#CCFF00] chat-helper-text">
                     Ask me anything about our products, or just say &ldquo;buy&rdquo; to get started!
                   </p>
                 </div>
