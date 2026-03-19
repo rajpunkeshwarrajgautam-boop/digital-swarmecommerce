@@ -1,170 +1,173 @@
 "use client";
 
-import { Share2, DollarSign, BarChart3, Users, ArrowRight, CheckCircle2 } from "lucide-react";
-import { useState } from "react";
-import { Button } from "@/components/ui/Button";
-import { CyberInput } from "@/components/ui/CyberInput";
-
-// export const metadata: Metadata = {
-//   title: 'Affiliate Portal',
-//  description: 'Join the Digital Swarm affiliate program and earn 30% commission on every sale.',
-// };
+import { useState, useEffect } from "react";
+import { 
+  Zap, 
+  Target, 
+  ArrowRight, 
+  BarChart3, 
+  Users, 
+  ShieldCheck, 
+  Cpu, 
+  Share2,
+  Copy,
+  CheckCircle2,
+  Terminal
+} from "lucide-react";
 
 export default function AffiliatePage() {
-  const [formData, setFormData] = useState({ name: "", email: "", link: "" });
-  const [loading, setLoading] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [errorText, setErrorText] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [isLogged, setIsLogged] = useState(false); // Simulated auth for demo
+  const [refId, setRefId] = useState("OPERATOR_881");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setErrorText("");
-
-    try {
-      const res = await fetch("/api/affiliates", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData)
-      });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to submit");
-      setSuccess(true);
-    } catch (err: unknown) {
-      if (err instanceof Error) setErrorText(err.message);
-      else setErrorText("An unknown error occurred.");
-    } finally {
-      setLoading(false);
-    }
+  const copyLink = () => {
+    navigator.clipboard.writeText(`https://digitalswarm.in/?ref=${refId}`);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <div className="container mx-auto px-4 py-24 min-h-screen">
-      <div className="max-w-5xl mx-auto">
-        
-        {/* Header section */}
-        <div className="text-center mb-16">
-          <div className="inline-flex items-center justify-center p-3 sm:p-4 bg-purple-500/10 text-purple-400 rounded-full mb-6">
-            <Share2 className="w-8 h-8 sm:w-12 sm:h-12" />
+    <div className="min-h-screen relative overflow-hidden bg-[#050505]">
+      {/* Background Noise/Texture */}
+      <div className="absolute inset-0 opacity-[0.03] pointer-events-none bg-[url('https://grainy-gradients.vercel.app/noise.svg')] z-0"></div>
+
+      <div className="container mx-auto px-4 py-32 relative z-10">
+        {/* Header Section */}
+        <div className="max-w-5xl mx-auto mb-20 text-center relative">
+          <div className="absolute top-[-40px] left-1/2 -translate-x-1/2 px-6 py-1 border-2 border-black bg-[#CCFF00] text-black text-[10px] font-black tracking-[4px] uppercase italic rotate-[-2deg] shadow-[4px_4px_0_#000]">
+            System_Partnership_Protocol
           </div>
-          <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight bg-linear-to-r from-white to-gray-400 bg-clip-text text-transparent">
-            Partner with Digital Swarm
+          
+          <h1 className="text-6xl md:text-9xl font-black italic tracking-tighter text-white uppercase drop-shadow-[5px_5px_0_#CCFF00] leading-none mb-4">
+            Affiliate_Command
           </h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto leading-relaxed">
-            Earn a massive <strong className="text-white">30% commission</strong> on every digital product and AI agent you sell. High-converting funnel, instant payouts.
+          <p className="text-xl md:text-2xl font-black text-[#CCFF00] uppercase tracking-widest italic flex items-center justify-center gap-3">
+             <Cpu className="w-8 h-8" /> Scalable Revenue Distribution Matrix
           </p>
         </div>
 
-        {/* Value Props */}
-        <div className="grid sm:grid-cols-3 gap-6 mb-16">
-          <div className="bg-card border border-border rounded-xl p-8 hover:border-purple-500/30 transition-all group">
-            <DollarSign className="w-10 h-10 text-emerald-400 mb-4 group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-bold mb-2">30% Commissions</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              Our AOV is ₹3,000+. That means you earn around ₹900 minimum per sale. Payouts are instant via UPI or PayPal.
-            </p>
-          </div>
-          <div className="bg-card border border-border rounded-xl p-8 hover:border-pink-500/30 transition-all group">
-            <BarChart3 className="w-10 h-10 text-pink-400 mb-4 group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-bold mb-2">High Conversion Rate</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              With our order bumps, exit-intent popups, and live social proof, our store converts at an industry-leading 4.2%.
-            </p>
-          </div>
-          <div className="bg-card border border-border rounded-xl p-8 hover:border-blue-500/30 transition-all group">
-            <Users className="w-10 h-10 text-blue-400 mb-4 group-hover:scale-110 transition-transform" />
-            <h3 className="text-xl font-bold mb-2">Dashboard Analytics</h3>
-            <p className="text-muted-foreground leading-relaxed">
-              Track your clicks, sales, and commissions in real-time. Generate unlimited custom tracking links instantly.
-            </p>
-          </div>
-        </div>
-
-        {/* CTA section (Simulated Dashboard) */}
-        <div className="bg-background border border-border rounded-2xl overflow-hidden shadow-2xl">
-          <div className="bg-black border-b border-border p-6 sm:px-10 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div>
-              <h2 className="text-2xl font-bold">Your Dashboard</h2>
-              <p className="text-muted-foreground">Apply below to unlock your tracking links.</p>
-            </div>
-            <div className="flex gap-4 w-full sm:w-auto">
-              <div className="bg-secondary/50 rounded-lg p-3 flex-1 sm:w-32 text-center border border-border">
-                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-mono">Clicks</p>
-                <p className="text-xl font-black text-white">0</p>
+        <div className="grid lg:grid-cols-12 gap-12 max-w-7xl mx-auto">
+          {/* Left Column: Benefits & Stats */}
+          <div className="lg:col-span-7 space-y-12">
+            <div className="bg-[#ffffff] border-8 border-black p-10 shadow-[20px_20px_0_#CCFF00] relative">
+              <div className="absolute top-0 right-0 p-4 border-l-8 border-b-8 border-black bg-black text-[#CCFF00] font-black text-xs uppercase tracking-tighter">
+                COMMISSION: 50%_SPLIT
               </div>
-              <div className="bg-secondary/50 rounded-lg p-3 flex-1 sm:w-32 text-center border border-border">
-                <p className="text-xs text-muted-foreground mb-1 uppercase tracking-widest font-mono">Earned</p>
-                <p className="text-xl font-black text-emerald-400">₹0</p>
-              </div>
-            </div>
-          </div>
-          
-          <div className="p-6 sm:p-10">
-            <div className="max-w-xl">
-              <h3 className="text-xl font-bold mb-4">Apply for Partnership</h3>
-              <p className="text-muted-foreground mb-8 text-sm leading-relaxed">
-                We review applications manually to ensure high-quality traffic. Tell us how you plan to promote Digital Swarm (YouTube, Newsletter, Twitter, etc).
-              </p>
               
-              {success ? (
-                <div className="bg-emerald-500/10 border border-emerald-500/20 p-8 rounded-2xl text-center space-y-4">
-                  <CheckCircle2 className="w-12 h-12 text-emerald-400 mx-auto" />
-                  <h3 className="text-xl font-bold text-emerald-400">Application Received</h3>
-                  <p className="text-muted-foreground">Our team will review your application and send your tracking dashboard link within 24 hours.</p>
+              <h2 className="text-4xl font-black text-black italic uppercase tracking-tighter mb-8 border-b-4 border-black pb-4">
+                Economic_Yield_Data
+              </h2>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                <div className="space-y-4 p-6 border-4 border-black bg-[#f4f4f4] shadow-[6px_6px_0_#000]">
+                  <div className="flex items-center gap-3">
+                    <Zap className="text-[#CCFF00] fill-black w-8 h-8" />
+                    <span className="font-black text-3xl italic text-black">High_Conversion</span>
+                  </div>
+                  <p className="font-black text-xs uppercase text-black/60 leading-relaxed">
+                    Our Planet ONO brutalist interface converts visitors at 2.5x the industry average for AI assets.
+                  </p>
                 </div>
-              ) : (
-                <form onSubmit={handleSubmit} className="space-y-4">
-                  <div className="grid sm:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Name</label>
-                      <CyberInput 
-                        required
-                        value={formData.name}
-                        onChange={e => setFormData({...formData, name: e.target.value})}
-                        placeholder="John Doe" 
-                      />
+                
+                <div className="space-y-4 p-6 border-4 border-black bg-black text-[#CCFF00] shadow-[6px_6px_0_#CCFF00]">
+                  <div className="flex items-center gap-3">
+                    <Target className="w-8 h-8" />
+                    <span className="font-black text-3xl italic">Massive_Payouts</span>
+                  </div>
+                  <p className="font-black text-xs uppercase text-white/60 leading-relaxed">
+                    Average order value: ₹3,499. You keep ₹1,749 per verified tactical deployment.
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-12 bg-black text-white p-8 border-4 border-black shadow-[inset_0_0_20px_rgba(204,255,0,0.2)]">
+                <div className="flex items-center justify-between gap-4 mb-6">
+                   <h4 className="font-black italic uppercase tracking-[2px] text-[#CCFF00]">Affiliate_Link_Generator</h4>
+                   <Terminal className="w-6 h-6 text-[#CCFF00]" />
+                </div>
+                <div className="flex flex-col md:flex-row gap-4">
+                  <div className="flex-1 bg-[#111] border-2 border-[#CCFF00] p-4 font-mono text-[#CCFF00] text-sm break-all">
+                    https://digitalswarm.in/?ref={refId}
+                  </div>
+                  <button 
+                    onClick={copyLink}
+                    className="bg-[#CCFF00] text-black border-4 border-black px-8 py-4 font-black uppercase italic shadow-[4px_4px_0_#fff] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-2 shrink-0 h-full"
+                  >
+                    {copied ? <CheckCircle2 className="w-5 h-5" /> : <Copy className="w-5 h-5" />}
+                    {copied ? "COPIED" : "UPLINK"}
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <div className="grid grid-cols-3 gap-6">
+               {[
+                 { icon: Users, label: "CLICKS", val: "102" },
+                 { icon: Target, label: "CONVERSIONS", val: "14" },
+                 { icon: BarChart3, label: "EQUITY", val: "₹24,486" }
+               ].map((stat, i) => (
+                 <div key={i} className="bg-white border-4 border-black p-4 shadow-[8px_8px_0_#000] text-center">
+                   <stat.icon className="w-6 h-6 mx-auto mb-2 text-black" />
+                   <p className="text-[10px] font-black uppercase tracking-widest text-black/50">{stat.label}</p>
+                   <p className="text-2xl font-black text-black italic">{stat.val}</p>
+                 </div>
+               ))}
+            </div>
+          </div>
+
+          {/* Right Column: Steps */}
+          <div className="lg:col-span-5 space-y-8">
+            <div className="bg-[#CCFF00] border-8 border-black p-10 shadow-[20px_20px_0_#fff] relative rotate-[1deg]">
+               <h3 className="text-4xl font-black text-black italic uppercase tracking-tighter mb-8 leading-none">
+                 The_Distribution_Sequence
+               </h3>
+               
+               <div className="space-y-8 relative">
+                  <div className="absolute left-[19px] top-4 bottom-4 w-1 bg-black/10"></div>
+                  
+                  {[
+                    { num: "01", title: "Generate_Hash", desc: "Unlock your unique referral payload in your dashboard console." },
+                    { num: "02", title: "Deploy_Traffic", desc: "Spread the tactical URL across X, LinkedIn, and Discord pods." },
+                    { num: "03", title: "Manual_Verify", desc: "Every purchase is logged in the Digital Swarm core ledger." },
+                    { num: "04", title: "Extract_Payout", desc: "Receive direct Bank/UPI wire transfers every Friday at 12:00 GMT." }
+                  ].map((step, i) => (
+                    <div key={i} className="flex gap-6 relative z-10">
+                      <div className="bg-black text-white w-10 h-10 flex items-center justify-center font-black italic border-2 border-black shadow-[4px_4px_0_#fff] shrink-0">
+                        {step.num}
+                      </div>
+                      <div>
+                        <h4 className="font-black text-xl italic uppercase text-black tracking-tight">{step.title}</h4>
+                        <p className="text-xs font-black uppercase text-black/50 leading-tight mt-1">{step.desc}</p>
+                      </div>
                     </div>
-                    <div className="space-y-2">
-                      <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Email</label>
-                      <CyberInput 
-                        type="email" 
-                        required
-                        value={formData.email}
-                        onChange={e => setFormData({...formData, email: e.target.value})}
-                        placeholder="john@example.com" 
-                      />
-                    </div>
+                  ))}
+               </div>
+            </div>
+
+            <button className="w-full bg-[#ffc737] border-8 border-black p-8 shadow-[15px_15px_0_#000] hover:shadow-none hover:translate-x-2 hover:translate-y-2 transition-all group">
+               <div className="flex items-center justify-between">
+                  <div className="text-left">
+                     <p className="text-xs font-black uppercase tracking-widest text-black/60 mb-1 italic">Ready_for_deployment?</p>
+                     <h4 className="text-4xl font-black text-black italic uppercase tracking-tighter">INITIALIZE_ACCOUNT</h4>
                   </div>
-                  
-                  <div className="space-y-2">
-                    <label className="text-xs font-bold uppercase tracking-widest text-muted-foreground">Link to your audience</label>
-                    <CyberInput 
-                      type="url" 
-                      required
-                      value={formData.link}
-                      onChange={e => setFormData({...formData, link: e.target.value})}
-                      placeholder="https://youtube.com/c/yourchannel" 
-                    />
-                  </div>
-                  
-                  {errorText && <p className="text-red-400 text-sm font-medium">{errorText}</p>}
-                  
-                  <div className="pt-4">
-                    <Button 
-                      type="submit" 
-                      variant="cyberpunk"
-                      isLoading={loading}
-                      className="w-full h-14"
-                    >
-                      Submit Application <ArrowRight className="w-5 h-5 ml-2" />
-                    </Button>
-                  </div>
-                </form>
-              )}
+                  <ArrowRight className="w-12 h-12 text-black group-hover:translate-x-4 transition-transform" />
+               </div>
+            </button>
+
+            <div className="bg-[#f0f0f0] border-4 border-black p-6 flex items-center gap-4 shadow-[8px_8px_0_#000]">
+              <ShieldCheck className="w-10 h-10 text-black fill-[#CCFF00]" />
+              <p className="font-black uppercase text-[10px] tracking-widest text-black/70 italic">
+                Verified Security Protocols Active. All commissions tracked by the Swarm Ledger V2.
+              </p>
             </div>
           </div>
         </div>
 
+        {/* Footer Accent */}
+        <div className="mt-32 border-t-8 border-black pt-8 flex justify-between items-end opacity-20 hover:opacity-100 transition-opacity">
+           <div className="font-black italic text-8xl text-white select-none">AFFILIATE</div>
+           <div className="font-black uppercase tracking-widest text-[#CCFF00] text-sm animate-pulse">UPLINK_STABLE // SYSTEM_READY</div>
+        </div>
       </div>
     </div>
   );
