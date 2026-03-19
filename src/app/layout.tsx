@@ -14,6 +14,8 @@ import { PromoBanner } from "@/components/layout/PromoBanner";
 import { GeoPricing } from "@/components/layout/GeoPricing";
 import { JsonLd } from "@/components/layout/JsonLd";
 import Script from "next/script";
+import { CustomCursor } from "@/components/ui/CustomCursor";
+import { SmoothScroll } from "@/components/ui/SmoothScroll";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -102,21 +104,24 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased bg-background text-foreground overflow-x-hidden selection:bg-primary selection:text-black`}
         >
-          <VisualQuality />
-          <Suspense fallback={null}>
-            <AdTracking />
-          </Suspense>
-          <GeoPricing />
-          <PromoBanner />
-          <Header />
-          <main className="flex-1 w-full pt-16">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <HiveMindChat />
-          <Footer />
-          <ExitIntentPopup />
-          <LiveSalesNotification />
-          <JsonLd />
+          <CustomCursor />
+          <SmoothScroll>
+            <VisualQuality />
+            <Suspense fallback={null}>
+              <AdTracking />
+            </Suspense>
+            <GeoPricing />
+            <PromoBanner />
+            <Header />
+            <main className="flex-1 w-full pt-16">
+              <PageTransition>{children}</PageTransition>
+            </main>
+            <HiveMindChat />
+            <Footer />
+            <ExitIntentPopup />
+            <LiveSalesNotification />
+            <JsonLd />
+          </SmoothScroll>
           <Script 
             src="https://cdnjs.cloudflare.com/ajax/libs/lottie-player/2.0.4/lottie-player.min.js" 
             strategy="afterInteractive"
