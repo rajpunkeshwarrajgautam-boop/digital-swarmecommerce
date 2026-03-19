@@ -1,5 +1,5 @@
 import { createClient } from "@supabase/supabase-js";
-import { products } from "./src/lib/data.ts";
+import { products } from "./src/lib/data";
 import * as dotenv from "dotenv";
 
 dotenv.config();
