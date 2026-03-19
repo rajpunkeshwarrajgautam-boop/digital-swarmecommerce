@@ -82,10 +82,11 @@ export default function ProductPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pb-20 pt-8">
+    <div className="min-h-screen bg-background relative pb-20 pt-8 overflow-hidden">
+      <div className="absolute inset-0 bg-swarm-pattern opacity-[0.03] pointer-events-none" />
       
       {/* Breadcrumbs / Back */}
-      <div className="container mx-auto px-4 mb-8">
+      <div className="container mx-auto px-6 mb-8 relative z-10">
         <Link href="/products" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 group">
           <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Catalog
         </Link>
@@ -100,34 +101,35 @@ export default function ProductPage() {
           </div>
 
           {/* Right: Product Info */}
-          <div className="flex flex-col h-full py-2">
+          <div className="flex flex-col h-full py-2 relative z-10">
             <div>
-              <div className="flex items-center gap-2 mb-4">
-                 <span className="bg-primary/10 text-primary text-xs font-bold px-3 py-1 rounded-full uppercase tracking-wider border border-primary/20">
+              <div className="flex items-center gap-3 mb-6">
+                 <span className="bg-primary text-black text-xs font-black px-4 py-1 border-2 border-black uppercase tracking-widest shadow-[4px_4px_0px_#CCFF00]">
                   {product.category}
                 </span>
                 {product.inStock ? (
-                   <span className="text-green-500 text-xs font-medium flex items-center gap-1 bg-green-500/10 px-3 py-1 rounded-full border border-green-500/20">
-                    ● In Stock
+                   <span className="text-white text-xs font-black flex items-center gap-2 bg-green-500 px-4 py-1 border-2 border-black uppercase tracking-widest shadow-[4px_4px_0px_#22c55e]">
+                    <div className="w-2 h-2 bg-white animate-pulse rounded-full" />
+                    Online
                    </span>
                 ) : (
-                  <span className="text-red-500 text-xs font-medium bg-red-500/10 px-3 py-1 rounded-full border border-red-500/20">Out of Stock</span>
+                  <span className="text-white text-xs font-black bg-red-500 px-4 py-1 border-2 border-black uppercase tracking-widest shadow-[4px_4px_0px_#ef4444]">Offline</span>
                 )}
               </div>
 
-              <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
+              <h1 className="text-5xl md:text-7xl font-black italic uppercase mb-6 leading-[0.85] tracking-tighter drop-shadow-[4px_4px_0px_rgba(204,255,0,0.2)]">
                 {product.name}
               </h1>
               
-              <div className="flex items-center gap-4 mb-6">
-                <span className="text-3xl font-bold text-primary">₹{product.price}</span>
-                <div className="flex items-center gap-1 border-l border-border pl-4">
+              <div className="flex items-center gap-6 mb-8 p-4 border border-white/10 bg-black w-fit">
+                <span className="text-4xl font-black italic tracking-tighter text-primary">₹{product.price.toLocaleString("en-IN")}</span>
+                <div className="flex items-center gap-2 border-l border-white/20 pl-6">
                   <div className="flex">
                     {[1,2,3,4,5].map((s) => (
-                        <Star key={s} className={`w-4 h-4 ${s <= Math.round(product.rating) ? 'text-yellow-500 fill-yellow-500' : 'text-muted'}`} />
+                        <Star key={s} className={`w-5 h-5 ${s <= Math.round(product.rating) ? 'text-primary fill-primary' : 'text-white/10'}`} />
                     ))}
                   </div>
-                  <span className="font-medium ml-2">{product.rating}</span>
+                  <span className="font-black italic text-lg ml-2">{product.rating}</span>
                 </div>
               </div>
 
@@ -155,24 +157,24 @@ export default function ProductPage() {
               )}
             </div>
 
-            <div className="prose prose-zinc dark:prose-invert max-w-none mb-8 mt-8">
+            <div className="prose prose-zinc dark:prose-invert max-w-none mb-10 mt-8">
               {product.description.includes('🚀 DEPLOYMENT GUIDE:') ? (
                 <>
-                  <p className="text-lg text-muted-foreground leading-relaxed mb-6">
+                  <p className="text-xl font-medium tracking-wide text-white/70 leading-relaxed mb-8">
                     {product.description.split('🚀 DEPLOYMENT GUIDE:')[0]}
                   </p>
-                  <div className="mt-8 p-6 rounded-2xl bg-primary/5 border border-primary/20">
-                    <h3 className="text-xl font-bold mb-4 flex items-center gap-2 text-primary">
-                      <BookOpen className="w-5 h-5" /> 
-                      Deployment Guide
-                    </h3>
-                    <div className="text-sm text-muted-foreground leading-relaxed whitespace-pre-wrap font-mono bg-black/20 p-4 rounded-xl border border-white/5">
+                  <div className="mt-8 border-4 border-[#333] shadow-[8px_8px_0px_#000] bg-zinc-950 p-0 overflow-hidden">
+                    <div className="bg-[#333] px-6 py-4 flex items-center gap-3">
+                      <BookOpen className="w-5 h-5 text-white" /> 
+                      <h3 className="text-xl font-black uppercase tracking-widest text-white m-0">Deployment Guide</h3>
+                    </div>
+                    <div className="text-sm text-primary font-bold leading-relaxed whitespace-pre-wrap font-mono p-6">
                       {product.description.split('🚀 DEPLOYMENT GUIDE:')[1].trim()}
                     </div>
                   </div>
                 </>
               ) : (
-                <p className="text-lg text-muted-foreground leading-relaxed">
+                <p className="text-xl font-medium tracking-wide text-white/70 leading-relaxed">
                   {product.description}
                 </p>
               )}
@@ -192,12 +194,14 @@ export default function ProductPage() {
 
               {/* Features List */}
               {product.features && product.features.length > 0 && (
-                <div className="mt-8">
-                  <h3 className="text-xl font-bold mb-4">Key Features</h3>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 list-none p-0 m-0">
+                <div className="mt-12 bg-black/40 border border-white/5 p-8">
+                  <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-6">System Capabilities</h3>
+                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
                     {product.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
-                        <span className="mt-1 w-1.5 h-1.5 rounded-full bg-primary flex-shrink-0" />
+                      <li key={i} className="flex items-start gap-4 text-sm font-bold tracking-wide text-white/70">
+                        <span className="w-6 h-6 bg-primary/10 border border-primary text-primary flex items-center justify-center text-[10px] shrink-0 mt-0">
+                          {i + 1}
+                        </span>
                         {feature}
                       </li>
                     ))}
@@ -207,13 +211,13 @@ export default function ProductPage() {
 
               {/* Specifications Grid */}
               {product.specs && (
-                <div className="mt-8">
-                  <h3 className="text-xl font-bold mb-4">Technical Specifications</h3>
+                <div className="mt-12">
+                  <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-6">Technical Architecture</h3>
                   <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
                     {Object.entries(product.specs).map(([key, value]) => (
-                      <div key={key} className="flex flex-col border-b border-border/50 pb-2 m-0!">
-                        <span className="font-medium text-foreground">{key}</span>
-                        <span className="text-muted-foreground">{value as string}</span>
+                      <div key={key} className="flex flex-col border-b-2 border-white/10 pb-2 m-0! group hover:border-primary transition-colors">
+                        <span className="font-black uppercase tracking-widest text-[#a855f7] text-[10px] mb-1">{key}</span>
+                        <span className="text-white font-mono">{value as string}</span>
                       </div>
                     ))}
                   </div>
@@ -222,28 +226,28 @@ export default function ProductPage() {
             </div>
 
             {/* Actions */}
-            <div className="space-y-8 mt-auto pt-8 border-t border-border">
+            <div className="space-y-8 mt-12">
               <AddToCartButton product={product} />
 
               {/* Trust Signals */}
-              <div className="grid grid-cols-3 gap-4">
-                <div className="flex flex-col items-center text-center gap-2 group">
-                  <div className="p-3 rounded-full bg-secondary text-primary group-hover:scale-110 transition-transform">
-                    <Truck className="w-5 h-5" />
+              <div className="grid grid-cols-3 gap-4 border-t-2 border-white/10 pt-8">
+                <div className="flex flex-col items-center text-center gap-3 group">
+                  <div className="p-4 border-2 border-white/20 bg-black text-primary group-hover:border-primary transition-colors shadow-[4px_4px_0px_#000]">
+                    <Truck className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground">Instant Delivery</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Instant Sync</span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-2 group">
-                  <div className="p-3 rounded-full bg-secondary text-primary group-hover:scale-110 transition-transform">
-                    <Shield className="w-5 h-5" />
+                <div className="flex flex-col items-center text-center gap-3 group">
+                  <div className="p-4 border-2 border-white/20 bg-black text-[#a855f7] group-hover:border-[#a855f7] transition-colors shadow-[4px_4px_0px_#000]">
+                    <Shield className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground">Verified Assets</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Verified Intel</span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-2 group">
-                  <div className="p-3 rounded-full bg-secondary text-primary group-hover:scale-110 transition-transform">
-                    <RotateCcw className="w-5 h-5" />
+                <div className="flex flex-col items-center text-center gap-3 group">
+                  <div className="p-4 border-2 border-white/20 bg-black text-blue-500 group-hover:border-blue-500 transition-colors shadow-[4px_4px_0px_#000]">
+                    <RotateCcw className="w-6 h-6" />
                   </div>
-                  <span className="text-xs font-medium text-muted-foreground">24/7 Support</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Support</span>
                 </div>
               </div>
             </div>

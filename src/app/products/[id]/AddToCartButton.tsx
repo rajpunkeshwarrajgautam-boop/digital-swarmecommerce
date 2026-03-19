@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/Button";
 import { useCartStore } from "@/lib/store";
 import { Product } from "@/lib/types";
 import { useState } from "react";
@@ -45,58 +44,57 @@ export default function AddToCartButton({ product }: { product: Product }) {
     <div className="flex flex-col gap-6">
       
       {/* License Selection Tier */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-8">
         {/* Standard Tier */}
         <button
           onClick={() => setLicenseType("standard")}
-          className={`flex flex-col text-left p-4 rounded-2xl border-2 transition-all cursor-pointer ${
+          className={`flex flex-col text-left p-6 border-4 transition-all cursor-pointer relative ${
             !isWhitelabel 
-              ? "border-primary bg-primary/5 shadow-[0_0_15px_rgba(204,255,0,0.1)]" 
-              : "border-border/50 bg-secondary/20 hover:border-primary/50"
+              ? "border-primary bg-primary/10 shadow-[6px_6px_0px_#CCFF00]" 
+              : "border-white/20 bg-transparent hover:border-primary/50"
           }`}
         >
-          <div className="flex justify-between items-start mb-2">
-            <span className="font-bold text-foreground">Standard License</span>
-            <BadgeCheck className={`w-5 h-5 ${!isWhitelabel ? "text-primary" : "text-muted-foreground"}`} />
+          <div className="flex justify-between items-start mb-4">
+            <span className="font-bold text-foreground uppercase tracking-widest text-sm">Standard</span>
+            <BadgeCheck className={`w-8 h-8 ${!isWhitelabel ? "text-primary fill-primary/20" : "text-white/20"}`} />
           </div>
-          <span className="text-2xl font-black text-foreground mb-1">₹{product.price.toLocaleString("en-IN")}</span>
-          <span className="text-xs text-muted-foreground leading-relaxed">Personal or single commercial project. Cannot be resold.</span>
+          <span className="text-4xl font-black italic tracking-tighter text-foreground mb-2 leading-none">₹{product.price.toLocaleString("en-IN")}</span>
+          <span className="text-xs text-white/50 uppercase font-bold tracking-wider leading-relaxed">Personal / single use.<br/>Cannot be resold.</span>
         </button>
 
         {/* Whitelabel Tier */}
         <button
           onClick={() => setLicenseType("whitelabel")}
-          className={`flex flex-col text-left p-4 rounded-2xl border-2 transition-all cursor-pointer relative overflow-hidden group ${
+          className={`flex flex-col text-left p-6 border-4 transition-all cursor-pointer relative overflow-hidden group ${
             isWhitelabel 
-              ? "border-purple-500 bg-purple-500/5 shadow-[0_0_20px_rgba(168,85,247,0.2)]" 
-              : "border-border/50 bg-secondary/20 hover:border-purple-500/50"
+              ? "border-[#a855f7] bg-purple-500/10 shadow-[6px_6px_0px_#a855f7]" 
+              : "border-white/20 bg-transparent hover:border-[#a855f7]/50"
           }`}
         >
           {/* Shine effect */}
-          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
+          <div className="absolute inset-0 bg-linear-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]" />
           
-          <div className="flex justify-between items-start mb-2 relative z-10">
-            <span className="font-bold text-purple-400">Agency Whitelabel</span>
-            <Building2 className={`w-5 h-5 ${isWhitelabel ? "text-purple-500" : "text-muted-foreground"}`} />
+          <div className="flex justify-between items-start mb-4 relative z-10">
+            <span className="font-bold text-[#a855f7] uppercase tracking-widest text-sm">Whitelabel</span>
+            <Building2 className={`w-8 h-8 ${isWhitelabel ? "text-[#a855f7] fill-purple-500/20" : "text-white/20"}`} />
           </div>
-          <span className="text-2xl font-black text-foreground mb-1 relative z-10">₹{(product.price * 5).toLocaleString("en-IN")}</span>
-          <span className="text-xs text-muted-foreground leading-relaxed relative z-10">Full resell rights. Rebrand and sell as your own SaaS.</span>
+          <span className="text-4xl font-black italic tracking-tighter text-foreground mb-2 leading-none relative z-10">₹{(product.price * 5).toLocaleString("en-IN")}</span>
+          <span className="text-xs text-white/50 uppercase font-bold tracking-wider leading-relaxed relative z-10">Full resell rights.<br/>Rebrand as your own.</span>
         </button>
       </div>
 
       <div className="flex gap-4">
-        <Button 
-          size="lg" 
-          className={`flex-1 text-lg h-14 font-black tracking-wide border-0 transition-all ${
+        <button 
+          className={`w-full py-6 text-2xl font-black italic uppercase tracking-tighter border-4 transition-all relative overflow-hidden active:translate-x-[4px] active:translate-y-[4px] active:shadow-none ${
             isWhitelabel 
-              ? "bg-linear-to-r from-purple-600 to-pink-500 hover:from-purple-700 hover:to-pink-600 text-white shadow-xl shadow-purple-500/20" 
-              : ""
-          }`}
+              ? "bg-[#a855f7] text-white border-white hover:border-[#a855f7] shadow-[8px_8px_0px_#fff]" 
+              : "bg-primary text-black border-black shadow-[8px_8px_0px_#000] hover:shadow-[8px_8px_0px_#CCFF00]"
+          } ${!product.inStock ? "opacity-50 cursor-not-allowed shadow-none active:translate-x-0" : ""}`}
           disabled={!product.inStock}
           onClick={handleAdd}
         >
-          {isAdding ? "Added to Payload!" : `Add ${isWhitelabel ? 'Agency License' : 'to Cart'} - ₹${finalPrice.toLocaleString("en-IN")}`}
-        </Button>
+          {isAdding ? "System Injecting..." : `Deploy ${isWhitelabel ? 'Agency Proxy' : 'Protocol'} ->`}
+        </button>
       </div>
     </div>
   );

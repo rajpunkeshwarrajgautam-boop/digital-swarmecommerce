@@ -40,13 +40,13 @@ export function QuantumProductView({ image, name }: QuantumProductViewProps) {
   return (
     <div 
         ref={containerRef}
-        className="relative w-full aspect-square rounded-3xl overflow-hidden bg-secondary border border-border group perspective-1000 cursor-pointer"
+        className="relative w-full aspect-square border-4 border-black overflow-hidden bg-[#ffc737] shadow-[12px_12px_0px_rgba(0,0,0,1)] group cursor-pointer"
         onMouseEnter={() => setIsHovering(true)}
         onMouseLeave={() => setIsHovering(false)}
         onClick={handleAssemble}
     >
       {/* 1. The Void Background */}
-      <div className="absolute inset-0 bg-secondary z-0" />
+      <div className="absolute inset-0 bg-[#ffc737] z-0" />
       <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-10 mixed-blend-overlay z-1" />
       
       {/* 2. Interference Layer (Before Assembly) */}
@@ -56,8 +56,8 @@ export function QuantumProductView({ image, name }: QuantumProductViewProps) {
             animate={{ opacity: isHovering ? 0.3 : 0.5 }}
             className="absolute inset-0 z-20 flex items-center justify-center digital-noise pointer-events-none"
         >
-             <div className="text-muted-foreground/50 font-mono text-sm tracking-widest uppercase border border-muted-foreground/30 px-4 py-2 rounded backdrop-blur-sm">
-                Click to Materialize
+             <div className="bg-red-500 text-white font-black text-sm tracking-widest uppercase border-4 border-black px-6 py-3 shadow-[4px_4px_0px_#000] rotate-[-5deg]">
+                Initialize Materialization
              </div>
         </motion.div>
       )}
@@ -123,15 +123,15 @@ export function QuantumProductView({ image, name }: QuantumProductViewProps) {
                 initial={{ opacity: 0, scale: 0 }}
                 animate={{ opacity: 1, scale: 1 }}
                 onClick={(e) => { e.stopPropagation(); resetAssembly(); }}
-                className="p-3 rounded-full bg-background/80 backdrop-blur-md border border-border hover:bg-primary/10 transition-colors shadow-lg"
+                className="p-4 bg-black border-2 border-white/20 hover:border-primary transition-colors shadow-[4px_4px_0px_#000]"
             >
-                <RotateCcw className="w-5 h-5 text-muted-foreground" />
+                <RotateCcw className="w-6 h-6 text-white" />
             </motion.button>
          )}
-         <div className="p-3 rounded-full bg-background/80 backdrop-blur-md border border-border shadow-lg">
+         <div className="p-4 bg-black border-2 border-white/20 transition-colors shadow-[4px_4px_0px_#000]">
             <Move3d className={cn(
-                "w-5 h-5 transition-colors",
-                isAssembled ? "text-primary" : "text-muted-foreground"
+                "w-6 h-6",
+                isAssembled ? "text-primary" : "text-white/50"
             )} />
          </div>
       </div>
