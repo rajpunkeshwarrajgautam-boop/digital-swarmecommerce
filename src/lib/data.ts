@@ -12,7 +12,7 @@ export const products: Product[] = [
     rating: 5.0,
     features: ['8-in-1 Unified Business Dashboard', 'Cinematic Easy-to-Use UI', 'Manual-Free One-Click Setup', 'Powered by Gemini AI', 'Full Source Code Included'],
     specs: { Interface: 'One-Click Dashboard', Theme: 'Tokyo Night Storm', License: 'Master Resell Rights (MRR)', Support: '24/7 Expert Help', Components: '8 Ready-to-Use Agents' },
-    downloadUrl: "/downloads/sentinel-research.zip",
+    downloadUrl: "/downloads/sentinel-research-optimized.zip",
     installGuide: "### Instant Setup (No Coding Needed)\n1. **Unzip**: Open the downloaded file on your computer.\n2. **Run**: Double-click the `START_HERE.bat` file. Your dashboard will open automatically.\n3. **Activate**: Go to the 'Settings' tab in your dashboard and paste your API key (Link provided inside).\n4. **Work**: Start using the Sales, Legal, or Finance agents immediately."
   },
   {
@@ -26,7 +26,7 @@ export const products: Product[] = [
     rating: 5.0,
     features: ['Automated SWOT Synthesis', 'Sales Battle Card Generator', 'One-Click Dashboard UI', 'Tokyo Night Aesthetic', 'Master Resell Rights'],
     specs: { API: 'Gemini / OpenAI', Framework: 'Digital Swarm ADK', Format: 'Python / Streamlit', License: 'Full MRR', Support: 'Priority Support' },
-    downloadUrl: "/downloads/swarm-sales.zip",
+    downloadUrl: "/downloads/swarm-sales-optimized.zip",
     installGuide: "### Growth Protocol\n1. **Deploy**: Double-click `LAUNCH_SWARM.bat`.\n2. **Configure**: Enter your API key in the `SYSTEM_CONFIG` tab.\n3. **Run**: Select `鹰 SALES_INFILTRATOR` and input target competitor. Your battle card renders instantly."
   },
   {
@@ -40,7 +40,7 @@ export const products: Product[] = [
     rating: 5.0,
     features: ["Finance Oracle Dashboard UI", "Real-time Sentiment Analysis", "Risk Profile Generation", "One-Click .BAT Deployment", "Tokyo Night Storm Theme"],
     specs: { API: 'Gemini / yFinance', Framework: 'Digital Swarm ADK', UI: 'Tokyo Night', Support: 'Priority Support', License: 'Resell Rights' },
-    downloadUrl: "/downloads/swarm-finance.zip",
+    downloadUrl: "/downloads/swarm-finance-optimized.zip",
     installGuide: "### Technical Oracle Setup\n1. **Launch**: Use `LAUNCH_SWARM.bat` for instant deployment.\n2. **Configure**: Select `📊 FINANCE_ORACLE` in the command selection.\n3. **Uplink**: Enter a ticker (TSLA, BTC) for real-time risk auditing."
   },
   {
@@ -54,7 +54,7 @@ export const products: Product[] = [
     rating: 5.0,
     features: ["Instant Contract Risk Auditor", "Automated Clause Analysis", "Simple Dashboard Interface", "One-Click Instant Launch", "Premium Cinematic Design"],
     specs: { AI: 'Gemini / OpenAI', Expertise: 'Legal Audit', Setup: 'Zero Coding Required', License: 'Full Resell Rights', Support: 'Priority Help' },
-    downloadUrl: "/downloads/swarm-legal.zip",
+    downloadUrl: "/downloads/swarm-legal-optimized.zip",
     installGuide: "### How to Start (Ready in 30 Seconds)\n1. **Launch**: Double-click the `START_HERE.bat` file in your folder.\n2. **Open**: Select the 'Legal Architect' from the easy menu.\n3. **Analyze**: Paste any text or clause to get an instant risk report with red-flag warnings."
   },
   {
@@ -68,7 +68,7 @@ export const products: Product[] = [
     rating: 4.7,
     features: ["Automated Resume Screening", "Job Suitability Scoring", "Simple One-Click Dashboard", "Zero-Tech Setup Required", "Modern Visual Interface"],
     specs: { AI: 'Gemini 1.5 Pro', Target: 'Small Business / HR', Setup: 'Instant Deployment', Support: 'Lifetime Support' },
-    downloadUrl: "/downloads/swarm-talent.zip",
+    downloadUrl: "/downloads/swarm-talent-optimized.zip",
     installGuide: "### Instant HR Setup\n1. **Open**: Double-click the `START_HERE.bat` file.\n2. **Select**: Click on 'Recruitment Command' in your dashboard.\n3. **Score**: Paste a resume and a job description to get an instant high-fidelity suitability score."
   },
   {
@@ -82,7 +82,7 @@ export const products: Product[] = [
     rating: 4.9,
     features: ["Neighborhood Data Intelligence", "ROI Prediction Dashboard", "One-Click .BAT Deployment", "Tokyo Night UI", "Master Resell Rights"],
     specs: { UI: 'Tokyo Night Storm', Framework: 'Digital Swarm ADK', Format: 'Python / Streamlit', Support: 'Lifetime Access' },
-    downloadUrl: "/downloads/swarm-property.zip",
+    downloadUrl: "/downloads/swarm-property-optimized.zip",
     installGuide: "### Property Protocol\n1. **Launch**: Execute `LAUNCH_SWARM.bat`.\n2. **Target**: Use the dashboard to enter target zip codes or areas.\n3. **Uplink**: View real-time investment scores inside the ONO UI."
   },
   {
@@ -96,7 +96,7 @@ export const products: Product[] = [
     rating: 5.0,
     features: ["Market Trend Prediction", "VC Due Diligence Reports", "One-Click .BAT Deployment", "Cinema-Grade Dashboard UI", "Agency Whitelabel License"],
     specs: { API: 'Gemini 1.5 Pro', Framework: 'Digital Swarm ADK', Format: 'Python / Streamlit', License: 'Agency MRR', Support: '1-on-1 Setup' },
-    downloadUrl: "/downloads/swarm-capital.zip",
+    downloadUrl: "/downloads/swarm-capital-optimized.zip",
     installGuide: "### VC Protocol\n1. **Deploy**: Use `LAUNCH_SWARM.bat`.\n2. **Inquire**: Navigate to `📈 TREND_ORACLE` in your dashboard.\n3. **Output**: Generate deep-dive reports on emerging tech markets."
   },
   {
@@ -110,7 +110,7 @@ export const products: Product[] = [
     rating: 4.8,
     features: ["Technical Crawler Agent", "Keyword Research strategist", "Content Optimization engine", "Backlink Analysis tools", "Growth Roadmap generation"],
     specs: { API: 'Anthropic / OpenAI / SerpApi', Framework: 'CrewAI / Phidata', Format: 'Python', Target: 'Digital Marketers', Support: 'Community Discord' },
-    downloadUrl: "/downloads/sentinel-seo.zip",
+    downloadUrl: "/downloads/sentinel-seo-optimized.zip",
     installGuide: "### SEO Protocol\n1. **Setup**: `pip install beautifulsoup4 serpapi crewai`.\n2. **Uplink**: Add SerpApi key to config.\n3. **Run**: `python audit.py`.\n\n### Usage\nInput a URL. Sentinel crawls the architecture, finds H1 gaps, and identifies 'Blue Ocean' keywords for immediate ranking."
   },
   {
