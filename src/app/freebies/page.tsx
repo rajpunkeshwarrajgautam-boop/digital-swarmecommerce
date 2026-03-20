@@ -12,7 +12,8 @@ const freebies = [
     description: "A comprehensive 150+ point checklist to go from idea to $1k MRR. Used by 500+ founders.",
     icon: <Target className="w-8 h-8 text-primary" />,
     stats: "2.4k Downloads",
-    type: "Guide"
+    type: "Guide",
+    downloadUrl: "/downloads/saas-launch-checklist.txt"
   },
   {
     id: "ai-prompt-library",
@@ -20,7 +21,8 @@ const freebies = [
     description: "Expert-crafted prompts for Claude, GPT-4, and Midjourney to automate your development workflow.",
     icon: <Sparkles className="w-8 h-8 text-accent" />,
     stats: "1.8k Downloads",
-    type: "Asset"
+    type: "Asset",
+    downloadUrl: "/downloads/ai-prompt-library.txt"
   },
   {
     id: "mini-ui-kit",
@@ -28,7 +30,8 @@ const freebies = [
     description: "A selection of premium React components from our main UI Kit. Buttons, cards, and inputs.",
     icon: <Zap className="w-8 h-8 text-primary" />,
     stats: "3.2k Downloads",
-    type: "Code"
+    type: "Code",
+    downloadUrl: "/downloads/cyberpunk-mini-ui-kit.tsx"
   },
   {
     id: "tech-stack-audit",
@@ -36,7 +39,8 @@ const freebies = [
     description: "A deep-dive research report on the most efficient tools for building high-scale startups in 2025.",
     icon: <Target className="w-8 h-8 text-blue-400" />,
     stats: "New Release",
-    type: "Guide"
+    type: "Guide",
+    downloadUrl: "/downloads/saas-tech-stack-audit.txt"
   },
   {
     id: "design-system-tokens",
@@ -44,7 +48,8 @@ const freebies = [
     description: "Figma and CSS design tokens for the ultimate cyberpunk aesthetic. Includes neon palettes and UI elements.",
     icon: <Sparkles className="w-8 h-8 text-amber-400" />,
     stats: "Featured",
-    type: "Asset"
+    type: "Asset",
+    downloadUrl: "/downloads/design-system-tokens.css"
   }
 ];
 
@@ -108,9 +113,17 @@ export default function FreebiesPage() {
                   {freebie.description}
                 </p>
                 <div className="pt-4">
-                  <Button variant="outline" className="w-full group/btn gap-2">
-                    Download Free <Download className="w-4 h-4 group-hover/btn:translate-y-0.5 transition-transform" />
-                  </Button>
+                  <a 
+                    href={freebie.downloadUrl} 
+                    download={freebie.downloadUrl.split('/').pop()}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block w-full"
+                  >
+                    <Button variant="outline" className="w-full group/btn gap-2">
+                      Download Free <Download className="w-4 h-4 group-hover/btn:translate-y-0.5 transition-transform" />
+                    </Button>
+                  </a>
                 </div>
               </div>
             </motion.div>

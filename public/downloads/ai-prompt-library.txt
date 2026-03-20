@@ -1,0 +1,14 @@
+This is a free bonus asset from Digital Swarm. 
+Use these AI prompts to automate your deep research and sales intelligence workflows.
+
+### 🤖 General Agent Activation
+Prompt: "Act as a senior AI systems architect. Analyze the current market landscape for [Category] and identify specifically how an autonomous multi-agent swarm could disrupt the top 3 players by automating [Process]."
+
+### 🔍 Deep Search Infiltration
+Prompt: "Perform a recursive deep-dive analysis on [Company]. Identify their unstated technological roadmap based on recent patent filings, job postings, and technical blog mentions. Synthesize this into a gap-analysis report for a competitor."
+
+### 📈 Capital Trend Oracle
+Prompt: "Scan the last 48 hours of high-signal technical news on X, Reddit, and specialized forums regarding [Niche]. Filter out AI noise and identify the 'whisper-trends' that haven't hit mainstream news yet but show increasing developer velocity."
+
+### ⚖️ Legal Risk Sweep
+Prompt: "Review the following [Clause] for a B2B SaaS agreement. Identify 3 non-obvious legal pitfalls that could lead to unlimited liability in an Indian jurisdiction context and suggest 'Shield-Protocols' (redrafted clauses) to mitigate these."

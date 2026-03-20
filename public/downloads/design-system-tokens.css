@@ -1,0 +1,52 @@
+/* DIGITAL SWARM — DESIGN SYSTEM TOKENS [v1.0] */
+/* CSS Variable tokens for the ultimate cyberpunk dystopian aesthetic */
+
+:root {
+  /* ⚡ CORE COLORS (Industrial High Contrast) */
+  --ds-color-primary: hsl(45, 100%, 50%);         /* Deep Industrial Gold */
+  --ds-color-background: hsl(0, 0%, 2%);          /* Dystopian Void Black */
+  --ds-color-surface: hsl(0, 0%, 5%);             /* Deep Gunmetal Grey */
+  --ds-color-border: hsl(0, 0%, 15%);             /* Subdued Iron Border */
+  --ds-color-accent: hsl(180, 100%, 50%);         /* Neo-Cyan Infiltration */
+  --ds-color-danger: hsl(0, 100%, 50%);           /* Warning Alert Red */
+
+  /* 📏 SPACING (Technical Grids) */
+  --ds-spacing-xs: 4px;
+  --ds-spacing-sm: 8px;
+  --ds-spacing-md: 16px;
+  --ds-spacing-lg: 32px;
+  --ds-spacing-xl: 64px;
+
+  /* 🖋 TYPOGRAPHY (Monospace Precision) */
+  --ds-font-display: 'Inter', sans-serif;
+  --ds-font-mono: 'JetBrains Mono', monospace;
+  --ds-font-size-base: 16px;
+  --ds-line-height: 1.5;
+
+  /* 🕋 SHADOWS & BLURS (Glassmorphism) */
+  --ds-glass-blur: blur(20px);
+  --ds-glass-opacity: 0.05;
+  --ds-shadow-brutalist: 25px 25px 0px hsla(0, 0%, 0%, 0.8);
+  
+  /* 🎬 ANIMATIONS (Glitch Transitions) */
+  --ds-transition-fast: 150ms cubic-bezier(0.1, 0, 0.2, 1);
+  --ds-transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* 💠 TYPOGRAPHY STYLES */
+.ds-heading-1 {
+  font-family: var(--ds-font-display);
+  font-weight: 900;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: -0.05em;
+  line-height: 0.85;
+}
+
+.ds-label {
+  font-family: var(--ds-font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5em;
+  color: hsla(0, 0%, 100%, 0.3);
+}
