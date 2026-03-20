@@ -198,12 +198,10 @@ export function HiveMindChat() {
         {isOpen && (
           <motion.div
             ref={chatRef}
-            drag
-            dragMomentum={false}
             initial={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
             animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
             exit={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
-            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[60vh] md:h-[500px] bg-[#050505] border-4 border-[#CCFF00] shadow-[10px_10px_0_#CCFF00] z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[60vh] md:h-[500px] bg-[#050505] border-4 border-[#CCFF00] shadow-[10px_10px_0_#CCFF00] z-50 flex flex-col overflow-hidden touch-auto"
           >
             {/* Header */}
             <div className="bg-[#111] p-4 border-b-4 border-[#CCFF00] flex items-center justify-between gap-3 cursor-grab active:cursor-grabbing shrink-0">
