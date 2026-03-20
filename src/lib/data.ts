@@ -4,16 +4,16 @@ export const products: Product[] = [
   {
     id: "sentinel-research",
     name: "Sentinel Research Infiltrator (Universal Dashboard)",
-    description: "The ultimate 8-in-1 tactical research suite. Includes the Unified Tactical Dashboard with specialized agents for Sales, Finance, Legal, Trends, and Data. Features a cinematic Tokyo Night UI and one-click deployment.",
+    description: "The ultimate 8-in-1 business command center. Includes specialized AI agents for Sales, Finance, Legal, and Market Trends. Features a cinematic dashboard that anyone can use—no coding required. Turn your computer into an AI-powered office instantly.",
     price: 3499,
     category: "AI Agents",
     image: "/images/products/sentinel-research.png",
     inStock: true,
     rating: 5.0,
-    features: ['8-in-1 Unified Tactical Dashboard', 'Tokyo Night Cinematic UI', 'One-Click .BAT Deployment', 'Gemini & OpenAI Ready', 'Full Source Code Included'],
-    specs: { Architecture: 'Streamlit Dashboard', UI: 'Tokyo Night Storm', License: 'Master Resell Rights (MRR)', Support: '24/7 Elite Support', Components: '8 Specialized Agents' },
+    features: ['8-in-1 Unified Business Dashboard', 'Cinematic Easy-to-Use UI', 'Manual-Free One-Click Setup', 'Powered by Gemini AI', 'Full Source Code Included'],
+    specs: { Interface: 'One-Click Dashboard', Theme: 'Tokyo Night Storm', License: 'Master Resell Rights (MRR)', Support: '24/7 Expert Help', Components: '8 Ready-to-Use Agents' },
     downloadUrl: "/downloads/sentinel-research.zip",
-    installGuide: "### Strategic One-Click Deployment\n1. **Unzip**: Extract the asset to your local drive.\n2. **Launch**: Double-click `LAUNCH_SWARM.bat`. The system will auto-verify dependencies.\n3. **Uplink**: Go to the `SYSTEM_CONFIG` tab in your browser and paste your Gemini API Key.\n4. **Execute**: Switch between Sales, Finance, or Legal protocols instantly."
+    installGuide: "### Instant Setup (No Coding Needed)\n1. **Unzip**: Open the downloaded file on your computer.\n2. **Run**: Double-click the `START_HERE.bat` file. Your dashboard will open automatically.\n3. **Activate**: Go to the 'Settings' tab in your dashboard and paste your API key (Link provided inside).\n4. **Work**: Start using the Sales, Legal, or Finance agents immediately."
   },
   {
     id: "swarm-sales",
@@ -46,30 +46,30 @@ export const products: Product[] = [
   {
     id: "swarm-legal",
     name: "Swarm Legal Architect (Dashboard Edition)",
-    description: "A professional legal audit agent integrated into the Unified Tactical Dashboard. Performs contract reviews, risk assessments, and compliance checks with zero-coding required.",
+    description: "A professional legal assistant that works inside your dashboard. Performs automated contract reviews, identifies risky clauses, and checks compliance in seconds. Built for business owners who want to avoid legal traps without learning code.",
     price: 2499,
     category: "AI Agents",
     image: "/images/products/swarm-legal.png",
     inStock: true,
     rating: 5.0,
-    features: ["Contract Risk Auditor", "Clause Suggestion Engine", "Unified Dashboard Integration", "One-Click Launch Protocol", "Tokyo Night Cinematic UI"],
-    specs: { API: 'Gemini / OpenAI', Framework: 'Digital Swarm ADK', Format: 'Python / Streamlit', License: 'Resell Rights', Support: 'Priority' },
+    features: ["Instant Contract Risk Auditor", "Automated Clause Analysis", "Simple Dashboard Interface", "One-Click Instant Launch", "Premium Cinematic Design"],
+    specs: { AI: 'Gemini / OpenAI', Expertise: 'Legal Audit', Setup: 'Zero Coding Required', License: 'Full Resell Rights', Support: 'Priority Help' },
     downloadUrl: "/downloads/swarm-legal.zip",
-    installGuide: "### Deployment Guide\n1. **Deploy**: Use the included `LAUNCH_SWARM.bat`.\n2. **Activate**: Select `⚖️ LEGAL_ARCHITECT` from the protocol menu.\n3. **Upload**: Paste your contract clause for an instant risk-red-flag report."
+    installGuide: "### How to Start (Ready in 30 Seconds)\n1. **Launch**: Double-click the `START_HERE.bat` file in your folder.\n2. **Open**: Select the 'Legal Architect' from the easy menu.\n3. **Analyze**: Paste any text or clause to get an instant risk report with red-flag warnings."
   },
   {
     id: "swarm-talent",
     name: "Swarm Recruitment Command (Dashboard Edition)",
-    description: "An AI-powered recruitment pipeline integrated into the Unified Tactical Dashboard. Handles JD matching, resume screening, and candidate scoring autonomously.",
+    description: "Your automated 24/7 HR assistant. Handles resume screening, job description matching, and candidate scoring instantly. Perfect for small businesses and HR teams looking to save hours of manual work without needing a technical team.",
     price: 1799,
     category: "AI Agents",
     image: "/images/products/swarm-talent.png",
     inStock: true,
     rating: 4.7,
-    features: ["Resume Screening Scorecard", "JD Matching Intelligence", "Unified Dashboard UI", "One-Click .BAT Deployment", "Tokyo Night Aesthetic"],
-    specs: { API: 'Gemini 1.5 Flash', Target: 'HR / Recruiters', Format: 'Python / Streamlit', Support: 'Lifetime Updates' },
+    features: ["Automated Resume Screening", "Job Suitability Scoring", "Simple One-Click Dashboard", "Zero-Tech Setup Required", "Modern Visual Interface"],
+    specs: { AI: 'Gemini 1.5 Pro', Target: 'Small Business / HR', Setup: 'Instant Deployment', Support: 'Lifetime Support' },
     downloadUrl: "/downloads/swarm-talent.zip",
-    installGuide: "### HR Deployment\n1. **Initialise**: Run `LAUNCH_SWARM.bat`.\n2. **Protocol**: Select `🤝 REC_COMMAND` in the sidebar dashboard.\n3. **Input**: Paste JD and Resume for an instant suitability score."
+    installGuide: "### Instant HR Setup\n1. **Open**: Double-click the `START_HERE.bat` file.\n2. **Select**: Click on 'Recruitment Command' in your dashboard.\n3. **Score**: Paste a resume and a job description to get an instant high-fidelity suitability score."
   },
   {
     id: "swarm-property",
