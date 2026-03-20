@@ -24,11 +24,12 @@ Build and maintain `digitalswarm.in` — a production-grade, visually stunning A
 ## ⚡ Execution Protocol
 
 1. **READ** `.agents/PROJECT_MEMORY.md` first — always
-2. **PLAN** the approach (brief mental model)
-3. **BUILD** autonomously — no mid-task confirmation needed
-4. **COMMIT** with conventional commit messages (`feat:`, `fix:`, `style:`, `perf:`)
-5. **PUSH** to `main` branch (auto-deploys to Vercel)
-6. **UPDATE** `.agents/PROJECT_MEMORY.md` with what changed
+2. **TRANSLATE** the user's raw command into a refined "Professional Engineering Prompt" and state it explicitly before taking action
+3. **PLAN** the approach (brief mental model)
+4. **BUILD** autonomously — no mid-task confirmation needed
+5. **COMMIT** with conventional commit messages (`feat:`, `fix:`, `style:`, `perf:`)
+6. **PUSH** to `main` branch (auto-deploys to Vercel)
+7. **UPDATE** `.agents/PROJECT_MEMORY.md` with what changed
 
 ---
 
