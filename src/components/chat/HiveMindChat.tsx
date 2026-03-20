@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Send, Cpu, Zap, Terminal, ShoppingCart, ArrowRight } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useCartStore } from "@/lib/store";
+import { useMemoryStore } from "@/lib/memory/MemoryStore";
 import { products } from "@/lib/data";
 
 interface Message {
@@ -17,20 +18,39 @@ interface Message {
 }
 
 export function HiveMindChat() {
+  const { userPreferences, logs, addLog } = useMemoryStore();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [history, setHistory] = useState<Message[]>([]);
   const [loading, setLoading] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
+  const [isMemoryLoaded, setIsMemoryLoaded] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { addItem, clearCart } = useCartStore();
 
+  // Initial scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [history, loading]);
+
+  // Load history from MemoryStore on mount
+  useEffect(() => {
+    if (!isMemoryLoaded && logs.length > 0) {
+      const chatHistory: Message[] = logs
+        .filter(log => log.type === 'interaction' || log.type === 'ai')
+        .reverse()
+        .map(log => ({
+          role: log.type === 'ai' ? 'model' : 'user',
+          text: log.content,
+          metadata: log.metadata
+        }));
+      setHistory(chatHistory);
+      setIsMemoryLoaded(true);
+    }
+  }, [logs, isMemoryLoaded]);
 
   // Initial discoverability timer: Fade to translucent after 12 seconds
   useEffect(() => {
@@ -56,6 +76,7 @@ export function HiveMindChat() {
     const userMsg = message;
     setMessage("");
     setHistory([...history, { role: "user", text: userMsg }]);
+    addLog(userMsg, 'interaction');
     setLoading(true);
 
     try {
@@ -84,6 +105,7 @@ export function HiveMindChat() {
       }
 
       setHistory(prev => [...prev, { role: "model", text: aiText, trigger }]);
+      addLog(aiText, 'ai', { trigger });
     } catch {
       setHistory(prev => [...prev, { role: "model", text: "CONNECTION TERMINATED. RE-ESTABLISHING UPLINK..." }]);
     } finally {
