@@ -1,5 +1,7 @@
 # GEMINI.md — Digital Swarm Project Configuration
 > **CRITICAL FIRST STEP**: Before doing ANYTHING, read `.agents/PROJECT_MEMORY.md` — it contains the full project state, completed features, design decisions, architecture, and session log. This is mandatory.
+> 
+> **🚨 SESSION START PROTOCOL 🚨**: In your very first message of a new session, you MUST immediately remind the user: *"Don't forget to start your Aider terminal session: `py -3.12 -m aider --model ollama/llama3.2`"*
 
 ---
 
