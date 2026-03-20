@@ -25,16 +25,36 @@ export function HiveMindChat() {
   const [loading, setLoading] = useState(false);
   const [hasInteracted, setHasInteracted] = useState(false);
   const [isMemoryLoaded, setIsMemoryLoaded] = useState(false);
+  const chatRef = useRef<HTMLDivElement>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const router = useRouter();
   const { addItem, clearCart } = useCartStore();
 
+  // Close when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && chatRef.current && !chatRef.current.contains(event.target as Node)) {
+        // Only close if we're not clicking the toggle button
+        const toggleButton = document.getElementById('chat-toggle-btn');
+        if (toggleButton && !toggleButton.contains(event.target as Node)) {
+          setIsOpen(false);
+        }
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [isOpen]);
+
   // Initial scroll to bottom
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTo({
+        top: scrollRef.current.scrollHeight,
+        behavior: isOpen ? "smooth" : "auto"
+      });
     }
-  }, [history, loading]);
+  }, [history, loading, isOpen]);
 
   // Load history from MemoryStore on mount
   useEffect(() => {
@@ -139,6 +159,7 @@ export function HiveMindChat() {
         </AnimatePresence>
 
         <motion.button
+          id="chat-toggle-btn"
           initial={{ scale: 0, rotate: -45 }}
           animate={{ scale: 1, rotate: 0 }}
           whileHover={{ scale: 1.1 }}
@@ -147,7 +168,7 @@ export function HiveMindChat() {
             setIsOpen(!isOpen);
             setHasInteracted(true);
           }}
-          className={`pointer-events-auto p-3 sm:p-4 rounded-full shadow-lg border border-border/50 transition-all duration-500 ${
+          className={`pointer-events-auto p-3 sm:p-4 rounded-full shadow-lg border border-border/50 transition-all duration-500 relative z-[60] ${
             isOpen
               ? "bg-primary text-white opacity-100"
               : !hasInteracted
@@ -159,33 +180,60 @@ export function HiveMindChat() {
         </motion.button>
       </div>
 
+      {/* Backdrop for outside click detection (Full screen overlay) */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[45]"
+            onClick={() => setIsOpen(false)}
+          />
+        )}
+      </AnimatePresence>
+
       {/* Chat Window */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
+            ref={chatRef}
             drag
             dragMomentum={false}
             initial={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
             animate={{ opacity: 1, y: 0, scale: 1, x: 0 }}
             exit={{ opacity: 0, y: 100, scale: 0.9, x: 50 }}
-            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[500px] bg-[#050505] border-4 border-[#CCFF00] shadow-[10px_10px_0_#CCFF00] z-50 flex flex-col overflow-hidden"
+            className="fixed bottom-24 right-6 w-[90vw] md:w-[400px] h-[60vh] md:h-[500px] bg-[#050505] border-4 border-[#CCFF00] shadow-[10px_10px_0_#CCFF00] z-50 flex flex-col overflow-hidden"
           >
             {/* Header */}
-            <div className="bg-[#111] p-4 border-b-4 border-[#CCFF00] flex items-center gap-3 cursor-grab active:cursor-grabbing">
-              <div className="p-2 bg-[#CCFF00] text-black">
-                <Terminal className="w-5 h-5" />
-              </div>
-              <div>
-                <h3 className="font-black italic text-sm tracking-widest text-[#CCFF00]">AI ASSISTANT</h3>
-                <div className="flex items-center gap-1.5">
-                  <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse" />
-                  <span className="text-[10px] text-white font-bold uppercase">Online</span>
+            <div className="bg-[#111] p-4 border-b-4 border-[#CCFF00] flex items-center justify-between gap-3 cursor-grab active:cursor-grabbing shrink-0">
+              <div className="flex items-center gap-3">
+                <div className="p-2 bg-[#CCFF00] text-black">
+                  <Terminal className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 className="font-black italic text-sm tracking-widest text-[#CCFF00]">AI ASSISTANT</h3>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-[#CCFF00] animate-pulse" />
+                    <span className="text-[10px] text-white font-bold uppercase">Online</span>
+                  </div>
                 </div>
               </div>
+              <button 
+                onClick={() => setIsOpen(false)}
+                className="p-1 text-white/50 hover:text-[#CCFF00] transition-colors"
+                title="Minimize Uplink"
+              >
+                <X className="w-5 h-5" />
+              </button>
             </div>
 
-            {/* Messages */}
-            <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth">
+            {/* Messages - Fixed scroll container */}
+            <div 
+              ref={scrollRef} 
+              className="flex-1 overflow-y-auto p-4 space-y-4 scroll-smooth scrollbar-thin scrollbar-thumb-[#CCFF00] scrollbar-track-black"
+              style={{ overflowY: 'auto', maxHeight: '100%' }}
+            >
               {history.length === 0 && (
                 <div className="h-full flex flex-col items-center justify-center text-center p-8 space-y-4">
                   <Zap className="w-12 h-12 text-[#CCFF00]" />
