@@ -14,13 +14,13 @@ interface ProductCardProps {
 
 function StarRating({ rating }: { rating: number }) {
   return (
-    <div className="flex items-center gap-1" aria-label={\`Rated \${rating} out of 5\`}>
+    <div className="flex items-center gap-1" aria-label={`Rated ${rating} out of 5`}>
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
-          className={\`w-3.5 h-3.5 \${
-            s <= Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-200"
-          }\`}
+          className={`w-3.5 h-3.5 ${
+            s <= Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-600"
+          }`}
         />
       ))}
       <span className="text-xs text-gray-400 font-medium ml-1">{rating.toFixed(1)}</span>
@@ -52,9 +52,8 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative bg-[#0f1115] backdrop-blur-xl border border-white/10 p-4 transition-all duration-500 rounded-3xl h-full flex flex-col hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(6,182,212,0.15)] hover:-translate-y-2">
 
-      {/* Soft Image Container */}
       <div className="block relative aspect-square w-full mb-5 overflow-hidden rounded-2xl bg-[#0a0c10] border border-white/10 group-hover:border-cyan-500/30 transition-colors">
-        <Link href={\`/products/\${product.id}\`} className="block w-full h-full">
+        <Link href={`/products/${product.id}`} className="block w-full h-full">
           <div className="w-full h-full flex items-center justify-center relative">
             <Image
               src={product.image}
@@ -67,38 +66,39 @@ export function ProductCard({ product }: ProductCardProps) {
           </div>
         </Link>
 
-        {/* Dynamic Badge */}
         {(product.sales ?? 0) > 50 ? (
-          <div className="absolute top-3 left-3 w-fit bg-pink-100 text-pink-600 border border-pink-200 text-[10px] font-bold px-3 py-1 rounded-full z-20 uppercase tracking-widest shadow-sm">
+          <div className="absolute top-3 left-3 w-fit bg-pink-500/20 text-pink-400 border border-pink-500/30 text-[10px] font-bold px-3 py-1 rounded-full z-20 uppercase tracking-widest shadow-sm backdrop-blur-md">
             Best Seller
           </div>
         ) : (product.sales ?? 0) < 5 && (
-          <div className="absolute top-3 left-3 w-fit bg-cyan-900/40 text-cyan-400 border border-cyan-500/30 text-[10px] font-bold px-3 py-1 rounded-full z-20 uppercase tracking-widest shadow-sm">
+          <div className="absolute top-3 left-3 w-fit bg-cyan-900/40 text-cyan-400 border border-cyan-500/30 text-[10px] font-bold px-3 py-1 rounded-full z-20 uppercase tracking-widest shadow-sm backdrop-blur-md">
             New Arrival
           </div>
         )}
 
-        {/* Wishlist Button */}
         <button 
           onClick={toggleWishlist}
-          className={\`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all z-20 shadow-sm \${
+          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all z-20 shadow-sm ${
             wishlisted 
-              ? "bg-red-500/10 border border-red-500/30 text-red-500" 
+              ? "bg-red-500/10 border border-red-500/30 text-red-500 backdrop-blur-md" 
               : "bg-black/60 border border-white/20 text-gray-400 hover:text-red-500 hover:bg-black/80 backdrop-blur-md"
-          }\`}
+          }`}
         >
-          <Heart className={\`w-4 h-4 \${wishlisted ? "fill-current" : ""}\`} />
+          <Heart className={`w-4 h-4 ${wishlisted ? "fill-current" : ""}`} />
         </button>
 
-        {/* Soft Price Badge */}
+        {/* Scarcity Badge (Deterministic Algorithmic FOMO) */}
+        <div className="absolute bottom-3 left-3 bg-red-500/20 backdrop-blur-md text-red-400 font-bold text-[10px] px-2 py-1 rounded-full border border-red-500/30 z-10 flex items-center gap-1.5 uppercase tracking-wider shadow-[0_0_10px_rgba(239,68,68,0.2)]">
+          <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse shadow-[0_0_5px_#ef4444]"></span>
+          Only {(product.name.length % 4) + 1} left
+        </div>
+
         <div className="absolute bottom-3 right-3 bg-black/80 backdrop-blur-md text-white font-mono font-bold text-sm px-3 py-1.5 rounded-full border border-white/20 z-10 shadow-[0_0_10px_rgba(0,0,0,0.5)]">
           ₹{product.price.toLocaleString("en-IN")}
         </div>
       </div>
 
-      {/* Content */}
       <div className="flex flex-col grow gap-2 px-1">
-        {/* Star rating */}
         {product.rating > 0 && (
           <div className="mb-1">
             <StarRating rating={product.rating} />
@@ -112,9 +112,8 @@ export function ProductCard({ product }: ProductCardProps) {
           {product.description}
         </p>
 
-        {/* Actions */}
         <div className="flex gap-2 mt-auto relative z-10">
-          <Link href={\`/products/\${product.id}\`} className="w-1/3">
+          <Link href={`/products/${product.id}`} className="w-1/3">
             <Button variant="outline" className="w-full h-11 bg-white/5 border border-white/10 text-gray-300 hover:text-white hover:bg-white/10 rounded-xl font-bold transition-all shadow-[0_0_10px_rgba(255,255,255,0.02)]">
               View
             </Button>

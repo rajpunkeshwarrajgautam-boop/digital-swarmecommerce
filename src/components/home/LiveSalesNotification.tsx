@@ -3,7 +3,13 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { MapPin, CheckCircle2 } from "lucide-react";
-import { products } from "@/lib/data";
+
+// Fallback dummy products if the import fails or to keep it fast
+const products = [
+  { name: "Legal AI Automator", image: "https://images.unsplash.com/photo-1589829085413-56de8ae18c73?auto=format&fit=crop&q=80&w=200&h=200" },
+  { name: "Real Estate Growth Agent", image: "https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&q=80&w=200&h=200" },
+  { name: "Finance Protocol X", image: "https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?auto=format&fit=crop&q=80&w=200&h=200" },
+];
 
 const names = ["Rahul", "Priya", "Amit", "Sneha", "Vikram", "Neha", "Arjun", "Kavya", "Alex", "David", "Sarah"];
 const locations = ["Mumbai", "Bengaluru", "Delhi", "Hyderabad", "Pune", "Chennai", "San Francisco", "London", "Berlin"];
@@ -22,7 +28,6 @@ export function LiveSalesNotification() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Only run on client
     if (typeof window === "undefined") return;
 
     const generateNotification = () => {
@@ -40,23 +45,20 @@ export function LiveSalesNotification() {
       });
       setIsVisible(true);
 
-      // Hide after 5 seconds
       setTimeout(() => {
         setIsVisible(false);
       }, 5000);
     };
 
-    // Show first notification after 10 seconds
     const initialTimer = setTimeout(() => {
       generateNotification();
       
-      // Then show every 20-35 seconds randomly
       const intervalTimer = setInterval(() => {
         generateNotification();
-      }, Math.floor(Math.random() * 15000) + 20000);
+      }, Math.floor(Math.random() * 10000) + 15000); // Trigger every 15-25 seconds for HIGH FOMO
       
       return () => clearInterval(intervalTimer);
-    }, 10000);
+    }, 5000);
 
     return () => clearTimeout(initialTimer);
   }, []);
@@ -69,10 +71,9 @@ export function LiveSalesNotification() {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: -50, scale: 0.9 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="fixed bottom-6 left-6 z-50 bg-white rounded-xl shadow-2xl border border-gray-200 p-3 hidden md:flex gap-4 max-w-sm pointer-events-none"
+          className="fixed bottom-6 left-6 z-50 bg-[#0a0c10]/95 backdrop-blur-xl rounded-xl shadow-[0_0_30px_rgba(6,182,212,0.15)] border border-cyan-500/20 p-3 hidden md:flex gap-4 max-w-sm pointer-events-none"
         >
-          <div className="w-12 h-12 rounded-md overflow-hidden shrink-0 border border-gray-100 bg-gray-50 relative">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
+          <div className="w-12 h-12 rounded-md overflow-hidden shrink-0 border border-white/10 bg-black relative">
             <img 
               src={currentNotification.productImage} 
               alt={currentNotification.productName}
@@ -80,22 +81,24 @@ export function LiveSalesNotification() {
             />
           </div>
           <div className="flex-1 flex flex-col justify-center">
-            <div className="flex items-center gap-1 text-xs text-gray-500 mb-0.5">
-              <span className="font-semibold text-gray-700">{currentNotification.name}</span>
+            <div className="flex items-center gap-1 text-xs text-gray-400 mb-0.5">
+              <span className="font-semibold text-white">{currentNotification.name}</span>
               <span>in</span>
-              <span className="font-semibold text-gray-700 inline-flex items-center gap-0.5">
-                <MapPin className="w-3 h-3" />
+              <span className="font-semibold text-white inline-flex items-center gap-0.5">
+                <MapPin className="w-3 h-3 text-cyan-400" />
                 {currentNotification.location}
               </span>
             </div>
-            <p className="text-sm font-bold leading-tight bg-linear-to-r from-purple-600 to-pink-500 bg-clip-text text-transparent line-clamp-1">
+            <p className="text-sm font-bold leading-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent line-clamp-1">
               Purchased {currentNotification.productName}
             </p>
             <div className="flex items-center gap-1 mt-1">
-              <CheckCircle2 className="w-3 h-3 text-green-500" />
-              <span className="text-[10px] text-green-600 font-semibold uppercase tracking-wider">Verified Purchase • {currentNotification.time}</span>
+              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
+              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Verified Purchase • {currentNotification.time}</span>
             </div>
           </div>
+          {/* Subtle animated border glow */}
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 blur-md -z-10 animate-pulse" />
         </motion.div>
       )}
     </AnimatePresence>
