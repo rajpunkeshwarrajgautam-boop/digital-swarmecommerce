@@ -1,11 +1,21 @@
 
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
+import { NextResponse } from "next/server";
+
 // Protect all routes under /dashboard or /profile
-const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/profile(.*)']);
+const isProtectedRoute = createRouteMatcher(['/dashboard(.*)', '/profile(.*)', '/affiliate(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect();
+
+  const ref = req.nextUrl.searchParams.get('ref');
+  if (ref) {
+    const response = NextResponse.next();
+    // 30-day tracking cookie
+    response.cookies.set('affiliate_id', ref, { path: '/', maxAge: 60 * 60 * 24 * 30 });
+    return response;
+  }
 });
 
 export const config = {

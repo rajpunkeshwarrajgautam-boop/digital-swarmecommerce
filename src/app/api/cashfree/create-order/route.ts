@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 
 export async function POST(request: Request) {
@@ -26,6 +27,23 @@ export async function POST(request: Request) {
 
     // 1. Generate clean Order ID
     const orderId = `DS_${Date.now()}`;
+
+    // 1.5. Resolve Affiliate Cookie (if any)
+    const cookieStore = await cookies();
+    const affiliateCode = cookieStore.get('affiliate_id')?.value;
+    let affiliateRecordId = null;
+
+    if (affiliateCode) {
+      const { data: affiliateMatch } = await supabaseAdmin
+        .from('affiliates')
+        .select('id')
+        .eq('referral_code', affiliateCode)
+        .single();
+      
+      if (affiliateMatch) {
+        affiliateRecordId = affiliateMatch.id;
+      }
+    }
 
     // 2. Create Order in Supabase
     const { data: order, error: orderError } = await supabaseAdmin
@@ -57,6 +75,19 @@ export async function POST(request: Request) {
     supabaseAdmin.from('order_items').insert(orderItems).then(({ error }) => {
       if (error) console.error('[OrderItems Error]', error);
     });
+
+    // 3.5 Log Affiliate Referral (Pending)
+    if (affiliateRecordId) {
+      const commission = parseFloat(total) * 0.30;
+      supabaseAdmin.from('referrals').insert({
+        affiliate_id: affiliateRecordId,
+        order_id: orderId,
+        commission_amount: commission,
+        status: 'pending'
+      }).then(({ error }) => {
+        if (error) console.error('[Affiliate Logging Error]', error);
+      });
+    }
 
     // 4. Create Cashfree Order
     const cfPayload = {
