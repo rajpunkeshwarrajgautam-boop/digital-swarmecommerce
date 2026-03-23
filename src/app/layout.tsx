@@ -137,7 +137,7 @@ export default function RootLayout({
         >
           <CustomCursor />
           <SmoothScroll>
-            <VisualQuality />
+            {/* VisualQuality disabled for Soft UI migration */}
             <Suspense fallback={null}>
               <AdTracking />
             </Suspense>

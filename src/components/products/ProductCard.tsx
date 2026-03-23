@@ -12,7 +12,6 @@ interface ProductCardProps {
   product: Product;
 }
 
-/** Renders star icons for a given rating (0–5). */
 function StarRating({ rating }: { rating: number }) {
   return (
     <div className="flex items-center gap-1" aria-label={`Rated ${rating} out of 5`}>
@@ -20,11 +19,11 @@ function StarRating({ rating }: { rating: number }) {
         <Star
           key={s}
           className={`w-3.5 h-3.5 ${
-            s <= Math.round(rating) ? "fill-yellow-500 text-yellow-500" : "text-muted"
+            s <= Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-200"
           }`}
         />
       ))}
-      <span className="text-xs text-muted-foreground ml-1">{rating.toFixed(1)}</span>
+      <span className="text-xs text-gray-400 font-medium ml-1">{rating.toFixed(1)}</span>
     </div>
   );
 }
@@ -51,12 +50,12 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <div className="group relative bg-card border border-white/5 p-4 transition-all duration-300 rounded-none h-full overflow-hidden">
+    <div className="group relative bg-white border border-gray-100 p-4 transition-all duration-300 rounded-3xl h-full flex flex-col hover:shadow-xl hover:-translate-y-1">
 
-      {/* Minimalist Image Container */}
-      <div className="block relative aspect-square w-full mb-6 overflow-hidden">
+      {/* Soft Image Container */}
+      <div className="block relative aspect-square w-full mb-5 overflow-hidden rounded-2xl bg-gray-50 border border-gray-100">
         <Link href={`/products/${product.id}`} className="block w-full h-full">
-          <div className="w-full h-full bg-black/40 flex items-center justify-center">
+          <div className="w-full h-full flex items-center justify-center">
             <Image
               src={product.image}
               fill
@@ -70,61 +69,57 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Dynamic Badge */}
         {(product.sales ?? 0) > 50 ? (
-          <div className="absolute top-4 inset-x-0 mx-auto w-fit bg-primary text-black text-[9px] font-black px-4 py-1.5 rounded-none z-20 uppercase tracking-[0.2em] italic">
+          <div className="absolute top-3 left-3 w-fit bg-pink-100 text-pink-600 border border-pink-200 text-[10px] font-bold px-3 py-1 rounded-full z-20 uppercase tracking-widest shadow-sm">
             Best Seller
           </div>
         ) : (product.sales ?? 0) < 5 && (
-          <div className="absolute top-4 inset-x-0 mx-auto w-fit bg-white text-black text-[9px] font-black px-4 py-1.5 rounded-none z-20 uppercase tracking-[0.2em] italic">
-            New Protocol
+          <div className="absolute top-3 left-3 w-fit bg-blue-100 text-blue-600 border border-blue-200 text-[10px] font-bold px-3 py-1 rounded-full z-20 uppercase tracking-widest shadow-sm">
+            New Arrival
           </div>
         )}
 
         {/* Wishlist Button */}
         <button 
           onClick={toggleWishlist}
-          className={`absolute top-4 left-4 w-10 h-10 flex items-center justify-center border transition-all z-20 ${
+          className={`absolute top-3 right-3 w-9 h-9 rounded-full flex items-center justify-center transition-all z-20 shadow-sm ${
             wishlisted 
-              ? "bg-red-500/10 border-red-500 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]" 
-              : "bg-black/60 border-white/10 text-white/50 hover:border-red-500 hover:text-red-500 backdrop-blur-md"
+              ? "bg-red-50 border border-red-100 text-red-500" 
+              : "bg-white/80 border border-gray-200 text-gray-400 hover:text-red-500 hover:bg-red-50 backdrop-blur-md"
           }`}
         >
-          <Heart className={`w-5 h-5 ${wishlisted ? "fill-current" : ""}`} />
+          <Heart className={`w-4 h-4 ${wishlisted ? "fill-current" : ""}`} />
         </button>
 
-        {/* Minimalist Price Badge */}
-        <div className="absolute top-4 right-4 bg-black/60 backdrop-blur-md text-primary font-black text-sm px-4 py-1.5 border border-white/10 z-10 italic">
+        {/* Soft Price Badge */}
+        <div className="absolute bottom-3 right-3 bg-white/90 backdrop-blur-md text-gray-900 font-bold text-sm px-3 py-1.5 rounded-full border border-gray-200 z-10 shadow-sm">
           ₹{product.price.toLocaleString("en-IN")}
-        </div>
-        {/* Instant download badge */}
-        <div className="absolute bottom-4 left-4 bg-primary text-black text-[8px] font-black px-3 py-1 z-10 uppercase tracking-widest italic">
-          INSTANT_SYNC
         </div>
       </div>
 
       {/* Content */}
-      <div className="flex flex-col grow gap-2">
+      <div className="flex flex-col grow gap-2 px-1">
         {/* Star rating */}
         {product.rating > 0 && (
-          <div className="mb-2">
+          <div className="mb-1">
             <StarRating rating={product.rating} />
           </div>
         )}
 
-        <h3 className="text-2xl font-black italic tracking-tighter leading-none mb-1 group-hover:text-primary transition-colors line-clamp-2 uppercase">
+        <h3 className="text-xl font-bold text-gray-900 leading-tight mb-1 group-hover:text-blue-600 transition-colors line-clamp-2">
           {product.name}
         </h3>
-        <p className="text-sm text-muted-foreground mb-6 line-clamp-2 grow font-bold uppercase italic tracking-tighter leading-tight">
+        <p className="text-sm text-gray-500 mb-6 line-clamp-2 grow font-medium leading-relaxed">
           {product.description}
         </p>
 
         {/* Actions */}
-        <div className="flex flex-col gap-3 mt-auto relative z-10">
-          <Link href={`/products/${product.id}`} className="w-full">
-            <Button variant="outline" className="w-full h-12 bg-transparent border-white/10 text-white/50 hover:text-white hover:border-white rounded-none uppercase tracking-widest text-xs font-black">
-              View Specs
+        <div className="flex gap-2 mt-auto relative z-10">
+          <Link href={`/products/${product.id}`} className="w-1/3">
+            <Button variant="outline" className="w-full h-11 bg-white border border-gray-200 text-gray-600 hover:text-gray-900 hover:border-gray-300 rounded-xl font-bold transition-all shadow-sm">
+              View
             </Button>
           </Link>
-          <div className="w-full">
+          <div className="w-2/3">
             {product.inStock ? (
               <button
                 onClick={(e) => { 
@@ -140,13 +135,13 @@ export function ProductCard({ product }: ProductCardProps) {
                   }
                   addItem(product); 
                 }}
-                className="w-full h-12 bg-primary text-black font-black uppercase tracking-widest text-xs border border-primary hover:bg-white hover:border-white transition-all flex items-center justify-center gap-3"
+                className="w-full h-11 bg-[#f26496] text-white font-bold rounded-xl border border-transparent hover:shadow-[0_4px_15px_rgba(242,100,150,0.4)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2"
               >
-                <ShoppingCart className="w-4 h-4" /> Establish Link
+                <ShoppingCart className="w-4 h-4" /> Add to Cart
               </button>
             ) : (
-              <Button disabled variant="outline" className="w-full h-12 bg-zinc-900 text-muted-foreground border-white/5 rounded-none uppercase tracking-widest text-xs">
-                Protocol Offline
+              <Button disabled variant="outline" className="w-full h-11 bg-gray-50 text-gray-400 border border-gray-200 rounded-xl font-bold">
+                Out of Stock
               </Button>
             )}
           </div>

@@ -7,7 +7,7 @@ import React from 'react';
  * ⚡ CyberButton Component
  * Features a sharp industrial design with neo-glow hover states.
  */
-export const CyberButton = ({ children, onClick, active = false }) => (
+export const CyberButton = ({ children, onClick, active = false }: { children: React.ReactNode; onClick?: () => void; active?: boolean }) => (
   <button 
     onClick={onClick}
     style={{
@@ -30,7 +30,7 @@ export const CyberButton = ({ children, onClick, active = false }) => (
  * 🔍 CyberInput Component
  * Minimalistic industrial text field with sharp edges.
  */
-export const CyberInput = ({ placeholder, type = "text" }) => (
+export const CyberInput = ({ placeholder, type = "text" }: { placeholder?: string; type?: string }) => (
   <input 
     type={type}
     placeholder={placeholder}
@@ -51,7 +51,7 @@ export const CyberInput = ({ placeholder, type = "text" }) => (
  * 🕋 CyberCard Component
  * Brutalist container for industrial information display.
  */
-export const CyberCard = ({ title, children }) => (
+export const CyberCard = ({ title, children }: { title: string; children: React.ReactNode }) => (
   <div style={{
     backgroundColor: 'hsl(0, 0%, 2%)',
     border: '1px solid hsl(0, 0%, 10%)',
