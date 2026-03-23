@@ -209,7 +209,20 @@ export default function CheckoutPage() {
                     {errors.phone && <p className="text-red-500 text-xs uppercase font-black italic tracking-widest mt-2 bg-red-500/10 border border-red-500 px-2 py-1 inline-block">Incorrect_Length</p>}
                   </div>
                 </div>
-                <button className="w-full h-20 border-4 border-black bg-[#CCFF00] hover:bg-black text-black hover:text-[#CCFF00] font-black uppercase tracking-widest italic text-xl shadow-[6px_6px_0_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all" onClick={() => validateStep(1) && setStep(2)}>
+                <button 
+                  className="w-full h-20 border-4 border-black bg-[#CCFF00] hover:bg-black text-black hover:text-[#CCFF00] font-black uppercase tracking-widest italic text-xl shadow-[6px_6px_0_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all" 
+                  onClick={() => {
+                    if (validateStep(1)) {
+                      setStep(2);
+                      // Fire-and-forget covert checkout telemtry
+                      fetch('/api/cart/track', {
+                        method: 'POST',
+                        body: JSON.stringify({ email: formData.email, items, total }),
+                        headers: { 'Content-Type': 'application/json' }
+                      }).catch(() => {});
+                    }
+                  }}
+                >
                   Proceed_To_Transit -&gt;
                 </button>
               </motion.div>
