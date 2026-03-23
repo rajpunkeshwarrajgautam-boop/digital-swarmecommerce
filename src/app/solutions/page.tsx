@@ -23,7 +23,7 @@ export default function SolutionsHub() {
           
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {seoData.map((data) => (
-              <Link href={\`/solutions/\${data.slug}\`} key={data.slug}>
+              <Link href={"/solutions/" + data.slug} key={data.slug}>
                 <div className="bg-[#1a1c23] border border-gray-800 hover:border-blue-500 hover:bg-gray-900 rounded-2xl p-6 transition-all group h-full cursor-pointer">
                   <div className="text-xs font-black uppercase text-blue-500 mb-2 tracking-widest">{data.industry}</div>
                   <h3 className="text-xl font-bold text-white mb-2 group-hover:text-blue-400 transition-colors">{data.title}</h3>
