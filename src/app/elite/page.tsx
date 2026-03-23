@@ -34,7 +34,7 @@ export default function EliteTierPage() {
             className="w-24 h-24 mx-auto mb-8 relative flex items-center justify-center"
           >
             <div className="absolute inset-0 bg-cyan-500/20 blur-2xl rounded-full animate-pulse" />
-            <Hexagon className="w-full h-full text-cyan-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.8)] stroke-[1]" />
+            <Hexagon className="w-full h-full text-cyan-500 drop-shadow-[0_0_15px_rgba(6,182,212,0.8)] stroke-1" />
             <ShieldCheck className="w-10 h-10 text-white absolute absolute-center drop-shadow-lg" />
           </motion.div>
 
@@ -53,7 +53,7 @@ export default function EliteTierPage() {
             transition={{ delay: 0.3 }}
             className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase mb-6"
           >
-            Swarm <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-600">Elite</span>
+            Swarm <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-600">Elite</span>
           </motion.h1>
 
           <motion.p 
@@ -107,10 +107,10 @@ export default function EliteTierPage() {
             className="relative"
           >
             <div className="absolute inset-0 bg-cyan-500/10 blur-[50px] rounded-full" />
-            <div className="relative p-1 bg-gradient-to-b from-cyan-500/50 to-transparent rounded-3xl overflow-hidden">
+            <div className="relative p-1 bg-linear-to-b from-cyan-500/50 to-transparent rounded-3xl overflow-hidden">
               <div className="bg-[#050a10] rounded-[22px] p-8 md:p-12 relative overflow-hidden backdrop-blur-xl">
                 {/* Visual grid in card */}
-                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:20px_20px] pointer-events-none" />
+                <div className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-size-[20px_20px] pointer-events-none" />
 
                 <div className="relative z-10 text-center">
                   <div className="inline-flex items-center gap-2 bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-widest mb-8">

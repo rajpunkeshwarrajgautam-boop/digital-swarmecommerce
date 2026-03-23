@@ -133,7 +133,7 @@ export default function RootLayout({
     >
       <html lang="en" className="dark">
         <body
-          className={\`\${geistSans.variable} \${geistMono.variable} \${spaceGrotesk.variable} \${inter.variable} antialiased bg-[#0a0c10] text-gray-200 overflow-x-hidden selection:bg-cyan-500 selection:text-black relative z-0\`}
+          className={`${geistSans.variable} ${geistMono.variable} ${spaceGrotesk.variable} ${inter.variable} antialiased bg-[#0a0c10] text-gray-200 overflow-x-hidden selection:bg-cyan-500 selection:text-black relative z-0`}
         >
           <div className="fixed top-[-20%] right-[-10%] w-[60vw] h-[60vw] bg-[radial-gradient(circle_at_center,rgba(6,182,212,0.08)_0%,transparent_60%)] rounded-full blur-[120px] z-[-1] pointer-events-none" />
           <div className="fixed bottom-[-20%] left-[-10%] w-[50vw] h-[50vw] bg-[radial-gradient(circle_at_center,rgba(59,130,246,0.08)_0%,transparent_60%)] rounded-full blur-[120px] z-[-1] pointer-events-none" />

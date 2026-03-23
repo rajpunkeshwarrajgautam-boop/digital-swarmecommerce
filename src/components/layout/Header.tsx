@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, X, Heart } from "lucide-react";
+import { ShoppingCart, Menu, X, Heart, ShieldCheck } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
@@ -54,6 +54,9 @@ export function Header() {
             </Link>
              
             <nav className="hidden lg:flex items-center gap-8">
+              <Link href="/elite" className="text-sm font-bold text-cyan-500 hover:text-cyan-400 uppercase tracking-widest transition-colors flex items-center gap-1">
+                <ShieldCheck className="w-4 h-4" /> Elite Tier
+              </Link>
               <Link href="/products" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">Store</Link>
               <Link href="/bundle-builder" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">Bundles</Link>
               <Link href="/freebies" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">Freebies</Link>
@@ -135,6 +138,9 @@ export function Header() {
                 <Link href="/products?category=AI+Agents" className="text-lg font-semibold text-gray-600 hover:text-[#f26496] transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
                   AI Agents
                   <span className="text-[9px] bg-pink-100 text-[#f26496] px-2 py-0.5 rounded-full font-bold">HOT</span>
+                </Link>
+                <Link href="/elite" className="text-lg font-bold text-cyan-600 hover:text-cyan-500 transition-all flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
+                  <ShieldCheck className="w-5 h-5" /> Swarm Elite
                 </Link>
                 <Link href="/bundle-builder" className="text-lg font-semibold text-gray-600 hover:text-gray-900 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
                   Bundle Builder
