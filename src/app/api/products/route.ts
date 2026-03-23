@@ -17,6 +17,7 @@ function normalizeProduct(p: any) {
     // Ensure the slug-based id is preserved if the DB record has a UUID
     // Frontend routing uses slugs, not UUIDs
     id: staticMatch?.id ?? p.id,
+    image: staticMatch?.image ?? p.image,
     inStock: p.inStock ?? p.in_stock ?? true,
     rating: p.rating ?? 5.0,
     features: p.features ?? staticMatch?.features ?? [],
