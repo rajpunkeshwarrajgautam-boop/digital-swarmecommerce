@@ -35,6 +35,7 @@ export function Footer() {
               <li><Link href="/products?category=Web+Development" className="hover:text-black hover:bg-[#CCFF00] border-2 border-transparent hover:border-black px-2 py-1 -ml-2 transition-all">Web_Infrastructure</Link></li>
               <li><Link href="/products?category=AI+Agents" className="hover:text-black hover:bg-[#CCFF00] border-2 border-transparent hover:border-black px-2 py-1 -ml-2 transition-all">Neural_Networks</Link></li>
               <li><Link href="/bundle-builder" className="hover:text-black hover:bg-[#CCFF00] border-2 border-transparent hover:border-black px-2 py-1 -ml-2 transition-all">Logical_Bundling</Link></li>
+              <li><Link href="/tools/prompt-generator" className="text-blue-600 hover:text-white hover:bg-blue-600 border-2 border-transparent hover:border-blue-600 px-2 py-1 -ml-2 transition-all">Free_Utilities</Link></li>
             </ul>
           </div>
 
