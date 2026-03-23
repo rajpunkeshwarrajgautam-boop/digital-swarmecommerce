@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { XCircle, CheckCircle2 } from "lucide-react";
 
 const pains = [
   {
@@ -19,44 +20,41 @@ const pains = [
 
 export function ProblemSolution() {
   return (
-    <section className="py-40 bg-background border-t border-white/5 relative overflow-hidden">
-      <div className="absolute inset-0 bg-swarm-pattern opacity-5" />
-      <div className="container mx-auto px-6 relative z-10">
-        <div className="text-left mb-24 max-w-4xl">
-          <h2 className="text-5xl md:text-8xl font-black italic uppercase leading-[0.8] tracking-tighter mb-8">
-            <span className="ono-text-split"><span>Operational</span></span><br/>
-            <span className="text-primary ono-text-split"><span>Efficiency</span></span>
+    <section className="py-32 bg-white relative overflow-hidden text-center md:text-left">
+      <div className="container mx-auto px-6 relative z-10 w-full max-w-7xl">
+        <div className="text-center mb-20">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight mb-4">
+            Stop Re-inventing the Wheel
           </h2>
-          <p className="text-white/50 text-xl font-bold italic uppercase tracking-tighter max-w-xl silk-reveal-mask">
-            Legacy development pipelines are slow. We distribute optimized architectural solutions for immediate system integration.
+          <p className="text-gray-500 text-xl font-medium max-w-2xl mx-auto">
+            Focus on your business logic, not building boilerplate infrastructure from scratch.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border-t border-l border-white/10">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {pains.map((item, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.2, duration: 0.8 }}
-              className="border-r border-b border-white/10 bg-zinc-950/20 backdrop-blur-sm group hover:bg-primary/5 transition-colors"
+              transition={{ delay: i * 0.1, duration: 0.5 }}
+              className="bg-gray-50 rounded-3xl p-6 sm:p-8 flex flex-col gap-6 border border-gray-100"
             >
               {/* Problem */}
-              <div className="p-10 border-b border-white/5">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-2 h-2 bg-red-500 rounded-none shadow-[0_0_10px_#ef4444]" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-red-500">Anomaly Detected</span>
-                </div>
-                <p className="text-lg font-bold uppercase italic tracking-tighter text-white/40 leading-tight">{item.problem}</p>
+              <div className="flex-1 bg-white p-6 rounded-2xl shadow-sm border border-red-50 relative mt-4">
+                 <div className="absolute -top-4 -right-2 sm:-right-4 bg-red-100 text-red-600 rounded-full p-1.5 shadow-sm">
+                    <XCircle className="w-5 h-5" />
+                 </div>
+                <p className="text-gray-600 font-medium pt-2">{item.problem}</p>
               </div>
+              
               {/* Solution */}
-              <div className="p-10">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-2 h-2 bg-primary rounded-none shadow-[0_0_10px_#CCFF00]" />
-                  <span className="text-[10px] font-black uppercase tracking-widest text-primary">Protocol Applied</span>
-                </div>
-                <p className="text-xl font-black uppercase italic tracking-tighter leading-tight">{item.solution}</p>
+              <div className="flex-1 bg-white p-6 rounded-2xl shadow-sm border border-green-50 relative mb-4">
+                 <div className="absolute -bottom-4 -right-2 sm:-right-4 bg-green-100 text-green-600 rounded-full p-1.5 shadow-sm">
+                    <CheckCircle2 className="w-5 h-5" />
+                 </div>
+                <p className="text-gray-900 font-bold pb-2">{item.solution}</p>
               </div>
             </motion.div>
           ))}

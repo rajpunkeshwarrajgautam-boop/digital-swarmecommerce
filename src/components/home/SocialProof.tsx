@@ -10,7 +10,7 @@ const testimonials = [
     title: "Indie Founder, SaaS startup",
     rating: 5,
     initials: "AM",
-    color: "hsl(250,84%,60%)",
+    color: "#60a5fa", // pastel blue
   },
   {
     quote: "I downloaded the AI agent boilerplate and had my first customer within 48 hours. The code quality is production-grade.",
@@ -18,7 +18,7 @@ const testimonials = [
     title: "Freelance Developer",
     rating: 5,
     initials: "PS",
-    color: "hsl(160,60%,45%)",
+    color: "#34d399", // pastel green
   },
   {
     quote: "Been going through 4 UI kits and this one is by far the cleanest. Dark mode just works, no fixes needed.",
@@ -26,7 +26,7 @@ const testimonials = [
     title: "Senior Frontend Engineer",
     rating: 5,
     initials: "RG",
-    color: "hsl(30,90%,55%)",
+    color: "#f472b6", // pastel pink
   },
 ];
 
@@ -38,23 +38,20 @@ const stats = [
 ];
 
 const brands = [
-  "ALPHA_TECH", "SWARM_LOGISTICS", "NEON_CLOTHING", "CYBER_RETAIL", "NEXUS_FINANCE"
+  "AlphaTech", "SwarmLogistics", "NeonClothing", "CyberRetail", "NexusFinance"
 ];
 
 export function SocialProof() {
   return (
-    <section className="py-32 bg-secondary/5 border-y border-white/5 relative overflow-hidden">
-      {/* Background decoration */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-primary/5 blur-[120px] rounded-full -translate-y-1/2 translate-x-1/2" />
-      
-      <div className="container mx-auto px-6 relative z-10">
+    <section className="py-24 bg-gray-50 border-y border-gray-100 relative overflow-hidden">
+      <div className="container mx-auto px-6 w-full max-w-7xl relative z-10">
         
         {/* Trusted By Strip */}
-        <div className="mb-24 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.5em] text-white/20 mb-10 italic">Trusted_By_Elite_Growth_Pods</p>
-            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 grayscale hover:grayscale-0 transition-all duration-700">
+        <div className="mb-20 text-center">
+            <p className="text-sm font-bold uppercase tracking-widest text-gray-400 mb-8">Trusted by visionary teams</p>
+            <div className="flex flex-wrap justify-center items-center gap-10 md:gap-20 opacity-50 grayscale hover:grayscale-0 transition-all duration-500">
                 {brands.map((brand, i) => (
-                    <span key={i} className="text-xl md:text-2xl font-black italic tracking-tighter uppercase text-white hover:text-primary transition-colors cursor-default">
+                    <span key={i} className="text-xl md:text-3xl font-extrabold tracking-tight text-gray-800 hover:text-blue-600 transition-colors cursor-default">
                         {brand}
                     </span>
                 ))}
@@ -62,62 +59,62 @@ export function SocialProof() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12 mb-32 max-w-6xl mx-auto border-y border-white/5 py-12">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-24 max-w-5xl mx-auto bg-white rounded-3xl p-8 border border-gray-100 shadow-sm">
           {stats.map((stat, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 10 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              className="text-center md:text-left border-l border-primary/20 pl-8"
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+              className="text-center"
             >
-              <p className="text-4xl md:text-6xl font-black italic tracking-tighter text-primary leading-none mb-2">{stat.value}</p>
-              <p className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 italic">{stat.label}</p>
+              <p className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-2">{stat.value}</p>
+              <p className="text-xs font-bold uppercase tracking-widest text-gray-500">{stat.label}</p>
             </motion.div>
           ))}
         </div>
 
         {/* Section title */}
-        <div className="mb-20">
-          <h2 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter text-white leading-none">
-            Success_Logs
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 tracking-tight">
+            Customer <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Stories</span>
           </h2>
-          <p className="text-primary font-black uppercase tracking-[0.4em] text-[10px] mt-4 italic">Audited_Partner_Performance</p>
+          <p className="text-gray-500 font-medium mt-4 text-lg">See why thousands of developers choose our architecture</p>
         </div>
 
         {/* Testimonials */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           {testimonials.map((t, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
+              initial={{ opacity: 0, scale: 0.98 }}
+              whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.5 }}
-              className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 hover:border-primary/40 transition-colors"
+              transition={{ delay: i * 0.1, duration: 0.4 }}
+              className="bg-white border border-gray-100 rounded-3xl p-8 flex flex-col gap-5 shadow-sm hover:shadow-md transition-shadow"
             >
               {/* Stars */}
-              <div className="flex gap-0.5">
+              <div className="flex gap-1">
                 {Array.from({ length: t.rating }).map((_, s) => (
-                  <Star key={s} className="w-4 h-4 fill-yellow-500 text-yellow-500" />
+                  <Star key={s} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                 ))}
               </div>
               {/* Quote */}
-              <p className="text-sm text-muted-foreground leading-relaxed grow">
-                &quot;{t.quote}&quot;
+              <p className="text-base text-gray-600 font-medium leading-relaxed grow">
+                "{t.quote}"
               </p>
               {/* Author */}
-              <div className="flex items-center gap-3 mt-2 border-t border-border pt-4">
+              <div className="flex items-center gap-4 mt-2">
                 <div
-                  className="w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0"
+                  className="w-12 h-12 rounded-full flex items-center justify-center text-white font-bold shadow-inner"
                   style={{ background: t.color }}
                 >
                   {t.initials}
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">{t.name}</p>
-                  <p className="text-xs text-muted-foreground">{t.title}</p>
+                  <p className="font-bold text-gray-900">{t.name}</p>
+                  <p className="text-sm text-gray-500 font-medium">{t.title}</p>
                 </div>
               </div>
             </motion.div>
