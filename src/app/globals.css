@@ -3,7 +3,7 @@
 @theme inline {
   --background: #fafafa;
   --foreground: #111827;
-  --primary: #f26496;    /* Vibrant pink CTA from Draftly */
+  --primary: #4f46e5;    /* Vibrant Indigo to match gradient */
   --primary-foreground: #ffffff;
   --secondary: #ffffff;
   --secondary-foreground: #4b5563;
@@ -52,7 +52,11 @@ h1,h2,h3,h4,h5,h6 {
   font-family: var(--font-inter), sans-serif;
   font-weight: 800;
   letter-spacing: -0.03em;
-  color: var(--foreground);
+  background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  color: transparent !important;
 }
 
 /* Custom Scrollbar - Soft UI */
@@ -108,11 +112,11 @@ main > section {
 }
 
 .clay-btn {
-  background: var(--primary);
+  background: linear-gradient(135deg, #2563eb 0%, #6366f1 100%);
   color: #fff;
   border-radius: 100px;
   font-weight: 700;
-  box-shadow: 0 4px 15px rgba(242, 100, 150, 0.4);
+  box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
   transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
   display: inline-flex;
   align-items: center;
@@ -122,7 +126,7 @@ main > section {
 
 .clay-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(242, 100, 150, 0.5);
+  box-shadow: 0 8px 25px rgba(79, 70, 229, 0.6);
   filter: brightness(1.1);
 }
 
