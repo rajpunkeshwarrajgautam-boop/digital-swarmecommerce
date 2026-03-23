@@ -79,6 +79,26 @@ export default function CheckoutPage() {
   };
 
   const handleConfirmOrder = async () => {
+    // 0$ Trojan Horse Checkout Bypass (AOV Lead Gen)
+    if (total === 0) {
+      setIsProcessing(true);
+      // Log lead to telemetry before dispatch
+      await fetch('/api/cart/track', {
+        method: 'POST',
+        body: JSON.stringify({ email: formData.email, items, total }),
+        headers: { 'Content-Type': 'application/json' }
+      }).catch(() => {});
+      
+      const pseudoOrderId = `FREE-${Math.random().toString(36).substring(7).toUpperCase()}`;
+      localStorage.setItem('last_purchase', JSON.stringify(items));
+      localStorage.setItem('pending_order_id', pseudoOrderId);
+      clearCart();
+      
+      // Route immediately to success
+      window.location.href = `/success?order_id=${pseudoOrderId}&status=free`;
+      return;
+    }
+
     if (!cashfree) {
       alert("Payment system initializing. Please wait.");
       return;

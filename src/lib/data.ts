@@ -2,6 +2,34 @@ import { Product } from "./types";
 
 export const products: Product[] = [
   {
+    id: "swarm-elite-subscription",
+    name: "Swarm ELITE (Monthly Subscription)",
+    description: "Our hyper-exclusive monthly network. Gain instant access to a constantly updating library of premium AI agents, Private Discord routing, and 1-on-1 Slack architectural support.",
+    price: 3999, // ₹3,999 (~$49/mo)
+    category: "Subscriptions",
+    image: "/images/products/elite-subscription.png",
+    inStock: true,
+    rating: 5.0,
+    features: ['Weekly New AI Prompts & Modules', 'Private Elite Discord', '1-on-1 Slack Support', 'Priority Feature Requests', 'Zero Lock-in. Cancel Anytime.'],
+    specs: { Format: 'Access Matrix', Platform: 'Discord/Slack', UpdateFrequency: 'Weekly', Cost: '₹3,999/mo' },
+    downloadUrl: "https://discord.gg/digital-swarm-elite",
+    installGuide: "### Elite Onboarding\n1. **Checkout**: Secure your monthly clearance.\n2. **Uplink**: Check your email for the Private Discord link.\n3. **Connect**: Link your account to the matrix server for roles."
+  },
+  {
+    id: "free-ai-starter-kit",
+    name: "Digital Swarm: Free AI Starter Kit",
+    description: "Start here. A 100% free, production-ready AI text summarizer wrapper. Built to prove our matrix architecture. Capture leads, summarize docs, and see how our premium agents operate behind the scenes.",
+    price: 0,
+    category: "AI Agents",
+    image: "/images/products/free-starter-kit.png",
+    inStock: true,
+    rating: 4.9,
+    features: ['Fully Functional Text AI', 'Next.js 15 Baseline', 'Gemini API Connected', 'Dark Mode Pre-Configured', 'Instant $0 Download'],
+    specs: { Format: 'ZIP Source Code', Framework: 'React', Target: 'Beginners', Cost: 'FREE FOREVER' },
+    downloadUrl: "/downloads/free-starter-agent.zip",
+    installGuide: "### Free Deployment Protocol\n1. **Extract**: Unzip the free starter kit.\n2. **Install**: Run `npm install`.\n3. **Uplink**: Add your free Gemini API key in `.env.local`.\n4. **Launch**: `npm run dev` to witness the matrix."
+  },
+  {
     id: "enterprise-custom-build",
     name: "Enterprise Custom Neural Network Build",
     description: "For 7-figure organizations. We fly our engineers to your slack channel and physically construct a multi-agent secure internal framework tailored exclusively to your proprietary data.",

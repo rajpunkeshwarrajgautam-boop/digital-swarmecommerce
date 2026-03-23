@@ -25,6 +25,13 @@ function SuccessContent() {
   useEffect(() => {
     async function verifyPayment() {
       if (orderId) {
+        // Bypass Cashfree Ping for $0 Freemium Trojan Products
+        if (orderId.startsWith("FREE-") || searchParams.get("status") === "free") {
+            setPaymentStatus('paid');
+            setIsVerifying(false);
+            return;
+        }
+
         try {
           const res = await fetch('/api/cashfree/verify', {
             method: 'POST',
@@ -46,7 +53,7 @@ function SuccessContent() {
       }
     }
     verifyPayment();
-  }, [orderId]);
+  }, [orderId, searchParams]);
 
   // Track Purchase Event on success
   useEffect(() => {
