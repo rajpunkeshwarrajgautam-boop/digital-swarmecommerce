@@ -98,7 +98,7 @@ EXECUTION INITIATED.`;
       {/* Output Section */}
       {generatedPrompt && (
         <div className="relative">
-          <div className={\`bg-gray-900 border border-gray-800 rounded-3xl p-8 font-mono text-sm leading-relaxed overflow-hidden transition-all duration-700 \${!isUnlocked ? 'h-[300px]' : 'h-auto'}\`}>
+          <div className={"bg-gray-900 border border-gray-800 rounded-3xl p-8 font-mono text-sm leading-relaxed overflow-hidden transition-all duration-700 " + (!isUnlocked ? 'h-[300px]' : 'h-auto')}>
             {/* Syntax Highlighted mockup */}
             <div className="flex items-center gap-2 mb-6 border-b border-gray-800 pb-4">
               <div className="w-3 h-3 rounded-full bg-red-500" />
@@ -107,7 +107,7 @@ EXECUTION INITIATED.`;
               <span className="ml-4 text-gray-500 text-xs tracking-widest">system_protocol.sh</span>
             </div>
             
-            <pre className={\`text-gray-300 whitespace-pre-wrap \${!isUnlocked ? 'blur-[4px] opacity-40 select-none' : ''}\`}>
+            <pre className={"text-gray-300 whitespace-pre-wrap " + (!isUnlocked ? 'blur-sm opacity-40 select-none' : '')}>
               {generatedPrompt}
             </pre>
           </div>
