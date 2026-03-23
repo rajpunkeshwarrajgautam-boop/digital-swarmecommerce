@@ -2,6 +2,34 @@ import { Product } from "./types";
 
 export const products: Product[] = [
   {
+    id: "enterprise-custom-build",
+    name: "Enterprise Custom Neural Network Build",
+    description: "For 7-figure organizations. We fly our engineers to your slack channel and physically construct a multi-agent secure internal framework tailored exclusively to your proprietary data.",
+    price: 499999,
+    category: "Agency Services",
+    image: "/images/products/enterprise-build.png",
+    inStock: true,
+    rating: 5.0,
+    features: ['Dedicated Engineering Pod', 'On-Premise or Private Cloud Deploy', 'Custom RAG Architectures', 'Slack Connect Support', 'Full Proprietary IP Transfer'],
+    specs: { Type: 'Custom Service', Duration: '4-6 Weeks', Target: 'Enterprise', Support: '24/7 Slack', Pricing: 'Starts at ₹5L' },
+    downloadUrl: "enterprise_contract.pdf",
+    installGuide: "### Enterprise Protocol\n1. **Checkout**: Secure your build slot.\n2. **Uplink**: Our Lead Engineer contacts you within 2 hours.\n3. **Architect**: We begin constructing the internal matrix."
+  },
+  {
+    id: "master-react-boilerplate",
+    name: "Master React SaaS Boilerplate + Auth",
+    description: "The exact Next.js 15 template used to build Digital Swarm. Pre-configured with Clerk Auth, Prisma, Tailwind, and Supabase.",
+    price: 2999,
+    category: "Web Development",
+    image: "/images/products/react-template.png",
+    inStock: true,
+    rating: 5.0,
+    features: ['Next.js 15 App Router', 'Clerk Authentication', 'Stripe / Cashfree Ready', 'Supabase Integrations', 'Dark Mode Cyber UI'],
+    specs: { Format: 'ZIP', License: 'Unlimited Projects', Framework: 'React / Next.js', Support: 'Discord' },
+    downloadUrl: "/downloads/master-react-template.zip",
+    installGuide: "### Initialization\n1. **Unzip**: Extract the matrix.\n2. **Install**: Run `npm install`.\n3. **Deploy**: `npm run dev` to launch the chassis."
+  },
+  {
     id: "sentinel-research",
     name: "Sentinel Research Infiltrator (Universal Dashboard)",
     description: "The ultimate 8-in-1 business command center. Includes specialized AI agents for Sales, Finance, Legal, and Market Trends. Features a cinematic dashboard that anyone can use—no coding required. Turn your computer into an AI-powered office instantly.",

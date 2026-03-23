@@ -8,7 +8,7 @@ import Link from "next/link";
 import Image from "next/image";
 
 export function CartDrawer() {
-  const { items, removeItem, updateQuantity, isOpen, toggleCart, total } = useCartStore();
+  const { items, addItem, removeItem, updateQuantity, isOpen, toggleCart, total } = useCartStore();
   const [isClient, setIsClient] = useState(false);
 
   const drawerVariants: Variants = {
@@ -123,6 +123,34 @@ export function CartDrawer() {
                 ))
               )}
             </div>
+
+            {/* 1-Click Upsell Modal (AOV Maximization) */}
+            {items.length > 0 && !items.some(i => i.id === "master-react-boilerplate") && (
+              <div className="relative z-10 p-4 border-t border-cyan-500/20 bg-cyan-900/10 shadow-[inset_0_5px_15px_rgba(6,182,212,0.05)]">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 bg-[#0a0c10] border border-cyan-500/30 rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(6,182,212,0.2)]">
+                    <span className="text-xl animate-pulse">⚛️</span>
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-bold text-white leading-none mb-1">Add Master React Boilerplate</h4>
+                    <p className="text-xs text-gray-400">Save 50% when you add it now.</p>
+                  </div>
+                  <button 
+                    onClick={() => {
+                        import("@/lib/data").then(module => {
+                            const upsell = module.products.find(p => p.id === "master-react-boilerplate");
+                            if (upsell) {
+                                addItem(upsell);
+                            }
+                        });
+                    }}
+                    className="shrink-0 bg-transparent border border-cyan-500/50 text-cyan-400 text-xs font-bold px-3 py-1.5 rounded-full hover:bg-cyan-500/20 hover:text-white transition-all shadow-[0_0_10px_rgba(6,182,212,0.1)] hover:shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+                  >
+                    + ₹2,999
+                  </button>
+                </div>
+              </div>
+            )}
 
             {/* Footer */}
             {items.length > 0 && (
