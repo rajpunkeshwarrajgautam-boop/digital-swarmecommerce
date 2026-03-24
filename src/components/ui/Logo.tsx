@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 /**
  * Animated Logo: "The Digital Core"
  * Replaced with custom Lottie animation from user.
+ * Standardized to 40px height / 120px width as per diagnostic report.
  */
 export function Logo({ className = "" }: { className?: string }) {
   const [mounted, setMounted] = useState(false);
@@ -16,9 +17,10 @@ export function Logo({ className = "" }: { className?: string }) {
   }, []);
   
   return (
-    <div className={cn("flex items-center gap-3 select-none group", className)}>
+    <div className={cn("flex items-center gap-3 select-none group h-[40px] w-auto lg:w-[120px]", className)}>
+      <span className="sr-only">Digital Swarm - Code Templates & UI Kits</span>
       {/* Symbol Container: Replaced with Lottie Animation */}
-      <div className="relative w-12 h-12 flex items-center justify-center">
+      <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
         {mounted && (
           /* @ts-expect-error - lottie-player is a web component */
           <lottie-player
@@ -33,8 +35,8 @@ export function Logo({ className = "" }: { className?: string }) {
       </div>
 
       {/* Text Branding - Hidden on mobile */}
-      <div className="hidden sm:flex items-center">
-        <span className="text-2xl font-black italic tracking-tighter leading-none text-white transition-all duration-300 uppercase flex items-center gap-2">
+      <div className="hidden lg:flex items-center">
+        <span className="text-xl font-black italic tracking-tighter leading-none text-white transition-all duration-300 uppercase flex items-center gap-1.5">
             DIGITAL
             <span className="text-primary font-black not-italic">/</span>
             SWARM
@@ -43,3 +45,4 @@ export function Logo({ className = "" }: { className?: string }) {
     </div>
   );
 }
+

@@ -1,16 +1,17 @@
 "use client";
 
 import Link from "next/link";
-import { ShoppingCart, Menu, X, Heart, ShieldCheck } from "lucide-react";
+import { ShoppingCart, Menu, X, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
-import { usePathname } from "next/navigation";
 import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
 import { Logo } from "@/components/ui/Logo";
+import { NavbarMenu } from "./NavbarMenu";
+import { SearchBar } from "./SearchBar";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,69 +35,32 @@ export function Header() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 py-4 transition-all duration-300 ${scrolled ? 'glass py-3' : 'bg-transparent'}`}>
-        <div className="container mx-auto px-6 flex items-center justify-between gap-4">
-          <div className="flex items-center lg:hidden">
-             <Button 
-                variant="ghost" 
-                size="icon" 
-                className="rounded-full h-10 w-10 hover:bg-black/5 text-gray-700 transition-all duration-300"
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-             >
-               {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-             </Button>
-          </div>
-  
-          {/* Center: Logo & Nav */}
-          <div className="flex items-center gap-10">
-            <Link href="/" className="shrink-0 hover:opacity-80 transition-opacity">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-xl border-b border-black/5 py-2' : 'bg-transparent py-4'}`}>
+        <div className="container mx-auto px-6 h-12 flex items-center justify-between gap-4">
+          
+          {/* Left: Logo & Nav */}
+          <div className="flex items-center gap-8 h-full">
+            <Link href="/" className="shrink-0 hover:opacity-80 transition-opacity flex items-center">
               <Logo />
             </Link>
              
-            <nav className="hidden lg:flex items-center gap-8">
-              <Link href="/elite" className="text-sm font-bold text-cyan-500 hover:text-cyan-400 uppercase tracking-widest transition-colors flex items-center gap-1">
-                <ShieldCheck className="w-4 h-4" /> Elite Tier
-              </Link>
-              <Link href="/products" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">Store</Link>
-              <Link href="/bundle-builder" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">Bundles</Link>
-              <Link href="/freebies" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">Freebies</Link>
-              <Link href="/about" className="text-sm font-semibold text-gray-600 hover:text-gray-900 transition-colors">About</Link>
-            </nav>
+            <NavbarMenu />
           </div>
   
-          {/* Right: Actions & Auth */}
-          <div className="flex items-center gap-3">
-            {!isLoaded ? (
-              <div className="w-10 h-10 bg-gray-200 rounded-full animate-pulse" />
-            ) : !user ? (
-               <SignInButton mode="modal">
-                <Button className="hidden sm:flex font-bold rounded-full px-6 bg-gray-900 text-white hover:bg-gray-800 transition-all shadow-sm">
-                    Sign In
-                </Button>
-              </SignInButton>
-            ) : (
-              <div className="flex items-center gap-3">
-                <Link href="/dashboard" className="hidden sm:block cursor-pointer">
-                  <Button variant="outline" className="font-bold rounded-full px-6 border-gray-200 text-gray-700 hover:bg-gray-50 transition-all">
-                    Portal
-                  </Button>
-                </Link>
-                <div className="flex items-center justify-center p-[3px] rounded-full border border-gray-200 bg-white">
-                    <UserButton />
-                </div>
-              </div>
-            )}
-             
-            <div className="flex items-center gap-2">
+          {/* Right: Actions, Search & Auth */}
+          <div className="flex items-center gap-4 h-full">
+            <SearchBar />
+
+            <div className="flex items-center gap-1">
               <Link href="/wishlist">
                 <Button 
                     variant="ghost" 
                     size="icon" 
-                    className="relative rounded-full h-10 w-10 text-gray-600 hover:bg-red-50 hover:text-red-500 transition-all group"
+                    className="relative rounded-full h-10 w-10 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all group"
                 >
                   <Heart className="w-5 h-5" />
                   {mounted && totalWishlist > 0 && (
-                    <span className="absolute 0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-white transform translate-x-1 -translate-y-1">
+                    <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-white">
                       {totalWishlist}
                     </span>
                   )}
@@ -106,20 +70,55 @@ export function Header() {
               <Button 
                   variant="ghost" 
                   size="icon" 
-                  className="relative rounded-full h-10 w-10 text-gray-600 hover:bg-blue-50 hover:text-blue-600 transition-all group" 
+                  className="relative rounded-full h-10 w-10 text-gray-500 hover:bg-cyan-50 hover:text-cyan-600 transition-all group" 
                   onClick={toggleCart}
               >
                 <ShoppingCart className="w-5 h-5" />
                 {mounted && totalItems > 0 && (
-                  <span className="absolute 0 right-0 flex h-4 w-4 items-center justify-center rounded-full bg-blue-600 text-[9px] font-bold text-white shadow-sm ring-2 ring-white transform translate-x-1 -translate-y-1">
+                  <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-cyan-600 text-[9px] font-bold text-white shadow-sm ring-2 ring-white">
                     {totalItems}
                   </span>
                 )}
+                <span className="sr-only">Cart ({totalItems})</span>
+              </Button>
+            </div>
+
+            <div className="h-6 w-px bg-black/5" />
+
+            {!isLoaded ? (
+              <div className="w-10 h-10 bg-gray-100 rounded-full animate-pulse" />
+            ) : !user ? (
+               <SignInButton mode="modal">
+                 <button className="text-sm font-bold text-gray-900 border-2 border-transparent hover:border-black rounded-full px-5 py-2 transition-all">
+                    Sign In
+                 </button>
+              </SignInButton>
+            ) : (
+              <div className="flex items-center gap-3">
+                 <Link href="/dashboard" className="hidden xl:block">
+                   <span className="text-xs font-black uppercase text-gray-400 hover:text-gray-900 transition-colors">Portal</span>
+                 </Link>
+                 <div className="flex items-center justify-center p-[2px] rounded-full border border-black/5 bg-white shadow-sm">
+                    <UserButton afterSignOutUrl="/" />
+                 </div>
+              </div>
+            )}
+
+            {/* Mobile Toggle */}
+            <div className="lg:hidden flex items-center">
+              <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="rounded-full h-10 w-10 hover:bg-black/5 text-gray-700"
+                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+              >
+                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
               </Button>
             </div>
           </div>
         </div>
 
+        {/* Mobile Menu Overlay */}
         <AnimatePresence>
           {isMenuOpen && (
               <motion.div
@@ -127,30 +126,16 @@ export function Header() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: -10 }}
               transition={{ duration: 0.2 }}
-              className="absolute top-20 left-4 bg-white/90 glass border border-gray-200 p-6 rounded-3xl shadow-xl pointer-events-auto"
+              className="absolute top-20 right-6 left-6 bg-white glass border border-black/5 p-8 rounded-[2.5rem] shadow-2xl z-60"
             >
-              <nav className="flex flex-col gap-5 min-w-[220px]">
-                <Link href="/products" className="text-lg font-semibold text-gray-600 hover:text-gray-900 transition-all" onClick={() => setIsMenuOpen(false)}>All Products</Link>
-                <Link href="/wishlist" className="text-lg font-semibold text-gray-600 hover:text-red-500 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
-                  My Wishlist
-                  {mounted && totalWishlist > 0 && <span className="bg-red-100 text-red-600 px-2 py-0.5 rounded-full text-[10px] font-bold">{totalWishlist}</span>}
-                </Link>
-                <Link href="/products?category=AI+Agents" className="text-lg font-semibold text-gray-600 hover:text-[#f26496] transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
-                  AI Agents
-                  <span className="text-[9px] bg-pink-100 text-[#f26496] px-2 py-0.5 rounded-full font-bold">HOT</span>
-                </Link>
-                <Link href="/elite" className="text-lg font-bold text-cyan-600 hover:text-cyan-500 transition-all flex items-center gap-2" onClick={() => setIsMenuOpen(false)}>
-                  <ShieldCheck className="w-5 h-5" /> Swarm Elite
-                </Link>
-                <Link href="/bundle-builder" className="text-lg font-semibold text-gray-600 hover:text-gray-900 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
-                  Bundle Builder
-                </Link>
-                <Link href="/freebies" className="text-lg font-semibold text-gray-600 hover:text-blue-600 transition-all flex items-center justify-between" onClick={() => setIsMenuOpen(false)}>
-                  Free Resources
-                </Link>
-                <Link href="/about" className="text-lg font-semibold text-gray-600 hover:text-gray-900 transition-all" onClick={() => setIsMenuOpen(false)}>About Us</Link>
+              <nav className="flex flex-col gap-6">
+                <MobileLink href="/products" label="Store" onClick={() => setIsMenuOpen(false)} />
+                <MobileLink href="/products?category=AI+Agents" label="AI Agents" onClick={() => setIsMenuOpen(false)} hot />
+                <MobileLink href="/elite" label="Elite Tier" onClick={() => setIsMenuOpen(false)} />
+                <MobileLink href="/bundle-builder" label="Bundles" onClick={() => setIsMenuOpen(false)} />
+                <MobileLink href="/about" label="About Us" onClick={() => setIsMenuOpen(false)} />
                 {user && (
-                   <Link href="/dashboard" className="mt-4 clay-btn text-center" onClick={() => setIsMenuOpen(false)}>
+                   <Link href="/dashboard" className="clay-btn text-center mt-4" onClick={() => setIsMenuOpen(false)}>
                       Access Dashboard
                    </Link>
                 )}
@@ -164,3 +149,17 @@ export function Header() {
     </>
   );
 }
+
+function MobileLink({ href, label, onClick, hot }: { href: string; label: string; onClick: () => void; hot?: boolean }) {
+  return (
+    <Link 
+      href={href} 
+      className="text-2xl font-black italic uppercase tracking-tighter text-gray-900 hover:text-cyan-500 transition-all flex items-center justify-between" 
+      onClick={onClick}
+    >
+      {label}
+      {hot && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-black animate-pulse">HOT</span>}
+    </Link>
+  );
+}
+
