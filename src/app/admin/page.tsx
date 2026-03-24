@@ -1,4 +1,4 @@
-import { Activity, CreditCard, DollarSign, Users, Target, ArrowUpRight } from "lucide-react";
+import { Activity, DollarSign, Users, Target, ArrowUpRight } from "lucide-react";
 import { createClient } from "@supabase/supabase-js";
 
 const supabase = createClient(
@@ -93,7 +93,7 @@ export default async function AdminDashboard() {
             <h3 className="font-bold uppercase tracking-widest text-sm">Recent Cart Activity</h3>
           </div>
           <div className="divide-y divide-white/5">
-            {recentCarts?.length ? recentCarts.map((cart: any, i: number) => (
+            {recentCarts?.length ? recentCarts.map((cart: { email: string; recovered: boolean }, i: number) => (
               <div key={i} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
                 <div className="font-mono text-sm text-gray-300">{cart.email || "Anonymous"}</div>
                 <div className={`text-xs font-bold px-2 py-1 rounded ${cart.recovered ? 'bg-cyan-500/10 text-cyan-400' : 'bg-yellow-500/10 text-yellow-500'}`}>
@@ -113,7 +113,7 @@ export default async function AdminDashboard() {
             <span className="text-xs bg-cyan-500/10 text-cyan-500 px-2 py-1 rounded font-bold">Live Data</span>
           </div>
           <div className="divide-y divide-white/5">
-            {recentAffiliates?.length ? recentAffiliates.map((aff: any, i: number) => (
+            {recentAffiliates?.length ? recentAffiliates.map((aff: { id: string; total_earnings: number }, i: number) => (
               <div key={i} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
                 <div className="flex flex-col">
                   <span className="text-xs text-gray-500 uppercase">Affiliate ID</span>

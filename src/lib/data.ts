@@ -2,6 +2,48 @@ import { Product } from "./types";
 
 export const products: Product[] = [
   {
+    id: "swarm-video-gen",
+    name: "Swarm Video-Gen Oracle",
+    description: "An elite AI video production team. Autonomously generates high-retention YouTube scripts, B-Roll prompts, and SEO-optimized metadata. Includes multi-agent architecture powered by Gemini.",
+    price: 2999,
+    category: "AI Agents",
+    image: "/images/products/swarm-finance.png", 
+    inStock: true,
+    rating: 5.0,
+    features: ['Curiosity-Driven Hook Generator', 'Multi-Agent Production Workflow', 'B-Roll & Thumbnail Prompts', 'One-Click .BAT Deployment', 'Tokyo Night UI'],
+    specs: { API: 'Gemini / SerpAPI', Framework: 'Digital Swarm ADK', Format: 'Python / Streamlit', License: 'Full MRR', Support: 'Priority Support' },
+    downloadUrl: "/downloads/swarm-video-gen.zip",
+    installGuide: "### Video Production Protocol\n1. **Deploy**: Double-click `LAUNCH.bat`.\n2. **Configure**: Enter your Gemini API key in the System dashboard.\n3. **Run**: Input your target video concept and platform. The Oracle will generate a hyper-optimized Master Production Document instantly."
+  },
+  {
+    id: "swarm-content-architect",
+    name: "Swarm Content Architect",
+    description: "An authoritative B2B multi-agent swarm that researches your industry, extracts high-converting ideas, and writes 30 days of absolute killer LinkedIn/Twitter content.",
+    price: 2499,
+    category: "Marketing AI",
+    image: "/images/products/sentinel-seo.png", 
+    inStock: true,
+    rating: 5.0,
+    features: ['30-Day Social Media Matrix Generator', 'Competitor Trend Scraping', 'Viral Hook Generation', 'One-Click .BAT Deployment', 'Cyber Aesthetic UI'],
+    specs: { API: 'Gemini / SerpAPI', Framework: 'Digital Swarm ADK', Format: 'Python / Streamlit', Target: 'B2B Founders & Agencies', Support: 'Priority Support' },
+    downloadUrl: "/downloads/swarm-content-architect.zip",
+    installGuide: "### Rapid Setup Sequence\n1. **Deploy**: Double-click `LAUNCH.bat`.\n2. **Configure**: Insert your API keys securely inside the dashboard.\n3. **Execute**: Supply your Industry and Niche definitions. The AI swarm will map out an entire month of viral-calibrated content in seconds."
+  },
+  {
+    id: "swarm-uiux-auditor",
+    name: "Swarm UI/UX Vision Auditor",
+    description: "A highly sophisticated multimodal vision agent that scans screenshots of your website or app and provides a ruthless heuristic teardown to maximize your conversion rate layout.",
+    price: 1999,
+    category: "Web Development",
+    image: "/images/products/react-template.png", 
+    inStock: true,
+    rating: 5.0,
+    features: ['Instant Screenshot Analysis', 'Heuristic 1-100 Scoring Matrix', 'High-Contrast Cyber UI', 'One-Click .BAT Deployment', 'Full Source Code Included'],
+    specs: { Model: 'Gemini 2.5 Flash Vision', Framework: 'Digital Swarm ADK', Format: 'Python / Streamlit', Target: 'Designers & Developers', Support: 'Priority Support' },
+    downloadUrl: "/downloads/swarm-uiux-auditor.zip",
+    installGuide: "### Vision Audit Protocol\n1. **Inject**: Double-click `LAUNCH.bat` to boot the interface.\n2. **Authenticate**: Insert your Gemini API Key.\n3. **Audit**: Drag and drop any .png or .jpg of a website into the terminal. The Vision Oracle will instantly identify conversion-killing layout errors."
+  },
+  {
     id: "swarm-elite-subscription",
     name: "Swarm ELITE (Monthly Subscription)",
     description: "Our hyper-exclusive monthly network. Gain instant access to a constantly updating library of premium AI agents, Private Discord routing, and 1-on-1 Slack architectural support.",
