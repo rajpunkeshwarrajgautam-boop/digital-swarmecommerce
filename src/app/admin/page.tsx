@@ -11,11 +11,15 @@ export default async function AdminDashboard() {
   const [
     { count: leadsCount },
     { count: affiliatesCount },
-    { count: abandonedCartsCount }
+    { count: abandonedCartsCount },
+    { data: recentCarts },
+    { data: recentAffiliates }
   ] = await Promise.all([
     supabase.from("leads").select("*", { count: "exact", head: true }),
     supabase.from("affiliates").select("*", { count: "exact", head: true }),
-    supabase.from("abandoned_carts").select("*", { count: "exact", head: true })
+    supabase.from("abandoned_carts").select("*", { count: "exact", head: true }),
+    supabase.from("abandoned_carts").select("email, created_at, recovered").order("created_at", { ascending: false }).limit(5),
+    supabase.from("affiliates").select("id, user_id, total_earnings").order("created_at", { ascending: false }).limit(5)
   ]);
   return (
     <div className="space-y-8">
@@ -86,21 +90,42 @@ export default async function AdminDashboard() {
         {/* Recent Pipeline Activity */}
         <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden">
           <div className="p-6 border-b border-white/5">
-            <h3 className="font-bold uppercase tracking-widest text-sm">Recent Transactions</h3>
+            <h3 className="font-bold uppercase tracking-widest text-sm">Recent Cart Activity</h3>
           </div>
-          <div className="p-6 text-center text-gray-500 italic text-sm">
-            Fetching Supabase data blocks... (API pending)
+          <div className="divide-y divide-white/5">
+            {recentCarts?.length ? recentCarts.map((cart: any, i: number) => (
+              <div key={i} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+                <div className="font-mono text-sm text-gray-300">{cart.email || "Anonymous"}</div>
+                <div className={`text-xs font-bold px-2 py-1 rounded ${cart.recovered ? 'bg-cyan-500/10 text-cyan-400' : 'bg-yellow-500/10 text-yellow-500'}`}>
+                  {cart.recovered ? 'RECOVERED' : 'PENDING'}
+                </div>
+              </div>
+            )) : (
+              <div className="p-6 text-center text-gray-500 text-sm">No recent activity detected.</div>
+            )}
           </div>
         </div>
 
         {/* Affiliate Payouts */}
         <div className="bg-black/40 border border-white/10 rounded-2xl overflow-hidden">
           <div className="p-6 border-b border-white/5 flex items-center justify-between">
-            <h3 className="font-bold uppercase tracking-widest text-sm">Pending Payouts</h3>
-            <span className="text-xs bg-red-500/10 text-red-500 px-2 py-1 rounded font-bold">Action Req</span>
+            <h3 className="font-bold uppercase tracking-widest text-sm">Affiliate Ledgers</h3>
+            <span className="text-xs bg-cyan-500/10 text-cyan-500 px-2 py-1 rounded font-bold">Live Data</span>
           </div>
-          <div className="p-6 text-center text-gray-500 italic text-sm">
-            Fetching Supabase affiliate ledgers... (API pending)
+          <div className="divide-y divide-white/5">
+            {recentAffiliates?.length ? recentAffiliates.map((aff: any, i: number) => (
+              <div key={i} className="p-4 flex items-center justify-between hover:bg-white/5 transition-colors">
+                <div className="flex flex-col">
+                  <span className="text-xs text-gray-500 uppercase">Affiliate ID</span>
+                  <span className="font-mono text-sm text-gray-300 truncate w-32">{aff.id}</span>
+                </div>
+                <div className="font-black italic text-[#CCFF00]">
+                  ₹{aff.total_earnings || 0}
+                </div>
+              </div>
+            )) : (
+              <div className="p-6 text-center text-gray-500 text-sm">No affiliate data available.</div>
+            )}
           </div>
         </div>
 
