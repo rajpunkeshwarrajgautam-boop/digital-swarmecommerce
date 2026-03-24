@@ -4,8 +4,7 @@ import { Zap, Shield, Download } from "lucide-react";
 import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { ParallaxHero } from "@/components/home/ParallaxHero";
 import { ProblemSolution } from "@/components/home/ProblemSolution";
-import { SocialProof } from "@/components/home/SocialProof";
-import { Testimonials } from "@/components/home/Testimonials";
+import { FieldReports } from "@/components/home/FieldReports";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
 import { LeadMagnet } from "@/components/home/LeadMagnet";
@@ -23,18 +22,15 @@ export default function Home() {
       {/* Featured Products */}
       <FeaturedSection />
 
-      {/* Social Proof */}
-      <SocialProof />
-
-      {/* Trust Signals: Testimonials */}
-      <Testimonials />
+      {/* Field Reports (Social Proof + Testimonials) */}
+      <FieldReports />
 
       {/* Soft UI Features Grid */}
-      <section className="py-24 bg-[#0a0c10] relative overflow-hidden border-t border-white/10">
+      <section className="py-24 bg-[#0a0c10] relative overflow-hidden border-t border-white/5">
         <div className="container px-6 mx-auto relative z-10 w-full max-w-7xl">
           <div className="text-center mb-20 max-w-3xl mx-auto">
             <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">
-              Engineering <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Excellence</span>
+              Engineering <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-500">Excellence</span>
             </h2>
             <p className="text-gray-400 text-lg font-medium">
               Built for speed. Audited for scale. Digital Swarm provides the architectural skeleton for the next generation of software.

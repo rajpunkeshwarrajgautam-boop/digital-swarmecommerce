@@ -21,8 +21,19 @@ export function ParallaxHero() {
   return (
     <div
       ref={containerRef}
-      className="w-full min-h-screen relative overflow-hidden bg-transparent"
+      className="w-full min-h-screen relative overflow-hidden bg-black"
     >
+      {/* High-Fidelity Cyber Background */}
+      <div className="absolute inset-0 z-0">
+        <Image 
+          src="/images/hero/cyber-bg.png" 
+          alt="Cyber Background" 
+          fill 
+          priority
+          className="object-cover opacity-40 mix-blend-screen"
+        />
+        <div className="absolute inset-0 bg-linear-to-b from-black via-black/20 to-black" />
+      </div>
       <div className="container relative z-30 flex flex-col lg:flex-row items-center justify-center lg:justify-between min-h-screen pt-32 pb-16 gap-12 lg:gap-16 px-6 sm:px-8 w-full max-w-7xl mx-auto">
         
         {/* Left: Typography & CTAs */}

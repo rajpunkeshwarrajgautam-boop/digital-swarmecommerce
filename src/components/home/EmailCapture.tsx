@@ -21,7 +21,9 @@ export function EmailCapture() {
   };
 
   return (
-    <section className="py-40 bg-white border-t border-black/5 relative overflow-hidden">
+    <section className="py-40 bg-[#0a0c10] border-t border-white/5 relative overflow-hidden">
+      {/* Visual background element */}
+      <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-cyan-500/5 blur-[120px] rounded-full z-0" />
       <div className="container mx-auto px-6 relative z-10 w-full max-w-7xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
           
@@ -38,14 +40,14 @@ export function EmailCapture() {
               <span className="text-[10px] font-black tracking-[0.2em] text-cyan-600 uppercase italic">Conversion Protocol</span>
             </div>
 
-            <h2 className="text-6xl md:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter text-gray-900">
+            <h2 className="text-6xl md:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter text-white">
               STILL <br />
               <span className="text-cyan-500">HESITATING?</span>
             </h2>
             
-            <p className="text-gray-500 text-lg font-bold uppercase tracking-tight max-w-md leading-tight">
+            <p className="text-gray-400 text-lg font-bold uppercase tracking-tight max-w-md leading-tight">
               Access the baseline architectural mainframe. All code protocols are ready for production. 
-              <span className="text-gray-900"> High ROI established in 2,400+ deployments.</span>
+              <span className="text-white"> High ROI established in 2,400+ deployments.</span>
             </p>
 
             <Link href="/products" className="group">
@@ -62,13 +64,13 @@ export function EmailCapture() {
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-gray-50 rounded-[3rem] p-10 md:p-14 border border-black/5 relative"
+            className="bg-white/5 backdrop-blur-3xl rounded-[3rem] p-10 md:p-14 border border-white/10 relative shadow-2xl"
           >
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-2">
-                <h3 className="text-3xl font-black italic uppercase tracking-tighter text-gray-900">NOT READY TO BUY?</h3>
-                <p className="text-gray-400 font-bold uppercase tracking-tight text-xs">
-                  Join 11,000+ developers receiving the <span className="text-cyan-600">Free AI Agent Blueprint</span> and weekly code injections.
+                <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">NOT READY TO BUY?</h3>
+                <p className="text-gray-500 font-bold uppercase tracking-tight text-xs">
+                  Join 11,000+ developers receiving the <span className="text-cyan-400">Free AI Agent Blueprint</span> and weekly code injections.
                 </p>
               </div>
 
@@ -78,13 +80,13 @@ export function EmailCapture() {
                     <motion.div 
                       initial={{ opacity: 0, scale: 0.9 }}
                       animate={{ opacity: 1, scale: 1 }}
-                      className="flex flex-col items-center justify-center gap-6 py-10 bg-white rounded-3xl border border-cyan-500/20 shadow-2xl shadow-cyan-500/10 text-center"
+                      className="flex flex-col items-center justify-center gap-6 py-10 bg-black/40 rounded-3xl border border-cyan-500/20 shadow-2xl shadow-cyan-500/10 text-center"
                     >
                       <div className="w-16 h-16 rounded-full bg-cyan-500 flex items-center justify-center text-white">
                         <CheckCircle2 className="w-8 h-8" />
                       </div>
                       <div className="flex flex-col gap-1">
-                        <span className="text-xl font-black uppercase italic text-gray-900">Uplink Established</span>
+                        <span className="text-xl font-black uppercase italic text-white">Uplink Established</span>
                         <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Check your command center (Inbox).</span>
                       </div>
                     </motion.div>
@@ -97,7 +99,7 @@ export function EmailCapture() {
                           onChange={(e) => setEmail(e.target.value)}
                           placeholder="EMAIL_IDENTIFIER@HOST.COM"
                           required
-                          className="w-full px-8 py-6 bg-white border-2 border-transparent text-gray-900 font-black text-xl uppercase italic rounded-2xl focus:outline-none focus:border-black transition-all placeholder:text-gray-200 shadow-sm"
+                          className="w-full px-8 py-6 bg-black/40 border-2 border-white/5 text-cyan-400 font-black text-xl uppercase italic rounded-2xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-white/10 shadow-inner"
                         />
                         <div className="absolute inset-0 rounded-2xl border-2 border-black/5 pointer-events-none group-hover:border-black/10 transition-colors" />
                       </div>
@@ -105,7 +107,7 @@ export function EmailCapture() {
                       <button
                         type="submit"
                         disabled={loading}
-                        className="w-full h-16 bg-black text-white font-black uppercase italic rounded-2xl border-4 border-black hover:bg-white hover:text-black transition-all flex items-center justify-center gap-4 group/btn"
+                        className="w-full h-16 bg-cyan-500 text-black font-black uppercase italic rounded-2xl border-4 border-black hover:bg-white hover:text-black transition-all flex items-center justify-center gap-4 group/btn shadow-[8px_8px_0_rgba(0,0,0,0.5)] active:translate-x-1 active:translate-y-1 active:shadow-none"
                       >
                         {loading ? "LINKING..." : (
                           <>

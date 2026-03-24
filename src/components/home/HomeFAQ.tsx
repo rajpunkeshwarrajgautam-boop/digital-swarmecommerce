@@ -31,26 +31,26 @@ export function HomeFAQ() {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-24 bg-secondary/20 border-t border-border/40">
+    <section className="py-24 bg-[#0a0c10] border-t border-white/5">
       <div className="container mx-auto px-4 max-w-3xl">
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold mb-4">Common Questions</h2>
-          <p className="text-muted-foreground">
-            Everything you need to know before you buy.
+          <h2 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter mb-4">Common <span className="text-cyan-400">Questions</span></h2>
+          <p className="text-gray-400 font-bold uppercase tracking-tight text-sm">
+            Everything you need to know before joining the swarm.
           </p>
         </div>
 
-        <div className="space-y-3">
+        <div className="space-y-4">
           {faqs.map((faq, i) => (
             <div
               key={i}
-              className="border border-border rounded-xl overflow-hidden hover:border-primary/30 transition-colors"
+              className="border border-white/5 rounded-2xl overflow-hidden hover:border-cyan-500/20 transition-all bg-white/5"
             >
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between gap-4 px-6 py-5 text-left bg-card"
+                className="w-full flex items-center justify-between gap-4 px-8 py-6 text-left"
               >
-                <span className="font-semibold text-sm md:text-base">{faq.q}</span>
+                <span className="font-bold text-white uppercase italic tracking-tighter text-sm md:text-base">{faq.q}</span>
                 <motion.span animate={{ rotate: openIndex === i ? 180 : 0 }} transition={{ duration: 0.2 }}>
                   <ChevronDown className="w-5 h-5 text-muted-foreground shrink-0" />
                 </motion.span>

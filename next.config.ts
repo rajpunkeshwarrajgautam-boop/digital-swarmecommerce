@@ -10,6 +10,8 @@ const nextConfig: NextConfig = {
       { protocol: 'https', hostname: '*.amazonaws.com' },
       { protocol: 'https', hostname: '*.cloudfront.net' },
       { protocol: 'https', hostname: '*.supabase.co' },
+      { protocol: 'https', hostname: 'i.pravatar.cc' },
+      { protocol: 'https', hostname: 'pravatar.cc' },
     ],
     // Improve image optimization
     formats: ['image/avif', 'image/webp'],
@@ -51,7 +53,7 @@ const nextConfig: NextConfig = {
               "default-src 'self'",
               "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://*.cashfree.com https://sdk.cashfree.com https://*.stripe.com https://challenges.cloudflare.com https://unpkg.com https://cdnjs.cloudflare.com https://connect.facebook.net",
               "connect-src 'self' https://*.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://*.cashfree.com https://api.cashfree.com https://sandbox.cashfree.com https://*.stripe.com https://ipapi.co https://*.lottiefiles.com https://www.facebook.com",
-              "img-src 'self' data: blob: https: https://www.facebook.com",
+              "img-src 'self' data: blob: https: https://www.facebook.com https://i.pravatar.cc https://pravatar.cc",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "frame-src 'self' https://*.cashfree.com https://sdk.cashfree.com https://*.stripe.com https://checkout.razorpay.com https://challenges.cloudflare.com https://www.facebook.com",
