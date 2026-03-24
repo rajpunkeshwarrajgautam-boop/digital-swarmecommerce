@@ -1,132 +1,152 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Star, CheckCircle2, Quote } from "lucide-react";
-import Image from "next/image";
+import { Star, Quote, ChevronLeft, ChevronRight } from "lucide-react";
+import { useState, useEffect } from "react";
 
-const testimonials = [
+const REPORTS = [
   {
     name: "Alex Davydov",
-    role: "Senior AI Engineer",
-    avatar: "https://i.pravatar.cc/150?img=12",
-    content: "The components are incredibly well-architected. I literally bought the AI agent boilerplate on Friday and launched my SaaS by Monday. Crazy ROI for the price.",
-    rating: 5,
+    role: "Senior Frontend Lead",
+    company: "Vercel / Next.js",
+    content: "The Next.js SaaS Kit saved us 4 weeks of boilerplate heavy lifting. The architectural patterns are elite. Best investment for our dev pod this year.",
+    avatar: "https://i.pravatar.cc/150?u=alex",
+    product: "SaaS Starter Kit",
+    rating: 5
   },
   {
     name: "Sarah Jenkins",
-    role: "Frontend Architect",
-    avatar: "https://i.pravatar.cc/150?img=5",
-    content: "Digital Swarm saved me over 3 weeks of miserable API integration work. The documentation is pristine and the codebase is completely type-safe. Highly recommend.",
-    rating: 5,
+    role: "CTO",
+    company: "FlowState AI",
+    content: "We built our entire MVP on top of the AI Agent Boilerplate. The LangChain integration is seamless and the Tokyo Night UI is absolutely stunning.",
+    avatar: "https://i.pravatar.cc/150?u=sarah",
+    product: "AI Agent Boilerplate",
+    rating: 5
   },
   {
     name: "Marcus Thorne",
-    role: "SaaS Founder",
-    avatar: "https://i.pravatar.cc/150?img=11",
-    content: "Best UI kits I have ever purchased. Period. Better than most subscriptions that charge $100/month. The pricing strategy here is wildly generous.",
-    rating: 5,
+    role: "Fullstack Engineer",
+    company: "Independent",
+    content: "Digital Swarm is the absolute standard. The TypeScript Dashboard template is strictly typed and production-ready out of the box. No fluff.",
+    avatar: "https://i.pravatar.cc/150?u=marcus",
+    product: "TS Dashboard",
+    rating: 5
   },
   {
-    name: "Elena Rodriguez",
-    role: "Solution Architect",
-    avatar: "https://i.pravatar.cc/150?img=19",
-    content: "I've purchased templates before that were spaghetti code. These are different. The code looks like it was written by an elite engineering team at a top-tier tech firm.",
-    rating: 5,
+    name: "Elena Rossi",
+    role: "Product Designer",
+    company: "DesignCo",
+    content: "The React UI Kit Pro components are a dream to work with. Perfect balance of accessibility and high-end aesthetics. Highly recommended.",
+    avatar: "https://i.pravatar.cc/150?u=elena",
+    product: "UI Kit Pro",
+    rating: 5
+  },
+  {
+    name: "David Chen",
+    role: "Mobile Lead",
+    company: "AppLaunch",
+    content: "Fast-tracked our cross-platform deployment with the React Native starter. The Expo configuration is flawless. Truly built for developers.",
+    avatar: "https://i.pravatar.cc/150?u=david",
+    product: "Mobile App Starter",
+    rating: 4.9
+  },
+  {
+    name: "Sophie Bennett",
+    role: "Open Source Contributor",
+    company: "GitHub",
+    content: "The Chrome Extension template is the most MV3-compliant kit I've found. Clean, modular, and easy to extend. Total game changer.",
+    avatar: "https://i.pravatar.cc/150?u=sophie",
+    product: "Chrome Ext Kit",
+    rating: 5
   }
 ];
 
-const stats = [
-  { value: "50k+", label: "Uplinks Established" },
-  { value: "₹1.2Cr", label: "Value Transferred" },
-  { value: "99.9%", label: "Uptime Sync" },
-  { value: "2.4k", label: "Elite Members" },
-];
-
 export function FieldReports() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setIndex((prev) => (prev + 1) % REPORTS.length);
+    }, 6000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <section className="py-32 bg-[#0a0c10] border-y border-white/5 overflow-hidden relative">
-      <div className="container mx-auto px-6 w-full max-w-7xl relative z-10">
-        
-        {/* Trusted By strip - Industrial Style */}
-        <div className="mb-24 text-center">
-            <p className="text-[10px] font-black uppercase tracking-[0.3em] text-cyan-400 opacity-40 mb-12 italic">Architectural_Vetting_Verified</p>
-            <div className="flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-20 hover:opacity-100 transition-opacity duration-500">
-                {["ALPHATECH", "SWARM_LOG", "NEON_NODE", "CYBER_RETAIL", "NEXUS_FIN"].map((brand, i) => (
-                    <span key={i} className="text-2xl md:text-3xl font-black tracking-tighter text-white italic">
-                        {brand}
-                    </span>
-                ))}
-            </div>
-        </div>
-
-        {/* Stats Matrix */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-32 max-w-5xl mx-auto">
-          {stats.map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, scale: 0.95 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.4 }}
-              className="bg-white/5 border border-white/5 p-8 rounded-3xl text-center backdrop-blur-3xl"
-            >
-              <p className="text-4xl md:text-5xl font-black text-white italic tracking-tighter mb-2">{stat.value}</p>
-              <p className="text-[9px] font-black uppercase tracking-widest text-cyan-400 opacity-60">{stat.label}</p>
-            </motion.div>
-          ))}
-        </div>
-
-        {/* Section title */}
+    <section className="py-32 bg-background overflow-hidden relative border-y border-secondary/5">
+      <div className="container px-6 mx-auto relative z-10 w-full max-w-7xl">
         <div className="text-center mb-20">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/20 shadow-sm mb-6">
-            <Quote className="w-4 h-4 text-cyan-500" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400 italic">Peer_Validation_Stream</span>
-          </div>
-          <h2 className="text-5xl md:text-7xl font-black text-white tracking-tighter uppercase italic">
-            Field <span className="text-cyan-500">Reports</span>
+          <h2 className="text-4xl md:text-6xl font-black text-secondary tracking-tighter uppercase italic leading-none mb-6">
+            What 2,000+ <span className="text-primary italic">Developers</span> Say
           </h2>
-          <p className="text-gray-400 font-bold mt-4 text-lg uppercase tracking-tight">Vetted Intelligence from the Collective</p>
+          <p className="text-secondary/50 font-bold text-lg uppercase tracking-tight">
+            Verified reports from the engineering frontlines.
+          </p>
         </div>
 
-        {/* Testimonials Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {testimonials.map((t, i) => (
+        <div className="relative max-w-4xl mx-auto">
+          <div className="overflow-hidden bg-white rounded-[3rem] border-4 border-secondary/5 shadow-2xl p-12 md:p-16 relative">
+            <Quote className="absolute top-10 right-10 w-20 h-20 text-secondary/5 -z-0" />
+            
             <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.1, duration: 0.6 }}
-              className="group relative bg-white/5 rounded-[2.5rem] p-8 border border-white/5 flex flex-col h-full hover:border-cyan-500/30 transition-all shadow-2xl"
+              key={index}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="relative z-10"
             >
-                <div className="flex gap-1 mb-6">
-                    {[...Array(t.rating)].map((_, idx) => (
-                        <Star key={idx} className="w-3.5 h-3.5 fill-cyan-500 text-cyan-500" />
-                    ))}
+              <div className="flex items-center gap-6 mb-10">
+                <img 
+                  src={REPORTS[index].avatar} 
+                  className="w-20 h-20 rounded-2xl border-2 border-primary/20 p-1"
+                  alt={REPORTS[index].name} 
+                />
+                <div className="flex flex-col">
+                  <h4 className="text-2xl font-black text-secondary italic leading-none uppercase tracking-tighter">{REPORTS[index].name}</h4>
+                  <p className="text-sm font-bold text-secondary/40 uppercase tracking-widest mt-1">
+                    {REPORTS[index].role} <span className="text-primary">@</span> {REPORTS[index].company}
+                  </p>
                 </div>
-                
-                <p className="text-gray-300 text-base font-medium mb-10 grow leading-relaxed uppercase tracking-tight italic">
-                    &ldquo;{t.content}&rdquo;
-                </p>
-                
-                <div className="mt-auto pt-6 border-t border-white/10 flex items-center gap-4">
-                    <div className="relative">
-                      <div className="relative w-12 h-12 rounded-2xl overflow-hidden border border-white/10 bg-black/40 group-hover:scale-105 transition-transform">
-                        <Image src={t.avatar} alt={t.name} width={48} height={48} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 transition-opacity" />
-                      </div>
-                      <div className="absolute -bottom-2 -right-2 bg-black border border-white/10 rounded-full p-1 shadow-2xl">
-                        <CheckCircle2 className="w-3 h-3 text-cyan-500" />
-                      </div>
-                    </div>
-                    <div className="flex flex-col">
-                        <span className="font-black text-white text-[10px] uppercase tracking-widest">
-                          {t.name}
-                        </span>
-                        <span className="text-[8px] text-cyan-400 font-black uppercase tracking-widest italic">{t.role}</span>
-                    </div>
+              </div>
+
+              <p className="text-xl md:text-3xl font-black text-secondary italic tracking-tight leading-snug mb-10">
+                "{REPORTS[index].content}"
+              </p>
+
+              <div className="flex items-center justify-between pt-8 border-t border-secondary/5">
+                <div className="flex flex-col gap-1">
+                  <span className="text-[10px] font-black uppercase text-secondary/30 tracking-widest">Protocol Purchased</span>
+                  <span className="text-xs font-black uppercase text-primary italic tracking-tight">{REPORTS[index].product}</span>
                 </div>
+                <div className="flex gap-1">
+                   {[1,2,3,4,5].map(i => <Star key={i} className="w-4 h-4 text-primary fill-primary" />)}
+                </div>
+              </div>
             </motion.div>
-          ))}
+          </div>
+
+          {/* Navigation Controls */}
+          <div className="flex justify-center gap-4 mt-12">
+            <button 
+              onClick={() => setIndex((prev) => (prev - 1 + REPORTS.length) % REPORTS.length)}
+              className="w-14 h-14 rounded-2xl bg-white border-2 border-secondary/5 flex items-center justify-center hover:bg-primary/10 hover:border-primary/20 transition-all shadow-xl"
+            >
+              <ChevronLeft className="w-6 h-6 text-secondary" />
+            </button>
+            <div className="flex items-center gap-2">
+              {REPORTS.map((_, i) => (
+                <div 
+                  key={i} 
+                  className={`h-1.5 transition-all rounded-full ${i === index ? 'w-8 bg-primary' : 'w-2 bg-secondary/10'}`} 
+                />
+              ))}
+            </div>
+            <button 
+              onClick={() => setIndex((prev) => (prev + 1) % REPORTS.length)}
+              className="w-14 h-14 rounded-2xl bg-white border-2 border-secondary/5 flex items-center justify-center hover:bg-primary/10 hover:border-primary/20 transition-all shadow-xl"
+            >
+              <ChevronRight className="w-6 h-6 text-secondary" />
+            </button>
+          </div>
         </div>
       </div>
     </section>

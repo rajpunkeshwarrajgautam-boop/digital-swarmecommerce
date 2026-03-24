@@ -71,7 +71,7 @@ export function LiveSalesNotification() {
           animate={{ opacity: 1, x: 0, scale: 1 }}
           exit={{ opacity: 0, x: -50, scale: 0.9 }}
           transition={{ type: "spring", stiffness: 400, damping: 25 }}
-          className="fixed bottom-6 left-6 z-50 bg-[#0a0c10]/95 backdrop-blur-xl rounded-xl shadow-[0_0_30px_rgba(6,182,212,0.15)] border border-cyan-500/20 p-3 hidden md:flex gap-4 max-w-sm pointer-events-none"
+          className="fixed bottom-6 left-6 z-50 bg-[#0a0c10]/95 backdrop-blur-xl rounded-xl shadow-[0_0_30px_rgba(255,107,53,0.15)] border border-primary/20 p-3 hidden md:flex gap-4 max-w-sm pointer-events-none"
         >
           <div className="w-12 h-12 rounded-md overflow-hidden shrink-0 border border-white/10 bg-black relative">
             <img 
@@ -85,20 +85,20 @@ export function LiveSalesNotification() {
               <span className="font-semibold text-white">{currentNotification.name}</span>
               <span>in</span>
               <span className="font-semibold text-white inline-flex items-center gap-0.5">
-                <MapPin className="w-3 h-3 text-cyan-400" />
+                <MapPin className="w-3 h-3 text-primary" />
                 {currentNotification.location}
               </span>
             </div>
-            <p className="text-sm font-bold leading-tight bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent line-clamp-1">
+            <p className="text-sm font-bold leading-tight bg-gradient-to-r from-primary to-[#FF8C61] bg-clip-text text-transparent line-clamp-1">
               Purchased {currentNotification.productName}
             </p>
             <div className="flex items-center gap-1 mt-1">
-              <CheckCircle2 className="w-3 h-3 text-emerald-400" />
-              <span className="text-[10px] text-emerald-400 font-bold uppercase tracking-wider">Verified Purchase • {currentNotification.time}</span>
+              <CheckCircle2 className="w-3 h-3 text-[#4ECDC4]" />
+              <span className="text-[10px] text-[#4ECDC4] font-bold uppercase tracking-wider">Verified Purchase • {currentNotification.time}</span>
             </div>
           </div>
           {/* Subtle animated border glow */}
-          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 blur-md -z-10 animate-pulse" />
+          <div className="absolute inset-0 rounded-xl bg-gradient-to-r from-primary/20 to-[#FF8C61]/20 blur-md -z-10 animate-pulse" />
         </motion.div>
       )}
     </AnimatePresence>

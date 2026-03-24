@@ -18,33 +18,32 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
-          className={`w-3.5 h-3.5 ${
-            s <= Math.round(rating) ? "fill-yellow-400 text-yellow-400" : "text-gray-600"
+          className={`w-3 h-3 ${
+            s <= Math.round(rating) ? "fill-primary text-primary" : "text-secondary/10"
           }`}
         />
       ))}
-      <span className="text-[10px] text-gray-400 font-black ml-1 uppercase">{rating.toFixed(1)}</span>
     </div>
   );
 }
 
 function TechBadges({ category }: { category: string }) {
   const isAI = category.includes("AI") || category.includes("Agent");
-  const isWeb = category.includes("Web") || category.includes("Software");
+  const isWeb = category.includes("Web") || category.includes("Software") || category.includes("Boilerplates");
   
   return (
-    <div className="flex items-center gap-2 mt-3">
+    <div className="flex flex-wrap items-center gap-2 mt-4">
       {isAI && (
-        <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black uppercase tracking-widest text-cyan-400 italic">
+        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[8px] font-black uppercase tracking-widest text-accent italic">
           <Cpu className="w-2.5 h-2.5" /> Neural
         </div>
       )}
       {isWeb && (
-        <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-blue-500/10 border border-blue-500/20 text-[9px] font-black uppercase tracking-widest text-blue-400 italic">
-          <Code2 className="w-2.5 h-2.5" /> Next.js
+        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[8px] font-black uppercase tracking-widest text-primary italic">
+          <Code2 className="w-2.5 h-2.5" /> Next.js 15
         </div>
       )}
-      <div className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-white/5 border border-white/10 text-[9px] font-black uppercase tracking-widest text-gray-400 italic">
+      <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-secondary/5 border border-secondary/10 text-[8px] font-black uppercase tracking-widest text-secondary/40 italic">
         <Zap className="w-2.5 h-2.5" /> Optimized
       </div>
     </div>
@@ -74,102 +73,80 @@ export function ProductCard({ product }: ProductCardProps) {
 
   return (
     <motion.div 
-      whileHover={{ y: -8 }}
-      className="group relative bg-white rounded-[2.5rem] p-5 transition-all duration-500 h-full flex flex-col hover:shadow-[0_30px_60px_rgba(0,0,0,0.08)] border border-black/5"
+      whileHover={{ y: -10 }}
+      className="group relative bg-white rounded-[2.5rem] p-6 transition-all duration-500 h-full flex flex-col hover:shadow-[0_40px_80px_rgba(26,26,46,0.1)] border border-secondary/5 hover:border-primary/20"
     >
-      {/* Glow Effect */}
-      <div className="absolute inset-0 bg-linear-to-br from-cyan-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity rounded-[2.5rem] pointer-events-none" />
-
-      <div className="block relative aspect-square w-full mb-6 overflow-hidden rounded-4xl bg-gray-50 border border-black/5 group-hover:border-black/10 transition-colors">
+      <div className="block relative aspect-4/5 w-full mb-8 overflow-hidden rounded-[2rem] bg-secondary/5 border-2 border-transparent group-hover:border-primary/10 transition-all">
         <Link href={`/products/${product.id}`} className="block w-full h-full">
-          <div className="w-full h-full flex items-center justify-center relative">
-            <Image
-              src={product.image}
-              fill
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-              className="object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
-              alt={product.name}
-              loading="lazy"
-            />
-            {/* Overlay Gradient */}
-            <div className="absolute inset-0 bg-linear-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-          </div>
+          <Image
+            src={product.image}
+            fill
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+            className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
+            alt={product.name}
+            loading="lazy"
+          />
+          <div className="absolute inset-0 bg-linear-to-t from-secondary/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </Link>
-
-        {/* Status Badges */}
-        <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
-           {(product.sales ?? 0) > 50 && (
-            <div className="w-fit bg-red-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-red-500/20 italic">
-              Best Seller
+        
+        {/* Most Popular Badge */}
+        {product.id === 'ai-agent-boilerplate' && (
+          <div className="absolute top-6 left-6 z-20">
+            <div className="bg-primary text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg shadow-primary/20 italic">
+              Most Popular
             </div>
-           )}
-           {product.category === 'AI Agents' && (
-             <div className="w-fit bg-cyan-500 text-white text-[9px] font-black px-3 py-1 rounded-full uppercase tracking-widest shadow-lg shadow-cyan-500/20 italic">
-               Agentic
-             </div>
-           )}
-        </div>
+          </div>
+        )}
 
         <button 
           onClick={toggleWishlist}
-          className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all z-20 shadow-xl ${
+          className={`absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center transition-all z-20 shadow-xl ${
             wishlisted 
-              ? "bg-red-500 text-white scale-110" 
-              : "bg-white/80 backdrop-blur-md text-gray-400 hover:text-red-500 hover:scale-110 border border-black/5"
+              ? "bg-primary text-white scale-110" 
+              : "bg-white/80 backdrop-blur-md text-secondary/40 hover:text-primary hover:scale-110 border border-secondary/5"
           }`}
         >
-          <Heart className={`w-4 h-4 ${wishlisted ? "fill-current" : ""}`} />
+          <Heart className={`w-5 h-5 ${wishlisted ? "fill-current" : ""}`} />
         </button>
 
-        {/* Pricing Badge (Industrial Style) */}
-        <div className="absolute bottom-4 right-4 bg-white shadow-2xl text-gray-900 font-black text-sm px-4 py-2 rounded-2xl border border-black/5 z-10 scale-90 group-hover:scale-100 transition-transform">
+        <div className="absolute bottom-6 right-6 bg-white shadow-2xl text-secondary font-black text-lg px-5 py-2.5 rounded-2xl border border-secondary/5 z-10 skew-x-[-6deg] group-hover:skew-x-0 transition-transform">
           ₹{product.price.toLocaleString("en-IN")}
         </div>
       </div>
 
       <div className="flex flex-col grow gap-2 px-1 relative z-10">
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-600 italic">{product.category}</span>
-          {product.rating > 0 && <StarRating rating={product.rating} />}
+        <div className="flex items-center justify-between mb-2">
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">{product.category}</span>
+          <StarRating rating={product.rating} />
         </div>
 
-        <h3 className="text-xl font-black text-gray-900 leading-[1.1] tracking-tight mb-2 group-hover:text-cyan-600 transition-colors line-clamp-2 uppercase italic">
+        <h3 className="text-2xl font-black text-secondary leading-[1] tracking-tighter mb-3 group-hover:text-primary transition-colors line-clamp-2 uppercase italic">
           {product.name}
         </h3>
         
-        <p className="text-xs text-gray-500 mb-6 line-clamp-2 grow font-medium leading-relaxed uppercase tracking-tight">
+        <p className="text-sm text-secondary/50 mb-6 line-clamp-2 grow font-bold uppercase tracking-tight leading-tight">
           {product.description}
         </p>
 
         <TechBadges category={product.category} />
 
-        <div className="flex gap-3 mt-6 relative z-10">
-          <Link href={`/products/${product.id}`} className="w-1/3">
-            <button className="w-full h-12 bg-gray-100 text-gray-900 rounded-2xl font-black uppercase italic text-xs border border-transparent hover:bg-white hover:border-black transition-all">
-              Detail
+        <div className="flex gap-4 mt-8 relative z-10">
+          <Link href={`/products/${product.id}`} className="flex-1">
+            <button className="w-full h-14 bg-secondary/5 text-secondary rounded-2xl font-black uppercase italic text-xs border-2 border-transparent hover:bg-white hover:border-secondary/20 transition-all">
+              View Details
             </button>
           </Link>
-          <div className="w-2/3">
-            {product.inStock ? (
-              <button
-                onClick={(e) => { 
-                  e.preventDefault(); 
-                  addItem(product); 
-                }}
-                className="w-full h-12 bg-black text-white font-black uppercase italic text-xs rounded-2xl border-4 border-black hover:shadow-[0_15px_30px_rgba(0,0,0,0.15)] hover:-translate-y-1 transition-all flex items-center justify-center gap-2 group/btn"
-              >
-                <ShoppingCart className="w-4 h-4 group-hover/btn:rotate-12 transition-transform" /> 
-                Add To Stack
-              </button>
-            ) : (
-              <button disabled className="w-full h-12 bg-gray-100 text-gray-400 rounded-2xl font-black uppercase italic text-xs cursor-not-allowed">
-                Depleted
-              </button>
-            )}
-          </div>
+          <button
+            onClick={(e) => { 
+              e.preventDefault(); 
+              addItem(product); 
+            }}
+            className="flex-1 h-14 bg-primary text-white font-black uppercase italic text-xs rounded-2xl border-2 border-secondary hover:shadow-xl transition-all flex items-center justify-center gap-2"
+          >
+            Buy Now
+          </button>
         </div>
       </div>
     </motion.div>
   );
 }
-

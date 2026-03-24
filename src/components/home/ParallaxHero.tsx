@@ -1,219 +1,118 @@
-import { useRef } from "react";
+"use client";
+
+import { motion } from "framer-motion";
+import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
-import { motion, useScroll, useTransform } from "framer-motion";
-import { ArrowRight, Zap, CheckCircle2, Star, Shield, Rocket } from "lucide-react";
-import Image from "next/image";
 
 export function ParallaxHero() {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start start", "end start"] });
-
-  const y1 = useTransform(scrollYProgress, [0, 1], [0, -150]);
-  const y2 = useTransform(scrollYProgress, [0, 1], [0, -75]);
-
-  const floatVariants = {
-    animate: {
-      y: [0, -20, 0],
-      transition: { duration: 5, repeat: Infinity, ease: "easeInOut" as const },
-    },
-  };
-
   return (
-    <div
-      ref={containerRef}
-      className="w-full min-h-screen relative overflow-hidden bg-black"
-    >
-      {/* High-Fidelity Cyber Background */}
-      <div className="absolute inset-0 z-0">
-        <Image 
-          src="/images/hero/cyber-bg.png" 
-          alt="Cyber Background" 
-          fill 
-          priority
-          className="object-cover opacity-40 mix-blend-screen"
+    <section className="relative min-h-[90vh] w-full flex items-center justify-center overflow-hidden bg-background pt-32 pb-20">
+      {/* Animated Gradient Background */}
+      <div className="absolute inset-0 z-0 overflow-hidden">
+        <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-accent/5 opacity-50" />
+        <motion.div 
+          animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
+          transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" 
         />
-        <div className="absolute inset-0 bg-linear-to-b from-black via-black/20 to-black" />
+        <motion.div 
+          animate={{ x: [0, -100, 0], y: [0, -50, 0] }}
+          transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+          className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/10 blur-[120px] rounded-full" 
+        />
       </div>
-      <div className="container relative z-30 flex flex-col lg:flex-row items-center justify-center lg:justify-between min-h-screen pt-32 pb-16 gap-12 lg:gap-16 px-6 sm:px-8 w-full max-w-7xl mx-auto">
-        
-        {/* Left: Typography & CTAs */}
+
+      <div className="container relative z-10 px-6 mx-auto w-full max-w-7xl flex flex-col items-center text-center">
+        {/* Starting Price Badge */}
         <motion.div
-          className="flex flex-col gap-8 lg:max-w-2xl w-full"
-          style={{ y: y2 }}
-          initial={{ opacity: 0, y: 40 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-white border-2 border-primary/20 shadow-xl shadow-primary/5 mb-10"
         >
-          <div className="flex flex-col gap-4">
-            <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(34,211,238,0.1)] w-fit backdrop-blur-md">
-              <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse shadow-[0_0_15px_#22d3ee]" />
-              <span className="text-[10px] font-black tracking-[0.2em] text-cyan-400 uppercase italic">Digital Swarm v2.4 // Online</span>
-            </div>
-
-            <h1 className="text-5xl sm:text-7xl lg:text-8xl font-black text-white leading-[0.9] tracking-[-0.04em] uppercase italic italic-mask">
-              LAUNCH YOUR <br />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-indigo-600 drop-shadow-[0_0_30px_rgba(6,182,212,0.3)]">
-                AI EMPIRE
-              </span>
-            </h1>
-          </div>
-
-          <p className="text-lg sm:text-xl text-gray-400 font-bold leading-tight max-w-xl uppercase tracking-tight">
-            The absolute standard in algorithmic growth. Download production-ready <span className="text-white">AI agents</span>, <span className="text-white">UI kits</span>, and <span className="text-white">strategic code</span> built to scale your agency to 7-figures.
-          </p>
-
-          <div className="flex flex-col sm:flex-row items-center gap-5 mt-2 w-full sm:w-auto">
-            <Link href="/products" className="w-full sm:w-auto block group">
-              <button className="w-full sm:w-auto bg-white text-black font-black uppercase italic px-10 py-5 rounded-none border-4 border-black shadow-[8px_8px_0_#22d3ee] hover:shadow-[4px_4px_0_#22d3ee] hover:translate-x-1 hover:translate-y-1 transition-all flex items-center justify-center gap-3">
-                Access Terminal
-                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-              </button>
-            </Link>
-            <Link href="/freebies" className="w-full sm:w-auto block">
-              <button className="w-full sm:w-auto px-10 py-5 rounded-none bg-black text-white font-black uppercase italic border-4 border-white shadow-[8px_8px_0_rgba(255,255,255,0.1)] hover:bg-white/5 transition-all flex items-center justify-center gap-3">
-                <Zap className="w-5 h-5 text-cyan-400 fill-cyan-400" />
-                Free Resources
-              </button>
-            </Link>
-          </div>
-          
-          {/* Trust Badges - Mandatory Diagnostic Metric */}
-          <div className="flex flex-wrap items-center gap-x-8 gap-y-4 mt-4 pt-8 border-t border-white/5">
-            <div className="flex items-center gap-3">
-              <div className="flex -space-x-2">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="relative w-8 h-8 rounded-full border-2 border-black bg-gray-800 overflow-hidden shadow-xl">
-                    <Image 
-                      src={`https://i.pravatar.cc/100?img=${i + 20}`} 
-                      alt="Verified User" 
-                      width={32} 
-                      height={32} 
-                      className="w-full h-full object-cover" 
-                    />
-                  </div>
-                ))}
-              </div>
-              <div className="flex flex-col">
-                <div className="flex gap-0.5">
-                  {[1,2,3,4,5].map(i => <Star key={i} className="w-3 h-3 text-yellow-500 fill-yellow-500" />)}
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-white italic">Trusted by 2.4k+ Devs</span>
-              </div>
-            </div>
-
-            <div className="h-8 w-px bg-white/10 hidden sm:block" />
-
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-cyan-500" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">One-Click Deployment</span>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-5 h-5 text-cyan-500" />
-              <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">MRR License Included</span>
-            </div>
-          </div>
+          <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <span className="text-xs font-black uppercase tracking-widest text-secondary italic">MARKETPLACE_LIVE // STARTING AT ₹1,499</span>
         </motion.div>
 
-        {/* Right: Advanced 3D Interactive Mockup */}
+        <motion.h1 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+          className="text-6xl md:text-9xl font-black text-secondary italic tracking-tighter uppercase leading-[0.85] mb-10"
+        >
+          LAUNCH YOUR <br />
+          <span className="text-primary relative">
+            SaaS EMPIRE
+            <div className="absolute -bottom-4 left-0 right-0 h-4 bg-secondary/5 -z-10 skew-x-[-12deg]" />
+          </span>
+        </motion.h1>
+
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+          className="text-secondary/60 font-bold text-lg md:text-xl uppercase tracking-tight max-w-2xl mb-16 leading-tight"
+        >
+          Premium Code Templates & UI Kits for Elite Developers. 
+          Stop rebuilding. <span className="text-secondary underline decoration-primary/40 decoration-4">Start shipping with the swarm.</span>
+        </motion.p>
+
         <motion.div
-          className="relative w-full lg:w-1/2 flex items-center justify-center lg:h-[700px] mt-12 lg:mt-0"
-          style={{ y: y1 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.3 }}
+          className="flex flex-col sm:flex-row gap-6 mb-24"
         >
-          <motion.div
-            variants={floatVariants}
-            animate="animate"
-            className="relative w-full max-w-lg aspect-square"
+          <button 
+            onClick={() => document.getElementById('catalog')?.scrollIntoView({ behavior: 'smooth' })}
+            className="h-20 px-12 bg-primary text-white font-black uppercase italic rounded-3xl border-4 border-secondary hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all shadow-[10px_10px_0_rgba(26,26,46,1)] flex items-center justify-center gap-4 group"
           >
-            {/* Main Cyber Dashboard Container */}
-            <div className="absolute inset-x-0 top-1/2 -translate-y-1/2 bg-[#050608] rounded-[3rem] border-[10px] border-white/5 p-8 flex flex-col gap-6 z-20 shadow-[0_40px_100px_rgba(0,0,0,0.9)] backdrop-blur-3xl overflow-hidden group">
-              
-              {/* Animated Scan Line */}
-              <div className="absolute inset-0 bg-gradient-to-b from-transparent via-cyan-500/5 to-transparent h-24 w-full animate-scan-fast z-[-1] pointer-events-none" />
-
-              <div className="flex items-center justify-between border-b border-white/10 pb-6">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-2xl bg-cyan-500 flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.4)]">
-                    <Rocket className="w-7 h-7 text-black fill-black" />
-                  </div>
-                  <div className="flex flex-col gap-1">
-                    <div className="h-4 w-32 bg-white rounded-full opacity-90" />
-                    <div className="h-2 w-20 bg-cyan-500/30 rounded-full" />
-                  </div>
-                </div>
-                <div className="flex gap-3">
-                  <div className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center">
-                    <div className="w-2 h-2 rounded-full bg-red-500 shadow-[0_0_10px_#ef4444]" />
-                  </div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-6 mt-2">
-                <div className="p-6 rounded-3xl bg-white/5 border border-white/10 flex flex-col gap-4">
-                  <div className="h-3 w-20 bg-white/20 rounded-full" />
-                  <div className="text-3xl font-black text-white italic tracking-tighter">₹8,492</div>
-                  <div className="h-2 w-full bg-cyan-500/20 rounded-full overflow-hidden">
-                    <div className="w-2/3 h-full bg-cyan-500" />
-                  </div>
-                </div>
-                <div className="p-6 rounded-3xl bg-cyan-500 flex flex-col gap-4 shadow-[0_0_40px_rgba(6,182,212,0.2)]">
-                  <div className="h-3 w-20 bg-black/30 rounded-full" />
-                  <div className="text-3xl font-black text-black italic tracking-tighter">1,204</div>
-                  <div className="h-2 w-full bg-black/20 rounded-full overflow-hidden">
-                    <div className="w-full h-full bg-black" />
-                  </div>
-                </div>
-              </div>
-
-              <div className="flex-1 rounded-4xl bg-gradient-to-br from-white/10 to-transparent border border-white/10 p-6 flex flex-col gap-5">
-                {[1,2].map(i => (
-                  <div key={i} className="flex items-center justify-between group/row">
-                    <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 rounded-2xl bg-black border border-white/10 flex items-center justify-center text-2xl group-hover/row:border-cyan-500/50 transition-colors italic font-black">
-                        {i === 1 ? 'A' : 'B'}
-                      </div>
-                      <div className="flex flex-col gap-2">
-                        <div className="h-3 w-32 bg-white/20 rounded-full" />
-                        <div className="h-2 w-20 bg-white/10 rounded-full" />
-                      </div>
-                    </div>
-                    <div className="px-4 py-2 rounded-full bg-cyan-500/10 text-cyan-400 text-[10px] font-black uppercase italic border border-cyan-500/20">Active</div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* Floating 3D "Assets" */}
-            <motion.div 
-              className="absolute -right-12 top-10 w-32 h-32 bg-[#050608] border border-white/10 rounded-[2rem] z-30 flex items-center justify-center shadow-2xl backdrop-blur-3xl group-hover:rotate-12 transition-transform duration-500"
-              animate={{ y: [0, -30, 0], rotate: [0, -10, 0] }}
-              transition={{ duration: 7, repeat: Infinity, delay: 1 }}
-            >
-              <div className="text-6xl drop-shadow-[0_0_30px_rgba(6,182,212,0.5)]">🛸</div>
-              <div className="absolute inset-0 rounded-[2rem] border-4 border-cyan-500/20 animate-pulse" />
-            </motion.div>
-            
-            <motion.div 
-              className="absolute -left-16 bottom-20 w-28 h-28 bg-[#050608] border border-white/10 rounded-full z-30 flex items-center justify-center shadow-2xl backdrop-blur-3xl"
-              animate={{ y: [0, 40, 0], scale: [1, 1.1, 1] }}
-              transition={{ duration: 9, repeat: Infinity, delay: 0.5 }}
-            >
-              <div className="w-full h-full p-6">
-                <div className="w-full h-full bg-cyan-500 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.4)]">
-                  <Shield className="w-10 h-10 text-black" />
-                </div>
-              </div>
-            </motion.div>
-
-            <motion.div 
-              className="absolute left-1/2 -bottom-20 -translate-x-1/2 w-[120%] h-40 bg-gradient-to-t from-cyan-400/20 to-transparent blur-[100px] z-10"
-              animate={{ opacity: [0.3, 0.6, 0.3] }}
-              transition={{ duration: 4, repeat: Infinity }}
-            />
-
-          </motion.div>
+            Browse Products
+            <ShoppingCart className="w-6 h-6 group-hover:rotate-12 transition-transform" />
+          </button>
+          
+          <Link 
+            href="/demo"
+            className="h-20 px-12 bg-white text-secondary font-black uppercase italic rounded-3xl border-4 border-secondary hover:bg-secondary/5 transition-all flex items-center justify-center gap-4"
+          >
+            View Demo
+          </Link>
         </motion.div>
+
+        {/* Product Preview Cards (3) */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl">
+          {[
+            { tag: "BEST SELLER", name: "Next.js SaaS Kit", price: "₹2,999", img: "https://images.unsplash.com/photo-1618477388954-7852f32655ec?auto=format&fit=crop&q=80&w=400" },
+            { tag: "NEW RELEASE", name: "AI Agent Boilerplate", price: "₹3,499", img: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=400" },
+            { tag: "TRENDING", name: "React UI Kit Pro", price: "₹1,999", img: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=400" }
+          ].map((card, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, scale: 0.9, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              transition={{ delay: 0.4 + (i * 0.1) }}
+              className="bg-white p-5 rounded-[2.5rem] border-4 border-secondary/5 shadow-2xl shadow-secondary/5 group hover:border-primary/40 transition-all text-left relative overflow-hidden"
+            >
+              <div className="absolute top-8 left-8 z-20">
+                <span className="bg-primary text-white text-[9px] font-black px-3 py-1 rounded-full">{card.tag}</span>
+              </div>
+              <div className="aspect-video rounded-[2rem] overflow-hidden bg-secondary/5 mb-6 relative">
+                 <img src={card.img} alt={card.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100" />
+                 <div className="absolute inset-0 bg-linear-to-t from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              </div>
+              <div className="flex justify-between items-end px-2">
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase text-accent mb-1 italic">V3_SYSTEM_VERIFIED</span>
+                  <span className="font-black uppercase italic tracking-tighter text-secondary text-xl leading-none">{card.name}</span>
+                </div>
+                <div className="flex flex-col items-end">
+                   <span className="text-[10px] font-bold text-secondary/40 line-through">₹{(parseInt(card.price.replace('₹','').replace(',','')) * 1.3).toLocaleString('en-IN')}</span>
+                   <span className="font-black text-primary text-2xl leading-none">{card.price}</span>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
       </div>
-    </div>
+    </section>
   );
 }

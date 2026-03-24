@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Mail, ArrowRight, Zap } from "lucide-react";
+import { X, ArrowRight, Zap } from "lucide-react";
 import { Button } from "../ui/Button";
 
 export function ExitIntentPopup() {
@@ -84,7 +84,7 @@ export function ExitIntentPopup() {
                     <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M5 13l4 4L19 7"></path></svg>
                   </div>
                   <h4 className="text-xl font-bold text-white mb-2">Check Your Inbox!</h4>
-                  <p className="text-gray-400 text-sm">We've just sent your 15% discount code.</p>
+                  <p className="text-gray-400 text-sm">We&apos;ve just sent your 15% discount code.</p>
                   <Button variant="outline" className="mt-6 w-full text-white hover:bg-white/10 border-white/20" onClick={closePopup}>Continue Protocol</Button>
                 </div>
               ) : (
@@ -107,7 +107,7 @@ export function ExitIntentPopup() {
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-gradient-to-r hover:-translate-y-0.5 shadow-[0_0_15px_rgba(6,182,212,0.3)] from-cyan-500 to-blue-600 hover:shadow-[0_0_25px_rgba(6,182,212,0.5)] text-white font-bold h-12 rounded-xl flex items-center justify-center gap-2 border-none transition-all uppercase tracking-wide"
+                      className="w-full bg-gradient-to-r hover:-translate-y-0.5 shadow-[0_0_15px_rgba(255,107,53,0.3)] from-primary to-[#FF8C61] hover:shadow-[0_0_25px_rgba(255,107,53,0.5)] text-white font-bold h-12 rounded-xl flex items-center justify-center gap-2 border-none transition-all uppercase tracking-wide"
                     >
                       {loading ? "Decrypting..." : (
                         <>
@@ -116,7 +116,7 @@ export function ExitIntentPopup() {
                       )}
                     </Button>
                   </form>
-                  <button onClick={closePopup} className="text-xs text-center w-full mt-4 text-gray-500 hover:text-cyan-400 underline underline-offset-4 decoration-current/30 cursor-pointer">
+                  <button onClick={closePopup} className="text-xs text-center w-full mt-4 text-gray-500 hover:text-primary underline underline-offset-4 decoration-current/30 cursor-pointer uppercase font-black tracking-widest">
                     No thanks, load full price.
                   </button>
                 </>

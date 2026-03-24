@@ -35,8 +35,8 @@ export function Logo({ className = "" }: { className?: string }) {
       </div>
 
       {/* Text Branding - Hidden on mobile */}
-      <div className="hidden lg:flex items-center">
-        <span className="text-xl font-black italic tracking-tighter leading-none text-white transition-all duration-300 uppercase flex items-center gap-1.5">
+      <div className="flex items-center">
+        <span className="text-xl font-black italic tracking-tighter leading-none text-secondary transition-all duration-300 uppercase flex items-center gap-1.5">
             DIGITAL
             <span className="text-primary font-black not-italic">/</span>
             SWARM

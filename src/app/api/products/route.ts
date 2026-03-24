@@ -32,6 +32,42 @@ export async function GET(request: Request) {
   const category = searchParams.get('category');
 
   try {
+    // ── Pre-Check & Sync Protocol ──────────────────────────────────────────
+    const { data: v3Check } = await supabase
+      .from('products')
+      .select('name')
+      .eq('name', 'Next.js SaaS Starter Kit')
+      .maybeSingle();
+
+    // If database is not matching the v3 catalog, perform emergency wipe and sync
+    if (!v3Check) {
+      console.log(`[products/route] V3 Sync required. Initiating deep sync...`);
+      
+      // Wipe old data
+      await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      
+      const upsertData = staticProducts.map(p => ({
+        name: p.name,
+        description: p.description,
+        price: p.price,
+        category: p.category,
+        image: p.image,
+        in_stock: p.inStock,
+        rating: p.rating,
+        features: p.features,
+        specs: p.specs,
+        install_guide: p.installGuide,
+        download_url: p.downloadUrl
+      }));
+
+      const { error: syncError } = await supabase
+        .from('products')
+        .insert(upsertData);
+
+      if (syncError) console.error('[products/route] Sync Error:', syncError.message);
+      else console.log('[products/route] Sync Perfected.');
+    }
+
     // ── Build Supabase query ───────────────────────────────────────────────
     let query = supabase
       .from('products')
@@ -47,11 +83,6 @@ export async function GET(request: Request) {
     if (error) {
       console.error('[products/route] Supabase error:', error.message);
       return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
-    }
-
-    // If DB is empty, return empty array
-    if (!data || data.length === 0) {
-      return NextResponse.json([]);
     }
 
     return NextResponse.json(data.map(normalizeProduct));

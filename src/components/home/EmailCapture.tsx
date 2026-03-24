@@ -1,140 +1,79 @@
 "use client";
 
+import { motion } from "framer-motion";
+import { Send, CheckCircle2 } from "lucide-react";
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Send, ArrowRight, Zap, CheckCircle2 } from "lucide-react";
-import Link from "next/link";
 
 export function EmailCapture() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<"idle" | "loading" | "success">("idle");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || !email.includes("@")) return;
-    setLoading(true);
-    // Simulate subscription
-    await new Promise((r) => setTimeout(r, 1200));
-    setSubmitted(true);
-    setLoading(false);
+    setStatus("loading");
+    setTimeout(() => setStatus("success"), 1500);
   };
 
   return (
-    <section className="py-40 bg-[#0a0c10] border-t border-white/5 relative overflow-hidden">
-      {/* Visual background element */}
-      <div className="absolute top-0 right-0 w-[40vw] h-[40vw] bg-cyan-500/5 blur-[120px] rounded-full z-0" />
-      <div className="container mx-auto px-6 relative z-10 w-full max-w-7xl">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+    <section className="py-32 bg-secondary relative overflow-hidden">
+      <div className="container px-6 mx-auto relative z-10 w-full max-w-5xl">
+        <div className="bg-white rounded-[3rem] p-12 md:p-20 relative overflow-hidden shadow-2xl">
+          {/* Accent Blob */}
+          <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2" />
           
-          {/* Left: Final Push */}
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8 }}
-            className="flex flex-col items-start text-left gap-8"
-          >
-            <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-cyan-50 border border-cyan-100 shadow-sm w-fit">
-              <Zap className="w-4 h-4 text-cyan-500 fill-cyan-500" />
-              <span className="text-[10px] font-black tracking-[0.2em] text-cyan-600 uppercase italic">Conversion Protocol</span>
-            </div>
-
-            <h2 className="text-6xl md:text-8xl font-black italic uppercase leading-[0.85] tracking-tighter text-white">
-              STILL <br />
-              <span className="text-cyan-500">HESITATING?</span>
+          <div className="max-w-2xl mx-auto flex flex-col items-center text-center">
+            <h2 className="text-4xl md:text-6xl font-black text-secondary tracking-tighter uppercase italic leading-none mb-6">
+              Join the <span className="text-primary italic">Swarm</span>
             </h2>
-            
-            <p className="text-gray-400 text-lg font-bold uppercase tracking-tight max-w-md leading-tight">
-              Access the baseline architectural mainframe. All code protocols are ready for production. 
-              <span className="text-white"> High ROI established in 2,400+ deployments.</span>
+            <p className="text-secondary/50 font-bold text-lg uppercase tracking-tight mb-12">
+              Get the latest architectural reports and exclusive early-access protocols. No spam. Join 1,500+ elite developers.
             </p>
 
-            <Link href="/products" className="group">
-              <button className="inline-flex items-center gap-6 bg-black text-white font-black text-2xl px-12 py-6 rounded-none shadow-[12px_12px_0_#22d3ee] hover:shadow-[6px_6px_0_#22d3ee] hover:translate-x-1 hover:translate-y-1 transition-all duration-300 uppercase tracking-widest italic">
-                Enter Void
-                <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition-transform" />
-              </button>
-            </Link>
-          </motion.div>
+            {status === "success" ? (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                className="flex flex-col items-center gap-4 py-8"
+              >
+                <div className="w-20 h-20 rounded-full bg-green-500/10 flex items-center justify-center">
+                  <CheckCircle2 className="w-10 h-10 text-green-500" />
+                </div>
+                <h4 className="text-2xl font-black text-secondary italic uppercase">Neural Uplink Complete!</h4>
+                <p className="text-secondary/40 font-bold uppercase tracking-widest text-xs">Check your inbox for the welcome protocol.</p>
+              </motion.div>
+            ) : (
+              <form onSubmit={handleSubmit} className="w-full flex flex-col sm:flex-row gap-4">
+                <div className="flex-1 relative group">
+                  <input 
+                    type="email" 
+                    required
+                    placeholder="ENTER YOUR PROTOCOL EMAIL..."
+                    className="w-full h-16 bg-secondary/5 border-2 border-transparent focus:border-primary/20 focus:bg-white px-8 rounded-2xl font-black uppercase text-secondary italic tracking-tight placeholder:text-secondary/20 outline-hidden transition-all"
+                  />
+                </div>
+                <button 
+                  disabled={status === "loading"}
+                  className="h-16 px-10 bg-primary text-white font-black uppercase italic rounded-2xl border-4 border-secondary hover:translate-x-1 hover:translate-y-1 hover:shadow-none transition-all shadow-[8px_8px_0_rgba(26,26,46,1)] flex items-center justify-center gap-3 disabled:opacity-50"
+                >
+                  {status === "loading" ? "Uplinking..." : "Subscribe"}
+                  <Send className="w-5 h-5" />
+                </button>
+              </form>
+            )}
 
-          {/* Right: Soft Conversion (Not Ready to Buy?) */}
-          <motion.div
-            initial={{ opacity: 0, x: 30 }}
-            whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="bg-white/5 backdrop-blur-3xl rounded-[3rem] p-10 md:p-14 border border-white/10 relative shadow-2xl"
-          >
-            <div className="flex flex-col gap-8">
-              <div className="flex flex-col gap-2">
-                <h3 className="text-3xl font-black italic uppercase tracking-tighter text-white">NOT READY TO BUY?</h3>
-                <p className="text-gray-500 font-bold uppercase tracking-tight text-xs">
-                  Join 11,000+ developers receiving the <span className="text-cyan-400">Free AI Agent Blueprint</span> and weekly code injections.
-                </p>
-              </div>
-
-              <div className="w-full">
-                <AnimatePresence mode="wait">
-                  {submitted ? (
-                    <motion.div 
-                      initial={{ opacity: 0, scale: 0.9 }}
-                      animate={{ opacity: 1, scale: 1 }}
-                      className="flex flex-col items-center justify-center gap-6 py-10 bg-black/40 rounded-3xl border border-cyan-500/20 shadow-2xl shadow-cyan-500/10 text-center"
-                    >
-                      <div className="w-16 h-16 rounded-full bg-cyan-500 flex items-center justify-center text-white">
-                        <CheckCircle2 className="w-8 h-8" />
-                      </div>
-                      <div className="flex flex-col gap-1">
-                        <span className="text-xl font-black uppercase italic text-white">Uplink Established</span>
-                        <span className="text-xs font-bold text-gray-400 uppercase tracking-widest">Check your command center (Inbox).</span>
-                      </div>
-                    </motion.div>
-                  ) : (
-                    <form onSubmit={handleSubmit} className="flex flex-col gap-6">
-                      <div className="relative group">
-                        <input
-                          type="email"
-                          value={email}
-                          onChange={(e) => setEmail(e.target.value)}
-                          placeholder="EMAIL_IDENTIFIER@HOST.COM"
-                          required
-                          className="w-full px-8 py-6 bg-black/40 border-2 border-white/5 text-cyan-400 font-black text-xl uppercase italic rounded-2xl focus:outline-none focus:border-cyan-500 transition-all placeholder:text-white/10 shadow-inner"
-                        />
-                        <div className="absolute inset-0 rounded-2xl border-2 border-black/5 pointer-events-none group-hover:border-black/10 transition-colors" />
-                      </div>
-
-                      <button
-                        type="submit"
-                        disabled={loading}
-                        className="w-full h-16 bg-cyan-500 text-black font-black uppercase italic rounded-2xl border-4 border-black hover:bg-white hover:text-black transition-all flex items-center justify-center gap-4 group/btn shadow-[8px_8px_0_rgba(0,0,0,0.5)] active:translate-x-1 active:translate-y-1 active:shadow-none"
-                      >
-                        {loading ? "LINKING..." : (
-                          <>
-                            Get Free Blueprint <Send className="w-5 h-5 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform" />
-                          </>
-                        )}
-                      </button>
-
-                      <div className="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-black/5">
-                        <div className="flex items-center gap-2">
-                           <CheckCircle2 className="w-4 h-4 text-cyan-500" />
-                           <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">No Spam Protocol</span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                           <CheckCircle2 className="w-4 h-4 text-cyan-500" />
-                           <span className="text-[10px] font-black uppercase tracking-widest text-gray-400 italic">Unsubscribe Anytime</span>
-                        </div>
-                      </div>
-                    </form>
-                  )}
-                </AnimatePresence>
-              </div>
+            <div className="mt-8 flex items-center gap-4 opacity-30">
+               <div className="flex -space-x-1">
+                 {[1,2,3].map(i => <div key={i} className="w-6 h-6 rounded-full bg-secondary border border-white" />)}
+               </div>
+               <span className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary">Secured by industry standards</span>
             </div>
-          </motion.div>
+          </div>
         </div>
+      </div>
+      
+      {/* Visual Pattern */}
+      <div className="absolute inset-0 z-0 opacity-5 pointer-events-none">
+        <div className="absolute top-0 left-0 w-full h-full bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem]" />
       </div>
     </section>
   );
 }
-

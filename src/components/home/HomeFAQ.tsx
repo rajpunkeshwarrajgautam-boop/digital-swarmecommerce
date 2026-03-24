@@ -1,72 +1,94 @@
 "use client";
 
 import { useState } from "react";
+import { Plus, Minus, HelpCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown } from "lucide-react";
 
-const faqs = [
+const QUESTIONS = [
   {
-    q: "How do I receive my files after purchasing?",
-    a: "You'll get an instant download link via email as soon as payment confirms — usually within seconds. You can also access it on the order confirmation page. Links are valid for lifetime re-download.",
+    q: "What format are the downloads in?",
+    a: "All architectural patterns are delivered as standard .zip archives. Inside you will find production-ready source code, configuration manifests (.env.example), and an industrial deployment guide."
   },
   {
-    q: "What file formats do products come in?",
-    a: "Source code bundles ship as .ZIP files with the full codebase and a README. UI kits come as Figma files + exported assets. Ebooks are high-quality PDFs. Each product page lists exactly what you'll receive.",
+    q: "Do I get lifetime updates?",
+    a: "Yes. Once you acquire a protocol, you get access to all future updates for that specific product forever. We regularly patch our templates for the latest framework versions (e.g., Next.js 15)."
   },
   {
-    q: "Do I need to know how to code to use these products?",
-    a: "For source code bundles, basic to intermediate knowledge is helpful but every product includes a plain-English setup guide. UI kits and template packs are beginner-friendly — just drag, drop, and customise.",
+    q: "Can I use these for client projects?",
+    a: "Absolutely. Our Commercial MRR License allows you to use the code for unlimited client builds. You just cannot resell the templates themselves as competition to the swarm."
   },
   {
-    q: "Can I get a refund?",
-    a: "Because digital files can't be 'returned,' all sales are final. However, if your file is corrupted or broken and we can't fix it, we'll issue a full refund within 7 days of purchase. Your satisfaction is our priority.",
+    q: "What's your refund policy?",
+    a: "Due to the digital nature of source code, we generally don't offer refunds once the protocol is downloaded. However, if there is a technical defect we cannot fix, we will issue a credit manually."
   },
   {
-    q: "Can I use these in client projects or commercial work?",
-    a: "Yes — every product includes a standard commercial licence. You can use it in your own client projects, SaaS products, or internal tools. Reselling the raw files is not permitted unless the listing says 'Master Resell Rights'.",
+    q: "How do I get support?",
+    a: "Every product includes priority Discord support. Join our server and open a ticket in the #uplink-support channel. Our engineers are active 24/7."
   },
+  {
+    q: "Are these production-ready?",
+    a: "Yes. These aren't high-school tutorials. These are the same architectural frameworks we use to launch 7-figure SaaS platforms. Hardened, typed, and optimized."
+  },
+  {
+    q: "What tech stacks do you support?",
+    a: "We primary dominate the JavaScript/TypeScript ecosystem (React, Next.js, Node.js). We also provide specialized kits for Python AI agents and React Native mobile builds."
+  },
+  {
+    q: "Do you offer team licenses?",
+    a: "Yes. If you have a dev pod larger than 5 engineers, contact our enterprise unit for a custom Team Command License."
+  }
 ];
 
 export function HomeFAQ() {
-  const [openIndex, setOpenIndex] = useState<number | null>(null);
+  const [openIndex, setOpenIndex] = useState<number | null>(0);
 
   return (
-    <section className="py-24 bg-[#0a0c10] border-t border-white/5">
-      <div className="container mx-auto px-4 max-w-3xl">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-5xl font-black text-white italic uppercase tracking-tighter mb-4">Common <span className="text-cyan-400">Questions</span></h2>
-          <p className="text-gray-400 font-bold uppercase tracking-tight text-sm">
-            Everything you need to know before joining the swarm.
+    <section id="faq" className="py-32 bg-background relative overflow-hidden">
+      <div className="container px-6 mx-auto relative z-10 w-full max-w-4xl">
+        <div className="flex flex-col items-center text-center gap-6 mb-24">
+           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-secondary/5 border border-secondary/10 shadow-sm">
+            <HelpCircle className="w-4 h-4 text-secondary/40" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-secondary/60 italic">FAQ Protocol // V3.1</span>
+          </div>
+          <h2 className="text-5xl md:text-7xl font-black text-secondary tracking-tighter uppercase italic leading-[0.9]">
+            Common <span className="text-primary italic">Queries</span>
+          </h2>
+          <p className="text-secondary/50 font-bold text-lg uppercase tracking-tight">
+            Detailed answers for your hardware and software objectives.
           </p>
         </div>
 
         <div className="space-y-4">
-          {faqs.map((faq, i) => (
-            <div
+          {QUESTIONS.map((item, i) => (
+            <div 
               key={i}
-              className="border border-white/5 rounded-2xl overflow-hidden hover:border-cyan-500/20 transition-all bg-white/5"
+              className={`bg-white rounded-[2rem] border-4 transition-all duration-300 ${openIndex === i ? 'border-primary/20 shadow-2xl shadow-primary/5' : 'border-secondary/5'}`}
             >
               <button
                 onClick={() => setOpenIndex(openIndex === i ? null : i)}
-                className="w-full flex items-center justify-between gap-4 px-8 py-6 text-left"
+                className="w-full px-10 py-8 flex items-center justify-between gap-6 text-left"
               >
-                <span className="font-bold text-white uppercase italic tracking-tighter text-sm md:text-base">{faq.q}</span>
-                <motion.span animate={{ rotate: openIndex === i ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                  <ChevronDown className="w-5 h-5 text-muted-foreground shrink-0" />
-                </motion.span>
+                <span className="text-xl font-black text-secondary italic uppercase tracking-tight">{item.q}</span>
+                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all ${openIndex === i ? 'bg-primary text-white' : 'bg-secondary/5 text-secondary/40'}`}>
+                  {openIndex === i ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+                </div>
               </button>
+              
               <AnimatePresence>
                 {openIndex === i && (
                   <motion.div
                     initial={{ height: 0, opacity: 0 }}
                     animate={{ height: "auto", opacity: 1 }}
                     exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.3 }}
                     className="overflow-hidden"
                   >
-                    <p className="px-6 pb-5 text-sm text-muted-foreground leading-relaxed border-t border-border pt-4">
-                      {faq.a}
-                    </p>
+                    <div className="px-10 pb-10">
+                      <div className="h-px w-full bg-secondary/5 mb-8" />
+                      <p className="text-base md:text-lg font-bold text-secondary/50 uppercase tracking-tight leading-snug">
+                        {item.a}
+                      </p>
+                    </div>
                   </motion.div>
                 )}
               </AnimatePresence>

@@ -84,7 +84,7 @@ export function SearchBar() {
               className="fixed top-24 left-1/2 -translate-x-1/2 w-full max-w-2xl bg-white rounded-[2rem] shadow-2xl z-[101] overflow-hidden border border-black/5"
             >
               <div className="p-4 border-b border-gray-100 flex items-center gap-4">
-                <SearchIcon className="w-6 h-6 text-cyan-500" />
+                <SearchIcon className="w-6 h-6 text-primary" />
                 <input 
                   autoFocus
                   type="text"
@@ -112,12 +112,12 @@ export function SearchBar() {
                           <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-bold text-gray-900 group-hover:text-cyan-600 transition-colors uppercase tracking-tight">{product.name}</h4>
+                          <h4 className="font-bold text-gray-900 group-hover:text-primary transition-colors uppercase tracking-tight">{product.name}</h4>
                           <p className="text-sm text-gray-500 line-clamp-1">{product.category} — {product.description}</p>
                         </div>
                         <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                           <span className="text-xs font-black text-gray-900">₹{product.price.toLocaleString()}</span>
-                          <ArrowRight className="w-4 h-4 text-cyan-500" />
+                          <ArrowRight className="w-4 h-4 text-primary" />
                         </div>
                       </button>
                     ))}
@@ -142,7 +142,7 @@ export function SearchBar() {
                   <KbdHint keyName="Enter" label="Select" />
                   <KbdHint keyName="Esc" label="Close" />
                 </div>
-                <p className="text-[10px] font-bold text-gray-400 uppercase italic">Digital Swarm Semantic Search v2.4</p>
+                <p className="text-[10px] font-bold text-gray-400 uppercase italic">Digital Swarm Semantic Search v3.0</p>
               </div>
             </motion.div>
           </>
@@ -156,11 +156,11 @@ function QuickLink({ label, href }: { label: string; href: string }) {
   return (
     <Link 
       href={href}
-      className="p-4 rounded-2xl border border-gray-100 hover:border-cyan-500/30 hover:bg-cyan-50/50 transition-all group"
+      className="p-4 rounded-2xl border border-gray-100 hover:border-primary/30 hover:bg-primary/5 transition-all group"
     >
       <div className="flex items-center justify-between">
         <span className="font-bold text-gray-600 group-hover:text-gray-900 text-sm uppercase tracking-tight">{label}</span>
-        <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-cyan-500 transition-colors" />
+        <ArrowRight className="w-4 h-4 text-gray-300 group-hover:text-primary transition-colors" />
       </div>
     </Link>
   );

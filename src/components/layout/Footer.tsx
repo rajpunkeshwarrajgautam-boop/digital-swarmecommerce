@@ -1,113 +1,111 @@
-import { MapPin, Phone, Mail, Twitter, Instagram, Linkedin, Shield } from "lucide-react";
-import { Logo } from "../ui/Logo";
+"use client";
+
 import Link from "next/link";
+import { Github, Twitter, Linkedin, ExternalLink, ShieldCheck } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 
 export function Footer() {
+  const currentYear = new Date().getFullYear();
+
   return (
-    <footer className="bg-black border-t-8 border-cyan-500 mt-auto pt-32 pb-16 relative overflow-hidden text-white z-20">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 z-0 bg-[radial-gradient(circle_at_20%_20%,rgba(6,182,212,0.05)_0%,transparent_50%)] pointer-events-none" />
-      
-      {/* Top Tape */}
-      <div className="absolute top-0 right-10 w-64 h-10 bg-cyan-500 border-x-4 border-b-4 border-black text-black font-black italic uppercase tracking-widest flex items-center justify-center shadow-[4px_4px_0_rgba(6,182,212,0.3)] z-10 text-[10px]">PRODUCTION_SYNC_ESTABLISHED</div>
-
+    <footer className="bg-secondary pt-24 pb-12 border-t border-white/5 relative overflow-hidden">
       <div className="container mx-auto px-6 relative z-10 w-full max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-20 mb-32">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           {/* Brand Column */}
-          <div className="md:col-span-4 space-y-10">
-            <Logo />
-            <div className="p-6 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-xl">
-              <p className="text-[10px] text-gray-400 leading-relaxed font-black uppercase italic tracking-widest">
-                Elite Digital Infrastructure <br />
-                <span className="text-white">Built for the next decade of growth.</span>
-              </p>
+          <div className="flex flex-col gap-8">
+            <Link href="/" className="hover:opacity-80 transition-opacity">
+              <Logo className="text-white" />
+            </Link>
+            <p className="text-white/40 text-sm font-bold uppercase tracking-tight leading-relaxed">
+              Premium Code Templates & UI Kits for Elite Developers. 
+              Built by developers, for developers. 
+              The ultimate architectural baseline.
+            </p>
+            <div className="flex items-center gap-5">
+              <Link href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-primary transition-all">
+                <Twitter className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-primary transition-all">
+                <Github className="w-5 h-5" />
+              </Link>
+              <Link href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-primary transition-all">
+                <Linkedin className="w-5 h-5" />
+              </Link>
             </div>
-            <div className="flex gap-4">
-              <SocialIcon icon={<Twitter className="w-5 h-5" />} href="#" label="Twitter" />
-              <SocialIcon icon={<Linkedin className="w-5 h-5" />} href="#" label="LinkedIn" />
-              <SocialIcon icon={<Instagram className="w-5 h-5" />} href="#" label="Instagram" />
+          </div>
+
+          {/* Products Column */}
+          <div className="flex flex-col gap-8">
+            <h4 className="text-xs font-black uppercase tracking-[0.3em] text-primary italic">Global Products</h4>
+            <div className="flex flex-col gap-4">
+              <FooterLink href="/products?category=Boilerplates" label="Boilerplates" />
+              <FooterLink href="/products?category=AI+Agents" label="AI Agents" />
+              <FooterLink href="/products?category=UI+Kits" label="UI Kits" />
+              <FooterLink href="/products?category=Dashboards" label="Dashboards" />
+              <FooterLink href="/products?category=Mobile" label="Mobile Apps" />
             </div>
           </div>
 
-          {/* Shop Links */}
-          <div className="md:col-span-2">
-            <h4 className="text-[10px] font-black uppercase tracking-widest mb-10 text-cyan-400 italic">Core_Assets</h4>
-            <ul className="space-y-5 text-[10px] font-black uppercase italic tracking-widest text-gray-500">
-              <li><Link href="/products" className="hover:text-white transition-colors">All_Protocols</Link></li>
-              <li><Link href="/products?category=AI+Agents" className="hover:text-white transition-colors text-white">Neural_Sworms</Link></li>
-              <li><Link href="/products?category=Web+Development" className="hover:text-white transition-colors">Software_Stacks</Link></li>
-              <li><Link href="/elite" className="text-cyan-400 hover:text-white transition-colors">Elite_Access</Link></li>
-              <li><Link href="/solutions" className="hover:text-white transition-colors">Verticals</Link></li>
-            </ul>
+          {/* Support Column */}
+          <div className="flex flex-col gap-8">
+            <h4 className="text-xs font-black uppercase tracking-[0.3em] text-primary italic">Support Protocols</h4>
+            <div className="flex flex-col gap-4">
+              <FooterLink href="/help" label="Help Center" />
+              <FooterLink href="/contact" label="Contact Desk" />
+              <FooterLink href="/refund" label="Refund Policy" />
+              <FooterLink href="/about" label="About Us" />
+              <FooterLink href="/licenses" label="Software Licenses" />
+            </div>
           </div>
 
-          {/* Company Links */}
-          <div className="md:col-span-2">
-            <h4 className="text-[10px] font-black uppercase tracking-widest mb-10 text-cyan-400 italic">Legal_Node</h4>
-            <ul className="space-y-5 text-[10px] font-black uppercase italic tracking-widest text-gray-500">
-              <li><Link href="/about" className="hover:text-white transition-colors">Mission_Profile</Link></li>
-              <li><Link href="/terms" className="hover:text-white transition-colors">Usage_Terms</Link></li>
-              <li><Link href="/privacy" className="hover:text-white transition-colors">Privacy_Protocol</Link></li>
-              <li><Link href="/refund" className="hover:text-white transition-colors">Exit_Agreement</Link></li>
-              <li><Link href="/contact" className="hover:text-white transition-colors">Support_Uplink</Link></li>
-            </ul>
-          </div>
-
-          {/* Contact Column */}
-          <div className="md:col-span-4">
-            <h4 className="text-[10px] font-black uppercase tracking-widest mb-10 text-cyan-400 italic">Data_Uplink</h4>
-            <ul className="space-y-8 text-[10px] font-black uppercase italic tracking-widest text-gray-400">
-              <li className="flex items-start gap-5">
-                <MapPin className="w-5 h-5 text-cyan-500 shrink-0" />
-                <span className="leading-tight">Cyber City Innovation Hub,<br />Haryana 122002, IND</span>
-              </li>
-              <li className="flex items-center gap-5">
-                <Phone className="w-5 h-5 text-cyan-500 shrink-0" />
-                <a href="tel:+918810777573" className="hover:text-white transition-colors">+91 88107 77573</a>
-              </li>
-              <li className="flex items-start gap-5">
-                <Mail className="w-5 h-5 text-cyan-500 shrink-0" />
-                <a href="mailto:support@digitalswarm.in" className="hover:text-white transition-colors">support@digitalswarm.in</a>
-              </li>
-            </ul>
+          {/* Legal Column */}
+          <div className="flex flex-col gap-8">
+            <h4 className="text-xs font-black uppercase tracking-[0.3em] text-primary italic">Legal Matrix</h4>
+            <div className="flex flex-col gap-4">
+              <FooterLink href="/terms" label="Terms of Service" />
+              <FooterLink href="/privacy" label="Privacy Protocol" />
+              <FooterLink href="/cookie" label="Cookie Usage" />
+            </div>
+            
+            {/* Payment Verification */}
+            <div className="mt-4 pt-8 border-t border-white/5">
+              <div className="flex items-center gap-3 mb-4">
+                <ShieldCheck className="w-5 h-5 text-primary" />
+                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">Verified Processor</span>
+              </div>
+              <div className="flex flex-wrap gap-4 opacity-20 filter grayscale">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" className="h-4" alt="Razorpay" />
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" className="h-4" alt="Stripe" />
+              </div>
+            </div>
           </div>
         </div>
 
-        <div className="pt-16 border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-10">
-          <div className="flex flex-col gap-4 text-center md:text-left">
-             <p className="text-[10px] font-black uppercase tracking-widest text-gray-500 italic">
-               © {new Date().getFullYear()} Digital_Swarm. Secure Checkout via <span className="text-white">Cashfree Payments</span>.
-             </p>
-             <div className="flex flex-wrap justify-center md:justify-start gap-x-8 gap-y-2 text-[8px] font-black uppercase tracking-widest text-white/20 italic">
-                <span>GSTIN: [AUTHENTICATED]</span>
-                <span>Udyam: [VERIFIED]</span>
-                <span>MSME Industrial Node</span>
-             </div>
-          </div>
-          <div className="flex gap-4">
-            <div className="px-6 py-3 bg-white/5 border border-white/10 rounded-2xl flex items-center gap-6">
-                <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center border border-cyan-500/30">
-                  <Shield className="w-4 h-4 text-cyan-500" />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-gray-400">Secure SSL Node Active</span>
-            </div>
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 italic">
+            © {currentYear} DIGITAL SWARM // ALL RIGHTS RESERVED
+          </p>
+          <div className="flex items-center gap-8">
+             <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/10 italic">Secure_Uplink: v3.2.0</span>
+             <ExternalLink className="w-3 h-3 text-white/10" />
           </div>
         </div>
       </div>
+
+      {/* Background Ambience */}
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
     </footer>
   );
 }
 
-function SocialIcon({ icon, href, label }: { icon: React.ReactNode; href: string; label: string }) {
+function FooterLink({ href, label }: { href: string; label: string }) {
   return (
-    <a
-      href={href}
-      target="_blank"
-      rel="noopener noreferrer"
-      aria-label={label}
-      className="w-12 h-12 border-4 border-black bg-white flex items-center justify-center text-black hover:bg-black hover:text-[#CCFF00] shadow-[4px_4px_0_#000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all duration-300"
+    <Link 
+      href={href} 
+      className="text-sm font-bold uppercase tracking-tight text-white/40 hover:text-white transition-all flex items-center group gap-2"
     >
-      {icon}
-    </a>
+      {label}
+      <div className="w-0 h-px bg-primary group-hover:w-4 transition-all" />
+    </Link>
   );
 }

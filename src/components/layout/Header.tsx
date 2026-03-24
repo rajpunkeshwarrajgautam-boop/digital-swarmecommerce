@@ -1,165 +1,164 @@
 "use client";
 
-import Link from "next/link";
-import { ShoppingCart, Menu, X, Heart } from "lucide-react";
 import { useState, useEffect } from "react";
-import { Button } from "../ui/Button";
-import { motion, AnimatePresence } from "framer-motion";
-import { useCartStore } from "@/lib/store";
-import { useWishlistStore } from "@/lib/wishlist-store";
-import { CartDrawer } from "@/components/cart/CartDrawer";
-import { SignInButton, UserButton, useUser } from '@clerk/nextjs';
+import Link from "next/link";
+import { Menu, X, ShoppingCart, Heart } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { CartDrawer } from "@/components/cart/CartDrawer";
 import { NavbarMenu } from "./NavbarMenu";
 import { SearchBar } from "./SearchBar";
+import { useCartStore } from "@/lib/store";
+import { useWishlistStore } from "@/lib/wishlist-store";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { items, toggleCart } = useCartStore();
+  const { items: cartItems, toggleCart } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
-  const { user, isLoaded } = useUser();
-  
   const [mounted, setMounted] = useState(false);
+
+  const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const totalWishlist = wishlistItems.length;
+
   useEffect(() => {
-    requestAnimationFrame(() => setMounted(true));
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
-    };
+    setMounted(true);
+    const handleScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const totalItems = items ? items.reduce((acc, item) => acc + item.quantity, 0) : 0;
-  const totalWishlist = wishlistItems ? wishlistItems.length : 0;
-
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${scrolled ? 'bg-white/80 backdrop-blur-xl border-b border-black/5 py-2' : 'bg-transparent py-4'}`}>
-        <div className="container mx-auto px-6 h-12 flex items-center justify-between gap-4">
+      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 backdrop-blur-xl border-b border-secondary/10 py-3 shadow-lg' : 'bg-transparent py-6'}`}>
+        <div className="container mx-auto px-6 h-full flex items-center justify-between gap-4">
           
-          {/* Left: Logo & Nav */}
-          <div className="flex items-center gap-8 h-full">
-            <Link href="/" className="shrink-0 hover:opacity-80 transition-opacity flex items-center">
+          {/* 1. LEFT: Logo */}
+          <div className="flex items-center shrink-0 min-w-fit">
+            <Link href="/" className="hover:opacity-80 transition-opacity">
               <Logo />
             </Link>
-             
+          </div>
+
+          {/* 2. CENTER: Navigation (Desktop) - Integrated NavbarMenu */}
+          <div className="hidden lg:flex flex-1 justify-center">
             <NavbarMenu />
           </div>
-  
-          {/* Right: Actions, Search & Auth */}
-          <div className="flex items-center gap-4 h-full">
-            <SearchBar />
 
-            <div className="flex items-center gap-1">
+          {/* 3. RIGHT: Actions */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="hidden md:block">
+              <SearchBar />
+            </div>
+            
+            <div className="flex items-center gap-1 sm:gap-2">
               <Link href="/wishlist">
-                <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    className="relative rounded-full h-10 w-10 text-gray-500 hover:bg-red-50 hover:text-red-500 transition-all group"
-                >
-                  <Heart className="w-5 h-5" />
+                <button className="relative p-2 text-secondary hover:text-primary transition-colors group">
+                  <Heart className="w-6 h-6" />
                   {mounted && totalWishlist > 0 && (
-                    <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-500 text-[9px] font-bold text-white shadow-sm ring-2 ring-white">
+                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm ring-2 ring-white">
                       {totalWishlist}
                     </span>
                   )}
-                </Button>
+                </button>
               </Link>
-  
-              <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="relative rounded-full h-10 w-10 text-gray-500 hover:bg-cyan-50 hover:text-cyan-600 transition-all group" 
-                  onClick={toggleCart}
+              
+              <button 
+                onClick={toggleCart}
+                className="relative p-2 text-secondary hover:text-primary transition-colors group"
               >
-                <ShoppingCart className="w-5 h-5" />
+                <ShoppingCart className="w-6 h-6" />
                 {mounted && totalItems > 0 && (
-                  <span className="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-cyan-600 text-[9px] font-bold text-white shadow-sm ring-2 ring-white">
+                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm ring-2 ring-white">
                     {totalItems}
                   </span>
                 )}
-                <span className="sr-only">Cart ({totalItems})</span>
-              </Button>
-            </div>
+              </button>
 
-            <div className="h-6 w-px bg-black/5" />
+              <div className="h-6 w-px bg-secondary/10 mx-1 hidden sm:block" />
 
-            {!isLoaded ? (
-              <div className="w-10 h-10 bg-gray-100 rounded-full animate-pulse" />
-            ) : !user ? (
-               <SignInButton mode="modal">
-                 <button className="text-sm font-bold text-gray-900 border-2 border-transparent hover:border-black rounded-full px-5 py-2 transition-all">
-                    Sign In
-                 </button>
-              </SignInButton>
-            ) : (
-              <div className="flex items-center gap-3">
-                 <Link href="/dashboard" className="hidden xl:block">
-                   <span className="text-xs font-black uppercase text-gray-400 hover:text-gray-900 transition-colors">Portal</span>
-                 </Link>
-                 <div className="flex items-center justify-center p-[2px] rounded-full border border-black/5 bg-white shadow-sm">
-                    <UserButton afterSignOutUrl="/" />
-                 </div>
+              <div className="flex items-center gap-1">
+                <SignedOut>
+                  <SignInButton mode="modal">
+                     <button className="text-secondary font-black uppercase italic text-[10px] sm:text-xs tracking-widest hover:text-primary transition-colors px-2 sm:px-3 py-1.5 rounded-lg hover:bg-secondary/5 transition-all">Sign In</button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <UserButton afterSignOutUrl="/" />
+                </SignedIn>
               </div>
-            )}
 
-            {/* Mobile Toggle */}
-            <div className="lg:hidden flex items-center">
-              <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="rounded-full h-10 w-10 hover:bg-black/5 text-gray-700"
-                  onClick={() => setIsMenuOpen(!isMenuOpen)}
+              {/* Mobile Trigger */}
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="lg:hidden p-2 text-secondary hover:text-primary transition-colors ml-1"
               >
-                {isMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
-              </Button>
+                {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+              </button>
             </div>
           </div>
         </div>
-
-        {/* Mobile Menu Overlay */}
-        <AnimatePresence>
-          {isMenuOpen && (
-              <motion.div
-              initial={{ opacity: 0, scale: 0.95, y: -10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.95, y: -10 }}
-              transition={{ duration: 0.2 }}
-              className="absolute top-20 right-6 left-6 bg-white glass border border-black/5 p-8 rounded-[2.5rem] shadow-2xl z-60"
-            >
-              <nav className="flex flex-col gap-6">
-                <MobileLink href="/products" label="Store" onClick={() => setIsMenuOpen(false)} />
-                <MobileLink href="/products?category=AI+Agents" label="AI Agents" onClick={() => setIsMenuOpen(false)} hot />
-                <MobileLink href="/elite" label="Elite Tier" onClick={() => setIsMenuOpen(false)} />
-                <MobileLink href="/bundle-builder" label="Bundles" onClick={() => setIsMenuOpen(false)} />
-                <MobileLink href="/about" label="About Us" onClick={() => setIsMenuOpen(false)} />
-                {user && (
-                   <Link href="/dashboard" className="clay-btn text-center mt-4" onClick={() => setIsMenuOpen(false)}>
-                      Access Dashboard
-                   </Link>
-                )}
-              </nav>
-            </motion.div>
-          )}
-        </AnimatePresence>
       </header>
-      
+
+      {/* Mobile Menu Overlay */}
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, x: '100%' }}
+            animate={{ opacity: 1, x: 0 }}
+            exit={{ opacity: 0, x: '100%' }}
+            transition={{ type: "spring", damping: 25, stiffness: 200 }}
+            className="fixed inset-0 z-[60] bg-white lg:hidden flex flex-col p-8 overflow-y-auto"
+          >
+            <div className="flex items-center justify-between mb-12">
+              <Logo />
+              <button onClick={() => setIsMenuOpen(false)}>
+                <X className="w-9 h-9 text-secondary" />
+              </button>
+            </div>
+
+            <nav className="flex flex-col gap-8 mb-12">
+              <MobileNavLink href="#products" onClick={() => setIsMenuOpen(false)}>Products</MobileNavLink>
+              <MobileNavLink href="#about" onClick={() => setIsMenuOpen(false)}>About</MobileNavLink>
+              <MobileNavLink href="#faq" onClick={() => setIsMenuOpen(false)}>FAQ</MobileNavLink>
+              <MobileNavLink href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</MobileNavLink>
+            </nav>
+
+            <div className="mt-auto pt-8 border-t border-secondary/10 flex flex-col gap-6">
+              <SignedOut>
+                <SignInButton mode="modal">
+                  <button className="w-full py-4 bg-primary text-white font-black uppercase italic tracking-widest rounded-2xl shadow-xl shadow-primary/20">Access Protocol</button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <div className="flex items-center gap-4 p-4 bg-secondary/5 rounded-2xl">
+                  <UserButton />
+                  <span className="font-bold text-secondary">Active Session</span>
+                </div>
+              </SignedIn>
+              
+              <div className="flex items-center justify-between text-[10px] font-black uppercase text-secondary/40 tracking-tighter">
+                <span>Digital Swarm v3.0 // 2026</span>
+                <span>Production Environment</span>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
       <CartDrawer />
     </>
   );
 }
 
-function MobileLink({ href, label, onClick, hot }: { href: string; label: string; onClick: () => void; hot?: boolean }) {
+function MobileNavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
   return (
     <Link 
       href={href} 
-      className="text-2xl font-black italic uppercase tracking-tighter text-gray-900 hover:text-cyan-500 transition-all flex items-center justify-between" 
       onClick={onClick}
+      className="text-4xl font-black uppercase italic tracking-tighter text-secondary hover:text-primary transition-colors"
     >
-      {label}
-      {hot && <span className="text-[10px] bg-red-100 text-red-600 px-2 py-0.5 rounded-full font-black animate-pulse">HOT</span>}
+      {children}
     </Link>
   );
 }
-

@@ -11,19 +11,19 @@ const PRODUCTS = [
     title: "AI Agent Swarms",
     href: "/products?category=AI+Agents",
     description: "Autonomous multi-agent frameworks for YouTube, Sales, and Legal automation.",
-    icon: <Cpu className="w-5 h-5 text-cyan-500" />,
+    icon: <Cpu className="w-5 h-5 text-primary" />,
   },
   {
     title: "Software Starters",
     href: "/products?category=Web+Development",
     description: "Next.js 15 boilerplates with Clerk, Supabase, and Razorpay pre-integrated.",
-    icon: <Globe className="w-5 h-5 text-blue-500" />,
+    icon: <Globe className="w-5 h-5 text-secondary" />,
   },
   {
     title: "Elite Subscriptions",
     href: "/elite",
     description: "Private Discord access and weekly AI prompt/module injections.",
-    icon: <Shield className="w-5 h-5 text-indigo-500" />,
+    icon: <Shield className="w-5 h-5 text-[#4ECDC4]" />,
   },
 ];
 
@@ -75,18 +75,18 @@ export function NavbarMenu() {
                       href={cat.href}
                       className="px-4 py-2 rounded-xl text-sm font-bold text-gray-600 hover:text-gray-900 hover:bg-gray-50 transition-all flex items-center gap-2 group/cat"
                     >
-                      <Zap className="w-3 h-3 text-gray-300 group-hover/cat:text-cyan-500 transition-colors" />
+                      <Zap className="w-3 h-3 text-gray-300 group-hover/cat:text-primary transition-colors" />
                       {cat.title}
                     </Link>
                  ))}
                </div>
                <div className="bg-gray-50 rounded-2xl p-4 flex flex-col justify-center gap-3">
-                  <div className="w-10 h-10 bg-cyan-100/50 rounded-xl flex items-center justify-center text-cyan-600">
+                  <div className="w-10 h-10 bg-primary/10 rounded-xl flex items-center justify-center text-primary">
                     <Sparkles className="w-6 h-6" />
                   </div>
                   <h4 className="font-black uppercase italic tracking-tighter text-gray-900 leading-tight">Elite Tier Inbound</h4>
                   <p className="text-xs text-gray-500 font-medium">Gain access to the full matrix of private repositories and 1-on-1 support.</p>
-                  <Link href="/elite" className="text-xs font-black uppercase text-cyan-600 hover:text-cyan-700 flex items-center gap-1 group/link">
+                  <Link href="/elite" className="text-xs font-black uppercase text-primary hover:text-secondary flex items-center gap-1 group/link">
                     Upgrade Access <ChevronDown className="w-3 h-3 -rotate-90 group-hover/link:translate-x-1 transition-transform" />
                   </Link>
                </div>
@@ -96,13 +96,13 @@ export function NavbarMenu() {
 
         {/* Static Links */}
         <NavigationMenu.Item>
-          <Link href="/pricing" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">Pricing</Link>
+          <Link href="#products" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">Pricing</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/about" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">About</Link>
+          <Link href="#about" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">About</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/contact" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">Contact</Link>
+          <Link href="#contact" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">Contact</Link>
         </NavigationMenu.Item>
 
         {/* Indicator */}
@@ -121,30 +121,28 @@ export function NavbarMenu() {
 const ListItem = React.forwardRef<HTMLAnchorElement, React.ComponentPropsWithoutRef<"a"> & { icon?: React.ReactNode }>(
   ({ className, title, children, icon, ...props }, ref) => {
     return (
-      <li>
-        <NavigationMenu.Link asChild>
-          <a
-            ref={ref}
-            className={cn(
-              "block select-none rounded-2xl p-4 leading-none no-underline outline-none transition-all group hover:bg-gray-50",
-              className
-            )}
-            {...props}
-          >
-            <div className="flex items-center gap-4">
-              {icon && <div className="shrink-0 p-2 rounded-xl bg-white border border-black/5 group-hover:scale-110 transition-transform shadow-sm">{icon}</div>}
-              <div>
-                <div className="text-sm font-black uppercase tracking-tight text-gray-900 mb-1 group-hover:text-cyan-600 transition-colors leading-none">
-                  {title}
-                </div>
-                <p className="line-clamp-2 text-xs font-medium leading-relaxed text-gray-500">
-                  {children}
-                </p>
+      <NavigationMenu.Link asChild>
+        <a
+          ref={ref}
+          className={cn(
+            "block select-none rounded-2xl p-4 leading-none no-underline outline-none transition-all group hover:bg-gray-50",
+            className
+          )}
+          {...props}
+        >
+          <div className="flex items-center gap-4">
+            {icon && <div className="shrink-0 p-2 rounded-xl bg-white border border-black/5 group-hover:scale-110 transition-transform shadow-sm">{icon}</div>}
+            <div>
+              <div className="text-sm font-black uppercase tracking-tight text-gray-900 mb-1 group-hover:text-primary transition-colors leading-none">
+                {title}
               </div>
+              <p className="line-clamp-2 text-xs font-medium leading-relaxed text-gray-500">
+                {children}
+              </p>
             </div>
-          </a>
-        </NavigationMenu.Link>
-      </li>
+          </div>
+        </a>
+      </NavigationMenu.Link>
     );
   }
 );

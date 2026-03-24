@@ -1,90 +1,112 @@
 "use client";
 
-import { Zap, Shield, Download } from "lucide-react";
+import { CheckCircle2, Shield } from "lucide-react";
 import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { ParallaxHero } from "@/components/home/ParallaxHero";
-import { ProblemSolution } from "@/components/home/ProblemSolution";
 import { FieldReports } from "@/components/home/FieldReports";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
-import { LeadMagnet } from "@/components/home/LeadMagnet";
 import { EmailCapture } from "@/components/home/EmailCapture";
+import { PromoBanner } from "@/components/home/PromoBanner";
+import { TrustLogos } from "@/components/home/TrustLogos";
 
 export default function Home() {
   return (
-    <div className="flex flex-col min-h-screen relative z-10 w-full">
-      {/* Hero Section */}
+    <div className="flex flex-col min-h-screen relative z-10 w-full bg-background">
+      {/* 6. LIMITED OFFER Banner */}
+      <PromoBanner />
+
+      {/* 2. HERO Section */}
       <ParallaxHero />
 
-      {/* Problem / Solution */}
-      <ProblemSolution />
+      {/* 10. TRUST SIGNALS */}
+      <TrustLogos />
 
-      {/* Featured Products */}
-      <FeaturedSection />
+      {/* 3. PRODUCT CATALOG */}
+      <div id="products">
+        <FeaturedSection />
+      </div>
 
-      {/* Field Reports (Social Proof + Testimonials) */}
-      <FieldReports />
-
-      {/* Soft UI Features Grid */}
-      <section className="py-24 bg-[#0a0c10] relative overflow-hidden border-t border-white/5">
+      {/* 17. ABOUT SECTION (Integrated Inline) */}
+      <section id="about" className="py-32 bg-secondary text-white relative overflow-hidden">
         <div className="container px-6 mx-auto relative z-10 w-full max-w-7xl">
-          <div className="text-center mb-20 max-w-3xl mx-auto">
-            <h2 className="text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-6">
-              Engineering <span className="text-transparent bg-clip-text bg-linear-to-r from-cyan-400 to-blue-500">Excellence</span>
-            </h2>
-            <p className="text-gray-400 text-lg font-medium">
-              Built for speed. Audited for scale. Digital Swarm provides the architectural skeleton for the next generation of software.
-            </p>
-          </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <FeatureCard
-              icon={<Download className="h-8 w-8 text-cyan-400" />}
-              title="Instant Delivery"
-              description="Eliminate latency. Direct architectural sync is processed through secure protocols and delivered instantly."
-              bgColor="bg-cyan-500/10"
-            />
-            <FeatureCard
-              icon={<Shield className="h-8 w-8 text-blue-500" />}
-              title="Hardened Code"
-              description="Every blueprint is stress-tested for production environments. We do not distribute insecure boilerplate."
-              bgColor="bg-blue-500/10"
-            />
-            <FeatureCard
-              icon={<Zap className="h-8 w-8 text-indigo-400" />}
-              title="Rapid Launch"
-              description="Bypass documentation fatigue. Our frameworks include deployment-ready manifests for minute-one launches."
-              bgColor="bg-indigo-500/10"
-            />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
+            <div className="flex flex-col gap-8">
+              <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 w-fit">
+                <span className="text-[10px] font-black tracking-[0.2em] text-primary uppercase italic">Our Mission</span>
+              </div>
+              <h2 className="text-5xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.9]">
+                Built by <span className="text-primary italic">Developers</span>, <br />
+                For Developers.
+              </h2>
+              <p className="text-white/60 text-xl font-bold uppercase tracking-tight leading-snug">
+                Digital Swarm was created to eliminate the &quot;Blank Screen&quot; problem. We provide the hardened architectural patterns needed to go from zero to production in hours, not weeks.
+              </p>
+              <div className="grid grid-cols-2 gap-8 mt-4">
+                <div className="flex flex-col gap-2">
+                  <span className="text-4xl font-black text-primary italic">2,000+</span>
+                  <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Developers Empowered</span>
+                </div>
+                <div className="flex flex-col gap-2">
+                  <span className="text-4xl font-black text-primary italic">30+</span>
+                  <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Premium Protocols</span>
+                </div>
+              </div>
+            </div>
+            
+            <div className="relative aspect-square rounded-[3rem] overflow-hidden border-8 border-white/5 shadow-2xl skew-y-3">
+              <img 
+                src="https://images.unsplash.com/photo-1522071823991-b51829f7ceac?auto=format&fit=crop&q=80&w=800" 
+                alt="Digital Swarm Team" 
+                className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
+              />
+              <div className="absolute inset-0 bg-linear-to-t from-secondary via-transparent to-transparent opacity-60" />
+              <div className="absolute bottom-12 left-12 right-12 p-8 bg-white/10 backdrop-blur-3xl rounded-3xl border border-white/10">
+                <p className="text-sm font-bold italic uppercase tracking-tight text-white/90">
+                  &quot;The goal isn&apos;t just to write code. The goal is to build empires. We provide the bricks.&quot;
+                </p>
+                <p className="text-[10px] font-black uppercase text-primary mt-4 tracking-widest">— Digital Swarm Engineering</p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* How It Works */}
+      {/* 4. TESTIMONIALS (Consolidated) */}
+      <FieldReports />
+
+      {/* 9. HOW IT WORKS */}
       <HowItWorks />
 
-      {/* FAQ */}
-      <HomeFAQ />
-
-      {/* Lead Magnet Section */}
-      <LeadMagnet />
-
-      {/* Email Capture + Final CTA */}
-      <EmailCapture />
-    </div>
-  );
-}
-
-// FeatureCard component for the Benefits Grid
-
-function FeatureCard({ icon, title, description, bgColor }: { icon: React.ReactNode; title: string; description: string; bgColor?: string }) {
-  const bg = bgColor || "bg-white/5";
-  return (
-    <div className="bg-[#0f1115] backdrop-blur-xl border border-white/10 p-8 rounded-3xl hover:border-cyan-500/30 transition-all group hover:-translate-y-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-      <div className={`${bg} mb-6 flex items-center justify-center p-4 rounded-2xl w-16 h-16 border border-white/5 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(255,255,255,0.05)]`}>
-        {icon}
+      {/* 7. FAQ SECTION */}
+      <div id="faq">
+        <HomeFAQ />
       </div>
-      <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">{title}</h3>
-      <p className="text-gray-400 font-medium leading-relaxed">{description}</p>
+
+      {/* 8. NEWSLETTER SECTION */}
+      <div id="contact">
+        <EmailCapture />
+      </div>
+
+      {/* Visual Trust Badge strip */}
+      <div className="bg-white py-12 border-t border-secondary/5">
+        <div className="container mx-auto px-6 flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-40">
+           <div className="flex items-center gap-2">
+             <Shield className="w-5 h-5 text-secondary" />
+             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">SSL_SECURE_PAYMENTS</span>
+           </div>
+           <div className="flex items-center gap-2">
+             <CheckCircle2 className="w-5 h-5 text-secondary" />
+             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">30_DAY_MONEY_BACK</span>
+           </div>
+           <div className="flex items-center gap-2">
+             <div className="flex gap-0.5">
+               {[1,2,3,4,5].map(i => <span key={i} className="text-secondary text-xs">★</span>)}
+             </div>
+             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">4.9/5 RATING</span>
+           </div>
+        </div>
+      </div>
     </div>
   );
 }
