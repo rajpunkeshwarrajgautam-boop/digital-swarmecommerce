@@ -130,7 +130,7 @@ export default function EliteTierPage() {
                     className="w-full relative group overflow-hidden bg-cyan-500 hover:bg-cyan-400 text-black font-black uppercase italic tracking-widest text-lg py-5 rounded-xl transition-all hover:shadow-[0_0_30px_rgba(6,182,212,0.6)]"
                   >
                     <span className="relative z-10 flex items-center justify-center gap-2">
-                       Initialize Elite Uplink ->
+                       Initialize Elite Uplink -&gt;
                     </span>
                     <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300 ease-out" />
                   </button>

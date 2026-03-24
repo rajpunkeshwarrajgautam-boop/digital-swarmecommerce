@@ -84,7 +84,7 @@ function FeatureCard({ icon, title, description, bgColor }: { icon: React.ReactN
   const bg = bgColor || "bg-white/5";
   return (
     <div className="bg-[#0f1115] backdrop-blur-xl border border-white/10 p-8 rounded-3xl hover:border-cyan-500/30 transition-all group hover:-translate-y-2 shadow-[0_10px_30px_rgba(0,0,0,0.5)]">
-      <div className={\`mb-6 flex items-center justify-center p-4 rounded-2xl w-16 h-16 \${bg} border border-white/5 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(255,255,255,0.05)]\`}>
+      <div className={`${bg} mb-6 flex items-center justify-center p-4 rounded-2xl w-16 h-16 border border-white/5 group-hover:scale-110 transition-transform duration-300 shadow-[0_0_15px_rgba(255,255,255,0.05)]`}>
         {icon}
       </div>
       <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">{title}</h3>
