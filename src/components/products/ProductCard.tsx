@@ -77,7 +77,7 @@ export function ProductCard({ product }: ProductCardProps) {
       className="group relative bg-white rounded-[2.5rem] p-6 transition-all duration-500 h-full flex flex-col hover:shadow-[0_40px_80px_rgba(26,26,46,0.1)] border border-secondary/5 hover:border-primary/20"
     >
       <div className="block relative aspect-4/5 w-full mb-8 overflow-hidden rounded-[2rem] bg-secondary/5 border-2 border-transparent group-hover:border-primary/10 transition-all">
-        <Link href={`/products/${product.id}`} className="block w-full h-full">
+        <Link href={`/product/${product.id}`} className="block w-full h-full">
           <Image
             src={product.image}
             fill
@@ -131,7 +131,7 @@ export function ProductCard({ product }: ProductCardProps) {
         <TechBadges category={product.category} />
 
         <div className="flex gap-4 mt-8 relative z-10">
-          <Link href={`/products/${product.id}`} className="flex-1">
+          <Link href={`/product/${product.id}`} className="flex-1">
             <button className="w-full h-14 bg-secondary/5 text-secondary rounded-2xl font-black uppercase italic text-xs border-2 border-transparent hover:bg-white hover:border-secondary/20 transition-all">
               View Details
             </button>

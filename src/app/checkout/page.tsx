@@ -4,10 +4,22 @@ import { useCartStore } from "@/lib/store";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
-import { ArrowLeft, Check, Lock, Truck, ShieldCheck } from "lucide-react";
+import { ArrowLeft, Check, Lock, Truck } from "lucide-react";
 import Image from "next/image";
 
 import { load } from "@cashfreepayments/cashfree-js";
+
+function PaymentOpt({ active, onClick, title, desc }: { active: boolean, onClick: () => void, title: string, desc: string }) {
+  return (
+    <button 
+      onClick={onClick}
+      className={`p-6 border-4 border-black text-left transition-all shadow-[6px_6px_0_#000] ${active ? "bg-[#CCFF00]" : "bg-white hover:bg-black/5"}`}
+    >
+      <h4 className="font-black uppercase italic tracking-tighter text-lg">{title}</h4>
+      <p className="text-[10px] font-black uppercase text-black/50 mt-1">{desc}</p>
+    </button>
+  );
+}
 
 export default function CheckoutPage() {
   const { items, total, clearCart } = useCartStore();
@@ -15,32 +27,8 @@ export default function CheckoutPage() {
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
   const [cashfree, setCashfree] = useState<unknown>(null);
-
-  useEffect(() => {
-    const id = requestAnimationFrame(() => setIsClient(true));
-    const initCashfree = async () => {
-      const mode = (process.env.NEXT_PUBLIC_CASHFREE_ENV === "production" || process.env.NEXT_PUBLIC_CASHFREE_ENV === "PROD") 
-        ? "production" 
-        : "sandbox";
-      
-      const cf = await load({ mode: mode as "sandbox" | "production" });
-      setCashfree(cf);
-    };
-    initCashfree();
-
-    // Meta Pixel InitiateCheckout
-    if (typeof window !== 'undefined' && window.fbq) {
-      window.fbq('track', 'InitiateCheckout', {
-        value: total,
-        currency: 'INR',
-        content_ids: items.map(i => i.id),
-        content_type: 'product',
-        num_items: items.length
-      });
-    }
-
-    return () => cancelAnimationFrame(id);
-  }, [items, total]);
+  const [currency, setCurrency] = useState<"INR" | "USD">("INR");
+  const [paymentMethod, setPaymentMethod] = useState<"cashfree" | "razorpay" | "stripe">("cashfree");
 
   const [formData, setFormData] = useState({
     firstName: "",
@@ -53,6 +41,36 @@ export default function CheckoutPage() {
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  useEffect(() => {
+    setIsClient(true);
+    
+    // Auto-select payment method based on currency
+    if (currency === "USD") setPaymentMethod("stripe");
+    else if (paymentMethod === "stripe") setPaymentMethod("cashfree");
+
+    const initCashfree = async () => {
+      const mode = (process.env.NEXT_PUBLIC_CASHFREE_ENV === "production" || process.env.NEXT_PUBLIC_CASHFREE_ENV === "PROD") 
+        ? "production" 
+        : "sandbox";
+      
+      const cf = await load({ mode: mode as "sandbox" | "production" });
+      setCashfree(cf);
+    };
+    initCashfree();
+
+    // Load Razorpay Script
+    const script = document.createElement("script");
+    script.src = "https://checkout.razorpay.com/v1/checkout.js";
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, [currency, paymentMethod]);
+
+  const convertedTotal = currency === "USD" ? Math.round(total * 0.012 * 100) / 100 : total;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -68,7 +86,6 @@ export default function CheckoutPage() {
       if (!formData.email.trim()) newErrors.email = "Required";
       else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "Invalid email";
       if (!formData.phone.trim()) newErrors.phone = "Required";
-      else if (!/^\d{10}$/.test(formData.phone)) newErrors.phone = "10-digit number required";
     } else if (currentStep === 2) {
       if (!formData.address.trim()) newErrors.address = "Required";
       if (!formData.city.trim()) newErrors.city = "Required";
@@ -79,78 +96,82 @@ export default function CheckoutPage() {
   };
 
   const handleConfirmOrder = async () => {
-    // 0$ Trojan Horse Checkout Bypass (AOV Lead Gen)
     if (total === 0) {
-      setIsProcessing(true);
-      // Log lead to telemetry before dispatch
-      await fetch('/api/cart/track', {
-        method: 'POST',
-        body: JSON.stringify({ email: formData.email, items, total }),
-        headers: { 'Content-Type': 'application/json' }
-      }).catch(() => {});
-      
-      const pseudoOrderId = `FREE-${Math.random().toString(36).substring(7).toUpperCase()}`;
-      localStorage.setItem('last_purchase', JSON.stringify(items));
-      localStorage.setItem('pending_order_id', pseudoOrderId);
-      clearCart();
-      
-      // Route immediately to success
-      window.location.href = `/success?order_id=${pseudoOrderId}&status=free`;
+      handleFreeCheckout();
       return;
     }
 
-    if (!cashfree) {
-      alert("Payment system initializing. Please wait.");
-      return;
-    }
-    
     setIsProcessing(true);
+
     try {
-      // Step 1: Create Cashfree order on the server
-      const res = await fetch('/api/cashfree/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          items,
-          total,
-          customer: {
-            email: formData.email,
-            firstName: formData.firstName,
-            lastName: formData.lastName,
-            phone: formData.phone || '9999999999',
-            address: formData.address,
-            city: formData.city,
-            zip: formData.zip,
+      if (paymentMethod === "stripe") {
+        const res = await fetch('/api/stripe/create-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ items, currency: "usd" }),
+        });
+        const data = await res.json();
+        if (data.url) window.location.href = data.url;
+        else throw new Error(data.error || "Stripe failed");
+        return;
+      }
+
+      if (paymentMethod === "razorpay") {
+        const res = await fetch('/api/razorpay/create-order', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount: total, currency: "INR", receipt: `rcpt_${Date.now()}` }),
+        });
+        const order = await res.json();
+        
+        const options = {
+          key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+          amount: order.amount,
+          currency: order.currency,
+          name: "Digital Swarm",
+          description: "Asset Procurement",
+          order_id: order.id,
+          handler: function (response: { razorpay_payment_id: string }) {
+            window.location.href = `/success?order_id=${order.id}&payment_id=${response.razorpay_payment_id}`;
           },
-        }),
-      });
-
-      const data = await res.json();
-
-      if (!res.ok || !data.paymentSessionId) {
-        alert('Payment setup failed: ' + (data.error || 'Unknown error'));
+          prefill: {
+            name: `${formData.firstName} ${formData.lastName}`,
+            email: formData.email,
+            contact: formData.phone,
+          },
+          theme: { color: "#CCFF00" },
+        };
+        const rzp = new (window as any).Razorpay(options);
+        rzp.open();
         setIsProcessing(false);
         return;
       }
 
-      // Step 2: Save cart to localStorage for success page
-      localStorage.setItem('last_purchase', JSON.stringify(items));
-      localStorage.setItem('pending_order_id', data.orderId);
-      clearCart();
-
-      // Step 3: Initiate Cashfree Checkout
-      (cashfree as any).checkout({
-        paymentSessionId: data.paymentSessionId,
-        redirectTarget: "_self", 
+      // Default Cashfree logic
+      const cfRes = await fetch('/api/cashfree/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ items, total, customer: formData }),
       });
+      const data = await cfRes.json();
+      if (data.paymentSessionId && cashfree) {
+        (cashfree as any).checkout({ paymentSessionId: data.paymentSessionId, redirectTarget: "_self" });
+      } else throw new Error(data.error || "Cashfree failed");
 
-    } catch (err) {
-      console.error('Checkout error:', err);
-      alert('An unexpected error occurred. Please try again.');
+    } catch (err: unknown) {
+      const error = err as { message: string };
+      alert(error.message);
       setIsProcessing(false);
     }
   };
 
+  const handleFreeCheckout = async () => {
+    setIsProcessing(true);
+    const pseudoOrderId = `FREE-${Math.random().toString(36).substring(7).toUpperCase()}`;
+    localStorage.setItem('last_purchase', JSON.stringify(items));
+    clearCart();
+    window.location.href = `/success?order_id=${pseudoOrderId}&status=free`;
+  };
 
   if (!isClient) return null;
 
@@ -175,6 +196,22 @@ export default function CheckoutPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16">
           <div className="lg:col-span-7 space-y-12">
+
+            {/* Currency Selector */}
+            <div className="flex items-center justify-center gap-4 mb-4">
+               <button 
+                 onClick={() => setCurrency("INR")}
+                 className={`px-8 py-3 border-4 border-black font-black uppercase tracking-widest italic text-xs shadow-[4px_4px_0_#000] transition-all ${currency === "INR" ? "bg-black text-white" : "bg-white text-black hover:bg-black/5"}`}
+               >
+                 INR (Domestic)
+               </button>
+               <button 
+                 onClick={() => setCurrency("USD")}
+                 className={`px-8 py-3 border-4 border-black font-black uppercase tracking-widest italic text-xs shadow-[4px_4px_0_#000] transition-all ${currency === "USD" ? "bg-black text-white" : "bg-white text-black hover:bg-black/5"}`}
+               >
+                 USD (Global)
+               </button>
+            </div>
 
             {/* Progress Steps */}
             <div className="flex items-center justify-between mb-16 relative">
@@ -213,9 +250,9 @@ export default function CheckoutPage() {
                     {errors.email && <p className="text-red-500 text-xs uppercase font-black italic tracking-widest mt-2 bg-red-500/10 border border-red-500 px-2 py-1 inline-block">Invalid_Data_Type</p>}
                   </div>
                   <div className="col-span-2 space-y-4">
-                    <label htmlFor="checkout-phone" className="text-xs uppercase tracking-widest text-black font-black italic">Comms_Link (Mobile)</label>
+                    <label htmlFor="checkout-phone" className="text-xs uppercase tracking-widest text-black font-black italic">Comms_Link</label>
                     <div className="relative">
-                        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-black/40 font-black italic text-lg tracking-tighter">+91</span>
+                        <span className="absolute left-6 top-1/2 -translate-y-1/2 text-black/40 font-black italic text-lg tracking-tighter">{currency === "INR" ? "+91" : "+1"}</span>
                         <input 
                             id="checkout-phone" 
                             name="phone" 
@@ -223,25 +260,15 @@ export default function CheckoutPage() {
                             onChange={handleInputChange} 
                             type="tel" 
                             className={`${inputClass('phone')} pl-16`} 
-                            placeholder="9999999999" 
+                            placeholder="000 000 0000" 
                         />
                     </div>
-                    {errors.phone && <p className="text-red-500 text-xs uppercase font-black italic tracking-widest mt-2 bg-red-500/10 border border-red-500 px-2 py-1 inline-block">Incorrect_Length</p>}
+                    {errors.phone && <p className="text-red-500 text-xs uppercase font-black italic tracking-widest mt-2 bg-red-500/10 border border-red-500 px-2 py-1 inline-block">Validator_Error</p>}
                   </div>
                 </div>
                 <button 
                   className="w-full h-20 border-4 border-black bg-[#CCFF00] hover:bg-black text-black hover:text-[#CCFF00] font-black uppercase tracking-widest italic text-xl shadow-[6px_6px_0_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all" 
-                  onClick={() => {
-                    if (validateStep(1)) {
-                      setStep(2);
-                      // Fire-and-forget covert checkout telemtry
-                      fetch('/api/cart/track', {
-                        method: 'POST',
-                        body: JSON.stringify({ email: formData.email, items, total }),
-                        headers: { 'Content-Type': 'application/json' }
-                      }).catch(() => {});
-                    }
-                  }}
+                  onClick={() => validateStep(1) && setStep(2)}
                 >
                   Proceed_To_Transit -&gt;
                 </button>
@@ -291,62 +318,42 @@ export default function CheckoutPage() {
             {step === 3 && (
               <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
                 className="bg-white border-4 border-black shadow-[12px_12px_0_#000] p-10 rounded-none">
-                <h2 className="text-4xl font-black italic uppercase tracking-tighter mb-10 border-l-8 border-[#3b82f6] pl-6 leading-none text-black">Security_Protocol</h2>
+                <h2 className="text-4xl font-black italic uppercase tracking-tighter mb-10 border-l-8 border-[#3b82f6] pl-6 leading-none text-black">Processor_Select</h2>
 
-                <div className="space-y-8 mb-12">
-                  <div className="p-8 border-4 border-black bg-[#CCFF00] shadow-[6px_6px_0_#000] flex flex-col items-center gap-6 text-center">
-                    <div className="w-24 h-24 bg-white border-4 border-black shadow-[4px_4px_0_#000] flex items-center justify-center">
-                      <ShieldCheck className="w-12 h-12 text-black" />
-                    </div>
-                    <div>
-                      <p className="font-black italic uppercase tracking-tighter text-2xl leading-none mb-4 text-black bg-white inline-block px-4 py-2 border-2 border-black rotate-[2deg]">Authenticated_By_Cashfree</p>
-                      <p className="text-xs text-black/70 uppercase tracking-widest font-black italic leading-tight max-w-sm">
-                        Military_Grade_Encryption_Enabled. <br/> Zero_Knowledge_Credential_Storage.
-                      </p>
-                    </div>
-                  </div>
-
-                  {/* Certification Badges */}
-                  <div className="flex justify-center flex-wrap gap-8 py-4">
-                    <div className="flex flex-col items-center gap-2 p-4 border-2 border-black bg-white shadow-[4px_4px_0_#000]">
-                        <Lock className="w-6 h-6 text-black" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black">SSL_SECURED</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2 p-4 border-2 border-black bg-white shadow-[4px_4px_0_#000]">
-                        <ShieldCheck className="w-6 h-6 text-black" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black">PCI_COMPLIANT</span>
-                    </div>
-                    <div className="flex flex-col items-center gap-2 p-4 border-2 border-black bg-white shadow-[4px_4px_0_#000]">
-                        <Check className="w-6 h-6 text-black" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-black">GST_VERIFIED</span>
-                    </div>
-                  </div>
-
-                  {/* Order summary mobile */}
-                  <div className="p-8 border-4 border-black bg-[#ffc737] shadow-[6px_6px_0_#000] space-y-4 lg:hidden">
-                    <p className="text-xs uppercase tracking-[0.3em] text-black font-black italic border-b-4 border-black pb-4">Order_Summary_v2.4</p>
-                    {items.map((item) => (
-                      <div key={item.id} className="flex justify-between items-end gap-6 italic">
-                        <span className="text-black truncate flex-1 font-black uppercase tracking-tighter italic">{item.name} <span className="bg-white border-2 border-black ml-2 px-1">(×{item.quantity})</span></span>
-                        <span className="font-black text-lg text-black tracking-widest italic shrink-0">₹{(item.price * item.quantity).toLocaleString('en-IN')}</span>
-                      </div>
-                    ))}
-                    <div className="border-t-4 border-black pt-6 flex justify-between items-end font-black italic uppercase text-black">
-                      <span className="text-lg tracking-tighter">Total_Allocation</span>
-                      <span className="text-3xl text-red-500 tracking-tighter drop-shadow-[2px_2px_0_#fff]">₹{total.toLocaleString('en-IN')}</span>
-                    </div>
-                  </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+                   {currency === "INR" ? (
+                     <>
+                       <PaymentOpt 
+                         active={paymentMethod === "cashfree"} 
+                         onClick={() => setPaymentMethod("cashfree")}
+                         title="Cashfree PG"
+                         desc="Netbanking, UPI, Cards"
+                       />
+                       <PaymentOpt 
+                         active={paymentMethod === "razorpay"} 
+                         onClick={() => setPaymentMethod("razorpay")}
+                         title="Razorpay"
+                         desc="Flash Checkout, UPI"
+                       />
+                     </>
+                   ) : (
+                     <PaymentOpt 
+                       active={paymentMethod === "stripe"} 
+                       onClick={() => setPaymentMethod("stripe")}
+                       title="Stripe Global"
+                       desc="Apple Pay, Google Pay, Global Cards"
+                     />
+                   )}
                 </div>
 
                 <div className="flex gap-4">
-                  <button className="h-20 px-8 border-4 border-black bg-white text-black hover:bg-black hover:text-white uppercase font-black italic tracking-widest shadow-[6px_6px_0_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-50 disabled:shadow-none disabled:translate-x-1 disabled:translate-y-1" onClick={() => setStep(2)} disabled={isProcessing}><ArrowLeft className="w-6 h-6"/></button>
+                  <button className="h-20 px-8 border-4 border-black bg-white text-black hover:bg-black hover:text-white uppercase font-black italic tracking-widest shadow-[6px_6px_0_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-50" onClick={() => setStep(2)} disabled={isProcessing}><ArrowLeft className="w-6 h-6"/></button>
                   <button
-                    id="checkout-confirm-order"
-                    className="flex-1 h-20 flex justify-center items-center gap-4 border-4 border-black bg-red-500 hover:bg-black text-white hover:text-red-500 font-black uppercase tracking-widest italic text-xl shadow-[6px_6px_0_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-50 disabled:shadow-none disabled:translate-x-1 disabled:translate-y-1"
+                    className="flex-1 h-20 flex justify-center items-center gap-4 border-4 border-black bg-red-500 hover:bg-black text-white hover:text-red-500 font-black uppercase tracking-widest italic text-xl shadow-[6px_6px_0_#000] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none transition-all disabled:opacity-50"
                     onClick={handleConfirmOrder}
                     disabled={isProcessing}
                   >
-                    <Lock className="w-6 h-6" />{isProcessing ? "PROCESSING..." : "Initiate_Payment ->"}
+                    <Lock className="w-6 h-6" />{isProcessing ? "INITIALIZING..." : `PAY ${currency === "USD" ? "$" : "₹"}${convertedTotal} ->`}
                   </button>
                 </div>
               </motion.div>
@@ -356,43 +363,36 @@ export default function CheckoutPage() {
 
           {/* Right: Order Summary */}
           <div className="lg:col-span-5 hidden lg:block">
-            <div className="sticky top-24 bg-white border-4 border-black shadow-[12px_12px_0_#000] p-10 rounded-none relative">
-              {/* ONO Style tape/sticker accent */}
-              <div className="absolute top-0 right-8 -translate-y-1/2 bg-red-500 text-white border-2 border-black font-black uppercase px-4 py-1 italic tracking-widest shadow-[4px_4px_0_#000] rotate-[3deg]">FINAL_REVIEW</div>
+            <div className="sticky top-24 bg-white border-4 border-black shadow-[12px_12px_0_#000] p-10 rounded-none overflow-hidden">
+              <div className="absolute top-0 right-8 -translate-y-1/2 bg-red-500 text-white border-2 border-black font-black uppercase px-4 py-1 italic tracking-widest shadow-[4px_4px_0_#000] rotate-3">FINAL_REVIEW</div>
               
               <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-8 border-b-4 border-black pb-8 text-black">Hardware_Manifest</h3>
               
               <div className="space-y-6 mb-10 max-h-[500px] overflow-y-auto pr-4 scrollbar-hide">
-                {items.length === 0 ? (
-                  <p className="text-black/30 text-center py-10 text-xs font-black uppercase tracking-[0.3em] italic">Null_Stream</p>
-                ) : (
-                  items.map((item) => (
-                    <div key={item.id} className="flex gap-6 group p-4 border-4 border-black bg-[#ffc737] shadow-[4px_4px_0_#000] transition-transform hover:-translate-y-1 hover:-translate-x-1 hover:shadow-[6px_6px_0_#CCFF00]">
-                      <div className="h-20 w-20 relative rounded-none overflow-hidden border-2 border-black shrink-0 bg-black">
-                        <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" />
-                      </div>
-                      <div className="flex-1 min-w-0 py-1 flex flex-col justify-between">
-                        <p className="font-black italic uppercase tracking-tighter text-black leading-tight group-hover:text-primary transition-colors truncate">{item.name}</p>
-                        <div className="flex items-center gap-2 mt-2">
-                          <p className="text-[10px] text-black bg-white border-2 border-black px-2 font-black italic uppercase tracking-widest whitespace-nowrap">QTY: {item.quantity}</p>
-                          <p className="font-black text-sm text-black italic truncate">₹{(item.price * item.quantity).toLocaleString('en-IN')}</p>
-                        </div>
+                {items.map((item) => (
+                  <div key={item.id} className="flex gap-6 group p-4 border-4 border-black bg-[#ffc737] shadow-[4px_4px_0_#000]">
+                    <div className="h-20 w-20 relative rounded-none overflow-hidden border-2 border-black shrink-0 bg-black">
+                      <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" />
+                    </div>
+                    <div className="flex-1 min-w-0 py-1 flex flex-col justify-between">
+                      <p className="font-black italic uppercase tracking-tighter text-black leading-tight truncate">{item.name}</p>
+                      <div className="flex items-center gap-2 mt-2">
+                        <p className="text-[10px] text-black bg-white border-2 border-black px-2 font-black italic uppercase tracking-widest">QTY: {item.quantity}</p>
+                        <p className="font-black text-sm text-black italic">
+                          {currency === "USD" ? "$" : "₹"}{currency === "USD" ? Math.round(item.price * 0.012 * 100) / 100 : item.price}
+                        </p>
                       </div>
                     </div>
-                  ))
-                )}
+                  </div>
+                ))}
               </div>
               
               <div className="border-t-4 border-black pt-8 space-y-4">
-                <div className="flex justify-between text-xs font-black italic uppercase tracking-widest text-black/60">
-                  <span>Subtotal</span><span className="text-black">₹{total.toLocaleString('en-IN')}</span>
-                </div>
-                <div className="flex justify-between text-xs font-black italic uppercase tracking-widest text-black/60">
-                  <span>Transit_Fee</span><span className="text-green-600 bg-green-500/10 border border-green-500 px-2 italic">0.00</span>
-                </div>
                 <div className="flex justify-between items-end pt-8 border-t-4 border-black border-dashed mt-6 font-black italic uppercase bg-[#CCFF00] -mx-10 px-10 pb-10">
                   <span className="text-lg tracking-tighter text-black mt-10">Total_Allocation</span>
-                  <span className="text-5xl text-red-500 tracking-tighter leading-none drop-shadow-[2px_2px_0_#fff]">₹{total.toLocaleString('en-IN')}</span>
+                  <span className="text-5xl text-red-500 tracking-tighter leading-none drop-shadow-[2px_2px_0_#fff]">
+                    {currency === "USD" ? "$" : "₹"}{convertedTotal.toLocaleString()}
+                  </span>
                 </div>
               </div>
             </div>

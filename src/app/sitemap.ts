@@ -28,7 +28,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Auto-generate deep Programmable SEO Product Pages
   const dynamicProductPages = products.map((product) => ({
-    url: `${baseUrl}/products/${product.id}`,
+    url: `${baseUrl}/product/${product.id}`,
     lastModified: new Date(),
     changeFrequency: 'monthly' as const,
     priority: 0.9,

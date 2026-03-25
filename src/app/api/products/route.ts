@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { supabase, supabaseAdmin } from '@/lib/supabase';
 import { products as staticProducts } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
@@ -33,7 +33,8 @@ export async function GET(request: Request) {
 
   try {
     // ── Pre-Check & Sync Protocol ──────────────────────────────────────────
-    const { data: v3Check } = await supabase
+    // Use admin client per default for sync logic to bypass RLS
+    const { data: v3Check } = await supabaseAdmin
       .from('products')
       .select('name')
       .eq('name', 'Next.js SaaS Starter Kit')
@@ -44,7 +45,7 @@ export async function GET(request: Request) {
       console.log(`[products/route] V3 Sync required. Initiating deep sync...`);
       
       // Wipe old data
-      await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+      await supabaseAdmin.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
       
       const upsertData = staticProducts.map(p => ({
         name: p.name,
@@ -60,7 +61,7 @@ export async function GET(request: Request) {
         download_url: p.downloadUrl
       }));
 
-      const { error: syncError } = await supabase
+      const { error: syncError } = await supabaseAdmin
         .from('products')
         .insert(upsertData);
 

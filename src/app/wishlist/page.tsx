@@ -108,7 +108,7 @@ export default function WishlistPage() {
                       >
                         <ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
                       </Button>
-                      <Link href={`/products/${item.id}`}>
+                      <Link href={`/product/${item.id}`}>
                         <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-border bg-white hover:bg-gray-50 shadow-sm">
                           <ArrowRight className="w-5 h-5" />
                         </Button>

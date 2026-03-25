@@ -10,9 +10,11 @@ import { SearchBar } from "./SearchBar";
 import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 
 export function Header() {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const { items: cartItems, toggleCart } = useCartStore();
@@ -28,6 +30,9 @@ export function Header() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const isAuthPage = pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up');
+  if (isAuthPage) return null;
 
   return (
     <>

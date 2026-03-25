@@ -3,9 +3,14 @@
 import Link from "next/link";
 import { Github, Twitter, Linkedin, ExternalLink, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
+import { usePathname } from "next/navigation";
 
 export function Footer() {
+  const pathname = usePathname();
+  const isAuthPage = pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up');
   const currentYear = new Date().getFullYear();
+
+  if (isAuthPage) return null;
 
   return (
     <footer className="bg-secondary pt-24 pb-12 border-t border-white/5 relative overflow-hidden">

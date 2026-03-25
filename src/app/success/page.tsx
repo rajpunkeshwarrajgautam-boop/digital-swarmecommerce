@@ -1,203 +1,200 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Check, ArrowRight, Download, BookOpen, ShieldCheck } from "lucide-react";
-import { Button } from "@/components/ui/Button";
+import { Check, Download, BookOpen, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
-import { products as allProducts } from "@/lib/data";
+import Image from "next/image";
 import { Product } from "@/lib/types";
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const orderId = searchParams.get("order_id") || (typeof window !== 'undefined' ? localStorage.getItem('pending_order_id') : null);
-  const [isVerifying, setIsVerifying] = useState(!!orderId);
+  const orderId = searchParams.get("order_id");
+  const paymentId = searchParams.get("payment_id");
+  const sessionId = searchParams.get("session_id");
+  const status = searchParams.get("status");
+
+  const [isVerifying, setIsVerifying] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  const [purchasedItems] = useState<Product[]>(() => {
-    if (typeof window !== 'undefined') {
-      const lastItems = JSON.parse(localStorage.getItem('last_purchase') || '[]');
-      return lastItems.length > 0 ? lastItems : allProducts.slice(0, 2);
-    }
-    return [];
-  });
+  const [purchasedItems, setPurchasedItems] = useState<Product[]>([]);
 
   useEffect(() => {
-    async function verifyPayment() {
-      if (orderId) {
-        // Bypass Cashfree Ping for $0 Freemium Trojan Products
-        if (orderId.startsWith("FREE-") || searchParams.get("status") === "free") {
-            setPaymentStatus('paid');
-            setIsVerifying(false);
-            return;
-        }
+    const lastItems = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('last_purchase') || '[]') : [];
+    setPurchasedItems(lastItems);
 
-        try {
-          const res = await fetch('/api/cashfree/verify', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ orderId }),
-          });
-          const data = await res.json();
-          if (data.isPaid) {
-            setPaymentStatus('paid');
-          } else {
-            setPaymentStatus(data.status?.toLowerCase() || 'failed');
-          }
-        } catch (err) {
-          console.error('Verification error:', err);
-          setPaymentStatus('error');
-        } finally {
+    async function verify() {
+      try {
+        if (status === "free") {
+          setPaymentStatus('paid');
           setIsVerifying(false);
+          return;
         }
-      }
-    }
-    verifyPayment();
-  }, [orderId, searchParams]);
 
-  // Track Purchase Event on success
-  useEffect(() => {
-    if (paymentStatus === 'paid' && orderId) {
-      if (typeof window !== 'undefined' && window.fbq) {
-        window.fbq('track', 'Purchase', {
-          value: purchasedItems.reduce((acc, item) => acc + item.price, 0),
-          currency: 'INR',
-          content_ids: purchasedItems.map(item => item.id),
-          content_type: 'product',
-          order_id: orderId
+        let endpoint = "";
+        let body = {};
+
+        if (sessionId) {
+          endpoint = "/api/stripe/verify";
+          body = { sessionId };
+        } else if (paymentId && orderId) {
+          endpoint = "/api/razorpay/verify";
+          body = { orderId, paymentId };
+        } else if (orderId) {
+          endpoint = "/api/cashfree/verify";
+          body = { orderId };
+        } else {
+          setPaymentStatus('error');
+          setIsVerifying(false);
+          return;
+        }
+
+        const res = await fetch(endpoint, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(body),
         });
+        const data = await res.json();
+        
+        if (data.isPaid || data.success) {
+          setPaymentStatus('paid');
+        } else {
+          setPaymentStatus('failed');
+        }
+      } catch (err) {
+        setPaymentStatus('error');
+      } finally {
+        setIsVerifying(false);
       }
     }
-  }, [paymentStatus, orderId, purchasedItems]);
+    verify();
+  }, [orderId, paymentId, sessionId, status]);
 
   if (isVerifying) {
     return (
-      <div className="flex flex-col items-center gap-6">
-        <div className="w-16 h-16 border-4 border-primary/20 border-t-primary rounded-full animate-spin" />
-        <p className="font-mono text-sm tracking-widest text-primary animate-pulse uppercase">
-          Verifying_Neural_Transaction...
+      <div className="flex flex-col items-center gap-8 py-20">
+        <div className="w-20 h-20 border-8 border-black border-t-[#CCFF00] animate-spin shadow-[6px_6px_0_#000]" />
+        <p className="font-black italic uppercase tracking-[0.3em] text-black bg-white border-2 border-black px-4 py-2 shadow-[4px_4px_0_#000]">
+          Verifying_Stream_Integrity...
         </p>
       </div>
     );
   }
 
-  if (paymentStatus && paymentStatus !== 'paid') {
+  if (paymentStatus !== 'paid') {
     return (
-      <div className="flex flex-col items-center max-w-md w-full gap-8 p-8 rounded-2xl bg-zinc-900/50 border border-red-500/20 text-center">
-        <div className="w-20 h-20 bg-red-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-red-500/20 shadow-[0_0_30px_rgba(239,68,68,0.3)]">
-          <Check className="w-10 h-10 text-red-500 rotate-45" />
+      <div className="bg-white border-4 border-black shadow-[16px_16px_0_#000] p-12 max-w-xl w-full text-center">
+        <div className="w-24 h-24 bg-red-500 border-4 border-black flex items-center justify-center mx-auto mb-8 shadow-[6px_6px_0_#000] rotate-3">
+          <Check className="w-12 h-12 text-white rotate-45" />
         </div>
-        <h1 className="text-3xl font-bold mb-2">Payment {paymentStatus.toUpperCase()}</h1>
-        <p className="text-muted-foreground mb-8">
-          The transaction could not be verified. Please contact support or try again.
+        <h1 className="text-4xl font-black italic uppercase tracking-tighter mb-4">Verification_Failed</h1>
+        <p className="font-black uppercase tracking-widest text-xs text-black/50 mb-10 leading-relaxed italic">
+          The transaction could not be decrypted by our neural servers. Contact command center.
         </p>
-        <Link href="/checkout" className="w-full">
-            <Button className="w-full" variant="outline">Back to Checkout</Button>
+        <Link href="/checkout">
+            <button className="w-full h-16 border-4 border-black bg-black text-white font-black uppercase tracking-widest italic hover:bg-white hover:text-black transition-all shadow-[6px_6px_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none">Back_To_Ops</button>
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="flex flex-col items-center max-w-4xl w-full gap-8">
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        className="relative z-10 w-full max-w-md p-8 rounded-2xl bg-zinc-900/50 border border-green-500/20 backdrop-blur-xl text-center"
-      >
-        <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6 border border-green-500/20 shadow-[0_0_30px_rgba(34,197,94,0.3)]">
-          <Check className="w-10 h-10 text-green-500" />
-        </div>
-        
-        <h1 className="text-3xl font-bold mb-2">Order Confirmed</h1>
-        <p className="text-muted-foreground mb-4">
-          Verification successful. Your neural assets are now unlocked and ready for deployment.
-        </p>
-
-        {orderId && (
-            <div className="bg-black/40 p-3 rounded-lg mb-6 font-mono text-[10px] text-muted-foreground break-all border border-white/5 flex items-center justify-center gap-2">
-                <ShieldCheck className="w-3 h-3 text-green-500" />
-                TXN_ID: {orderId.substring(0, 24)}...
-            </div>
-        )}
-
-        <div className="space-y-4">
-             <Link href="/products">
-                <Button className="w-full" size="lg">
-                    Back to Marketplace <ArrowRight className="ml-2 w-4 h-4" />
-                </Button>
-            </Link>
-        </div>
-      </motion.div>
-
-      {/* Download Section */}
+    <div className="w-full max-w-5xl space-y-12">
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        transition={{ delay: 0.2 }}
-        className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 relative z-10"
+        className="bg-white border-4 border-black shadow-[20px_20px_0_#000] p-12 relative overflow-hidden"
       >
-        <div className="md:col-span-2">
-            <h2 className="text-sm font-bold uppercase tracking-[0.2em] text-primary mb-4 flex items-center gap-2">
-                <Download className="w-4 h-4" /> Available Downloads
-            </h2>
-        </div>
+        <div className="absolute top-0 right-12 -translate-y-1/2 bg-[#CCFF00] text-black border-4 border-black font-black uppercase px-6 py-2 italic tracking-widest shadow-[6px_6px_0_#000] -rotate-2 z-20">DECRYPTED_READY</div>
         
-        {purchasedItems.map((product) => (
-            <div key={product.id} className="bg-zinc-900/80 border border-white/10 rounded-xl p-5 hover:border-primary/50 transition-all group overflow-hidden relative">
-                <div className="absolute top-0 right-0 p-2 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Download className="w-16 h-16 -mr-4 -mt-4 text-white" />
-                </div>
-                
-                <h3 className="font-bold text-lg mb-1">{product.name}</h3>
-                <p className="text-xs text-muted-foreground mb-4 line-clamp-2">ID: {product.id} • Verified Digital Asset</p>
-                
-                <div className="flex flex-wrap gap-3">
-                    <a 
-                        href={product.downloadUrl} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex-1 flex items-center justify-center gap-2 bg-primary hover:bg-blue-400 text-white text-xs font-bold py-3 px-4 rounded-lg transition-all shadow-lg shadow-blue-500/20"
-                    >
-                        <Download className="w-4 h-4" /> DOWNLOAD ZIP
-                    </a>
-                    <a 
-                        href={product.installGuide} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                        className="flex items-center justify-center gap-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white text-xs font-bold py-3 px-4 rounded-lg transition-all"
-                    >
-                        <BookOpen className="w-4 h-4" /> DOCS
-                    </a>
-                </div>
-            </div>
-        ))}
-
-        <div className="md:col-span-2 p-4 bg-blue-500/5 border border-blue-500/20 rounded-xl flex items-start gap-4 mt-4">
-            <ShieldCheck className="w-5 h-5 text-primary shrink-0 mt-0.5" />
-            <p className="text-xs text-muted-foreground leading-relaxed">
-                <strong className="text-white block mb-1 uppercase tracking-wider">Storage Protocol:</strong>
-                Links are valid for 24 hours. After expiration, please authenticate through your user dashboard to regenerate the keys. For enterprise support, contact our AI architect team.
+        <div className="flex flex-col md:flex-row gap-12 items-center md:items-start text-center md:text-left">
+          <div className="w-32 h-32 bg-[#CCFF00] border-4 border-black flex items-center justify-center shrink-0 shadow-[8px_8px_0_#000] rotate-3">
+            <Check className="w-16 h-16 text-black" />
+          </div>
+          
+          <div className="flex-1">
+            <h1 className="text-6xl font-black italic uppercase tracking-tighter leading-none mb-4">Ascension_Confirmed</h1>
+            <p className="text-sm font-black uppercase tracking-widest text-black/60 mb-6 italic leading-relaxed">
+              Packet loss: 0%. Your neural enhancements have been authorized and injected into your stream.
             </p>
+            <div className="flex flex-wrap gap-4">
+               <div className="bg-black text-[#CCFF00] border-2 border-black px-4 py-2 font-black italic text-xs tracking-tighter shadow-[4px_4px_0_#000]">TXN://{orderId || sessionId || "DIRECT_RELAY"}</div>
+               <div className="bg-white border-2 border-black px-4 py-2 font-black italic text-xs tracking-tighter shadow-[4px_4px_0_#000]">STATUS: VERIFIED</div>
+            </div>
+          </div>
         </div>
       </motion.div>
+
+      {/* Assets Section */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        {purchasedItems.map((product, idx) => (
+          <motion.div 
+            key={product.id}
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.1 * idx }}
+            className="group bg-[#ffc737] border-4 border-black p-8 shadow-[12px_12px_0_#000] hover:-translate-y-2 transition-all relative overflow-hidden"
+          >
+            <div className="absolute top-0 left-0 w-2 h-full bg-black" />
+             <div className="mb-6 flex justify-between items-start">
+                <div className="h-16 w-16 relative border-2 border-black bg-black">
+                   <Image src={product.image} alt={product.name} fill className="object-cover" />
+                </div>
+                <div className="font-black italic text-[10px] text-black border border-black px-2 py-1 rotate-[-10deg] bg-white">0x{product.id.substring(0,6)}</div>
+             </div>
+             
+             <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-2">{product.name}</h3>
+             <p className="text-[10px] font-black uppercase text-black/40 mb-8 italic tracking-widest">Type: Neural_Extension_V3</p>
+             
+             <div className="flex gap-4">
+                <a 
+                  href={product.downloadUrl} 
+                  className="flex-1 h-16 flex items-center justify-center gap-3 bg-black text-[#CCFF00] border-2 border-black font-black uppercase italic tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-[6px_6px_0_#000] active:translate-x-1 active:translate-y-1"
+                >
+                  <Download className="w-5 h-5" /> Download
+                </a>
+                <a 
+                  href={product.installGuide} 
+                  className="h-16 w-16 flex items-center justify-center bg-white border-2 border-black text-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0_#000]"
+                >
+                  <BookOpen className="w-6 h-6" />
+                </a>
+             </div>
+          </motion.div>
+        ))}
+      </div>
+
+      <div className="bg-black text-white p-10 border-4 border-black shadow-[16px_16px_0_#ffc737] flex flex-col md:flex-row gap-8 items-center italic">
+         <ShieldCheck className="w-20 h-20 text-[#CCFF00] shrink-0" />
+         <div>
+            <h4 className="text-xl font-black uppercase tracking-widest mb-2 text-[#CCFF00]">Security_Log: Encryption_Active</h4>
+            <p className="text-xs font-black uppercase tracking-widest text-white/40 leading-relaxed">
+              These relay links expire in <span className="text-[#CCFF00]">24 HOURS</span>. If decryption fails post-expiry, re-authenticate via the command dashboard. Unauthorized mirroring will trigger a stream collapse.
+            </p>
+         </div>
+         <Link href="/" className="ml-auto">
+            <button className="h-16 px-8 border-2 border-[#CCFF00] text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black font-black uppercase italic tracking-widest text-xs transition-all">Back_To_Grid</button>
+         </Link>
+      </div>
     </div>
   );
 }
 
 export default function SuccessPage() {
   return (
-    <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4 relative overflow-hidden scanline">
-      {/* Background Effects */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,var(--tw-gradient-stops))] from-blue-500/10 via-black to-black" />
-      <div className="absolute inset-0 bg-[url('https://grainy-gradients.vercel.app/noise.svg')] opacity-20 pointer-events-none" />
+    <div className="min-h-screen bg-[#ffc737] text-black flex flex-col items-center justify-center p-8 relative overflow-hidden font-inter">
+      <div className="absolute inset-0 bg-swarm-pattern opacity-[0.05] pointer-events-none" />
       
-      <Suspense fallback={<div className="text-white font-mono animate-pulse">VERIFYING_DECRYPTION_KEYS...</div>}>
+      {/* Background glitch elements */}
+      <div className="absolute top-10 left-10 w-40 h-1 bg-black/10 rotate-45" />
+      <div className="absolute bottom-20 right-20 w-60 h-2 bg-black/10 -rotate-12" />
+      
+      <Suspense fallback={<div className="font-black italic uppercase animate-pulse">Initializing_Decryption...</div>}>
          <SuccessContent />
       </Suspense>
 
-      <footer className="mt-12 relative z-10 text-[10px] text-muted-foreground uppercase tracking-widest opacity-50">
-        Digital Swarm Marketplace • Secure Neural Transaction
+      <footer className="mt-20 font-black italic uppercase text-[10px] tracking-[0.5em] text-black/30 border-t-2 border-black/10 pt-8 w-full text-center">
+        Digital_Swarm_O_N_O_Systems // All_Assets_Secured
       </footer>
     </div>
   );

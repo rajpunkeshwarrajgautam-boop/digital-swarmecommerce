@@ -14,18 +14,18 @@ import { ScarcityEngine } from "@/components/products/ScarcityEngine";
 import { ReviewSystem } from "@/components/products/ReviewSystem";
 
 export default function ProductPage() {
-  const { id } = useParams();
+  const { slug } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     async function fetchProduct() {
-      if (!id) return;
+      if (!slug) return;
       
       try {
         setLoading(true);
-        const res = await fetch(`/api/products/${id}`);
+        const res = await fetch(`/api/products/${slug}`);
         if (!res.ok) {
             if (res.status === 404) throw new Error("Product not found");
             throw new Error("Failed to fetch product");
@@ -41,7 +41,7 @@ export default function ProductPage() {
     }
 
     fetchProduct();
-  }, [id]);
+  }, [slug]);
 
   if (loading) {
     return (

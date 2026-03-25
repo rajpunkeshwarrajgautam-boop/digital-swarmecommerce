@@ -48,7 +48,7 @@ export function SearchBar() {
   const handleSelect = (productId: string) => {
     setIsOpen(false);
     setQuery("");
-    router.push(`/products/${productId}`);
+    router.push(`/product/${productId}`);
   };
 
   return (
