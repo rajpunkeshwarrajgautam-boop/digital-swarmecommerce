@@ -2,11 +2,18 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { supabaseAdmin } from "@/lib/supabase";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-01-27-preview" as any,
-});
+let stripeInstance: Stripe | null = null;
+const getStripe = () => {
+  if (!stripeInstance) {
+    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2025-01-27-preview" as any,
+    });
+  }
+  return stripeInstance;
+};
 
 export async function POST(req: Request) {
+  const stripe = getStripe();
   try {
     const { items, currency = "usd", customer } = await req.json();
 

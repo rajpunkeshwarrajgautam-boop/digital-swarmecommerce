@@ -2,12 +2,19 @@ import { NextResponse } from "next/server";
 import Razorpay from "razorpay";
 import { supabaseAdmin } from "@/lib/supabase";
 
-const razorpay = new Razorpay({
-  key_id: (process.env.RAZORPAY_KEY_ID || "").trim(),
-  key_secret: (process.env.RAZORPAY_KEY_SECRET || "").trim(),
-});
+let razorpayInstance: Razorpay | null = null;
+const getRazorpay = () => {
+  if (!razorpayInstance) {
+    razorpayInstance = new Razorpay({
+      key_id: (process.env.RAZORPAY_KEY_ID || "").trim(),
+      key_secret: (process.env.RAZORPAY_KEY_SECRET || "").trim(),
+    });
+  }
+  return razorpayInstance;
+};
 
 export async function POST(req: Request) {
+  const razorpay = getRazorpay();
   try {
     const { amount, currency = "INR", receipt, items, customer } = await req.json();
 

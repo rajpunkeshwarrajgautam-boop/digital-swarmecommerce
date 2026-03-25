@@ -1,8 +1,15 @@
 import { Resend } from 'resend';
 
 // resend is the standard for transactional emails in modern Next.js apps
-// use process.env.RESEND_API_KEY locally/in Vercel
-const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
+// use a getter to prevent build-time instantiation errors
+let resendInstance: Resend | null = null;
+const getResend = () => {
+  if (!resendInstance) {
+    const key = process.env.RESEND_API_KEY || 're_123';
+    resendInstance = new Resend(key);
+  }
+  return resendInstance;
+};
 
 /**
  * Automate the "Buyer_Succes" sequence.
@@ -10,8 +17,8 @@ const resend = new Resend(process.env.RESEND_API_KEY || 're_123');
  * and an upsell for the Resell Rights.
  */
 export async function sendWelcomeEmail(to: string, userName: string, productName: string, downloadLink: string) {
+  const resend = getResend();
   try {
-    const { data, error } = await resend.emails.send({
       from: 'Digital Swarm <orders@digitalswarm.in>',
       to: [to],
       subject: `[Payload_Uplink] Access granted for ${productName}`,
