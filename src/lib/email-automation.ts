@@ -19,6 +19,7 @@ const getResend = () => {
 export async function sendWelcomeEmail(to: string, userName: string, productName: string, downloadLink: string) {
   const resend = getResend();
   try {
+    const { data, error } = await resend.emails.send({
       from: 'Digital Swarm <orders@digitalswarm.in>',
       to: [to],
       subject: `[Payload_Uplink] Access granted for ${productName}`,
