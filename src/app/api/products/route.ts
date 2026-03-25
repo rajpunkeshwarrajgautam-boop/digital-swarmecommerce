@@ -42,7 +42,7 @@ export async function GET(request: Request) {
 
     // If database is not matching the v3 catalog, perform emergency wipe and sync
     if (!v3Check) {
-      console.log(`[products/route] V3 Sync required. Initiating deep sync...`);
+      // Emergency wipe and sync protocol
       
       // Wipe old data
       await supabaseAdmin.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
@@ -66,7 +66,6 @@ export async function GET(request: Request) {
         .insert(upsertData);
 
       if (syncError) console.error('[products/route] Sync Error:', syncError.message);
-      else console.log('[products/route] Sync Perfected.');
     }
 
     // ── Build Supabase query ───────────────────────────────────────────────

@@ -122,7 +122,12 @@ export default function ProductPage() {
               </h1>
               
               <div className="flex items-center gap-6 mb-8 p-4 border border-white/10 bg-black w-fit">
-                <span className="text-4xl font-black italic tracking-tighter text-primary">₹{product.price.toLocaleString("en-IN")}</span>
+                <div className="flex flex-col">
+                  <span className="text-4xl font-black italic tracking-tighter text-primary">₹{product.price.toLocaleString("en-IN")}</span>
+                  {product.originalPrice && (
+                    <span className="text-sm text-white/40 line-through font-bold">₹{product.originalPrice.toLocaleString("en-IN")}</span>
+                  )}
+                </div>
                 <div className="flex items-center gap-2 border-l border-white/20 pl-6">
                   <div className="flex">
                     {[1,2,3,4,5].map((s) => (
@@ -179,24 +184,11 @@ export default function ProductPage() {
                 </p>
               )}
               
-              {/* Installation Guide Snippet */}
-              {product.installGuide && (
-                <div className="mt-8 p-6 rounded-2xl bg-secondary/20 border border-border/50">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-primary" /> 
-                    Installation Preview
-                  </h3>
-                  <pre className="text-xs bg-black/40 p-4 rounded-xl font-mono text-zinc-400 overflow-x-auto border border-white/5">
-                    {product.installGuide}
-                  </pre>
-                </div>
-              )}
-
               {/* Features List */}
               {product.features && product.features.length > 0 && (
                 <div className="mt-12 bg-black/40 border border-white/5 p-8">
-                  <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-6">System Capabilities</h3>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
+                   <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-6">Product Features</h3>
+                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
                     {product.features.map((feature, i) => (
                       <li key={i} className="flex items-start gap-4 text-sm font-bold tracking-wide text-white/70">
                         <span className="w-6 h-6 bg-primary/10 border border-primary text-primary flex items-center justify-center text-[10px] shrink-0 mt-0">
@@ -208,26 +200,18 @@ export default function ProductPage() {
                   </ul>
                 </div>
               )}
-
-              {/* Specifications Grid */}
-              {product.specs && (
-                <div className="mt-12">
-                  <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-6">Technical Architecture</h3>
-                  <div className="grid grid-cols-2 gap-x-8 gap-y-4 text-sm">
-                    {Object.entries(product.specs).map(([key, value]) => (
-                      <div key={key} className="flex flex-col border-b-2 border-white/10 pb-2 m-0! group hover:border-primary transition-colors">
-                        <span className="font-black uppercase tracking-widest text-[#a855f7] text-[10px] mb-1">{key}</span>
-                        <span className="text-white font-mono">{value as string}</span>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Actions */}
             <div className="space-y-8 mt-12">
-              <AddToCartButton product={product} />
+              <div className="flex flex-col sm:flex-row gap-4">
+                <AddToCartButton product={product} />
+                <Button className="flex-1 py-8 text-xl font-black uppercase tracking-widest bg-secondary text-white hover:bg-secondary/90 shadow-xl" onClick={() => {
+                  window.location.href = `/checkout?product=${product.id}`;
+                }}>
+                  Buy Now
+                </Button>
+              </div>
 
               {/* Trust Signals */}
               <div className="grid grid-cols-3 gap-4 border-t-2 border-white/10 pt-8">
@@ -235,19 +219,19 @@ export default function ProductPage() {
                   <div className="p-4 border-2 border-white/20 bg-black text-primary group-hover:border-primary transition-colors shadow-[4px_4px_0px_#000]">
                     <Truck className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Instant Sync</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Instant Download</span>
                 </div>
                 <div className="flex flex-col items-center text-center gap-3 group">
                   <div className="p-4 border-2 border-white/20 bg-black text-[#a855f7] group-hover:border-[#a855f7] transition-colors shadow-[4px_4px_0px_#000]">
                     <Shield className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Verified Intel</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">30-Day Refund</span>
                 </div>
                 <div className="flex flex-col items-center text-center gap-3 group">
                   <div className="p-4 border-2 border-white/20 bg-black text-blue-500 group-hover:border-blue-500 transition-colors shadow-[4px_4px_0px_#000]">
                     <RotateCcw className="w-6 h-6" />
                   </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Support</span>
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Lifetime Updates</span>
                 </div>
               </div>
             </div>

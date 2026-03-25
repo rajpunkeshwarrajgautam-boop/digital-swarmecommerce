@@ -1,172 +1,154 @@
 "use client";
 
-import { Check, Zap, Shield, Crown, Star } from "lucide-react";
-import { Button } from "@/components/ui/Button";
-import Link from "next/link";
 import { motion } from "framer-motion";
+import { Check, Shield, Globe, Cpu, Users } from "lucide-react";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+
 
 const tiers = [
   {
-    name: "Starter",
-    price: "0",
-    description: "Essential protocols for solo developers and quick prototypes.",
+    name: "Starter Kit",
+    price: "₹1,499",
+    desc: "Essential architecture for solo developers and quick MVP validation.",
     features: [
-      "Access to Free Boilerplates",
-      "Community Discord Access",
-      "Standard Documentation",
-      "Public License"
+      "Core Next.js 14 Pattern",
+      "Standard Tailwind Styling",
+      "Basic Supabase Integration",
+      "Standard Support",
+      "Single Domain License"
     ],
-    cta: "Explore Freebies",
-    href: "/freebies",
-    popular: false,
-    color: "secondary"
+    buttonText: "Acquire Starter",
+    link: "/product/starter-kit",
+    highlight: false
   },
   {
-    name: "Pro",
-    price: "2,999",
-    description: "The gold standard for production-grade SaaS and AI agents.",
+    name: "Professional",
+    price: "₹3,999",
+    desc: "The gold standard for production-grade SaaS and agency deployments.",
     features: [
-      "Access to All Premium Templates",
-      "Priority Email Support",
-      "Commercial License",
-      "Lifetime Updates",
-      "Advanced Deployment Guides",
+      "Everything in Starter",
+      "Advanced AI Route Patterns",
+      "Premium Design System",
+      "Stripe/Razorpay Integrated",
+      "Multi-Domain License",
+      "Priority Discord Access"
+    ],
+    buttonText: "Acquire Pro",
+    link: "/product/nextjs-saas-kit",
+    highlight: true
+  },
+  {
+    name: "Enterprise",
+    price: "₹14,999",
+    desc: "Infinite scalability and dedicated engineering for massive deployments.",
+    features: [
+      "Everything in Professional",
+      "Custom Architecture Audit",
+      "White-Glove Deployment",
+      "Unlimited Domain License",
+      "24/7 Priority Hotline",
       "Private Repo Access"
     ],
-    cta: "Get Full Access",
-    href: "/products",
-    popular: true,
-    color: "primary"
-  },
-  {
-    name: "Elite",
-    price: "Custom",
-    description: "Enterprise-grade architecture and dedicated engineering support.",
-    features: [
-      "Custom Implementation",
-      "1-on-1 Architecture Review",
-      "Enterprise White-labeling",
-      "Dedicated Slack Channel",
-      "Security Audits",
-      "SLA Guarantees"
-    ],
-    cta: "Contact Sales",
-    href: "/contact",
-    popular: false,
-    color: "secondary"
+    buttonText: "Contact Engineering",
+    link: "/contact",
+    highlight: false
   }
 ];
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-background relative pb-24 overflow-hidden">
-      <div className="absolute inset-0 bg-swarm-pattern opacity-[0.03] pointer-events-none" />
-      
-      {/* Hero Section */}
-      <section className="relative pt-24 pb-16 px-6 text-center z-10">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="container mx-auto max-w-4xl"
-        >
-          <span className="inline-block bg-primary/10 text-primary border border-primary/20 px-4 py-1 rounded-full text-xs font-black uppercase tracking-widest mb-6">
-            Architectural Pricing
-          </span>
-          <h1 className="text-6xl md:text-8xl font-black italic uppercase tracking-tighter mb-8 leading-[0.85]">
-            Invest in <span className="text-primary underline decoration-4 underline-offset-8">Velocity</span>
-          </h1>
-          <p className="text-xl text-muted-foreground font-bold tracking-wide max-w-2xl mx-auto">
-            Stop rebuilding the same primitives. Choose a protocol that scales your engineering empire from day one.
+    <div className="min-h-screen bg-[#0a0a0f] text-white pt-32 pb-20 font-mono">
+      <div className="container mx-auto px-6 max-w-7xl">
+        
+        <header className="mb-20 text-center">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#ff6b35]/20 border border-[#ff6b35]/40 mb-6"
+          >
+            <Shield className="w-4 h-4 text-[#ff6b35]" />
+            <span className="text-[10px] font-black uppercase tracking-widest text-[#ff6b35]">Licensing Protocol</span>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter mb-6 leading-none"
+          >
+            Acquire the <br />
+            <span className="text-primary italic">Architecture</span>.
+          </motion.h1>
+          <p className="text-white/40 text-sm uppercase font-black tracking-widest max-w-xl mx-auto">
+            Transparent licensing with lifetime ownership. Select your operational tier.
           </p>
-        </motion.div>
-      </section>
+        </header>
 
-      {/* Pricing Grid */}
-      <section className="container mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          {tiers.map((tier, idx) => (
-            <motion.div
-              key={tier.name}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-32">
+          {tiers.map((tier, i) => (
+            <motion.div 
+              key={i}
               initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: idx * 0.1 }}
-              className={`relative flex flex-col p-8 rounded-[2.5rem] border-2 transition-all duration-500 ${
-                tier.popular 
-                  ? "bg-secondary text-white border-primary shadow-[0_40px_80px_rgba(255,107,53,0.15)] scale-105 z-20" 
-                  : "bg-white text-secondary border-secondary/5 hover:border-secondary/20 shadow-sm"
-              }`}
+              transition={{ delay: i * 0.1 }}
+              className={`relative flex flex-col p-10 border-4 transition-all hover:-translate-y-2 ${tier.highlight ? "bg-white text-black border-black shadow-[16px_16px_0_#ff6b35]" : "bg-white/5 border-white/10 text-white shadow-[8px_8px_0_#000]"}`}
             >
-              {tier.popular && (
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-black text-[10px] font-black uppercase px-4 py-1 rounded-full tracking-tighter">
-                  Most Popular Protocol
+              {tier.highlight && (
+                <div className="absolute -top-5 left-1/2 -translate-x-1/2 bg-black text-white px-4 py-1 text-[10px] font-black uppercase italic tracking-widest leading-none">
+                  Most Popular
                 </div>
               )}
-
+              
               <div className="mb-8">
                 <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-2">{tier.name}</h3>
-                <p className={`text-sm font-bold ${tier.popular ? "text-white/60" : "text-muted-foreground"}`}>
-                  {tier.description}
-                </p>
+                <div className="flex items-baseline gap-1">
+                  <span className="text-5xl font-black italic tracking-tighter">{tier.price}</span>
+                  <span className={`text-[10px] font-black uppercase tracking-widest ${tier.highlight ? "text-black/40" : "text-white/40"}`}>/ Lifetime</span>
+                </div>
               </div>
 
-              <div className="mb-10 flex items-baseline gap-1">
-                <span className="text-sm font-black italic">₹</span>
-                <span className="text-5xl font-black italic tracking-tighter">{tier.price}</span>
-                {tier.price !== "Custom" && <span className="text-sm font-bold opacity-50">/once</span>}
-              </div>
+              <p className={`text-xs font-bold uppercase tracking-tight mb-8 leading-relaxed ${tier.highlight ? "text-black/60" : "text-white/60"}`}>
+                {tier.desc}
+              </p>
 
-              <ul className="space-y-4 mb-10 flex-1">
-                {tier.features.map((feature) => (
-                  <li key={feature} className="flex items-start gap-3">
-                    <Check className={`w-5 h-5 shrink-0 ${tier.popular ? "text-primary" : "text-primary"}`} />
-                    <span className="text-sm font-bold tracking-wide leading-relaxed">
-                      {feature}
-                    </span>
-                  </li>
+              <div className="space-y-4 mb-12 flex-1">
+                {tier.features.map((feature, idx) => (
+                  <div key={idx} className="flex items-start gap-3">
+                    <Check className={`w-4 h-4 mt-0.5 shrink-0 ${tier.highlight ? "text-black" : "text-primary"}`} />
+                    <span className="text-[10px] font-black uppercase tracking-widest leading-tight">{feature}</span>
+                  </div>
                 ))}
-              </ul>
+              </div>
 
-              <Link href={tier.href} className="w-full">
-                <Button 
-                  className={`w-full h-14 rounded-2xl font-black uppercase italic tracking-widest text-xs transition-all ${
-                    tier.popular 
-                      ? "bg-primary text-black hover:bg-white hover:text-black border-2 border-primary" 
-                      : "bg-secondary text-white hover:bg-primary hover:text-black border-2 border-transparent"
-                  }`}
-                >
-                  {tier.cta}
+              <Link href={tier.link}>
+                <Button className={`w-full py-6 text-sm font-black uppercase tracking-widest transition-all ${tier.highlight ? "bg-black text-white hover:bg-primary" : "bg-primary text-white hover:bg-white hover:text-black"}`}>
+                  {tier.buttonText}
                 </Button>
               </Link>
             </motion.div>
           ))}
         </div>
-      </section>
 
-      {/* Trust Section */}
-      <section className="mt-24 container mx-auto px-6 text-center max-w-5xl">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-8 py-12 border-y border-secondary/5">
-          <div className="space-y-2">
-            <Zap className="w-8 h-8 text-primary mx-auto" />
-            <h4 className="font-black italic uppercase text-xs tracking-widest">Instant Delivery</h4>
-            <p className="text-[10px] font-bold text-muted-foreground">Digital files available immediately after verify.</p>
-          </div>
-          <div className="space-y-2">
-            <Shield className="w-8 h-8 text-[#a855f7] mx-auto" />
-            <h4 className="font-black italic uppercase text-xs tracking-widest">Secure Payments</h4>
-            <p className="text-[10px] font-bold text-muted-foreground">Encryption protected via Stripe & Razorpay.</p>
-          </div>
-          <div className="space-y-2">
-            <Star className="w-8 h-8 text-blue-500 mx-auto" />
-            <h4 className="font-black italic uppercase text-xs tracking-widest">4.9/5 Rating</h4>
-            <p className="text-[10px] font-bold text-muted-foreground">Trusted by 2,000+ elite engineers globally.</p>
-          </div>
-          <div className="space-y-2">
-            <Crown className="w-8 h-8 text-amber-500 mx-auto" />
-            <h4 className="font-black italic uppercase text-xs tracking-widest">Value Guarantee</h4>
-            <p className="text-[10px] font-bold text-muted-foreground">Save 40-80 hours of development per kit.</p>
+        {/* FAQ Preview Banner */}
+        <div className="p-12 bg-white/5 border-2 border-white/5 rounded-[3rem] text-center">
+          <h2 className="text-2xl font-black uppercase italic tracking-tighter mb-4">Enterprise Questions?</h2>
+          <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-8">Custom build requirements for large-scale operations.</p>
+          <div className="flex flex-wrap justify-center gap-16 opacity-30">
+             <div className="flex items-center gap-2">
+                <Globe className="w-5 h-5" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Global Support</span>
+             </div>
+             <div className="flex items-center gap-2">
+                <Cpu className="w-5 h-5" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Architectural Audit</span>
+             </div>
+             <div className="flex items-center gap-2">
+                <Users className="w-5 h-5" />
+                <span className="text-[10px] font-black uppercase tracking-widest">Team Onboarding</span>
+             </div>
           </div>
         </div>
-      </section>
+
+      </div>
     </div>
   );
 }

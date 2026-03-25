@@ -1,272 +1,183 @@
 "use client";
 
-import { useUser, RedirectToSignIn } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
+import { motion } from "framer-motion";
+import { 
+  Zap, 
+  ChevronRight, 
+  Download, 
+  ExternalLink, 
+  ShieldCheck, 
+  Clock,
+  Box,
+  Activity
+} from "lucide-react";
 import Link from "next/link";
-import { Copy, Download, Key, Package, ShieldCheck, Mail, ArrowRight } from "lucide-react";
-import { useState, useEffect } from "react";
+import Image from "next/image";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
-interface CustomerLicense {
-  id: string;
-  productName: string;
-  date: string;
-  licenseType: string;
-  licenseKey: string;
-  downloadUrl: string;
-}
-
-interface Order {
-  id: string;
-  cashfree_order_id?: string;
-  created_at: string;
-  status: string;
-  total: number;
-  order_items?: Array<{
-    product_id: string;
-    price: number;
-    quantity: number;
-  }>;
-}
+// Mock data - would normally fetch from Supabase
+const activeProtocols = [
+  {
+    id: "p1",
+    name: "AI Agent Workforce (V1.2)",
+    status: "ACTIVE",
+    acquired: "2026-03-22",
+    version: "1.2.4",
+    image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=300"
+  },
+  {
+    id: "p2",
+    name: "SaaS Launchpad Pro",
+    status: "PROVISIONING",
+    acquired: "2026-03-25",
+    version: "2.0.1",
+    image: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=300"
+  }
+];
 
 export default function DashboardPage() {
-  const { isSignedIn, user, isLoaded } = useUser();
-  const [copiedKey, setCopiedKey] = useState<string | null>(null);
-  const [licenses, setLicenses] = useState<CustomerLicense[]>([]);
-  const [loadingLicenses, setLoadingLicenses] = useState(true);
-  const [activeTab, setActiveTab] = useState<"assets" | "orders">("assets");
-  const [orders, setOrders] = useState<Order[]>([]);
-  const [loadingOrders, setLoadingOrders] = useState(true);
+  const { user } = useUser();
+  const [greeting, setGreeting] = useState("Initializing System...");
 
   useEffect(() => {
-    async function fetchLicenses() {
-      try {
-        if (!isSignedIn) return;
-        const res = await fetch("/api/user/licenses");
-        if (!res.ok) throw new Error("Failed to fetch");
-        const data = await res.json();
-        setLicenses(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoadingLicenses(false);
-      }
-    }
-
-    async function fetchOrders() {
-      try {
-        if (!isSignedIn) return;
-        const res = await fetch("/api/user/orders");
-        if (!res.ok) throw new Error("Failed to fetch orders");
-        const data = await res.json();
-        setOrders(data);
-      } catch (err) {
-        console.error(err);
-      } finally {
-        setLoadingOrders(false);
-      }
-    }
-
-    fetchLicenses();
-    fetchOrders();
-  }, [isSignedIn]);
-
-  useEffect(() => {
-    if (copiedKey) {
-      setTimeout(() => setCopiedKey(null), 2000);
-    }
-  }, [copiedKey]);
-
-  if (!isLoaded) {
-    return (
-      <div className="min-h-screen bg-background flex flex-col items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin"></div>
-      </div>
-    );
-  }
-
-  if (!isSignedIn) {
-    return <RedirectToSignIn />;
-  }
-
-  const handleCopy = (key: string) => {
-    navigator.clipboard.writeText(key);
-    setCopiedKey(key);
-  };
+    const getGreeting = () => {
+      const hours = new Date().getHours();
+      if (hours < 12) return "Morning_Protocol Active";
+      if (hours < 18) return "Afternoon_Sync Operational";
+      return "Evening_Shutdown Approaching";
+    };
+    setGreeting(getGreeting());
+  }, []);
 
   return (
-    <div className="container mx-auto px-4 py-24 min-h-[80vh] relative z-10">
-      <div className="max-w-4xl mx-auto">
-        <div className="flex flex-col md:flex-row gap-8 items-start justify-between mb-16 border-b-8 border-black pb-8">
-          <div>
-            <h1 className="text-5xl md:text-7xl text-white font-black italic tracking-tighter uppercase mb-6 drop-shadow-[4px_4px_0_#CCFF00]">My_Assets</h1>
-            <p className="font-black uppercase tracking-widest text-[10px] md:text-xs flex items-center gap-2 bg-white text-black border-2 border-black inline-flex px-4 py-2 shadow-[4px_4px_0_#000]">
-              <ShieldCheck className="w-5 h-5 text-red-500 shrink-0" />
-              <span className="truncate">Digital Vault // {user?.primaryEmailAddress?.emailAddress}</span>
-            </p>
-          </div>
-          <div className="bg-[#ffc737] border-4 border-black px-8 py-6 rounded-none text-center min-w-[200px] shadow-[8px_8px_0_#000] rotate-[2deg]">
-            <p className="text-xs uppercase tracking-widest text-black/60 font-black mb-1 italic">Total_Allocation</p>
-            <p className="text-5xl font-black tracking-tighter text-black">{loadingLicenses ? "..." : licenses.length}</p>
-          </div>
-        </div>
+    <div className="space-y-12">
+      
+      {/* Dashboard Hero */}
+      <header className="space-y-4">
+        <motion.div 
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 w-fit"
+        >
+          <Zap className="w-4 h-4 text-primary" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">Status: System_Nominal</span>
+        </motion.div>
+        <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter leading-none">
+          {greeting}, <br />
+          <span className="text-white/20 italic">{user?.firstName || "Agent"}</span>
+        </h1>
+      </header>
 
-        {/* Tabs for Assets / Orders */}
-        <div className="flex gap-4 border-b-4 border-black mb-12">
-          <button 
-            className={`px-6 py-4 text-sm font-black uppercase italic tracking-widest border-4 border-b-0 transition-transform translate-y-[4px] ${activeTab === "assets" ? "border-black bg-white text-black shadow-none" : "border-transparent text-white/50 hover:text-white"}`}
-            onClick={() => setActiveTab("assets")}
+      {/* Primary Metrics */}
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+        {[
+          { label: "Active Protocols", value: "02", icon: Box },
+          { label: "Acquisition Tier", value: "ELITE", icon: ShieldCheck },
+          { label: "System Uptime", value: "100%", icon: Activity }
+        ].map((stat, i) => (
+          <motion.div 
+            key={i}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: i * 0.1 }}
+            className="p-8 bg-white/5 border-4 border-black shadow-[8px_8px_0_#000] group hover:border-primary/20 transition-all"
           >
-            Terminal_Access
-          </button>
-          <button 
-            className={`px-6 py-4 text-sm font-black uppercase italic tracking-widest border-4 border-b-0 transition-transform translate-y-[4px] ${activeTab === "orders" ? "border-black bg-white text-black shadow-none" : "border-transparent text-white/50 hover:text-white"}`}
-            onClick={() => setActiveTab("orders")}
-          >
-            Order_Logs
-          </button>
-        </div>
-
-        <div className="space-y-6">
-          {activeTab === "assets" && (
-            loadingLicenses ? (
-              <div className="text-center py-24 text-black font-black uppercase tracking-widest italic border-4 border-black bg-[#CCFF00] shadow-[8px_8px_0_#000]">
-                 Deciphering_License_Vectors...
-              </div>
-            ) : licenses.length === 0 ? (
-              <div className="text-center py-24 px-6 border-4 border-black bg-white flex flex-col items-center gap-8 shadow-[12px_12px_0_#000]">
-                <div className="w-24 h-24 bg-black flex items-center justify-center border-4 border-black text-[#CCFF00] shadow-[4px_4px_0_#CCFF00]">
-                  <Package className="w-12 h-12" />
-                </div>
-                <div className="max-w-md mx-auto text-black">
-                  <h3 className="text-4xl font-black italic uppercase tracking-tighter mb-4">Initialize_Swarm</h3>
-                  <p className="text-sm font-black italic text-black/60 uppercase tracking-widest mb-10 leading-relaxed">
-                    Your secure digital vault is currently empty. Start building your ecosystem with our elite AI agents and developer kits.
-                  </p>
-                  <Link href="/products">
-                    <button className="h-16 px-8 border-4 border-black bg-[#CCFF00] hover:bg-black text-black hover:text-[#CCFF00] font-black uppercase tracking-widest italic text-lg shadow-[6px_6px_0_#000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all flex items-center gap-4 mx-auto">
-                       Explore_The_Hive <ArrowRight className="w-6 h-6" />
-                    </button>
-                  </Link>
-                </div>
-              </div>
-            ) : licenses.map((purchase) => (
-              <div key={purchase.id} className="bg-white border-4 border-black p-6 md:p-8 flex flex-col md:flex-row gap-8 md:items-center shadow-[12px_12px_0_#000] relative group">
-                
-                {/* License Type Badge */}
-                <div className={`absolute top-0 right-8 -translate-y-1/2 px-4 py-2 border-2 border-black text-[10px] font-black italic uppercase tracking-widest text-white shadow-[4px_4px_0_#000] ${
-                  purchase.licenseType.includes("Whitelabel") ? "bg-[#a855f7]" : "bg-black"
-                }`}>
-                  {purchase.licenseType}_TIER
-                </div>
-
-                <div className="w-24 h-24 bg-black flex items-center justify-center shrink-0 border-4 border-black text-[#ffc737] shadow-[4px_4px_0_#ffc737]">
-                  <Package className="w-10 h-10 group-hover:scale-110 transition-transform" />
-                </div>
-                
-                <div className="flex-1 space-y-2">
-                  <h3 className="text-3xl font-black italic uppercase tracking-tighter text-black">{purchase.productName}</h3>
-                  <p className="text-xs uppercase tracking-widest text-black/50 font-black italic">Timestamp: {purchase.date}</p>
-                  
-                  {/* Secure JWT License Key */}
-                  <div className="mt-6 bg-[#CCFF00] border-4 border-black p-4 flex items-center justify-between gap-4 shadow-[4px_4px_0_#000] group/key">
-                    <div className="flex items-center gap-4 text-black overflow-hidden w-full">
-                      <Key className="w-6 h-6 shrink-0" />
-                      <span className="text-sm font-black italic tracking-tighter truncate select-all">{purchase.licenseKey}</span>
-                    </div>
-                    <button 
-                      onClick={() => handleCopy(purchase.licenseKey)}
-                      className="shrink-0 p-3 hover:bg-black hover:text-[#CCFF00] transition-colors text-black border-2 border-black bg-white"
-                    >
-                      {copiedKey === purchase.licenseKey ? (
-                        <span className="text-[10px] font-black uppercase tracking-widest">OK!</span>
-                      ) : (
-                        <Copy className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                  <p className="text-[10px] uppercase font-black tracking-widest text-black/40 mt-3 flex items-center gap-2 italic">
-                    <ShieldCheck className="w-4 h-4" /> Auth_Key_Requirement // Env_Config
-                  </p>
-                </div>
-                
-                <div className="flex flex-col gap-4 shrink-0 mt-6 md:mt-0">
-                  <button 
-                    onClick={() => purchase.downloadUrl !== "#" ? window.open(purchase.downloadUrl, "_blank") : alert("Processing payload... Download link will be active shortly.")}
-                    className="h-16 px-6 flex items-center justify-center gap-3 border-4 border-black bg-black text-white hover:bg-white hover:text-black font-black uppercase tracking-widest shadow-[6px_6px_0_#CCFF00] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all text-sm italic w-full"
-                  >
-                    <Download className="w-5 h-5" /> Download_Asset
-                  </button>
-                  {purchase.licenseType.includes("Whitelabel") && (
-                    <button className="h-16 px-6 flex items-center justify-center gap-2 text-black bg-[#a855f7] hover:bg-black hover:text-[#a855f7] font-black uppercase tracking-widest border-4 border-black w-full italic shadow-[4px_4px_0_#000] hover:shadow-none hover:translate-x-1 hover:translate-y-1 transition-all text-xs">
-                      Resell_Rules <ArrowRight className="w-4 h-4" />
-                    </button>
-                  )}
-                </div>
-
-              </div>
-            ))
-          )}
-
-          {activeTab === "orders" && (
-            loadingOrders ? (
-              <div className="text-center py-24 text-black font-black uppercase tracking-widest italic border-4 border-black bg-[#ffc737] shadow-[8px_8px_0_#000]">
-                 Fetching_Log_Data...
-              </div>
-            ) : orders.length === 0 ? (
-              <div className="text-center py-24 text-black/60 font-black uppercase tracking-widest italic border-4 border-dashed border-black bg-white">
-                Null_Stream // No Orders found.
-              </div>
-            ) : orders.map((order) => (
-              <div key={order.id} className="bg-white border-4 border-black p-8 flex flex-col md:flex-row gap-6 md:items-center shadow-[8px_8px_0_#000] relative object-cover">
-                 {/* Order Status Tape */}
-                <div className={`absolute top-4 right-[-24px] px-8 py-2 border-y-4 border-black text-xs font-black italic uppercase tracking-widest w-48 text-center rotate-[15deg] ${
-                  order.status === "paid" || order.status === "success" || order.status === "ACTIVE" ? "bg-[#CCFF00] text-black" : "bg-red-500 text-white"
-                }`}>
-                  {order.status}
-                </div>
-
-                <div className="flex-1 space-y-6">
-                  <div>
-                    <h3 className="text-3xl font-black italic uppercase tracking-tighter text-black">Log: {order.cashfree_order_id || order.id?.split('-')[0].toUpperCase()}</h3>
-                    <p className="text-xs uppercase tracking-widest text-black/50 font-black italic mt-1">Timestamp: {new Date(order.created_at).toLocaleString()}</p>
-                  </div>
-
-                  {order.order_items && order.order_items.length > 0 && (
-                    <div className="space-y-3 border-t-4 border-black pt-4 pr-16">
-                      {order.order_items.map((item: { product_id: string; quantity: number; price: number }, idx: number) => (
-                        <div key={idx} className="flex justify-between items-end text-xs font-black uppercase italic tracking-widest text-black">
-                          <span className="truncate max-w-[200px]">ID:{item.product_id?.split('-')[0]} <span className="bg-black text-[#ffc737] px-1 ml-2">×{item.quantity}</span></span>
-                          <span className="text-black text-lg">₹{item.price}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex flex-col gap-2 shrink-0 md:text-right mt-6 md:mt-0 border-t-4 md:border-t-0 md:border-l-4 border-black pt-6 md:pt-0 md:pl-8">
-                    <p className="text-xs text-black/40 font-black uppercase tracking-widest italic mb-2 md:mb-0">Final_Yield</p>
-                    <p className="text-4xl font-black text-red-500 italic drop-shadow-[2px_2px_0_#000] tracking-tighter">₹{Number(order.total).toLocaleString("en-IN")}</p>
-                </div>
-              </div>
-            ))
-          )}
-        </div>
-
-        {/* Email Funnel Status */}
-        <div className="mt-16 bg-white border-4 border-black shadow-[12px_12px_0_#000] p-8 flex gap-6 items-start relative overflow-hidden">
-          <div className="absolute top-0 right-0 w-32 h-32 bg-[#ffc737] rounded-bl-[100px] -z-10 border-b-4 border-l-4 border-black"></div>
-          <div className="p-4 border-4 border-black bg-[#CCFF00] shadow-[4px_4px_0_#000] shrink-0 h-fit mt-1">
-            <Mail className="w-8 h-8 text-black" />
-          </div>
-          <div>
-            <h4 className="font-black italic uppercase tracking-tighter text-3xl text-black">Automated_Delivery_Active</h4>
-            <p className="text-sm font-black italic uppercase tracking-widest text-black/70 mt-4 leading-relaxed max-w-2xl bg-[#ffc737] border-2 border-black inline-block p-4 shadow-[4px_4px_0_#000]">
-              Your assets are securely linked to your identity. The automated funnel has dispatched confirmation protocols and will send priority updates via email relay over the next 5 days.
-            </p>
-          </div>
-        </div>
-
+            <stat.icon className="w-6 h-6 text-primary mb-6 group-hover:scale-110 transition-transform" />
+            <p className="text-4xl font-black italic text-white mb-1 tracking-tighter">{stat.value}</p>
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">{stat.label}</p>
+          </motion.div>
+        ))}
       </div>
+
+      {/* Asset Repository */}
+      <section className="space-y-8">
+        <div className="flex items-center justify-between border-b-4 border-black pb-4">
+          <h2 className="text-2xl font-black italic uppercase tracking-tighter">Active Protocols</h2>
+          <Button variant="ghost" className="text-white/30 hover:text-white group">
+            All Assets <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
+          </Button>
+        </div>
+
+        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
+          {activeProtocols.map((asset, i) => (
+            <motion.div 
+              key={asset.id}
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: i * 0.1 }}
+              className="p-8 bg-white/5 border-4 border-black flex flex-col md:flex-row gap-8 shadow-[12px_12px_0_#000] hover:shadow-[12px_12px_0_#ff6b35] transition-all"
+            >
+              <div className="w-32 h-32 bg-black border-2 border-white/10 shrink-0 grayscale hover:grayscale-0 transition-all overflow-hidden relative">
+                <Image 
+                  src={asset.image} 
+                  alt={asset.name} 
+                  fill 
+                  className="object-cover" 
+                />
+              </div>
+              
+              <div className="flex-1 space-y-4">
+                <div className="flex items-center justify-between">
+                  <span className={`text-[10px] font-black px-2 py-0.5 shadow-[2px_2px_0_#000] italic ${asset.status === 'ACTIVE' ? 'bg-green-500 text-black' : 'bg-primary text-white'}`}>
+                    {asset.status}
+                  </span>
+                  <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">VER_{asset.version}</span>
+                </div>
+                <h3 className="text-2xl font-black italic uppercase tracking-tighter">{asset.name}</h3>
+                
+                <div className="flex flex-wrap gap-4 pt-4 border-t border-white/5">
+                   <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all">
+                      <Download className="w-3.5 h-3.5" /> Manifest_ZIP
+                   </button>
+                   <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white transition-all">
+                      <ExternalLink className="w-3.5 h-3.5" /> Documentation
+                   </button>
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      </section>
+
+      {/* Recent Activity */}
+      <section className="bg-white text-black p-8 border-8 border-black shadow-[24px_24px_0_#ff6b35] relative overflow-hidden">
+         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div className="space-y-2">
+               <div className="flex items-center gap-2">
+                  <Clock className="w-5 h-5" />
+                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">Recent Logistics</h3>
+               </div>
+               <p className="text-black/40 text-[10px] font-black uppercase tracking-widest">Tracking last signature for order_#99281</p>
+            </div>
+            
+            <Link href="/dashboard/orders">
+              <Button className="bg-black text-white px-10 py-5 font-black uppercase tracking-widest hover:bg-[#ff6b35] transition-all">
+                 Review All Orders
+              </Button>
+            </Link>
+         </div>
+      </section>
+
     </div>
+  );
+}
+
+function Activity({ className }: { className?: string }) {
+  return (
+    <svg 
+      xmlns="http://www.w3.org/2000/svg" 
+      width="24" height="24" 
+      viewBox="0 0 24 24" 
+      fill="none" 
+      stroke="currentColor" 
+      strokeWidth="2" 
+      strokeLinecap="round" 
+      strokeLinejoin="round" 
+      className={className}
+    >
+      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
+    </svg>
   );
 }

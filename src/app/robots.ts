@@ -1,18 +1,12 @@
-import type { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: {
-      userAgent: '*',
-      allow: '/',
-      disallow: [
-        '/api/',
-        '/dashboard/',
-        '/checkout/',
-        '/success/',
-        '/setup/',
-      ],
+      userAgent: "*",
+      allow: "/",
+      disallow: ["/dashboard/", "/api/", "/checkout/"],
     },
-    sitemap: 'https://digitalswarm.in/sitemap.xml',
+    sitemap: "https://digitalswarm.in/sitemap.xml",
   };
 }

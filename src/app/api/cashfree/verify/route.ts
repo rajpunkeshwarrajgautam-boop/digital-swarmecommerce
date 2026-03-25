@@ -64,8 +64,6 @@ export async function POST(request: Request) {
           .single();
 
         if (!existingLicense) {
-          console.log(`[Cashfree Verify] Generating new license for: ${orderData.customer_email}`);
-          
           // 2. Fetch order items
           const { data: items } = await supabaseAdmin
             .from('order_items')

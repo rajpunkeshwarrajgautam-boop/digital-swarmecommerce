@@ -42,7 +42,6 @@ export async function POST(request: Request) {
       .maybeSingle();
 
     if (existingLicense) {
-      console.log(`[WEBHOOK] License already exists for order ${payload.orderId}. Skipping.`);
       return NextResponse.json({ success: true, message: "License already fulfilled" });
     }
 
@@ -97,15 +96,10 @@ export async function POST(request: Request) {
             </div>
           `
         });
-        console.log(`[RESEND] Delivered access payload to ${payload.customerEmail}`);
       } catch (resendError) {
         console.error("[RESEND ERROR]", resendError);
       }
-    } else {
-      console.warn("Resend API Key not configured. Skipping email dispatch.");
     }
-    
-    console.log(`[WEBHOOK SUCCESS] License generated and Email Sequence initiated for ${payload.customerEmail}`);
 
     return NextResponse.json({ 
       success: true, 

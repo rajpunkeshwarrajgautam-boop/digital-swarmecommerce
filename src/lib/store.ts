@@ -8,10 +8,11 @@ interface CartState {
   removeItem: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   clearCart: () => void;
-  total: number;
   isOpen: boolean;
   toggleCart: () => void;
   addBundle: (products: Product[], discountPercentage: number) => void;
+  getCartTotal: () => number;
+  getCartCount: () => number;
 }
 
 export const useCartStore = create<CartState>()(
@@ -23,36 +24,44 @@ export const useCartStore = create<CartState>()(
 
       addItem: (product) => {
         const currentItems = get().items;
-        const existingItem = currentItems.find((item) => item.id === product.id);
+        const existingItem = currentItems.find((item) => item.productId === product.id);
 
         if (existingItem) {
           const updatedItems = currentItems.map((item) =>
-            item.id === product.id ? { ...item, quantity: item.quantity + 1 } : item
+            item.productId === product.id ? { ...item, quantity: item.quantity + 1 } : item
           );
-          set({ items: updatedItems, total: calculateTotal(updatedItems) });
+          set({ items: updatedItems });
         } else {
-          const updatedItems = [...currentItems, { ...product, quantity: 1 }];
-          set({ items: updatedItems, total: calculateTotal(updatedItems) });
+          const newItem: CartItem = {
+            productId: product.id,
+            name: product.name,
+            price: product.price,
+            originalPrice: product.originalPrice,
+            quantity: 1,
+            image: product.image,
+            category: product.category,
+          };
+          set({ items: [...currentItems, newItem] });
         }
-        // Auto open cart on add
         set({ isOpen: true });
       },
 
       removeItem: (productId) => {
-        const updatedItems = get().items.filter((item) => item.id !== productId);
-        set({ items: updatedItems, total: calculateTotal(updatedItems) });
+        set((state) => ({
+          items: state.items.filter((item) => item.productId !== productId),
+        }));
       },
 
       updateQuantity: (productId, quantity) => {
-        const updatedItems = get().items.map((item) =>
-          item.id === productId ? { ...item, quantity: Math.max(0, quantity) } : item
-        );
-        // Remove if 0
-        const finalItems = updatedItems.filter((item) => item.quantity > 0);
-        set({ items: finalItems, total: calculateTotal(finalItems) });
+        set((state) => {
+          const updatedItems = state.items.map((item) =>
+            item.productId === productId ? { ...item, quantity: Math.max(0, quantity) } : item
+          );
+          return { items: updatedItems.filter((item) => item.quantity > 0) };
+        });
       },
 
-      clearCart: () => set({ items: [], total: 0 }),
+      clearCart: () => set({ items: [] }),
       toggleCart: () => set((state) => ({ isOpen: !state.isOpen })),
 
       addBundle: (products, discountPercentage) => {
@@ -60,16 +69,24 @@ export const useCartStore = create<CartState>()(
         const discountScale = (100 - discountPercentage) / 100;
 
         const bundleItems: CartItem[] = products.map((p) => ({
-          ...p,
+          productId: p.id,
+          name: p.name,
           price: Math.round(p.price * discountScale),
           originalPrice: p.price,
           quantity: 1,
+          image: p.image,
+          category: p.category,
         }));
 
-        // For bundles, we just push them as unique entries to avoid confusing quantity merges
-        // Usually, users want specific items in a bundle.
-        const updatedItems = [...currentItems, ...bundleItems];
-        set({ items: updatedItems, total: calculateTotal(updatedItems), isOpen: true });
+        set({ items: [...currentItems, ...bundleItems], isOpen: true });
+      },
+
+      getCartTotal: () => {
+        return get().items.reduce((total, item) => total + item.price * item.quantity, 0);
+      },
+
+      getCartCount: () => {
+        return get().items.reduce((count, item) => count + item.quantity, 0);
       },
     }),
     {
@@ -77,7 +94,3 @@ export const useCartStore = create<CartState>()(
     }
   )
 );
-
-function calculateTotal(items: CartItem[]) {
-  return items.reduce((total, item) => total + item.price * item.quantity, 0);
-}

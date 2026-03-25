@@ -3,6 +3,7 @@ export interface Product {
   name: string;
   description: string;
   price: number;
+  originalPrice?: number;
   category: string;
   image: string;
   inStock: boolean;
@@ -17,7 +18,12 @@ export interface Product {
   sales?: number;
 }
 
-export interface CartItem extends Product {
-  quantity: number;
+export interface CartItem {
+  productId: string;
+  name: string;
+  price: number;
   originalPrice?: number;
+  quantity: number;
+  image: string;
+  category?: string;
 }

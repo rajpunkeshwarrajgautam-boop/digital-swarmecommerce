@@ -45,10 +45,16 @@ export function FeaturedSection() {
   return (
     <section id="catalog" className="bg-background py-32 overflow-hidden">
       <div className="container mx-auto px-6 w-full max-w-7xl">
-        <div className="flex flex-col items-center text-center gap-6 mb-20">
+        <motion.div 
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-100px" }}
+          transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
+          className="flex flex-col items-center text-center gap-6 mb-20"
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 shadow-sm">
             <Sparkles className="w-4 h-4 text-primary" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">V3_MARKETPLACE_PROTOCOL</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">Premium Asset Catalog</span>
           </div>
           <h2 className="text-5xl md:text-7xl font-black text-secondary tracking-tighter uppercase italic">
             Trending <span className="text-primary italic underline decoration-secondary/10 underline-offset-8">Now</span>
@@ -56,29 +62,46 @@ export function FeaturedSection() {
           <p className="text-secondary/50 font-bold text-lg max-w-2xl uppercase tracking-tight">
             The absolute standard in production-ready digital architecture.
           </p>
-        </div>
+        </motion.div>
         
         <motion.div 
-          layout
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.1
+              }
+            }
+          }}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-100px" }}
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10"
         >
           <AnimatePresence mode="popLayout">
             {products.map((product) => (
               <motion.div
                 key={product.id}
-                layout
-                initial={{ opacity: 0, scale: 1 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.9 }}
-                transition={{ duration: 0.3 }}
+                variants={{
+                  hidden: { opacity: 0, y: 20 },
+                  show: { opacity: 1, y: 0 }
+                }}
+                transition={{ duration: 0.5, ease: "easeOut" }}
               >
                 <ProductCard product={product} />
               </motion.div>
             ))}
           </AnimatePresence>
         </motion.div>
-
-        <div className="mt-24 flex flex-col items-center gap-6">
+ 
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4 }}
+          className="mt-24 flex flex-col items-center gap-6"
+        >
           <Link href="/products">
             <button className="h-20 px-12 bg-white text-secondary font-black uppercase italic rounded-3xl border-4 border-secondary hover:bg-secondary/5 transition-all flex items-center justify-center gap-4 group shadow-2xl shadow-secondary/5">
               View All Products
@@ -86,7 +109,7 @@ export function FeaturedSection() {
             </button>
           </Link>
           <p className="text-[10px] font-black text-secondary/30 uppercase tracking-[0.2em] italic">Updated Daily // Worldwide Access</p>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

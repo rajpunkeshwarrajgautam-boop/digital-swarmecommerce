@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingCart, Heart } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { NavbarMenu } from "./NavbarMenu";
@@ -17,7 +17,7 @@ export function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const { items: cartItems, toggleCart } = useCartStore();
+  const { items: cartItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
   const [mounted, setMounted] = useState(false);
 
@@ -69,17 +69,16 @@ export function Header() {
                 </button>
               </Link>
               
-              <button 
-                onClick={toggleCart}
-                className="relative p-2 text-secondary hover:text-primary transition-colors group"
-              >
-                <ShoppingCart className="w-6 h-6" />
-                {mounted && totalItems > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-primary text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm ring-2 ring-white">
-                    {totalItems}
-                  </span>
-                )}
-              </button>
+              <Link href="/cart">
+                <button className="relative p-2 text-secondary hover:text-primary transition-colors group">
+                  <ShoppingBag className="w-6 h-6" />
+                  {mounted && totalItems > 0 && (
+                    <span className="absolute -top-1 -right-1 bg-primary text-black text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm ring-1 ring-white/10">
+                      {totalItems}
+                    </span>
+                  )}
+                </button>
+              </Link>
 
               <div className="h-6 w-px bg-secondary/10 mx-1 hidden sm:block" />
 
@@ -90,6 +89,9 @@ export function Header() {
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
+                  <Link href="/dashboard" className="hidden sm:block text-secondary font-black uppercase italic text-[10px] tracking-[0.2em] hover:text-primary transition-all mr-2">
+                    Dashboard
+                  </Link>
                   <UserButton afterSignOutUrl="/" />
                 </SignedIn>
               </div>
@@ -123,31 +125,32 @@ export function Header() {
               </button>
             </div>
 
-            <nav className="flex flex-col gap-8 mb-12">
-              <MobileNavLink href="#products" onClick={() => setIsMenuOpen(false)}>Products</MobileNavLink>
-              <MobileNavLink href="#about" onClick={() => setIsMenuOpen(false)}>About</MobileNavLink>
-              <MobileNavLink href="#faq" onClick={() => setIsMenuOpen(false)}>FAQ</MobileNavLink>
-              <MobileNavLink href="#contact" onClick={() => setIsMenuOpen(false)}>Contact</MobileNavLink>
-            </nav>
+          <nav className="flex flex-col gap-8 mb-12">
+            <MobileNavLink href="/products" onClick={() => setIsMenuOpen(false)}>Products</MobileNavLink>
+            <MobileNavLink href="/pricing" onClick={() => setIsMenuOpen(false)}>Pricing</MobileNavLink>
+            <MobileNavLink href="/about" onClick={() => setIsMenuOpen(false)}>About</MobileNavLink>
+            <MobileNavLink href="/faq" onClick={() => setIsMenuOpen(false)}>FAQ</MobileNavLink>
+            <MobileNavLink href="/blog" onClick={() => setIsMenuOpen(false)}>Blog</MobileNavLink>
+          </nav>
 
-            <div className="mt-auto pt-8 border-t border-secondary/10 flex flex-col gap-6">
-              <SignedOut>
-                <SignInButton mode="modal">
-                  <button className="w-full py-4 bg-primary text-white font-black uppercase italic tracking-widest rounded-2xl shadow-xl shadow-primary/20">Access Protocol</button>
-                </SignInButton>
-              </SignedOut>
-              <SignedIn>
-                <div className="flex items-center gap-4 p-4 bg-secondary/5 rounded-2xl">
-                  <UserButton />
-                  <span className="font-bold text-secondary">Active Session</span>
-                </div>
-              </SignedIn>
-              
-              <div className="flex items-center justify-between text-[10px] font-black uppercase text-secondary/40 tracking-tighter">
-                <span>Digital Swarm v3.0 // 2026</span>
-                <span>Production Environment</span>
+          <div className="mt-auto pt-8 border-t border-secondary/10 flex flex-col gap-6">
+            <SignedOut>
+              <SignInButton mode="modal">
+                <button className="w-full py-4 bg-primary text-white font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/20">Sign In</button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <div className="flex items-center gap-4 p-4 bg-secondary/5 rounded-2xl">
+                <UserButton />
+                <span className="font-bold text-secondary">Dashboard</span>
               </div>
+            </SignedIn>
+            
+            <div className="flex items-center justify-between text-[10px] font-black uppercase text-secondary/40 tracking-tighter">
+              <span>Digital Swarm © 2026</span>
+              <span>All rights reserved.</span>
             </div>
+          </div>
           </motion.div>
         )}
       </AnimatePresence>

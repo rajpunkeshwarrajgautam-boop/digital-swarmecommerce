@@ -3,12 +3,13 @@
 import { CheckCircle2, Shield } from "lucide-react";
 import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { ParallaxHero } from "@/components/home/ParallaxHero";
-import { FieldReports } from "@/components/home/FieldReports";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { HomeFAQ } from "@/components/home/HomeFAQ";
-import { EmailCapture } from "@/components/home/EmailCapture";
 import { PromoBanner } from "@/components/home/PromoBanner";
 import { TrustLogos } from "@/components/home/TrustLogos";
+import { Testimonials } from "@/components/home/Testimonials";
+import { Newsletter } from "@/components/home/Newsletter";
+import { CommunityProtocol } from "@/components/home/CommunityProtocol";
 
 export default function Home() {
   return (
@@ -49,7 +50,7 @@ export default function Home() {
                 </div>
                 <div className="flex flex-col gap-2">
                   <span className="text-4xl font-black text-primary italic">30+</span>
-                  <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Premium Protocols</span>
+                  <span className="text-[10px] font-black uppercase text-white/40 tracking-widest">Premium Templates</span>
                 </div>
               </div>
             </div>
@@ -72,8 +73,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. TESTIMONIALS (Consolidated) */}
-      <FieldReports />
+      {/* 4. SIGNATURE PROTOCOLS (Testimonials) */}
+      <Testimonials />
 
       {/* 9. HOW IT WORKS */}
       <HowItWorks />
@@ -83,9 +84,12 @@ export default function Home() {
         <HomeFAQ />
       </div>
 
-      {/* 8. NEWSLETTER SECTION */}
+      {/* 11. SWARM INTELLIGENCE (Community) */}
+      <CommunityProtocol />
+
+      {/* 8. OPERATIONAL SWARM (Newsletter) */}
       <div id="contact">
-        <EmailCapture />
+        <Newsletter />
       </div>
 
       {/* Visual Trust Badge strip */}
@@ -93,17 +97,17 @@ export default function Home() {
         <div className="container mx-auto px-6 flex flex-wrap justify-center items-center gap-12 md:gap-20 opacity-40">
            <div className="flex items-center gap-2">
              <Shield className="w-5 h-5 text-secondary" />
-             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">SSL_SECURE_PAYMENTS</span>
+             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">SSL Secure Payments</span>
            </div>
            <div className="flex items-center gap-2">
              <CheckCircle2 className="w-5 h-5 text-secondary" />
-             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">30_DAY_MONEY_BACK</span>
+             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">30-Day Money Back</span>
            </div>
            <div className="flex items-center gap-2">
              <div className="flex gap-0.5">
                {[1,2,3,4,5].map(i => <span key={i} className="text-secondary text-xs">★</span>)}
              </div>
-             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">4.9/5 RATING</span>
+             <span className="text-[10px] font-black uppercase tracking-widest text-secondary">4.9/5 Rating</span>
            </div>
         </div>
       </div>

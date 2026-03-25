@@ -28,8 +28,6 @@ export async function POST(request: Request) {
     const orderData = event.data?.order;
     const paymentData = event.data?.payment;
 
-    console.log(`[Cashfree Webhook] Event: ${eventType}`, { orderId: orderData?.order_id });
-
     if (eventType === 'PAYMENT_SUCCESS_WEBHOOK') {
       const orderId = orderData?.order_id;
       if (orderId) {
@@ -47,8 +45,6 @@ export async function POST(request: Request) {
         if (error) {
           console.error('[Webhook] DB update error:', error);
         } else {
-          console.log(`[Webhook] Order ${orderId} marked as PAID. Triggering fulfillment...`);
-          
           // Trigger Fulfillment Webhook (Atomic/Async)
           fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/webhooks/purchase`, {
             method: 'POST',
