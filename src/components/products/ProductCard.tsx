@@ -5,8 +5,9 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, Heart, Zap, Cpu, Code2 } from "lucide-react";
-import { motion } from "framer-motion";
+import { Star, Heart, Zap, Cpu, Code2, ShoppingCart, Check } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 interface ProductCardProps {
   product: Product;
@@ -30,7 +31,7 @@ function StarRating({ rating }: { rating: number }) {
 function TechBadges({ category }: { category: string }) {
   const isAI = category.includes("AI") || category.includes("Agent");
   const isWeb = category.includes("Web") || category.includes("Software") || category.includes("Boilerplates");
-  
+
   return (
     <div className="flex flex-wrap items-center gap-2 mt-4">
       {isAI && (
@@ -53,8 +54,22 @@ function TechBadges({ category }: { category: string }) {
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isWishlisted } = useWishlistStore();
-  
+
+  /**
+   * ShopEase Inspiration: Visual feedback on cart add.
+   * Shows a "Added!" confirmation state before resetting.
+   */
+  const [added, setAdded] = useState(false);
   const wishlisted = isWishlisted(product.id);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (added) return;
+    addItem(product);
+    setAdded(true);
+    setTimeout(() => setAdded(false), 1800);
+  };
 
   const toggleWishlist = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -72,11 +87,12 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -10 }}
-      className="group relative bg-white rounded-4xl p-6 transition-all duration-500 h-full flex flex-col hover:shadow-[0_40px_80px_rgba(26,26,46,0.1)] border border-secondary/5 hover:border-primary/20"
+      className="group relative bg-white rounded-4xl transition-all duration-500 h-full flex flex-col hover:shadow-[0_40px_80px_rgba(26,26,46,0.12)] border border-secondary/5 hover:border-primary/20 overflow-hidden"
     >
-      <div className="block relative aspect-4/5 w-full mb-8 overflow-hidden rounded-[2rem] bg-secondary/5 border-2 border-transparent group-hover:border-primary/10 transition-all">
+      {/* ── IMAGE BLOCK ────────────────────────────────── */}
+      <div className="relative aspect-4/5 w-full overflow-hidden bg-secondary/5">
         <Link href={`/product/${product.id}`} className="block w-full h-full">
           <Image
             src={product.image}
@@ -86,65 +102,111 @@ export function ProductCard({ product }: ProductCardProps) {
             alt={product.name}
             loading="lazy"
           />
-          <div className="absolute inset-0 bg-linear-to-t from-secondary/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+          {/*
+           * ShopEase Inspiration: gradient overlay on hover
+           * (rgba(0,0,0,0.5) darkens product image on interaction)
+           */}
+          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
         </Link>
-        
+
         {/* Most Popular Badge */}
-        {product.id === 'ai-agent-boilerplate' && (
-          <div className="absolute top-6 left-6 z-20">
+        {product.id === "ai-agent-boilerplate" && (
+          <div className="absolute top-4 left-4 z-20">
             <div className="bg-primary text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg shadow-primary/20 italic">
               Most Popular
             </div>
           </div>
         )}
 
-        <button 
+        {/* Wishlist */}
+        <button
           onClick={toggleWishlist}
-          className={`absolute top-6 right-6 w-12 h-12 rounded-full flex items-center justify-center transition-all z-20 shadow-xl ${
-            wishlisted 
-              ? "bg-primary text-white scale-110" 
+          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
+          className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all z-20 shadow-xl ${
+            wishlisted
+              ? "bg-primary text-white scale-110"
               : "bg-white/80 backdrop-blur-md text-secondary/40 hover:text-primary hover:scale-110 border border-secondary/5"
           }`}
         >
-          <Heart className={`w-5 h-5 ${wishlisted ? "fill-current" : ""}`} />
+          <Heart className={`w-4 h-4 ${wishlisted ? "fill-current" : ""}`} />
         </button>
 
-        <div className="absolute bottom-6 right-6 bg-white shadow-2xl text-secondary font-black text-lg px-5 py-2.5 rounded-2xl border border-secondary/5 z-10 -skew-x-6 group-hover:skew-x-0 transition-transform">
-          ₹{Math.round(product.price).toLocaleString("en-IN")}
+        {/*
+         * ShopEase Inspiration: Prominent price badge on the image.
+         * ShopEase styles the price in a card footer; we surface it earlier
+         * on the image itself for at-a-glance scanning.
+         */}
+        <div className="absolute bottom-4 left-4 z-10">
+          <span className="bg-white/95 backdrop-blur-md text-secondary font-black text-base px-4 py-1.5 rounded-full border border-secondary/10 shadow-lg -skew-x-3 inline-block">
+            ₹{Math.round(product.price).toLocaleString("en-IN")}
+          </span>
         </div>
       </div>
 
-      <div className="flex flex-col grow gap-2 px-1 relative z-10">
-        <div className="flex items-center justify-between mb-2">
+      {/* ── CONTENT BLOCK ──────────────────────────────── */}
+      <div className="flex flex-col grow gap-2 px-6 pt-5 pb-6 relative z-10">
+        {/* Category + Stars */}
+        <div className="flex items-center justify-between mb-1">
           <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">{product.category}</span>
           <StarRating rating={product.rating} />
         </div>
 
-        <h3 className="text-2xl font-black text-secondary leading-none tracking-tighter mb-3 group-hover:text-primary transition-colors line-clamp-2 uppercase italic">
+        <h3 className="text-xl font-black text-secondary leading-none tracking-tighter mb-2 group-hover:text-primary transition-colors line-clamp-2 uppercase italic">
           {product.name}
         </h3>
-        
-        <p className="text-sm text-secondary/50 mb-6 line-clamp-2 grow font-bold uppercase tracking-tight leading-tight">
+
+        <p className="text-sm text-secondary/50 line-clamp-2 grow font-bold uppercase tracking-tight leading-tight">
           {product.description}
         </p>
 
         <TechBadges category={product.category} />
 
-        <div className="flex gap-4 mt-8 relative z-10">
-          <Link href={`/product/${product.id}`} className="flex-1">
-            <button className="w-full h-14 bg-secondary/5 text-secondary rounded-2xl font-black uppercase italic text-xs border-2 border-transparent hover:bg-white hover:border-secondary/20 transition-all">
+        {/*
+         * ShopEase Inspiration: Full-width "Add to Cart" as the primary CTA,
+         * with a secondary "View Details" ghost button beneath it.
+         * ShopEase uses: `.add-to-cart { width: 100%; border-radius: 5px; }`
+         * We adapt this to the ONO system with an animation state.
+         */}
+        <div className="flex flex-col gap-2 mt-6">
+          <button
+            onClick={handleAddToCart}
+            aria-label={added ? "Added to cart" : "Add to cart"}
+            className={`w-full h-12 font-black uppercase italic text-xs rounded-2xl border-2 transition-all flex items-center justify-center gap-2 ${
+              added
+                ? "bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/20"
+                : "bg-primary text-white border-secondary hover:shadow-xl hover:shadow-primary/20"
+            }`}
+          >
+            <AnimatePresence mode="wait" initial={false}>
+              {added ? (
+                <motion.span
+                  key="added"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="flex items-center gap-2"
+                >
+                  <Check className="w-4 h-4" /> Added to Cart!
+                </motion.span>
+              ) : (
+                <motion.span
+                  key="add"
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  className="flex items-center gap-2"
+                >
+                  <ShoppingCart className="w-4 h-4" /> Add to Cart
+                </motion.span>
+              )}
+            </AnimatePresence>
+          </button>
+
+          <Link href={`/product/${product.id}`} className="w-full">
+            <button className="w-full h-10 bg-secondary/5 text-secondary rounded-2xl font-black uppercase italic text-xs border-2 border-transparent hover:bg-secondary/10 hover:border-secondary/10 transition-all">
               View Details
             </button>
           </Link>
-          <button
-            onClick={(e) => { 
-              e.preventDefault(); 
-              addItem(product); 
-            }}
-            className="flex-1 h-14 bg-primary text-white font-black uppercase italic text-xs rounded-2xl border-2 border-secondary hover:shadow-xl transition-all flex items-center justify-center gap-2"
-          >
-            Buy Now
-          </button>
         </div>
       </div>
     </motion.div>

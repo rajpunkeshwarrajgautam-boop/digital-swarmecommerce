@@ -8,18 +8,29 @@ import Image from "next/image";
 export function ParallaxHero() {
   return (
     <section className="relative min-h-[90vh] w-full flex items-center justify-center overflow-hidden bg-background pt-32 pb-20">
-      {/* Animated Gradient Background */}
+      {/* Background: Real product-level image with gradient overlay — ShopEase pattern */}
       <div className="absolute inset-0 z-0 overflow-hidden">
+        {/* Real atmospheric image with dark gradient overlay */}
+        <Image
+          src="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&q=80&w=1600"
+          alt="Digital development atmosphere"
+          fill
+          priority
+          className="object-cover opacity-10 grayscale"
+        />
+        {/* ShopEase-inspired: linear-gradient overlay for text legibility */}
+        <div className="absolute inset-0 bg-linear-to-b from-background/80 via-background/95 to-background" />
+        {/* ONO layer: animated ambient blobs on top */}
         <div className="absolute inset-0 bg-linear-to-br from-primary/5 via-background to-accent/5 opacity-50" />
-        <motion.div 
+        <motion.div
           animate={{ x: [0, 100, 0], y: [0, 50, 0] }}
           transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full" 
+          className="absolute top-[-10%] left-[-10%] w-[50%] h-[50%] bg-primary/10 blur-[120px] rounded-full"
         />
-        <motion.div 
+        <motion.div
           animate={{ x: [0, -100, 0], y: [0, -50, 0] }}
           transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
-          className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/10 blur-[120px] rounded-full" 
+          className="absolute bottom-[-10%] right-[-10%] w-[50%] h-[50%] bg-accent/10 blur-[120px] rounded-full"
         />
       </div>
 
