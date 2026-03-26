@@ -14,7 +14,7 @@ const STEPS = [
   {
     id: "02",
     title: "Secure Checkout",
-    description: "Uplink with Razorpay for instant encrypted processing. We support UPI, Cards, and Net Banking for global clearance.",
+    description: "Uplink with Cashfree for instant encrypted processing. We support UPI, Cards, and Net Banking for global clearance.",
     icon: <Download className="w-8 h-8 text-secondary" />,
     color: "bg-secondary/10"
   },
