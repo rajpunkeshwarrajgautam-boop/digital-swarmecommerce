@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Menu, X, ShoppingBag, Heart } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
+import { Logo } from "@/components/ui/Logo"; // Assuming this is a simple text component
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { NavbarMenu } from "./NavbarMenu";
 import { SearchBar } from "./SearchBar";
@@ -46,7 +46,7 @@ export function Header() {
           {/* 1. LEFT: Logo */}
           <div className="flex items-center shrink-0 min-w-fit">
             <Link href="/" className="hover:opacity-80 transition-opacity">
-              <Logo />
+              <Logo>GRAVITY</Logo> // Updated logo text
             </Link>
           </div>
 
@@ -129,7 +129,7 @@ export function Header() {
             className="fixed inset-0 z-[60] bg-white lg:hidden flex flex-col p-8 overflow-y-auto"
           >
             <div className="flex items-center justify-between mb-12">
-              <Logo />
+              <Logo>GRAVITY</Logo> // Updated logo text
               <button onClick={() => setIsMenuOpen(false)}>
                 <X className="w-9 h-9 text-secondary" />
               </button>
