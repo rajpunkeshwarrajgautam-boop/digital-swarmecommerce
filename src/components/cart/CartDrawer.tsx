@@ -8,7 +8,8 @@ import Link from "next/link";
 import Image from "next/image";
 
 export function CartDrawer() {
-  const { items, addItem, removeItem, updateQuantity, isOpen, toggleCart, total } = useCartStore();
+  const { items, addItem, removeItem, updateQuantity, isOpen, toggleCart, getCartTotal } = useCartStore();
+  const total = getCartTotal();
   const [isClient, setIsClient] = useState(false);
 
   const drawerVariants: Variants = {
@@ -79,7 +80,7 @@ export function CartDrawer() {
               ) : (
                 items.map((item) => (
                   <div 
-                    key={item.id} 
+                    key={item.productId} 
                     className="group relative flex gap-4 p-4 bg-white/5 border border-white/10 rounded-2xl shadow-sm hover:border-primary/30 hover:shadow-[0_0_20px_rgba(255,107,53,0.1)] transition-all backdrop-blur-md"
                   >
                     <div className="h-20 w-20 overflow-hidden rounded-xl bg-[#0a0c10] shrink-0 relative border border-white/10">
@@ -98,14 +99,14 @@ export function CartDrawer() {
                         <div className="flex items-center gap-2 bg-black/50 border border-white/10 rounded-full px-1 py-1">
                           <button 
                             className="h-6 w-6 rounded-full hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all"
-                            onClick={() => updateQuantity(item.id, Math.max(0, item.quantity - 1))}
+                            onClick={() => updateQuantity(item.productId, Math.max(0, item.quantity - 1))}
                           >
                             <Minus className="w-3 h-3" />
                           </button>
                           <span className="w-6 text-center text-sm font-bold text-gray-300">{item.quantity}</span>
                           <button 
                             className="h-6 w-6 rounded-full hover:bg-white/10 text-gray-400 hover:text-white flex items-center justify-center transition-all"
-                            onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                            onClick={() => updateQuantity(item.productId, item.quantity + 1)}
                           >
                             <Plus className="w-3 h-3" />
                           </button>
@@ -113,7 +114,7 @@ export function CartDrawer() {
                         
                         <button 
                           className="text-gray-500 hover:text-red-400 hover:bg-red-500/10 border border-transparent hover:border-red-500/20 h-8 w-8 rounded-full transition-all flex items-center justify-center"
-                          onClick={() => removeItem(item.id)}
+                          onClick={() => removeItem(item.productId)}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
@@ -125,7 +126,7 @@ export function CartDrawer() {
             </div>
 
             {/* 1-Click Upsell Modal (AOV Maximization) */}
-            {items.length > 0 && !items.some(i => i.id === "master-react-boilerplate") && (
+            {items.length > 0 && !items.some(i => i.productId === "master-react-boilerplate") && (
               <div className="relative z-10 p-4 border-t border-primary/20 bg-primary/5 shadow-[inset_0_5px_15px_rgba(255,107,53,0.05)]">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-[#0a0c10] border border-primary/30 rounded-lg flex items-center justify-center shrink-0 shadow-[0_0_10px_rgba(255,107,53,0.2)]">

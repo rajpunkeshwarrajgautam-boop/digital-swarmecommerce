@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 
 // Mock data - would normally fetch from Supabase
@@ -39,17 +39,12 @@ const activeProtocols = [
 
 export default function DashboardPage() {
   const { user } = useUser();
-  const [greeting, setGreeting] = useState("Initializing System...");
-
-  useEffect(() => {
-    const getGreeting = () => {
-      const hours = new Date().getHours();
-      if (hours < 12) return "Morning_Protocol Active";
-      if (hours < 18) return "Afternoon_Sync Operational";
-      return "Evening_Shutdown Approaching";
-    };
-    setGreeting(getGreeting());
-  }, []);
+  const [greeting] = useState(() => {
+    const hours = new Date().getHours();
+    if (hours < 12) return "Morning_Protocol Active";
+    if (hours < 18) return "Afternoon_Sync Operational";
+    return "Evening_Shutdown Approaching";
+  });
 
   return (
     <div className="space-y-12">
@@ -161,23 +156,5 @@ export default function DashboardPage() {
       </section>
 
     </div>
-  );
-}
-
-function Activity({ className }: { className?: string }) {
-  return (
-    <svg 
-      xmlns="http://www.w3.org/2000/svg" 
-      width="24" height="24" 
-      viewBox="0 0 24 24" 
-      fill="none" 
-      stroke="currentColor" 
-      strokeWidth="2" 
-      strokeLinecap="round" 
-      strokeLinejoin="round" 
-      className={className}
-    >
-      <path d="M22 12h-4l-3 9L9 3l-3 9H2" />
-    </svg>
   );
 }
