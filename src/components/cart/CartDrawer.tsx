@@ -50,7 +50,7 @@ export function CartDrawer() {
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-[#0a0c10] border-l border-white/10 z-[100] shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col"
+            className="fixed top-0 right-0 h-full w-full max-w-md bg-[#0a0c10] border-l border-white/10 z-100 shadow-[-20px_0_40px_rgba(0,0,0,0.8)] flex flex-col"
           >
             {/* Header */}
             <div className="relative z-10 flex items-center justify-between p-6 border-b border-white/10 bg-[#0a0c10]">
@@ -167,7 +167,7 @@ export function CartDrawer() {
                   </div>
                 </div>
                 <Link href="/checkout" onClick={toggleCart} className="w-full block">
-                  <button className="w-full py-4 text-lg font-black rounded-2xl bg-gradient-to-r from-primary to-[#FF8C61] text-white shadow-[0_0_15px_rgba(255,107,53,0.4)] hover:shadow-[0_0_30px_rgba(255,107,53,0.6)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 uppercase italic tracking-widest">
+                  <button className="w-full py-4 text-lg font-black rounded-2xl bg-linear-to-r from-primary to-[#FF8C61] text-white shadow-[0_0_15px_rgba(255,107,53,0.4)] hover:shadow-[0_0_30px_rgba(255,107,53,0.6)] hover:-translate-y-0.5 transition-all flex items-center justify-center gap-2 uppercase italic tracking-widest">
                     Initialize Checkout <ArrowRight className="w-5 h-5"/>
                   </button>
                 </Link>

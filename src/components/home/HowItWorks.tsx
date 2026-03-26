@@ -42,7 +42,7 @@ export function HowItWorks() {
 
         <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
           {/* Connector Line (Desktop) */}
-          <div className="absolute top-[3.5rem] left-[15%] right-[15%] h-1 bg-linear-to-r from-transparent via-secondary/10 to-transparent z-0 hidden lg:block" />
+          <div className="absolute top-14 left-[15%] right-[15%] h-1 bg-linear-to-r from-transparent via-secondary/10 to-transparent z-0 hidden lg:block" />
 
           {STEPS.map((step, i) => (
             <motion.div
@@ -52,7 +52,7 @@ export function HowItWorks() {
               transition={{ delay: i * 0.2 }}
               className="relative z-10 flex flex-col items-center text-center group"
             >
-              <div className={`w-24 h-24 ${step.color} rounded-[2rem] border-4 border-white shadow-2xl flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500`}>
+              <div className={`w-24 h-24 ${step.color} rounded-4xl border-4 border-white shadow-2xl flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500`}>
                 {step.icon}
                 <div className="absolute -top-2 -right-2 w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center font-black text-xs italic border-2 border-white shadow-lg">
                   {step.id}

@@ -26,7 +26,11 @@ export function Header() {
 
   useEffect(() => {
     setMounted(true);
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      if (typeof window !== 'undefined') {
+        setScrolled(window.scrollY > 20);
+      }
+    };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -48,7 +52,7 @@ export function Header() {
 
           {/* 2. CENTER: Navigation (Desktop) - Integrated NavbarMenu */}
           <div className="hidden lg:flex flex-1 justify-center">
-            <NavbarMenu />
+            <NavbarMenu scrolled={scrolled} />
           </div>
 
           {/* 3. RIGHT: Actions */}

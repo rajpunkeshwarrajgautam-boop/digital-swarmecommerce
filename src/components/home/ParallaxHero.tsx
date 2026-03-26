@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ShoppingCart } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export function ParallaxHero() {
   return (
@@ -42,7 +43,7 @@ export function ParallaxHero() {
           LAUNCH YOUR <br />
           <span className="text-primary relative">
             SaaS EMPIRE
-            <div className="absolute -bottom-4 left-0 right-0 h-4 bg-secondary/5 -z-10 skew-x-[-12deg]" />
+            <div className="absolute -bottom-4 left-0 right-0 h-4 bg-secondary/5 -z-10 -skew-x-12" />
           </span>
         </motion.h1>
 
@@ -95,8 +96,13 @@ export function ParallaxHero() {
               <div className="absolute top-8 left-8 z-20">
                 <span className="bg-primary text-white text-[9px] font-black px-3 py-1 rounded-full">{card.tag}</span>
               </div>
-              <div className="aspect-video rounded-[2rem] overflow-hidden bg-secondary/5 mb-6 relative">
-                 <img src={card.img} alt={card.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100" />
+              <div className="aspect-video rounded-4xl overflow-hidden bg-secondary/5 mb-6 relative">
+                 <Image 
+                   src={card.img} 
+                   alt={card.name} 
+                   fill 
+                   className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 scale-110 group-hover:scale-100" 
+                 />
                  <div className="absolute inset-0 bg-linear-to-t from-secondary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
               </div>
               <div className="flex justify-between items-end px-2">

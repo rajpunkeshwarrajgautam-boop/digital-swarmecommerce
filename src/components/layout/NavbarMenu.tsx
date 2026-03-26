@@ -5,25 +5,27 @@ import Link from "next/link";
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 import { cn } from "@/lib/utils";
 
-export function NavbarMenu() {
+export function NavbarMenu({ scrolled = false }: { scrolled?: boolean }) {
+  const textColor = scrolled ? "text-gray-600 hover:text-gray-900" : "text-white/60 hover:text-white";
+
   return (
     <NavigationMenu.Root className="relative z-10 hidden lg:flex">
       <NavigationMenu.List className="flex items-center gap-2 list-none m-0 p-0">
         
         <NavigationMenu.Item>
-          <Link href="/products" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">Products</Link>
+          <Link href="/products" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Products</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/pricing" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">Pricing</Link>
+          <Link href="/pricing" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Pricing</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/about" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">About</Link>
+          <Link href="/about" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>About</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/faq" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">FAQ</Link>
+          <Link href="/faq" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>FAQ</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/blog" className="px-4 py-2 text-sm font-bold text-gray-600 hover:text-gray-900 transition-colors uppercase tracking-tight">Blog</Link>
+          <Link href="/blog" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Blog</Link>
         </NavigationMenu.Item>
 
         <NavigationMenu.Indicator className="fixed top-full z-1 flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]">
@@ -33,7 +35,7 @@ export function NavbarMenu() {
 
       <div className="perspective-[2000px] absolute top-full left-0 flex w-full justify-center">
         <NavigationMenu.Viewport 
-        className="relative mt-8 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden border-4 border-black bg-white/95 backdrop-blur-3xl shadow-[32px_32px_0_#000] transition-[width,_height] duration-500 sm:w-(--radix-navigation-menu-viewport-width)" 
+        className="relative mt-8 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden border-4 border-black bg-white/95 backdrop-blur-3xl shadow-[32px_32px_0_#000] transition-[width,height] duration-500 sm:w-(--radix-navigation-menu-viewport-width)" 
       />
       </div>
     </NavigationMenu.Root>

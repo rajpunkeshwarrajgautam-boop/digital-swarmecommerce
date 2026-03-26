@@ -59,7 +59,7 @@ export default function DashboardPage() {
           <Zap className="w-4 h-4 text-primary" />
           <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">Status: System_Nominal</span>
         </motion.div>
-        <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter leading-none">
+        <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter leading-none">
           {greeting}, <br />
           <span className="text-white/20 italic">{user?.firstName || "Agent"}</span>
         </h1>
@@ -106,8 +106,8 @@ export default function DashboardPage() {
             >
               <div className="w-32 h-32 bg-black border-2 border-white/10 shrink-0 grayscale hover:grayscale-0 transition-all overflow-hidden relative">
                 <Image 
-                  src={asset.image} 
-                  alt={asset.name} 
+                  src={user?.imageUrl || asset.image} 
+                  alt={user?.fullName || asset.name} 
                   fill 
                   className="object-cover" 
                 />

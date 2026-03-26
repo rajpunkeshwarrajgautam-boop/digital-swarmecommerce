@@ -5,7 +5,7 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, ShoppingCart, Heart, Zap, Cpu, Code2 } from "lucide-react";
+import { Star, Heart, Zap, Cpu, Code2 } from "lucide-react";
 import { motion } from "framer-motion";
 
 interface ProductCardProps {
@@ -74,7 +74,7 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <motion.div 
       whileHover={{ y: -10 }}
-      className="group relative bg-white rounded-[2.5rem] p-6 transition-all duration-500 h-full flex flex-col hover:shadow-[0_40px_80px_rgba(26,26,46,0.1)] border border-secondary/5 hover:border-primary/20"
+      className="group relative bg-white rounded-4xl p-6 transition-all duration-500 h-full flex flex-col hover:shadow-[0_40px_80px_rgba(26,26,46,0.1)] border border-secondary/5 hover:border-primary/20"
     >
       <div className="block relative aspect-4/5 w-full mb-8 overflow-hidden rounded-[2rem] bg-secondary/5 border-2 border-transparent group-hover:border-primary/10 transition-all">
         <Link href={`/product/${product.id}`} className="block w-full h-full">
@@ -109,8 +109,8 @@ export function ProductCard({ product }: ProductCardProps) {
           <Heart className={`w-5 h-5 ${wishlisted ? "fill-current" : ""}`} />
         </button>
 
-        <div className="absolute bottom-6 right-6 bg-white shadow-2xl text-secondary font-black text-lg px-5 py-2.5 rounded-2xl border border-secondary/5 z-10 skew-x-[-6deg] group-hover:skew-x-0 transition-transform">
-          ₹{product.price.toLocaleString("en-IN")}
+        <div className="absolute bottom-6 right-6 bg-white shadow-2xl text-secondary font-black text-lg px-5 py-2.5 rounded-2xl border border-secondary/5 z-10 -skew-x-6 group-hover:skew-x-0 transition-transform">
+          ₹{Math.round(product.price).toLocaleString("en-IN")}
         </div>
       </div>
 
@@ -120,7 +120,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <StarRating rating={product.rating} />
         </div>
 
-        <h3 className="text-2xl font-black text-secondary leading-[1] tracking-tighter mb-3 group-hover:text-primary transition-colors line-clamp-2 uppercase italic">
+        <h3 className="text-2xl font-black text-secondary leading-none tracking-tighter mb-3 group-hover:text-primary transition-colors line-clamp-2 uppercase italic">
           {product.name}
         </h3>
         

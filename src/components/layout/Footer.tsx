@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Github, Twitter, Linkedin, ExternalLink, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { usePathname } from "next/navigation";
+import Image from "next/image";
 
 export function Footer() {
   const pathname = usePathname();
@@ -79,8 +80,14 @@ export function Footer() {
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">Verified Processor</span>
               </div>
               <div className="flex flex-wrap gap-4 opacity-20 filter grayscale">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" className="h-4" alt="Razorpay" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" className="h-4" alt="Stripe" />
+                <div className="relative h-4 w-24">
+                  <Image 
+                    src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" 
+                    alt="Cashfree Payments" 
+                    fill 
+                    className="object-contain" 
+                  />
+                </div>
               </div>
             </div>
           </div>
