@@ -10,6 +10,13 @@ export async function POST(request: Request) {
     const CLIENT_ID = (process.env.CASHFREE_APP_ID || '').replace(/['"]+/g, '').trim();
     const CLIENT_SECRET = (process.env.CASHFREE_SECRET_KEY || '').replace(/['"]+/g, '').trim();
     
+    if (!CLIENT_ID || !CLIENT_SECRET) {
+      console.error('[Cashfree Config Error] Missing API Keys');
+      return NextResponse.json({ 
+        error: 'Payment Gateway is not configured. Please add CASHFREE_APP_ID and CASHFREE_SECRET_KEY to environment variables.' 
+      }, { status: 500 });
+    }
+    
     // Hard-detect environment based on the Secret Key signature
     const isProdKey = CLIENT_SECRET.startsWith('cfsk_ma_prod_');
     const BASE_URL = isProdKey 
@@ -72,8 +79,8 @@ export async function POST(request: Request) {
       quantity: 1,
       price: item.price,
     }));
-    supabaseAdmin.from('order_items').insert(orderItems).then(({ error }) => {
-      if (error) console.error('[OrderItems Error]', error);
+    supabaseAdmin.from('order_items').insert(orderItems).then(({ error }: { error: Error | null }) => {
+      if (error) console.error('[OrderItems Error]', error.message);
     });
 
     // 3.5 Log Affiliate Referral (Pending)
@@ -132,14 +139,22 @@ export async function POST(request: Request) {
       }, { status: 500 });
     }
 
+    console.log('[Cashfree Order Created]', {
+      orderId: cfData.order_id,
+      hasSessionId: !!cfData.payment_session_id,
+      mode: isProdKey ? "production" : "sandbox"
+    });
+
     return NextResponse.json({
       success: true,
       orderId: cfData.order_id,
       paymentSessionId: cfData.payment_session_id,
+      cfMode: isProdKey ? "production" : "sandbox"
     });
 
-  } catch (err: any) {
-    console.error('[Checkout API Error]', err);
-    return NextResponse.json({ error: err.message }, { status: 500 });
+  } catch (err: unknown) {
+    const error = err as Error;
+    console.error('[Checkout API Error]', error);
+    return NextResponse.json({ error: error.message }, { status: 500 });
   }
 }

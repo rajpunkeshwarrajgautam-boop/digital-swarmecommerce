@@ -5,9 +5,11 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, Heart, Zap, Cpu, Code2, ShoppingCart, Check } from "lucide-react";
+import { Star, Heart, Zap, Cpu, Code2, ShoppingCart, Check, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
+import { GlassCard } from "@/components/ui/GlassCard";
+import { ForgeButton } from "@/components/ui/ForgeButton";
 
 interface ProductCardProps {
   product: Product;
@@ -19,8 +21,8 @@ function StarRating({ rating }: { rating: number }) {
       {[1, 2, 3, 4, 5].map((s) => (
         <Star
           key={s}
-          className={`w-3 h-3 ${
-            s <= Math.round(rating) ? "fill-primary text-primary" : "text-secondary/10"
+          className={`w-2.5 h-2.5 ${
+            s <= Math.round(rating) ? "fill-accent text-accent" : "text-white/10"
           }`}
         />
       ))}
@@ -35,17 +37,17 @@ function TechBadges({ category }: { category: string }) {
   return (
     <div className="flex flex-wrap items-center gap-2 mt-4">
       {isAI && (
-        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-accent/10 border border-accent/20 text-[8px] font-black uppercase tracking-widest text-accent italic">
-          <Cpu className="w-2.5 h-2.5" /> Neural
+        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-accent/5 border border-accent/20 text-[9px] font-mono uppercase tracking-widest text-accent">
+          <Cpu className="w-3 h-3" /> Neural
         </div>
       )}
       {isWeb && (
-        <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-[8px] font-black uppercase tracking-widest text-primary italic">
-          <Code2 className="w-2.5 h-2.5" /> Next.js 15
+        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-primary/5 border border-primary/20 text-[9px] font-mono uppercase tracking-widest text-primary">
+          <Code2 className="w-3 h-3" /> High-Perf
         </div>
       )}
-      <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-secondary/5 border border-secondary/10 text-[8px] font-black uppercase tracking-widest text-secondary/40 italic">
-        <Zap className="w-2.5 h-2.5" /> Optimized
+      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 text-[9px] font-mono uppercase tracking-widest text-white/30">
+        <Terminal className="w-3 h-3" /> v2.0
       </div>
     </div>
   );
@@ -55,10 +57,6 @@ export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isWishlisted } = useWishlistStore();
 
-  /**
-   * ShopEase Inspiration: Visual feedback on cart add.
-   * Shows a "Added!" confirmation state before resetting.
-   */
   const [added, setAdded] = useState(false);
   const wishlisted = isWishlisted(product.id);
 
@@ -68,7 +66,7 @@ export function ProductCard({ product }: ProductCardProps) {
     if (added) return;
     addItem(product);
     setAdded(true);
-    setTimeout(() => setAdded(false), 1800);
+    setTimeout(() => setAdded(false), 2000);
   };
 
   const toggleWishlist = (e: React.MouseEvent) => {
@@ -87,33 +85,22 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <motion.div
-      whileHover={{ y: -10 }}
-      className="group relative bg-white rounded-4xl transition-all duration-500 h-full flex flex-col hover:shadow-[0_40px_80px_rgba(26,26,46,0.12)] border border-secondary/5 hover:border-primary/20 overflow-hidden"
-    >
-      {/* ── IMAGE BLOCK ────────────────────────────────── */}
-      <div className="relative aspect-4/5 w-full overflow-hidden bg-secondary/5">
-        <Link href={`/product/${product.id}`} className="block w-full h-full">
-          <Image
-            src={product.image}
-            fill
-            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
-            alt={product.name}
-            loading="lazy"
-          />
-          {/*
-           * ShopEase Inspiration: gradient overlay on hover
-           * (rgba(0,0,0,0.5) darkens product image on interaction)
-           */}
-          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-        </Link>
-
+    <GlassCard className="p-0 overflow-hidden h-full group flex flex-col">
+      <Link href={`/product/${product.id}`} className="block relative aspect-square overflow-hidden bg-white/5">
+        <Image
+          src={product.image}
+          fill
+          className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1"
+          alt={product.name}
+          loading="lazy"
+        />
+        <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
+        
         {/* Most Popular Badge */}
         {product.id === "ai-agent-boilerplate" && (
           <div className="absolute top-4 left-4 z-20">
-            <div className="bg-primary text-white text-[9px] font-black px-4 py-1.5 rounded-full uppercase tracking-widest shadow-lg shadow-primary/20 italic">
-              Most Popular
+            <div className="bg-primary text-black text-[9px] font-outfit font-black px-3 py-1 rounded-sm uppercase tracking-widest shadow-lg italic">
+              Elite Protocol
             </div>
           </div>
         )}
@@ -121,94 +108,78 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Wishlist */}
         <button
           onClick={toggleWishlist}
-          aria-label={wishlisted ? "Remove from wishlist" : "Add to wishlist"}
-          className={`absolute top-4 right-4 w-10 h-10 rounded-full flex items-center justify-center transition-all z-20 shadow-xl ${
+          className={`absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-all z-20 ${
             wishlisted
-              ? "bg-primary text-white scale-110"
-              : "bg-white/80 backdrop-blur-md text-secondary/40 hover:text-primary hover:scale-110 border border-secondary/5"
+              ? "bg-primary text-black"
+              : "bg-black/40 backdrop-blur-md text-white/40 hover:text-primary hover:bg-black/60 border border-white/10"
           }`}
         >
-          <Heart className={`w-4 h-4 ${wishlisted ? "fill-current" : ""}`} />
+          <Heart className={`w-3.5 h-3.5 ${wishlisted ? "fill-current" : ""}`} />
         </button>
 
-        {/*
-         * ShopEase Inspiration: Prominent price badge on the image.
-         * ShopEase styles the price in a card footer; we surface it earlier
-         * on the image itself for at-a-glance scanning.
-         */}
+        {/* Price Tag */}
         <div className="absolute bottom-4 left-4 z-10">
-          <span className="bg-white/95 backdrop-blur-md text-secondary font-black text-base px-4 py-1.5 rounded-full border border-secondary/10 shadow-lg -skew-x-3 inline-block">
+          <span className="font-outfit font-black text-lg text-white uppercase italic tracking-tighter">
             ₹{Math.round(product.price).toLocaleString("en-IN")}
           </span>
         </div>
-      </div>
+      </Link>
 
-      {/* ── CONTENT BLOCK ──────────────────────────────── */}
-      <div className="flex flex-col grow gap-2 px-6 pt-5 pb-6 relative z-10">
-        {/* Category + Stars */}
-        <div className="flex items-center justify-between mb-1">
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">{product.category}</span>
+      <div className="p-6 flex flex-col flex-1 gap-2">
+        <div className="flex items-center justify-between">
+          <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">{product.category}</span>
           <StarRating rating={product.rating} />
         </div>
 
-        <h3 className="text-xl font-black text-secondary leading-none tracking-tighter mb-2 group-hover:text-primary transition-colors line-clamp-2 uppercase italic">
+        <h3 className="text-xl font-outfit font-black italic uppercase text-white group-hover:text-primary transition-colors line-clamp-1 leading-none">
           {product.name}
         </h3>
 
-        <p className="text-sm text-secondary/50 line-clamp-2 grow font-bold uppercase tracking-tight leading-tight">
+        <p className="text-sm text-white/40 font-inter line-clamp-2 leading-snug">
           {product.description}
         </p>
 
         <TechBadges category={product.category} />
 
-        {/*
-         * ShopEase Inspiration: Full-width "Add to Cart" as the primary CTA,
-         * with a secondary "View Details" ghost button beneath it.
-         * ShopEase uses: `.add-to-cart { width: 100%; border-radius: 5px; }`
-         * We adapt this to the ONO system with an animation state.
-         */}
-        <div className="flex flex-col gap-2 mt-6">
-          <button
+        <div className="mt-6 pt-6 border-t border-white/5 flex flex-col gap-3">
+          <ForgeButton
+            variant={added ? "outline" : "primary"}
+            size="sm"
             onClick={handleAddToCart}
-            aria-label={added ? "Added to cart" : "Add to cart"}
-            className={`w-full h-12 font-black uppercase italic text-xs rounded-2xl border-2 transition-all flex items-center justify-center gap-2 ${
-              added
-                ? "bg-green-500 border-green-500 text-white shadow-lg shadow-green-500/20"
-                : "bg-primary text-white border-secondary hover:shadow-xl hover:shadow-primary/20"
-            }`}
+            className="w-full"
           >
             <AnimatePresence mode="wait" initial={false}>
               {added ? (
                 <motion.span
                   key="added"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                   className="flex items-center gap-2"
                 >
-                  <Check className="w-4 h-4" /> Added to Cart!
+                  <Check className="w-3.5 h-3.5" /> Protocol Active
                 </motion.span>
               ) : (
                 <motion.span
                   key="add"
-                  initial={{ opacity: 0, scale: 0.8 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.8 }}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
                   className="flex items-center gap-2"
                 >
-                  <ShoppingCart className="w-4 h-4" /> Add to Cart
+                  <ShoppingCart className="w-3.5 h-3.5" /> Materialize
                 </motion.span>
               )}
             </AnimatePresence>
-          </button>
+          </ForgeButton>
 
           <Link href={`/product/${product.id}`} className="w-full">
-            <button className="w-full h-10 bg-secondary/5 text-secondary rounded-2xl font-black uppercase italic text-xs border-2 border-transparent hover:bg-secondary/10 hover:border-secondary/10 transition-all">
-              View Details
+            <button className="w-full text-[10px] font-mono text-white/20 uppercase tracking-[0.3em] hover:text-white transition-colors">
+              Access Documentation
             </button>
           </Link>
         </div>
       </div>
-    </motion.div>
+    </GlassCard>
   );
 }

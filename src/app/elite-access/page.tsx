@@ -1,8 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Rocket, Star, ShieldCheck, Zap, ArrowRight, Sparkles, Diamond } from "lucide-react";
+import { ShieldCheck, Zap, ArrowRight, Sparkles, Diamond } from "lucide-react";
 import Link from "next/link";
+import NextImage from "next/image";
 
 export default function EliteAccessPage() {
   return (
@@ -18,7 +19,7 @@ export default function EliteAccessPage() {
             animate={{ opacity: 1, scale: 1 }}
             className="flex flex-col items-center gap-8"
           >
-            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-full bg-primary/10 border border-primary/20 backdrop-blur-md">
+            <div className="inline-flex items-center gap-2 px-6 py-2 rounded-none bg-primary/10 border border-primary/20 backdrop-blur-md">
               <Sparkles className="w-4 h-4 text-primary animate-pulse" />
               <span className="text-[10px] font-black uppercase tracking-[0.4em] text-primary">Beyond Commercial Code</span>
             </div>
@@ -32,7 +33,7 @@ export default function EliteAccessPage() {
 
             <Link href="/pricing" className="mt-8 group relative">
               <div className="absolute inset-0 bg-primary blur-3xl opacity-20 group-hover:opacity-40 transition-opacity" />
-              <div className="relative px-12 py-5 bg-primary text-white font-black uppercase italic tracking-[0.2em] rounded-full shadow-2xl flex items-center gap-4 hover:-translate-y-1 transition-all">
+              <div className="relative px-12 py-5 bg-primary text-white font-black uppercase italic tracking-[0.2em] rounded-none shadow-2xl flex items-center gap-4 hover:-translate-y-1 transition-all">
                  Join the Elite Swarm <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition-transform" />
               </div>
             </Link>
@@ -59,15 +60,15 @@ export default function EliteAccessPage() {
 
         {/* Visual Badge Background */}
         <div className="mt-32 p-2 relative">
-           <div className="absolute inset-0 bg-white/5 rounded-[4rem] border border-white/10 backdrop-blur-3xl" />
+           <div className="absolute inset-0 bg-white/5 rounded-none border border-white/10 backdrop-blur-3xl" />
            <div className="relative p-20 flex flex-col lg:flex-row items-center justify-between gap-12">
               <div className="flex flex-col gap-4 text-center lg:text-left">
                  <h2 className="text-4xl font-black italic uppercase tracking-tighter">Membership Tiers</h2>
                  <p className="text-white/40 font-bold max-w-sm lowercase">Our elite protocols are restricted to qualified developers. Select your tier to proceed with authorization.</p>
               </div>
               <div className="flex flex-wrap justify-center gap-12 opacity-30 grayscale contrast-125">
-                 <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" className="h-8" alt="Safe Payment" />
-                 <img src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" className="h-8" alt="Secure Processor" />
+                 <NextImage src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" width={100} height={32} alt="Safe Payment" className="h-8 w-auto" />
+                 <NextImage src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" width={100} height={32} alt="Secure Processor" className="h-8 w-auto" />
               </div>
               <Link href="/pricing" className="px-10 py-4 border-4 border-white text-white font-black uppercase italic tracking-widest hover:bg-white hover:text-black transition-all">
                  View Tiers
@@ -79,9 +80,9 @@ export default function EliteAccessPage() {
   );
 }
 
-function EliteFeature({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
+function EliteFeature({ icon: Icon, title, desc }: { icon: React.ElementType, title: string, desc: string }) {
   return (
-    <div className="relative p-10 bg-white/5 border border-white/10 rounded-[3rem] hover:bg-linear-to-b hover:from-primary/10 hover:to-transparent transition-all group overflow-hidden">
+    <div className="relative p-10 bg-white/5 border border-white/10 rounded-none hover:bg-linear-to-b hover:from-primary/10 hover:to-transparent transition-all group overflow-hidden">
        <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
           <Icon className="w-32 h-32" />
        </div>

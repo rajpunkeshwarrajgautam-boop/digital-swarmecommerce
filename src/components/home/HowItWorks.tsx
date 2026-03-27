@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import { Search, Download, Rocket, ArrowRight } from "lucide-react";
+import { GlassCard } from "@/components/ui/GlassCard";
 
 const STEPS = [
   {
@@ -29,20 +30,21 @@ const STEPS = [
 
 export function HowItWorks() {
   return (
-    <section className="py-32 bg-white relative overflow-hidden">
+    <section className="py-40 bg-[#07070a] relative overflow-hidden">
       <div className="container px-6 mx-auto relative z-10 w-full max-w-7xl">
         <div className="flex flex-col items-center text-center gap-6 mb-24">
-          <h2 className="text-5xl md:text-7xl font-black text-secondary tracking-tighter uppercase italic leading-[0.9]">
-            Rapid <span className="text-primary italic">Setup</span> Protocol
+          <h2 className="text-5xl md:text-7xl font-outfit font-black text-white italic tracking-tighter uppercase leading-[0.9]">
+            Rapid <span className="text-primary italic text-6xl md:text-8xl">Setup</span> <br />
+            Protocol
           </h2>
-          <p className="text-secondary/50 font-bold text-lg max-w-2xl uppercase tracking-tight">
-            How to go from idea to absolute production dominance in three steps.
+          <p className="text-white/40 font-mono text-xs uppercase tracking-[0.4em] max-w-xl">
+             [ MISSION OBJECTIVE: ZERO-FRICTION PRODUCTION DOMINANCE ]
           </p>
         </div>
 
-        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-20">
+        <div className="relative grid grid-cols-1 md:grid-cols-3 gap-12 lg:gap-16">
           {/* Connector Line (Desktop) */}
-          <div className="absolute top-14 left-[15%] right-[15%] h-1 bg-linear-to-r from-transparent via-secondary/10 to-transparent z-0 hidden lg:block" />
+          <div className="absolute top-20 left-[15%] right-[15%] h-px bg-white/5 z-0 hidden lg:block" />
 
           {STEPS.map((step, i) => (
             <motion.div
@@ -50,28 +52,32 @@ export function HowItWorks() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.2 }}
-              className="relative z-10 flex flex-col items-center text-center group"
+              className="relative z-10"
             >
-              <div className={`w-24 h-24 ${step.color} rounded-4xl border-4 border-white shadow-2xl flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500`}>
-                {step.icon}
-                <div className="absolute -top-2 -right-2 w-8 h-8 bg-secondary text-white rounded-full flex items-center justify-center font-black text-xs italic border-2 border-white shadow-lg">
-                  {step.id}
+              <GlassCard className="flex flex-col items-center text-center p-12 h-full border-white/5 bg-white/2 hover:bg-white/5 transition-all duration-500 group">
+                <div className={`w-20 h-20 ${step.color} rounded-sm flex items-center justify-center mb-10 group-hover:scale-110 transition-transform duration-500 border border-white/10`}>
+                  {step.icon}
+                  <div className="absolute -top-2 -right-2 w-7 h-7 bg-primary text-black flex items-center justify-center font-outfit font-black text-[10px] italic border border-white/20 shadow-xl">
+                    {step.id}
+                  </div>
                 </div>
-              </div>
-              <h3 className="text-3xl font-black text-secondary uppercase italic tracking-tighter mb-4 group-hover:text-primary transition-colors">
-                {step.title}
-              </h3>
-              <p className="text-secondary/50 font-bold text-sm lg:text-base uppercase tracking-tight leading-tight max-w-xs">
-                {step.description}
-              </p>
+                <h3 className="text-2xl font-outfit font-black text-white uppercase italic tracking-tighter mb-4 group-hover:text-primary transition-colors">
+                  {step.title}
+                </h3>
+                <p className="text-white/40 font-inter text-sm leading-relaxed max-w-xs">
+                  {step.description}
+                </p>
+              </GlassCard>
             </motion.div>
           ))}
         </div>
 
         <div className="mt-24 flex justify-center">
-           <div className="flex items-center gap-4 px-8 py-4 bg-secondary/5 rounded-2xl border border-secondary/5 animate-pulse">
-             <ArrowRight className="w-5 h-5 text-primary" />
-             <span className="text-[10px] font-black uppercase text-secondary/40 tracking-[0.2em]">Deployment Complete // Source_Verified</span>
+           <div className="flex items-center gap-4 px-8 py-3 bg-white/5 border border-white/5">
+             <ArrowRight className="w-4 h-4 text-primary" />
+             <span className="text-[10px] font-mono font-black uppercase text-white/20 tracking-[0.3em]">
+               System Status: Synchronized // v2.4.9
+             </span>
            </div>
         </div>
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Code2, Layers, Server, Database, ArrowRight, ShieldCheck } from "lucide-react";
+import { Code2, Layers, Server, Database, ShieldCheck } from "lucide-react";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { products } from "@/lib/data";
 
@@ -20,7 +20,7 @@ export default function SoftwareStacksPage() {
             className="flex flex-col gap-6"
           >
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-secondary/10 text-secondary rounded-2xl border border-secondary/20">
+              <div className="p-3 bg-secondary/10 text-secondary rounded-none border border-secondary/20">
                 <Code2 className="w-8 h-8" />
               </div>
               <span className="text-xs font-black uppercase tracking-[0.3em] text-secondary italic">Architectural Baseline 02</span>
@@ -70,9 +70,9 @@ export default function SoftwareStacksPage() {
   );
 }
 
-function StackFeature({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
+function StackFeature({ icon: Icon, title, desc }: { icon: React.ElementType, title: string, desc: string }) {
   return (
-    <div className="p-6 bg-white border border-secondary/5 rounded-2xl hover:border-secondary/20 transition-all flex flex-col gap-3 group">
+    <div className="p-6 bg-white border border-secondary/5 rounded-none hover:border-secondary/20 transition-all flex flex-col gap-3 group">
       <Icon className="w-6 h-6 text-secondary group-hover:scale-110 transition-transform" />
       <h3 className="font-black uppercase italic text-sm tracking-tight">{title}</h3>
       <p className="text-[10px] text-muted-foreground font-bold leading-relaxed">{desc}</p>

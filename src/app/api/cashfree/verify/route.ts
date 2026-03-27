@@ -2,12 +2,10 @@ import { NextResponse } from 'next/server';
 
 const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID!;
 const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY!;
-const CASHFREE_ENV = process.env.CASHFREE_ENV || 'TEST';
-
-const BASE_URL =
-  CASHFREE_ENV === 'PROD'
-    ? 'https://api.cashfree.com/pg'
-    : 'https://sandbox.cashfree.com/pg';
+const isProdKey = CASHFREE_SECRET_KEY.startsWith('cfsk_ma_prod_');
+const BASE_URL = isProdKey 
+  ? 'https://api.cashfree.com/pg' 
+  : 'https://sandbox.cashfree.com/pg';
 
 import { supabaseAdmin } from '@/lib/supabase';
 

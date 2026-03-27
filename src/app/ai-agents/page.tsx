@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { BrainCircuit, Zap, Shield, Cpu, ArrowRight } from "lucide-react";
+import { BrainCircuit, Zap, Shield, Cpu } from "lucide-react";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { products } from "@/lib/data";
 
@@ -20,7 +20,7 @@ export default function AIAgentsPage() {
             className="flex flex-col gap-6"
           >
             <div className="flex items-center gap-3">
-              <div className="p-3 bg-primary/10 text-primary rounded-2xl border border-primary/20">
+              <div className="p-3 bg-primary/10 text-primary rounded-none border border-primary/20">
                 <BrainCircuit className="w-8 h-8" />
               </div>
               <span className="text-xs font-black uppercase tracking-[0.3em] text-primary italic">Neural Protocol 01</span>
@@ -65,9 +65,9 @@ export default function AIAgentsPage() {
   );
 }
 
-function FeatureCard({ icon: Icon, title, desc }: { icon: any, title: string, desc: string }) {
+function FeatureCard({ icon: Icon, title, desc }: { icon: React.ElementType, title: string, desc: string }) {
   return (
-    <div className="p-6 bg-white border border-secondary/5 rounded-2xl hover:border-primary/20 transition-all flex flex-col gap-3">
+    <div className="p-6 bg-white border border-secondary/5 rounded-none hover:border-primary/20 transition-all flex flex-col gap-3">
       <Icon className="w-6 h-6 text-primary" />
       <h3 className="font-black uppercase italic text-sm tracking-tight">{title}</h3>
       <p className="text-xs text-muted-foreground font-bold leading-relaxed">{desc}</p>

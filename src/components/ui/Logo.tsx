@@ -8,7 +8,13 @@ import { cn } from "@/lib/utils";
  * Replaced with custom Lottie animation from user.
  * Standardized to 40px height / 120px width as per diagnostic report.
  */
-export function Logo({ className = "" }: { className?: string }) {
+export function Logo({ 
+  className = "", 
+  children 
+}: { 
+  className?: string;
+  children?: React.ReactNode;
+}) {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -17,8 +23,8 @@ export function Logo({ className = "" }: { className?: string }) {
   }, []);
   
   return (
-    <div className={cn("flex items-center gap-3 select-none group h-[40px] w-auto lg:w-[120px]", className)}>
-      <span className="sr-only">Digital Swarm - Code Templates & UI Kits</span>
+    <div className={cn("flex items-center gap-3 select-none group h-[40px] w-auto", className)}>
+      <span className="sr-only">GRAVITY - Code Templates & UI Kits</span>
       {/* Symbol Container: Replaced with Lottie Animation */}
       <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
         {mounted && (
@@ -34,12 +40,14 @@ export function Logo({ className = "" }: { className?: string }) {
         )}
       </div>
 
-      {/* Text Branding - Hidden on mobile */}
+      {/* Text Branding */}
       <div className="flex items-center">
         <span className="text-xl font-black italic tracking-tighter leading-none text-secondary transition-all duration-300 uppercase flex items-center gap-1.5">
-            DIGITAL
-            <span className="text-primary font-black not-italic">/</span>
-            SWARM
+            {children || (
+              <>
+                GRAVITY
+              </>
+            )}
         </span>
       </div>
     </div>

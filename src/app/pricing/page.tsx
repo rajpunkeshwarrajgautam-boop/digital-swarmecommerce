@@ -65,7 +65,7 @@ export default function PricingPage() {
           <motion.div 
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#ff6b35]/20 border border-[#ff6b35]/40 mb-6"
+            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-none bg-[#ff6b35]/20 border border-[#ff6b35]/40 mb-6"
           >
             <Shield className="w-4 h-4 text-[#ff6b35]" />
             <span className="text-[10px] font-black uppercase tracking-widest text-[#ff6b35]">Licensing Protocol</span>
@@ -129,7 +129,7 @@ export default function PricingPage() {
         </div>
 
         {/* FAQ Preview Banner */}
-        <div className="p-12 bg-white/5 border-2 border-white/5 rounded-[3rem] text-center">
+        <div className="p-12 bg-white/5 border-2 border-white/5 rounded-none text-center">
           <h2 className="text-2xl font-black uppercase italic tracking-tighter mb-4">Enterprise Questions?</h2>
           <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.2em] mb-8">Custom build requirements for large-scale operations.</p>
           <div className="flex flex-wrap justify-center gap-16 opacity-30">

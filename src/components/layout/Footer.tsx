@@ -18,88 +18,93 @@ export function Footer() {
       <div className="container mx-auto px-6 relative z-10 w-full max-w-7xl">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-16 mb-20">
           {/* Brand Column */}
-          <div className="flex flex-col gap-8">
+          <div className="flex flex-col gap-10">
             <Link href="/" className="hover:opacity-80 transition-opacity">
-              <Logo className="text-white" />
+              <div className="flex items-center gap-4">
+                <Logo className="text-white" />
+                <div className="px-2 py-1 bg-primary/10 border border-primary/20 text-[8px] font-mono text-primary font-black uppercase tracking-widest italic">
+                  v3.12_STABLE
+                </div>
+              </div>
             </Link>
-            <p className="text-white/40 text-sm font-bold uppercase tracking-tight leading-relaxed">
-              Premium Code Templates & UI Kits for Elite Developers. 
-              Built by developers, for developers. 
-              The ultimate architectural baseline.
+            <p className="text-white/30 text-[11px] font-mono uppercase tracking-widest leading-loose italic max-w-xs">
+              Autonomous Code Forge. Premium Architectural Protocols for Elite Product Development. Secured by the Swarm Network.
             </p>
             <div className="flex items-center gap-5">
-              <Link href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-primary transition-all">
-                <Twitter className="w-5 h-5" />
-              </Link>
-              <Link href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-primary transition-all">
-                <Github className="w-5 h-5" />
-              </Link>
-              <Link href="#" className="w-10 h-10 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/40 hover:text-primary transition-all">
-                <Linkedin className="w-5 h-5" />
-              </Link>
+              {[Twitter, Github, Linkedin].map((Icon, i) => (
+                <Link key={i} href="#" className="w-12 h-12 border border-white/5 bg-white/2 flex items-center justify-center text-white/20 hover:text-primary hover:border-primary/40 transition-all group">
+                   <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
+                </Link>
+              ))}
             </div>
           </div>
 
           {/* Products Column */}
-          <div className="flex flex-col gap-8">
-            <h4 className="text-xs font-black uppercase tracking-[0.3em] text-primary italic">Global Products</h4>
-            <div className="flex flex-col gap-4">
-              <FooterLink href="/products?category=Boilerplates" label="Boilerplates" />
-              <FooterLink href="/products?category=AI+Agents" label="AI Agents" />
-              <FooterLink href="/products?category=UI+Kits" label="UI Kits" />
-              <FooterLink href="/products?category=Dashboards" label="Dashboards" />
-              <FooterLink href="/products?category=Mobile" label="Mobile Apps" />
+          <div className="flex flex-col gap-10">
+            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">SYSTEM_PRODUCTS</h4>
+            <div className="flex flex-col gap-5">
+              <FooterLink href="/products?category=SaaS" label="SaaS Kits" />
+              <FooterLink href="/products?category=AI" label="AI Protocols" />
+              <FooterLink href="/products?category=Modern" label="Modern Stacks" />
+              <FooterLink href="/products?category=Enterprise" label="Enterprise" />
             </div>
           </div>
 
           {/* Support Column */}
-          <div className="flex flex-col gap-8">
-            <h4 className="text-xs font-black uppercase tracking-[0.3em] text-primary italic">Support Protocols</h4>
-            <div className="flex flex-col gap-4">
-              <FooterLink href="/help" label="Help Center" />
-              <FooterLink href="/contact" label="Contact Desk" />
-              <FooterLink href="/refund" label="Refund Policy" />
-              <FooterLink href="/about" label="About Us" />
-              <FooterLink href="/licenses" label="Software Licenses" />
+          <div className="flex flex-col gap-10">
+            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">SUPPORT_LAYER</h4>
+            <div className="flex flex-col gap-5">
+              <FooterLink href="/help" label="Help_Desktop" />
+              <FooterLink href="/contact" label="Comm_Interface" />
+              <FooterLink href="/refund" label="Asset_Reversal" />
+              <FooterLink href="/about" label="Forge_History" />
             </div>
           </div>
 
           {/* Legal Column */}
-          <div className="flex flex-col gap-8">
-            <h4 className="text-xs font-black uppercase tracking-[0.3em] text-primary italic">Legal Matrix</h4>
-            <div className="flex flex-col gap-4">
-              <FooterLink href="/terms" label="Terms of Service" />
-              <FooterLink href="/privacy" label="Privacy Protocol" />
-              <FooterLink href="/cookie" label="Cookie Usage" />
+          <div className="flex flex-col gap-10">
+            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">LEGAL_MATRIX</h4>
+            <div className="flex flex-col gap-5">
+              <FooterLink href="/terms" label="Service_Protocol" />
+              <FooterLink href="/privacy" label="Privacy_Matrix" />
+              <FooterLink href="/cookie" label="Data_Hydration" />
             </div>
             
             {/* Payment Verification */}
-            <div className="mt-4 pt-8 border-t border-white/5">
-              <div className="flex items-center gap-3 mb-4">
-                <ShieldCheck className="w-5 h-5 text-primary" />
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-white/60">Verified Processor</span>
+            <div className="mt-6 pt-10 border-t border-white/5">
+              <div className="flex items-center gap-4 mb-6">
+                <ShieldCheck className="w-5 h-5 text-primary animate-pulse" />
+                <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/20">L4_ENCRYPT_ACTIVE</span>
               </div>
-              <div className="flex flex-wrap gap-4 opacity-20 filter grayscale">
-                <div className="relative h-4 w-24">
-                  <Image 
-                    src="https://upload.wikimedia.org/wikipedia/commons/8/89/Razorpay_logo.svg" 
+              <div className="relative h-6 w-32 grayscale brightness-200 contrast-200 opacity-20 hover:opacity-100 transition-opacity">
+                 <Image 
+                    src="https://www.cashfree.com/content/dam/cashfree/logo/cashfree-logo-black.svg" 
                     alt="Cashfree Payments" 
                     fill 
                     className="object-contain" 
-                  />
-                </div>
+                 />
               </div>
             </div>
           </div>
         </div>
 
-        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-6">
-          <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20 italic">
-            © {currentYear} DIGITAL SWARM // ALL RIGHTS RESERVED
-          </p>
-          <div className="flex items-center gap-8">
-             <span className="text-[8px] font-black uppercase tracking-[0.3em] text-white/10 italic">Secure_Uplink: v3.2.0</span>
-             <ExternalLink className="w-3 h-3 text-white/10" />
+        <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-10">
+          <div className="flex flex-col gap-2">
+            <p className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-white/10 italic">
+              © {currentYear} THE_FORGE_PROTOCOL // SWARM_INFRASTRUCTURE
+            </p>
+            <p className="text-[8px] font-mono text-white/5 uppercase tracking-[0.5em]">
+              STATUS_HEALTHY // NODES_ACTIVE: 12,042 // LATENCY: 24ms
+            </p>
+          </div>
+          <div className="flex items-center gap-12">
+             <div className="flex flex-col items-end gap-1">
+                <span className="text-[8px] font-mono text-white/10 uppercase tracking-widest italic">System_Time</span>
+                <span className="text-[11px] font-mono text-white/30 font-black">{new Date().toLocaleTimeString()}</span>
+             </div>
+             <div className="w-12 h-12 border border-white/5 bg-white/2 flex items-center justify-center group cursor-help">
+                <ExternalLink className="w-4 h-4 text-white/10 group-hover:text-primary transition-colors" />
+             </div>
           </div>
         </div>
       </div>

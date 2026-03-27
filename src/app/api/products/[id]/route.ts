@@ -4,22 +4,42 @@ import { products as fallbackData } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
 
-// Normalize Supabase snake_case to match the Product type (camelCase)
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function normalizeProduct(p: any) {
+import { Product } from "@/lib/types";
+
+interface DBProduct {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image: string;
+  in_stock: boolean;
+  rating: number;
+  features: string[] | null;
+  specs: Record<string, string> | null;
+  install_guide: string | null;
+  download_url: string | null;
+}
+
+function normalizeProduct(p: DBProduct): Product {
   // Find matching static product for fulfillment links (by name or slug id)
   const staticMatch = fallbackData.find(
     (sp) => sp.name === p.name || sp.id === p.id
   );
 
   return {
-    ...p,
-    inStock: p.inStock ?? p.in_stock ?? true,
+    id: staticMatch?.id ?? p.id,
+    name: p.name,
+    description: p.description,
+    price: p.price,
+    category: p.category,
+    image: staticMatch?.image ?? p.image,
+    inStock: p.in_stock ?? true,
     rating: p.rating ?? 5.0,
-    features: p.features ?? [],
-    specs: p.specs ?? {},
-    installGuide: p.installGuide ?? p.install_guide ?? staticMatch?.installGuide ?? null,
-    downloadUrl: p.downloadUrl ?? p.download_url ?? staticMatch?.downloadUrl ?? null,
+    features: p.features ?? staticMatch?.features ?? [],
+    specs: p.specs ?? staticMatch?.specs ?? {},
+    installGuide: p.install_guide ?? staticMatch?.installGuide ?? undefined,
+    downloadUrl: p.download_url ?? staticMatch?.downloadUrl ?? undefined,
   };
 }
 

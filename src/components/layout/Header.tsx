@@ -2,16 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingBag, Heart } from "lucide-react";
-import { Logo } from "@/components/ui/Logo"; // Assuming this is a simple text component
+import { Menu, X, ShoppingBag, Heart, Sparkles } from "lucide-react";
+import { Logo } from "@/components/ui/Logo";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { NavbarMenu } from "./NavbarMenu";
-import { SearchBar } from "./SearchBar";
 import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
+import { ForgeButton } from "@/components/ui/ForgeButton";
+import { useForgeStore } from "@/lib/forge-store";
 
 export function Header() {
   const pathname = usePathname();
@@ -20,19 +21,23 @@ export function Header() {
   const { items: cartItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
   const [mounted, setMounted] = useState(false);
+  
+  const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
+  const systemStatus = useForgeStore((state) => state.systemStatus);
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalWishlist = wishlistItems.length;
 
   useEffect(() => {
-    setMounted(true);
+    const handle = requestAnimationFrame(() => setMounted(true));
     const handleScroll = () => {
-      if (typeof window !== 'undefined') {
-        setScrolled(window.scrollY > 20);
-      }
+      setScrolled(window.scrollY > 20);
     };
     window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+      cancelAnimationFrame(handle);
+    };
   }, []);
 
   const isAuthPage = pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up');
@@ -40,49 +45,77 @@ export function Header() {
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'bg-white/95 backdrop-blur-xl border-b border-secondary/10 py-3 shadow-lg' : 'bg-transparent py-6'}`}>
-        <div className="container mx-auto px-6 h-full flex items-center justify-between gap-4">
+      <header 
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
+          scrolled 
+            ? 'glass-panel py-3 border-b border-white/10' 
+            : 'bg-transparent py-6'
+        }`}
+      >
+        <div className="container mx-auto px-6 flex items-center justify-between gap-8 h-12">
           
-          {/* 1. LEFT: Logo */}
-          <div className="flex items-center shrink-0 min-w-fit">
-            <Link href="/" className="hover:opacity-80 transition-opacity">
-              <Logo>GRAVITY</Logo> // Updated logo text
+          {/* 1. LEFT: Logo & System Status */}
+          <div className="flex items-center gap-6 shrink-0">
+            <Link href="/" className="group">
+              <Logo className="text-2xl tracking-tighter transition-all group-hover:glow-text">
+                GRAVITY
+              </Logo>
             </Link>
+            
+            {/* System Status Indicator (Pseudo-AI) */}
+            <div className="hidden xl:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
+              <span className={`w-1.5 h-1.5 rounded-full ${systemStatus === 'idle' ? 'bg-accent' : 'bg-primary'} animate-pulse shadow-[0_0_8px_currentColor]`} />
+              <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+                Forge {systemStatus === 'idle' ? 'Ready' : 'Active'}
+              </span>
+            </div>
           </div>
 
-          {/* 2. CENTER: Navigation (Desktop) - Integrated NavbarMenu */}
+          {/* 2. CENTER: Main Navigation */}
           <div className="hidden lg:flex flex-1 justify-center">
             <NavbarMenu scrolled={scrolled} />
           </div>
 
-          {/* 3. RIGHT: Actions */}
-          <div className="flex items-center gap-2 sm:gap-4">
-            <div className="hidden md:block">
-              <SearchBar />
-            </div>
+          {/* 3. RIGHT: Forge Actions & Concierge */}
+          <div className="flex items-center gap-4">
             
-            <div className="flex items-center gap-1 sm:gap-2">
+            {/* AI Concierge Trigger (The "Input") */}
+            <motion.button 
+              onClick={toggleConcierge}
+              className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-accent/40 transition-all cursor-pointer group"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.98 }}
+            >
+              <Sparkles className="w-4 h-4 text-accent transition-transform group-hover:rotate-12" />
+              <span className="text-xs font-mono uppercase tracking-tighter text-white/50 group-hover:text-white transition-colors">
+                Run AI Protocol
+              </span>
+              <kbd className="hidden lg:block ml-2 px-1.5 py-0.5 bg-white/10 rounded text-[9px] text-white/30">/</kbd>
+            </motion.button>
+
+            <div className="flex items-center gap-2">
+              {/* Wishlist */}
               <Link href="/wishlist">
-                <button className="relative p-2 text-secondary hover:text-primary transition-colors group">
-                  <Heart className="w-6 h-6" />
+                <button className="relative p-2 text-white/60 hover:text-primary transition-colors group">
+                  <Heart className="w-5 h-5" />
                   {mounted && totalWishlist > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm ring-2 ring-white">
+                    <span className="absolute top-1 right-1 bg-primary text-black text-[9px] font-black min-w-[14px] h-[14px] rounded-full flex items-center justify-center">
                       {totalWishlist}
                     </span>
                   )}
                 </button>
               </Link>
               
+              {/* Cart */}
               <Link href="/cart">
-                <button className="relative p-2 text-secondary hover:text-primary transition-colors group">
-                  <ShoppingBag className="w-6 h-6" />
+                <button className="relative p-2 text-white/60 hover:text-primary transition-colors group">
+                  <ShoppingBag className="w-5 h-5" />
                   {mounted && totalItems > 0 && (
                     <motion.span
                       key={totalItems}
-                      initial={{ scale: 1.6 }}
+                      initial={{ scale: 1.5 }}
                       animate={{ scale: 1 }}
-                      transition={{ type: "spring", stiffness: 500, damping: 15 }}
-                      className="absolute -top-1 -right-1 bg-primary text-black text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-sm ring-1 ring-white/10"
+                      className="absolute top-1 right-1 bg-accent text-black text-[9px] font-black min-w-[14px] h-[14px] rounded-full flex items-center justify-center"
                     >
                       {totalItems}
                     </motion.span>
@@ -90,77 +123,72 @@ export function Header() {
                 </button>
               </Link>
 
-              <div className="h-6 w-px bg-secondary/10 mx-1 hidden sm:block" />
+              <div className="h-6 w-px bg-white/10 mx-2 hidden sm:block" />
 
-              <div className="flex items-center gap-1">
+              {/* User / Auth */}
+              <div className="flex items-center gap-3">
                 <SignedOut>
                   <SignInButton mode="modal">
-                     <button className="text-secondary font-black uppercase italic text-[10px] sm:text-xs tracking-widest hover:text-primary transition-colors px-2 sm:px-3 py-1.5 rounded-lg hover:bg-secondary/5 transition-all">Sign In</button>
+                    <button className="text-[11px] font-outfit font-black uppercase italic tracking-widest text-white/60 hover:text-primary transition-all">
+                      Access Forge
+                    </button>
                   </SignInButton>
                 </SignedOut>
                 <SignedIn>
-                  <Link href="/dashboard" className="hidden sm:block text-secondary font-black uppercase italic text-[10px] tracking-[0.2em] hover:text-primary transition-all mr-2">
-                    Dashboard
-                  </Link>
-                  <UserButton afterSignOutUrl="/" />
+                  <UserButton 
+                    appearance={{
+                      elements: {
+                        userButtonAvatarBox: "w-8 h-8 border border-white/10 hover:border-primary transition-all"
+                      }
+                    }}
+                  />
                 </SignedIn>
               </div>
 
-              {/* Mobile Trigger */}
+              {/* Mobile Menu Toggle */}
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 text-secondary hover:text-primary transition-colors ml-1"
+                className="lg:hidden p-2 text-white/80 hover:text-primary transition-colors"
               >
-                {isMenuOpen ? <X className="w-8 h-8" /> : <Menu className="w-8 h-8" />}
+                {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
               </button>
             </div>
           </div>
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
+      {/* Mobile Menu Overlay (Forge Style) */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: "spring", damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[60] bg-white lg:hidden flex flex-col p-8 overflow-y-auto"
+            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            className="fixed inset-0 z-60 glass-panel lg:hidden flex flex-col p-8 pt-24"
           >
-            <div className="flex items-center justify-between mb-12">
-              <Logo>GRAVITY</Logo> // Updated logo text
-              <button onClick={() => setIsMenuOpen(false)}>
-                <X className="w-9 h-9 text-secondary" />
-              </button>
-            </div>
+            <nav className="flex flex-col gap-6 mb-12">
+              {['Products', 'Forge Stats', 'The Swarm', 'Documentation'].map((item) => (
+                <MobileNavLink 
+                  key={item} 
+                  href={`/${item.toLowerCase().replace(' ', '-')}`} 
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item}
+                </MobileNavLink>
+              ))}
+            </nav>
 
-          <nav className="flex flex-col gap-8 mb-12">
-            <MobileNavLink href="/products" onClick={() => setIsMenuOpen(false)}>Products</MobileNavLink>
-            <MobileNavLink href="/pricing" onClick={() => setIsMenuOpen(false)}>Pricing</MobileNavLink>
-            <MobileNavLink href="/about" onClick={() => setIsMenuOpen(false)}>About</MobileNavLink>
-            <MobileNavLink href="/faq" onClick={() => setIsMenuOpen(false)}>FAQ</MobileNavLink>
-            <MobileNavLink href="/blog" onClick={() => setIsMenuOpen(false)}>Blog</MobileNavLink>
-          </nav>
-
-          <div className="mt-auto pt-8 border-t border-secondary/10 flex flex-col gap-6">
-            <SignedOut>
-              <SignInButton mode="modal">
-                <button className="w-full py-4 bg-primary text-white font-black uppercase tracking-widest rounded-2xl shadow-xl shadow-primary/20">Sign In</button>
-              </SignInButton>
-            </SignedOut>
-            <SignedIn>
-              <div className="flex items-center gap-4 p-4 bg-secondary/5 rounded-2xl">
-                <UserButton />
-                <span className="font-bold text-secondary">Dashboard</span>
+            <div className="mt-auto flex flex-col gap-6">
+              <ForgeButton className="w-full">
+                Initialize Search
+              </ForgeButton>
+              
+              <div className="flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">
+                <span>Status: Optimal</span>
+                <span>© GRAVITY 2026</span>
               </div>
-            </SignedIn>
-            
-            <div className="flex items-center justify-between text-[10px] font-black uppercase text-secondary/40 tracking-tighter">
-              <span>Digital Swarm © 2026</span>
-              <span>All rights reserved.</span>
             </div>
-          </div>
           </motion.div>
         )}
       </AnimatePresence>
@@ -174,8 +202,9 @@ function MobileNavLink({ href, children, onClick }: { href: string; children: Re
     <Link 
       href={href} 
       onClick={onClick}
-      className="text-4xl font-black uppercase italic tracking-tighter text-secondary hover:text-primary transition-colors"
+      className="text-3xl font-outfit font-black uppercase italic tracking-tighter text-white hover:text-primary transition-all flex items-center gap-4 group"
     >
+      <span className="w-0 h-1 bg-primary transition-all group-hover:w-8" />
       {children}
     </Link>
   );

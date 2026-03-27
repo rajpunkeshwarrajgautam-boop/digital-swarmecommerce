@@ -1,14 +1,15 @@
-
 "use client";
 
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Star, Shield, RotateCcw, Truck, AlertCircle, ExternalLink, Eye, BookOpen } from "lucide-react";
+import { Shield, RotateCcw, Truck, AlertCircle, ExternalLink, Eye, BookOpen, Terminal, ArrowRight } from "lucide-react";
 import AddToCartButton from "./AddToCartButton";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { Product } from "@/lib/types";
-import { Button } from "@/components/ui/Button";
+import { AIAnalyst } from "@/components/forge/AIAnalyst";
+import { ForgeButton } from "@/components/ui/ForgeButton";
+import { GlassCard } from "@/components/ui/GlassCard";
 import { QuantumProductView } from "@/components/products/QuantumProductView";
 import { ScarcityEngine } from "@/components/products/ScarcityEngine";
 import { ReviewSystem } from "@/components/products/ReviewSystem";
@@ -45,22 +46,22 @@ export default function ProductPage() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-4 py-24 min-h-screen">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 animate-pulse">
-            <div className="space-y-4">
-                <div className="aspect-square bg-secondary/50 rounded-2xl"></div>
+      <div className="container mx-auto px-6 py-32 min-h-screen bg-[#0a0a0f]">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 animate-pulse">
+            <div className="space-y-6">
+                <div className="aspect-square bg-white/5 border border-white/5 rounded-sm"></div>
                 <div className="grid grid-cols-4 gap-4">
-                    {[1,2,3,4].map(i => <div key={i} className="aspect-square bg-secondary/30 rounded-lg"></div>)}
+                    {[1,2,3,4].map(i => <div key={i} className="aspect-square bg-white/5 rounded-sm"></div>)}
                 </div>
             </div>
-            <div className="space-y-6 py-8">
-                <div className="h-8 bg-secondary/50 w-1/3 rounded-full"></div>
-                <div className="h-12 bg-secondary/50 w-3/4 rounded-lg"></div>
-                <div className="h-8 bg-secondary/30 w-1/4 rounded-lg"></div>
-                <div className="space-y-2 pt-8">
-                    <div className="h-4 bg-secondary/30 w-full rounded"></div>
-                    <div className="h-4 bg-secondary/30 w-full rounded"></div>
-                    <div className="h-4 bg-secondary/30 w-2/3 rounded"></div>
+            <div className="space-y-8 py-8">
+                <div className="h-4 bg-white/5 w-1/4"></div>
+                <div className="h-20 bg-white/5 w-full"></div>
+                <div className="h-12 bg-white/5 w-1/3"></div>
+                <div className="space-y-4 pt-12">
+                    <div className="h-4 bg-white/5 w-full"></div>
+                    <div className="h-4 bg-white/5 w-full"></div>
+                    <div className="h-4 bg-white/5 w-2/3"></div>
                 </div>
             </div>
         </div>
@@ -70,90 +71,135 @@ export default function ProductPage() {
 
   if (error || !product) {
     return (
-      <div className="container mx-auto px-4 py-24 text-center min-h-[60vh] flex flex-col items-center justify-center">
-        <AlertCircle className="w-16 h-16 text-muted-foreground mb-4 opacity-20" />
-        <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
-        <p className="text-muted-foreground mb-8">{error || "The product you're looking for doesn't exist."}</p>
+      <div className="container mx-auto px-6 py-32 text-center min-h-[60vh] flex flex-col items-center justify-center bg-[#0a0a0f]">
+        <div className="w-20 h-20 rounded-full border border-white/5 flex items-center justify-center mb-8">
+           <AlertCircle className="w-10 h-10 text-white/10" />
+        </div>
+        <h1 className="text-4xl font-outfit font-black text-white uppercase italic tracking-tighter mb-4">Registry Fault</h1>
+        <p className="text-xs font-mono text-white/20 uppercase tracking-[0.4em] mb-12">{error || "Product identity not found in database"}</p>
         <Link href="/products">
-            <Button>Back to Catalog</Button>
+            <ForgeButton>Re-link Catalog</ForgeButton>
         </Link>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background relative pb-20 pt-8 overflow-hidden">
-      <div className="absolute inset-0 bg-swarm-pattern opacity-[0.03] pointer-events-none" />
+    <div className="min-h-screen bg-[#0a0a0f] relative pb-32 pt-16 overflow-hidden">
+      {/* Decorative Forge Background */}
+      <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
+        style={{ 
+            backgroundImage: `radial-gradient(circle at 2px 2px, white 1px, transparent 0)`,
+            backgroundSize: '40px 40px'
+        }} 
+      />
       
       {/* Breadcrumbs / Back */}
-      <div className="container mx-auto px-6 mb-8 relative z-10">
-        <Link href="/products" className="text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2 group">
-          <span className="group-hover:-translate-x-1 transition-transform">←</span> Back to Catalog
+      <div className="container mx-auto px-6 mb-12 relative z-10">
+        <Link href="/products" className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-white/20 hover:text-primary transition-all flex items-center gap-4 group">
+          <span className="group-hover:-translate-x-2 transition-transform duration-300">[[ --- BACK</span> TO REGISTRY
         </Link>
       </div>
 
-      <div className="container mx-auto px-4">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20">
+      <div className="container mx-auto px-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24">
           
-          {/* Left: Quantum Product View (Signature Moment) */}
-          <div className="space-y-4 perspective-1000">
-            <QuantumProductView image={product.image} name={product.name} />
+          {/* Left: Product Viz */}
+          <div className="space-y-6">
+            <div className="relative group">
+               <div className="absolute -inset-1 bg-primary/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
+               <QuantumProductView image={product.image} name={product.name} />
+            </div>
+            
+            {/* Tech Specs Summary Table */}
+            <GlassCard className="p-6 border-white/5 bg-white/1 overflow-hidden relative">
+               <div className="absolute top-0 right-0 p-3 opacity-10">
+                  <Terminal className="w-12 h-12 text-white" />
+               </div>
+               <h4 className="text-[10px] font-mono font-black uppercase text-white/20 tracking-[0.3em] mb-4">Metadata Analysis</h4>
+               <div className="grid grid-cols-2 gap-y-3">
+                  <div className="flex flex-col">
+                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Architecture</span>
+                     <span className="text-[11px] font-mono text-white/60">AI-Native Hybrid</span>
+                  </div>
+                  <div className="flex flex-col">
+                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Core Tech</span>
+                     <span className="text-[11px] font-mono text-white/60">Next.js 15+ / TS</span>
+                  </div>
+                  <div className="flex flex-col">
+                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">License</span>
+                     <span className="text-[11px] font-mono text-white/60">Commercial Standard</span>
+                  </div>
+                  <div className="flex flex-col">
+                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Security</span>
+                     <span className="text-[11px] font-mono text-white/60 font-black text-primary italic">FORGE_VERIFIED</span>
+                  </div>
+               </div>
+            </GlassCard>
           </div>
 
-          {/* Right: Product Info */}
-          <div className="flex flex-col h-full py-2 relative z-10">
+          {/* Right: Forge Intelligence */}
+          <div className="flex flex-col h-full relative z-10">
             <div>
-              <div className="flex items-center gap-3 mb-6">
-                 <span className="bg-primary text-black text-xs font-black px-4 py-1 border-2 border-black uppercase tracking-widest shadow-[4px_4px_0px_#CCFF00]">
+              <div className="flex flex-wrap items-center gap-4 mb-8">
+                 <div className="px-3 py-1 border border-white/10 bg-white/5 text-white/60 text-[11px] font-mono font-black uppercase tracking-widest italic">
                   {product.category}
-                </span>
+                </div>
                 {product.inStock ? (
-                   <span className="text-white text-xs font-black flex items-center gap-2 bg-green-500 px-4 py-1 border-2 border-black uppercase tracking-widest shadow-[4px_4px_0px_#22c55e]">
-                    <div className="w-2 h-2 bg-white animate-pulse rounded-full" />
-                    Online
-                   </span>
+                   <div className="px-3 py-1 border border-primary/20 bg-primary/5 text-primary text-[9px] font-mono font-black uppercase tracking-widest flex items-center gap-2 italic">
+                    <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
+                    System Online
+                   </div>
                 ) : (
-                  <span className="text-white text-xs font-black bg-red-500 px-4 py-1 border-2 border-black uppercase tracking-widest shadow-[4px_4px_0px_#ef4444]">Offline</span>
+                  <div className="px-3 py-1 border border-red-500/20 bg-red-500/5 text-red-500 text-[9px] font-mono font-black uppercase tracking-widest italic">Inventory Depleted</div>
                 )}
               </div>
 
-              <h1 className="text-5xl md:text-7xl font-black italic uppercase mb-6 leading-[0.85] tracking-tighter drop-shadow-[4px_4px_0px_rgba(204,255,0,0.2)]">
+              <h1 className="text-6xl md:text-8xl font-outfit font-black italic uppercase mb-8 leading-[0.85] tracking-tighter text-white">
                 {product.name}
               </h1>
               
-              <div className="flex items-center gap-6 mb-8 p-4 border border-white/10 bg-black w-fit">
+              <div className="flex flex-wrap items-end gap-10 mb-12">
                 <div className="flex flex-col">
-                  <span className="text-4xl font-black italic tracking-tighter text-primary">₹{product.price.toLocaleString("en-IN")}</span>
-                  {product.originalPrice && (
-                    <span className="text-sm text-white/40 line-through font-bold">₹{product.originalPrice.toLocaleString("en-IN")}</span>
-                  )}
+                  <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Asset Valuation</p>
+                  <div className="flex items-baseline gap-4">
+                    <span className="text-5xl font-outfit font-black italic tracking-tighter text-primary">₹{product.price.toLocaleString("en-IN")}</span>
+                    {product.originalPrice && (
+                      <span className="text-xl text-white/20 line-through font-outfit font-bold italic tracking-tighter">₹{product.originalPrice.toLocaleString("en-IN")}</span>
+                    )}
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 border-l border-white/20 pl-6">
-                  <div className="flex">
+                
+                <div className="flex items-center gap-4 pb-1">
+                  <div className="flex gap-1">
                     {[1,2,3,4,5].map((s) => (
-                        <Star key={s} className={`w-5 h-5 ${s <= Math.round(product.rating) ? 'text-primary fill-primary' : 'text-white/10'}`} />
+                        <div key={s} className={`w-1.5 h-6 ${s <= Math.round(product.rating) ? 'bg-primary' : 'bg-white/5'}`} />
                     ))}
                   </div>
-                  <span className="font-black italic text-lg ml-2">{product.rating}</span>
+                  <div className="flex flex-col">
+                    <span className="text-[9px] font-mono text-white/20 uppercase leading-none mb-1">Trust Score</span>
+                    <span className="font-outfit font-black italic text-xl text-white leading-none">{product.rating}</span>
+                  </div>
                 </div>
               </div>
 
-              <div className="flex flex-wrap gap-4 mt-6">
+              <div className="flex flex-wrap gap-4 mt-8">
                 {product.demoUrl && (
                   <a href={product.demoUrl} target="_blank" rel="noopener noreferrer">
-                    <Button variant="outline" className="gap-2 border-primary/30 hover:border-primary text-primary">
-                      <Eye className="w-4 h-4" /> Live Preview
-                    </Button>
+                    <button className="flex items-center gap-3 px-6 py-3 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-primary/40 text-white/60 hover:text-white transition-all text-[10px] font-mono font-black uppercase tracking-widest rounded-sm">
+                      <Eye className="w-4 h-4 text-primary" /> Launch Simulation
+                    </button>
                   </a>
                 )}
-                <Button variant="ghost" className="gap-2 text-muted-foreground hover:text-foreground">
-                  <ExternalLink className="w-4 h-4" /> View Source
-                </Button>
+                <button className="flex items-center gap-3 px-6 py-3 text-white/20 hover:text-primary transition-all text-[10px] font-mono font-black uppercase tracking-widest">
+                  <ExternalLink className="w-3.5 h-3.5" /> Core_Manifest.json
+                </button>
               </div>
 
-              {/* Scarcity Engine */}
+              {/* Scarcity Engine (Industrial Refinement) */}
               {(product.scarcityStock || product.isFeatured) && (
-                <div className="mt-8 border-t border-border pt-8">
+                <div className="mt-12 bg-white/2 border border-white/5 p-6 relative overflow-hidden group">
+                   <div className="absolute top-0 left-0 w-1 h-full bg-accent opacity-40 group-hover:opacity-100 transition-opacity" />
                    <ScarcityEngine 
                       stockCount={product.scarcityStock} 
                       expiresInHours={product.isFeatured ? 24 : undefined} 
@@ -162,85 +208,107 @@ export default function ProductPage() {
               )}
             </div>
 
-            <div className="prose prose-zinc dark:prose-invert max-w-none mb-10 mt-8">
-              {product.description.includes('🚀 DEPLOYMENT GUIDE:') ? (
-                <>
-                  <p className="text-xl font-medium tracking-wide text-white/70 leading-relaxed mb-8">
-                    {product.description.split('🚀 DEPLOYMENT GUIDE:')[0]}
+            {/* Description Section */}
+            <div className="mt-16 space-y-12">
+              <div className="flex flex-col gap-6">
+                <h3 className="text-[11px] font-mono font-black text-white/40 uppercase tracking-[0.5em] flex items-center gap-4">
+                  <span className="h-px flex-1 bg-white/10" /> 
+                  Protocol Description 
+                  <span className="h-px flex-1 bg-white/10" />
+                </h3>
+                
+                {product.description.includes('🚀 DEPLOYMENT GUIDE:') ? (
+                  <>
+                    <p className="text-lg font-inter text-white/60 leading-relaxed italic border-l border-primary/20 pl-8">
+                      {product.description.split('🚀 DEPLOYMENT GUIDE:')[0]}
+                    </p>
+                    <div className="mt-8 border border-white/10 bg-black/40 p-0 overflow-hidden">
+                      <div className="bg-white/5 px-6 py-4 flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                           <BookOpen className="w-4 h-4 text-primary" /> 
+                           <h3 className="text-xs font-mono font-black uppercase tracking-widest text-white m-0">deployment_operations.log</h3>
+                        </div>
+                        <div className="flex gap-1.5">
+                           <div className="w-2 h-2 rounded-full bg-red-500/20" />
+                           <div className="w-2 h-2 rounded-full bg-yellow-500/20" />
+                           <div className="w-2 h-2 rounded-full bg-green-500/20" />
+                        </div>
+                      </div>
+                      <div className="text-[11px] text-primary/80 font-mono leading-loose whitespace-pre-wrap p-8 bg-black/40 backdrop-blur-3xl">
+                        {product.description.split('🚀 DEPLOYMENT GUIDE:')[1].trim()}
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <p className="text-lg font-inter text-white/60 leading-relaxed italic border-l border-primary/20 pl-8">
+                    {product.description}
                   </p>
-                  <div className="mt-8 border-4 border-[#333] shadow-[8px_8px_0px_#000] bg-zinc-950 p-0 overflow-hidden">
-                    <div className="bg-[#333] px-6 py-4 flex items-center gap-3">
-                      <BookOpen className="w-5 h-5 text-white" /> 
-                      <h3 className="text-xl font-black uppercase tracking-widest text-white m-0">Deployment Guide</h3>
-                    </div>
-                    <div className="text-sm text-primary font-bold leading-relaxed whitespace-pre-wrap font-mono p-6">
-                      {product.description.split('🚀 DEPLOYMENT GUIDE:')[1].trim()}
-                    </div>
-                  </div>
-                </>
-              ) : (
-                <p className="text-xl font-medium tracking-wide text-white/70 leading-relaxed">
-                  {product.description}
-                </p>
-              )}
+                )}
+              </div>
               
-              {/* Features List */}
+              {/* Features Grid */}
               {product.features && product.features.length > 0 && (
-                <div className="mt-12 bg-black/40 border border-white/5 p-8">
-                   <h3 className="text-2xl font-black uppercase italic tracking-tighter mb-6">Product Features</h3>
-                   <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 list-none p-0 m-0">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {product.features.map((feature, i) => (
-                      <li key={i} className="flex items-start gap-4 text-sm font-bold tracking-wide text-white/70">
-                        <span className="w-6 h-6 bg-primary/10 border border-primary text-primary flex items-center justify-center text-[10px] shrink-0 mt-0">
-                          {i + 1}
+                      <div key={i} className="group flex items-center gap-4 p-4 border border-white/5 bg-white/1 hover:bg-white/2 transition-all">
+                        <div className="w-8 h-8 flex items-center justify-center border border-white/10 text-[9px] font-mono text-white/20 group-hover:text-primary group-hover:border-primary/40 transition-all">
+                          {String(i + 1).padStart(2, '0')}
+                        </div>
+                        <span className="text-[11px] font-mono font-black uppercase tracking-widest text-white/60 group-hover:text-white transition-colors">
+                          {feature}
                         </span>
-                        {feature}
-                      </li>
+                      </div>
                     ))}
-                  </ul>
                 </div>
               )}
             </div>
 
-            {/* Actions */}
-            <div className="space-y-8 mt-12">
-              <div className="flex flex-col sm:flex-row gap-4">
-                <AddToCartButton product={product} />
-                <Button className="flex-1 py-8 text-xl font-black uppercase tracking-widest bg-secondary text-white hover:bg-secondary/90 shadow-xl" onClick={() => {
-                  window.location.href = `/checkout?product=${product.id}`;
-                }}>
-                  Buy Now
-                </Button>
+            <div className="mt-16">
+              <AIAnalyst productName={product.name} category={product.category} />
+            </div>
+
+            {/* Final Conversion Actions */}
+            <div className="mt-20 space-y-10">
+              <div className="flex flex-col sm:flex-row gap-6">
+                <div className="flex-1">
+                   <AddToCartButton product={product} />
+                </div>
+                <ForgeButton 
+                   className="flex-1 py-6 text-xl shadow-[0_20px_60px_rgba(255,107,53,0.2)]"
+                   onClick={() => {
+                     window.location.href = `/checkout?product=${product.id}`;
+                   }}
+                >
+                  Link Protocols <ArrowRight className="w-5 h-5 ml-4 inline-block" />
+                </ForgeButton>
               </div>
 
-              {/* Trust Signals */}
-              <div className="grid grid-cols-3 gap-4 border-t-2 border-white/10 pt-8">
-                <div className="flex flex-col items-center text-center gap-3 group">
-                  <div className="p-4 border-2 border-white/20 bg-black text-primary group-hover:border-primary transition-colors shadow-[4px_4px_0px_#000]">
-                    <Truck className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Instant Download</span>
+              {/* Secure Trust Protocol */}
+              <div className="grid grid-cols-3 gap-8 py-10 border-y border-white/5">
+                <div className="flex flex-col items-center gap-4 group">
+                  <Truck className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20 text-center">Instant Uplink</span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-3 group">
-                  <div className="p-4 border-2 border-white/20 bg-black text-[#a855f7] group-hover:border-[#a855f7] transition-colors shadow-[4px_4px_0px_#000]">
-                    <Shield className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">30-Day Refund</span>
+                <div className="flex flex-col items-center gap-4 group text-center">
+                  <Shield className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Forge Secured</span>
                 </div>
-                <div className="flex flex-col items-center text-center gap-3 group">
-                  <div className="p-4 border-2 border-white/20 bg-black text-blue-500 group-hover:border-blue-500 transition-colors shadow-[4px_4px_0px_#000]">
-                    <RotateCcw className="w-6 h-6" />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/50">Lifetime Updates</span>
+                <div className="flex flex-col items-center gap-4 group text-center">
+                  <RotateCcw className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Sync Guarantee</span>
                 </div>
               </div>
             </div>
           </div>
         </div>
         
-        {/* Related Products */}
-        <ReviewSystem productId={product.id} />
-        <RelatedProducts category={product.category} currentProductId={product.id} />
+        {/* Swarm Intelligence Layers */}
+        <div className="mt-40 space-y-40">
+           <ReviewSystem productId={product.id} />
+           <div className="border-t border-white/5 pt-40">
+              <RelatedProducts category={product.category} currentProductId={product.id} />
+           </div>
+        </div>
       </div>
     </div>
   );

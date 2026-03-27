@@ -9,7 +9,6 @@ import { motion, AnimatePresence } from "framer-motion";
 
 export function CommandMenu() {
   const [open, setOpen] = useState(false);
-  const [search, setSearch] = useState("");
   const router = useRouter();
 
   useEffect(() => {
@@ -32,7 +31,7 @@ export function CommandMenu() {
   return (
     <AnimatePresence>
       {open && (
-        <div className="fixed inset-0 z-[100] flex items-start justify-center pt-[15vh] p-4">
+        <div className="fixed inset-0 z-100 flex items-start justify-center pt-[15vh] p-4">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -45,7 +44,7 @@ export function CommandMenu() {
             initial={{ opacity: 0, scale: 0.95, y: -20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -20 }}
-            className="relative w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-black/10 flex flex-col"
+            className="relative w-full max-w-2xl bg-white rounded-none shadow-2xl overflow-hidden border border-black/10 flex flex-col"
           >
             <Command label="Command Menu" loop className="flex flex-col h-full">
               <div className="flex items-center border-b border-black/5 p-4">
@@ -54,7 +53,6 @@ export function CommandMenu() {
                   autoFocus
                   placeholder="Search Swarm Protocols (⌘K)..."
                   className="flex-1 bg-transparent outline-none text-secondary font-bold placeholder:text-secondary/20 h-10"
-                  onValueChange={setSearch}
                 />
                 <div className="flex items-center gap-1 ml-4">
                   <span className="px-2 py-0.5 rounded-md bg-secondary/5 text-secondary/30 text-[10px] font-black border border-secondary/10">ESC</span>
@@ -113,11 +111,11 @@ export function CommandMenu() {
   );
 }
 
-function Item({ children, icon: Icon, onSelect }: { children: React.ReactNode, icon: any, onSelect: () => void }) {
+function Item({ children, icon: Icon, onSelect }: { children: React.ReactNode, icon: React.ElementType, onSelect: () => void }) {
   return (
     <Command.Item
       onSelect={onSelect}
-      className="flex items-center gap-3 px-3 py-3 rounded-2xl cursor-pointer aria-selected:bg-primary/5 aria-selected:text-primary transition-all group"
+      className="flex items-center gap-3 px-3 py-3 rounded-none cursor-pointer aria-selected:bg-primary/5 aria-selected:text-primary transition-all group"
     >
       <Icon className="w-5 h-5 text-secondary/40 group-aria-selected:text-primary" />
       <div className="flex-1 text-sm font-black uppercase italic tracking-tight text-secondary group-aria-selected:text-primary">
