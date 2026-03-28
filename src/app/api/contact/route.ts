@@ -31,6 +31,10 @@ export async function POST(request: Request) {
     }
 
     // Save to Supabase
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database configuration missing' }, { status: 500 });
+    }
+
     const { error } = await supabaseAdmin
       .from('contact_messages')
       .insert({

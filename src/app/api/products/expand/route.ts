@@ -26,6 +26,10 @@ export async function POST() {
       return NextResponse.json({ message: 'Unauthorized: Admin access required' }, { status: 401 });
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ message: 'Database service unavailable' }, { status: 500 });
+    }
+
     const { data, error } = await supabaseAdmin
       .from('products')
       .insert(expansionProducts)
