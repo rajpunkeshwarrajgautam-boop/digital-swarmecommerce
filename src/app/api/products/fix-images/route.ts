@@ -9,6 +9,10 @@ export async function GET() {
     let updatedCount = 0;
     const errors: any[] = [];
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
+    }
+
     for (const sp of staticProducts) {
       if (!sp.image) continue;
       

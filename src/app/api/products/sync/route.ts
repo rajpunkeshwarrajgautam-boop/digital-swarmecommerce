@@ -41,6 +41,10 @@ export async function POST() {
 
     const results: { name: string; status: string; error?: string }[] = [];
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ message: 'Database service unavailable' }, { status: 500 });
+    }
+
     for (const product of catalog) {
       // Check if product exists by name
       const { data: existing } = await supabaseAdmin
@@ -97,6 +101,10 @@ export async function POST() {
  */
 export async function GET() {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json({ status: 'error', message: 'Database service unavailable' }, { status: 500 });
+    }
+
     const { count, error } = await supabaseAdmin
       .from('products')
       .select('id', { count: 'exact', head: true });

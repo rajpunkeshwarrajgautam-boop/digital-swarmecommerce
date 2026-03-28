@@ -23,6 +23,10 @@ export async function POST(request: Request) {
     const orderId = `DS_${Date.now()}_${Math.random().toString(36).substring(2, 8).toUpperCase()}`;
 
     // Step 1: Create Order in Supabase
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
+    }
+
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
       .insert({

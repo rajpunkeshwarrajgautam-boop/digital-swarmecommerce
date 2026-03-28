@@ -84,12 +84,14 @@ export async function POST(request: Request) {
       price: item.price,
     }));
     
-    supabaseAdmin.from('order_items').insert(orderItems).then(({ error }: { error: { message: string } | null }) => {
-      if (error) console.error('[OrderItems Error]', error.message);
-    });
+    if (supabaseAdmin) {
+      supabaseAdmin.from('order_items').insert(orderItems).then(({ error }: { error: { message: string } | null }) => {
+        if (error) console.error('[OrderItems Error]', error.message);
+      });
+    }
 
     // 3.5 Log Affiliate Referral (Pending)
-    if (affiliateRecordId) {
+    if (affiliateRecordId && supabaseAdmin) {
       const commission = parseFloat(total) * 0.30;
       supabaseAdmin.from('referrals').insert({
         affiliate_id: affiliateRecordId,

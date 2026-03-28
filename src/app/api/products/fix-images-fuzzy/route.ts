@@ -6,6 +6,10 @@ export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database service unavailable.' }, { status: 500 });
+    }
+
     const { data: dbProducts, error: fetchErr } = await supabaseAdmin.from('products').select('id, name');
     
     if (fetchErr || !dbProducts) {
