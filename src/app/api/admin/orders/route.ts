@@ -14,6 +14,10 @@ export async function GET() {
         return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
     }
 
+    if (!supabaseAdmin) {
+        return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
+    }
+
     // Fetch orders with items and product names
     const { data, error } = await supabaseAdmin
       .from('orders')

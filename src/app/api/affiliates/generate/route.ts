@@ -10,6 +10,10 @@ export async function POST() {
       return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ success: false, message: 'Database service unavailable' }, { status: 500 });
+    }
+
     // Check if affiliate record already exists
     const { data: existing } = await supabaseAdmin
       .from('affiliates')

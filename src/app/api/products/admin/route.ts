@@ -16,6 +16,10 @@ export async function POST(request: Request) {
 
     const body = await request.json();
     
+    if (!supabaseAdmin) {
+      return NextResponse.json({ message: 'Database service unavailable' }, { status: 500 });
+    }
+
     // Use Admin Client to bypass RLS for insert
     const { data, error } = await supabaseAdmin
       .from('products')
