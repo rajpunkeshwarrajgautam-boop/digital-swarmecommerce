@@ -51,44 +51,50 @@ export async function GET(request: Request) {
   try {
     // ── Pre-Check & Sync Protocol ──────────────────────────────────────────
     // Use admin client per default for sync logic to bypass RLS
-    const { data: v3Check } = await supabaseAdmin
-      .from('products')
-      .select('name')
-      .eq('name', 'Next.js SaaS Starter Kit')
-      .maybeSingle();
-
-    // If database is not matching the v3 catalog, perform emergency wipe and sync
-    if (!v3Check) {
-      // Emergency wipe and sync protocol
-      
-      // Wipe old data
-      await supabaseAdmin.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-      
-      const upsertData = staticProducts.map(p => ({
-        name: p.name,
-        description: p.description,
-        price: p.price,
-        category: p.category,
-        image: p.image,
-        in_stock: p.inStock,
-        rating: p.rating,
-        features: p.features,
-        specs: p.specs,
-        install_guide: p.installGuide,
-        download_url: p.downloadUrl
-      }));
-
-      const { error: syncError } = await supabaseAdmin
+    if (supabaseAdmin) {
+      const { data: v3Check } = await supabaseAdmin
         .from('products')
-        .insert(upsertData);
+        .select('name')
+        .eq('name', 'Next.js SaaS Starter Kit')
+        .maybeSingle();
 
-      if (syncError) {
-        // Log sync error for debugging but don't expose to client
-        const syncErrorMsg = `[products/route] Sync Error: ${syncError.message}`;
+      // If database is not matching the v3 catalog, perform emergency wipe and sync
+      if (!v3Check) {
+        // Emergency wipe and sync protocol
+        
+        // Wipe old data
+        await supabaseAdmin.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+        
+        const upsertData = staticProducts.map(p => ({
+          name: p.name,
+          description: p.description,
+          price: p.price,
+          category: p.category,
+          image: p.image,
+          in_stock: p.inStock,
+          rating: p.rating,
+          features: p.features,
+          specs: p.specs,
+          install_guide: p.installGuide,
+          download_url: p.downloadUrl
+        }));
+
+        const { error: syncError } = await supabaseAdmin
+          .from('products')
+          .insert(upsertData);
+
+        if (syncError) {
+          // Log sync error for debugging but don't expose to client
+          console.error(`[products/route] Sync Error: ${syncError.message}`);
+        }
       }
     }
 
     // ── Build Supabase query ───────────────────────────────────────────────
+    if (!supabase) {
+      return NextResponse.json(staticProducts);
+    }
+
     let query = supabase
       .from('products')
       .select('id, name, description, price, category, image, in_stock, rating, features, specs, install_guide, download_url')
@@ -107,7 +113,7 @@ export async function GET(request: Request) {
 
     return NextResponse.json(data.map(normalizeProduct));
 
-  } catch (err) {
+  } catch (_err) {
     // Fallback to static products on unexpected errors
     return NextResponse.json(staticProducts);
   }

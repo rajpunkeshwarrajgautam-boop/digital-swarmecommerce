@@ -13,22 +13,26 @@ export default async function AffiliateDashboard() {
   }
 
   // Fetch existing affiliate data from Supabase
-  const { data: affiliate, error } = await supabaseAdmin
-    .from('affiliates')
-    .select('*')
-    .eq('user_id', user.id)
-    .single();
+  let affiliate = null;
+  if (supabaseAdmin) {
+    const { data } = await supabaseAdmin
+      .from('affiliates')
+      .select('*')
+      .eq('user_id', user.id)
+      .single();
+    affiliate = data;
+  }
 
   return (
     <>
       <Header />
-      <main className="min-h-screen bg-[var(--background)] pt-32 pb-24">
+      <main className="min-h-screen bg-(--background) pt-32 pb-24">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12">
             <h1 className="text-5xl font-extrabold tracking-tight mb-4">
-              Partner <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">Dashboard</span>
+              Partner <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-500">Dashboard</span>
             </h1>
-            <p className="text-lg text-[var(--secondary-foreground)]">
+            <p className="text-lg text-(--secondary-foreground)">
               Generate links, track your clicks, and manage your Swarm payouts.
             </p>
           </div>

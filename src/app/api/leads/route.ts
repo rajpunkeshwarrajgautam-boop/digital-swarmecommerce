@@ -9,6 +9,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Valid email required' }, { status: 400 });
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database configuration missing' }, { status: 500 });
+    }
+
     const { error } = await supabaseAdmin.from('leads').insert({ 
       email: email.toLowerCase().trim(),
       source: 'prompt_generator_utility'
