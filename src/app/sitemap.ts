@@ -1,23 +1,30 @@
+import { products } from "@/lib/data";
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://digitalswarm.in";
-  
-  const staticPages = [
-    "",
-    "/products",
-    "/pricing",
-    "/about",
-    "/faq",
-    "/blog",
-    "/contact",
-  ].map((route) => ({
-    url: `${baseUrl}${route}`,
+  const baseUrl = "https://digitalswarm.store";
+
+  const productUrls = products.map((product) => ({
+    url: `${baseUrl}/product/${product.id}`,
     lastModified: new Date(),
-    changeFrequency: "daily" as const,
-    priority: route === "" ? 1 : 0.8,
+    changeFrequency: "weekly" as const,
+    priority: 0.8,
   }));
 
-  // In a real app, we'd fetch dynamic product slugs here
-  return [...staticPages];
+  const staticUrls = [
+    {
+      url: baseUrl,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 1.0,
+    },
+    {
+      url: `${baseUrl}/products`,
+      lastModified: new Date(),
+      changeFrequency: "daily" as const,
+      priority: 0.9,
+    },
+  ];
+
+  return [...staticUrls, ...productUrls];
 }

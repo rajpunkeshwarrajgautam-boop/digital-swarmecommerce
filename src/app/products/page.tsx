@@ -12,8 +12,7 @@ export default function ProductsPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-
-  const categories = ["All", "SaaS", "AI", "Modern", "Enterprise"];
+  const [sortBy, setSortBy] = useState("featured");
 
   useEffect(() => {
     async function fetchProducts() {
@@ -31,12 +30,21 @@ export default function ProductsPage() {
     fetchProducts();
   }, []);
 
-  const filteredProducts = products.filter(p => {
-    const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         p.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = activeCategory === "All" || p.category === activeCategory;
-    return matchesSearch && matchesCategory;
-  });
+  const categories = ["All", ...Array.from(new Set(products.map(p => p.category)))];
+
+  const filteredProducts = products
+    .filter(p => {
+      const matchesSearch = p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                           p.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = activeCategory === "All" || p.category === activeCategory;
+      return matchesSearch && matchesCategory;
+    })
+    .sort((a, b) => {
+      if (sortBy === "price-asc") return a.price - b.price;
+      if (sortBy === "price-desc") return b.price - a.price;
+      if (sortBy === "rating-desc") return (b.rating || 0) - (a.rating || 0);
+      return 0; // Featured (original order)
+    });
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white pt-40 pb-32">
@@ -97,20 +105,38 @@ export default function ProductsPage() {
             <Filter className="w-4 h-4" />
             <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em]">Tier_Filter</span>
           </div>
-          {categories.map((cat) => (
-            <button 
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-8 py-2 text-[10px] font-mono font-black uppercase tracking-[0.2em] transition-all border ${
-                activeCategory === cat 
-                  ? "bg-primary text-black border-primary shadow-[0_0_20px_rgba(255,107,53,0.3)]" 
-                  : "bg-white/2 border-white/5 text-white/30 hover:bg-white/5 hover:border-white/20"
-              }`}
-              style={{ clipPath: 'polygon(10% 0, 100% 0, 90% 100%, 0 100%)' }}
+          <div className="flex flex-wrap items-center gap-3">
+            {categories.map((cat) => (
+              <button 
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-8 py-2 text-[10px] font-mono font-black uppercase tracking-[0.2em] transition-all border ${
+                  activeCategory === cat 
+                    ? "bg-primary text-black border-primary shadow-[0_0_20px_rgba(255,107,53,0.3)]" 
+                    : "bg-white/2 border-white/5 text-white/30 hover:bg-white/5 hover:border-white/20"
+                }`}
+                style={{ clipPath: 'polygon(10% 0, 100% 0, 90% 100%, 0 100%)' }}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="h-10 w-px bg-white/5 hidden md:block" />
+
+          <div className="flex items-center gap-4 bg-white/2 border border-white/5 px-6 py-2">
+            <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/20">Sort_By:</span>
+            <select 
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-transparent text-[10px] font-mono font-black uppercase tracking-[0.2em] text-primary outline-none cursor-pointer appearance-none text-center"
             >
-              {cat}
-            </button>
-          ))}
+              <option value="featured" className="bg-[#0a0a0f]">Featured</option>
+              <option value="price-asc" className="bg-[#0a0a0f]">Price: Low-High</option>
+              <option value="price-desc" className="bg-[#0a0a0f]">Price: High-Low</option>
+              <option value="rating-desc" className="bg-[#0a0a0f]">Top Rated</option>
+            </select>
+          </div>
           
           <div className="ml-auto flex items-center gap-8 text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/10 italic">
              <span className="flex items-center gap-3">

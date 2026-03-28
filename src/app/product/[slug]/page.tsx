@@ -304,7 +304,7 @@ export default function ProductPage() {
         
         {/* Swarm Intelligence Layers */}
         <div className="mt-40 space-y-40">
-           <ReviewSystem productId={product.id} />
+           <PlanetOnoReviews productId={product.id} />
            <div className="border-t border-white/5 pt-40">
               <RelatedProducts category={product.category} currentProductId={product.id} />
            </div>
