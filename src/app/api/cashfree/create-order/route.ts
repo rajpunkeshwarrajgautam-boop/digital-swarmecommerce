@@ -40,7 +40,7 @@ export async function POST(request: Request) {
     const affiliateCode = cookieStore.get('affiliate_id')?.value;
     let affiliateRecordId = null;
 
-    if (affiliateCode) {
+    if (affiliateCode && supabaseAdmin) {
       const { data: affiliateMatch } = await supabaseAdmin
         .from('affiliates')
         .select('id')
@@ -50,6 +50,10 @@ export async function POST(request: Request) {
       if (affiliateMatch) {
         affiliateRecordId = affiliateMatch.id;
       }
+    }
+
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
     }
 
     // 2. Create Order in Supabase
@@ -73,13 +77,14 @@ export async function POST(request: Request) {
     }
 
     // 3. Create Order Items (Async)
-    const orderItems = items.map((item: any) => ({
+    const orderItems = items.map((item: { id: string; price: number }) => ({
       order_id: order.id,
       product_id: item.id,
       quantity: 1,
       price: item.price,
     }));
-    supabaseAdmin.from('order_items').insert(orderItems).then(({ error }: { error: Error | null }) => {
+    
+    supabaseAdmin.from('order_items').insert(orderItems).then(({ error }: { error: { message: string } | null }) => {
       if (error) console.error('[OrderItems Error]', error.message);
     });
 
