@@ -36,7 +36,7 @@ export async function POST(request: Request) {
     const newStatus = isPaid ? 'paid' : data.order_status.toLowerCase();
 
     // ── Update Supabase order status ─────────────────────────────────────────
-    if (orderId.startsWith('DS_')) {
+    if (orderId.startsWith('DS_') && supabaseAdmin) {
       const { data: orderData, error: updateError } = await supabaseAdmin
         .from('orders')
         .update({
@@ -53,7 +53,7 @@ export async function POST(request: Request) {
       }
 
       // If just paid, trigger post-purchase logic (idempotent)
-      if (isPaid && orderData) {
+      if (isPaid && orderData && supabaseAdmin) {
         // 1. Check if license already exists
         const { data: existingLicense } = await supabaseAdmin
           .from('customer_licenses')

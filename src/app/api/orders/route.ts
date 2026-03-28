@@ -24,6 +24,10 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
+    }
+
     // 1. Create the Order
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')

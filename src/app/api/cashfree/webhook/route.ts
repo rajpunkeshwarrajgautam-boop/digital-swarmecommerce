@@ -28,7 +28,7 @@ export async function POST(request: Request) {
     const orderData = event.data?.order;
     const paymentData = event.data?.payment;
 
-    if (eventType === 'PAYMENT_SUCCESS_WEBHOOK') {
+    if (eventType === 'PAYMENT_SUCCESS_WEBHOOK' && supabaseAdmin) {
       const orderId = orderData?.order_id;
       if (orderId) {
         // Update order status in Supabase
@@ -44,7 +44,7 @@ export async function POST(request: Request) {
 
         if (error) {
           console.error('[Webhook] DB update error:', error);
-        } else {
+        } else if (dbOrder) {
           // Trigger Fulfillment Webhook (Atomic/Async)
           fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/webhooks/purchase`, {
             method: 'POST',
@@ -58,7 +58,7 @@ export async function POST(request: Request) {
       }
     }
 
-    if (eventType === 'PAYMENT_FAILED_WEBHOOK') {
+    if (eventType === 'PAYMENT_FAILED_WEBHOOK' && supabaseAdmin) {
       const orderId = orderData?.order_id;
       if (orderId) {
         await supabaseAdmin
