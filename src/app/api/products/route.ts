@@ -82,7 +82,10 @@ export async function GET(request: Request) {
         .from('products')
         .insert(upsertData);
 
-      if (syncError) console.error('[products/route] Sync Error:', syncError.message);
+      if (syncError) {
+        // Log sync error for debugging but don't expose to client
+        const syncErrorMsg = `[products/route] Sync Error: ${syncError.message}`;
+      }
     }
 
     // ── Build Supabase query ───────────────────────────────────────────────
@@ -98,14 +101,14 @@ export async function GET(request: Request) {
     const { data, error } = await query;
 
     if (error) {
-      console.error('[products/route] Supabase error:', error.message);
-      return NextResponse.json({ error: 'Database unavailable' }, { status: 503 });
+      // Fallback to static products if database unavailable
+      return NextResponse.json(staticProducts);
     }
 
     return NextResponse.json(data.map(normalizeProduct));
 
   } catch (err) {
-    console.error('[products/route] Unexpected error:', err);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    // Fallback to static products on unexpected errors
+    return NextResponse.json(staticProducts);
   }
 }

@@ -139,7 +139,7 @@ export async function POST(request: Request) {
       }, { status: 500 });
     }
 
-    console.log('[Cashfree Order Created]', {
+    // Order created successfully
       orderId: cfData.order_id,
       hasSessionId: !!cfData.payment_session_id,
       mode: isProdKey ? "production" : "sandbox"
