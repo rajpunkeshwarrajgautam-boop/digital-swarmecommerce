@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { createClient } from "@supabase/supabase-js";
+import { products } from "@/lib/data";
 
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -24,7 +25,12 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "Missing payload data" }, { status: 400 });
     }
 
-    // 2. Generate secure JWT License Key
+    // 2. Locate Product Details
+    const product = products.find(p => p.id === payload.productId);
+    const downloadUrl = product ? product.downloadUrl : "/dashboard";
+    const installGuide = product ? product.installGuide : "Please check your dashboard for further instructions.";
+
+    // 3. Generate secure JWT License Key
     const jwtHeader = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString('base64url');
     const jwtPayload = Buffer.from(JSON.stringify({ 
       orderId: payload.orderId, 
@@ -82,7 +88,11 @@ export async function POST(request: Request) {
                 <div style="background: #000; color: #CCFF00; padding: 20px; border: 2px solid #000; font-family: monospace; font-size: 11px; word-break: break-all; margin-bottom: 20px;">
                   ${licenseKey}
                 </div>
-                <a href="${process.env.NEXT_PUBLIC_SITE_URL}/dashboard" style="display: block; background-color: #CCFF00; color: #000; text-decoration: none; padding: 20px; text-align: center; font-weight: 900; text-transform: uppercase; font-size: 18px; border: 4px solid #000; box-shadow: 6px 6px 0 #000; font-style: italic;">
+                
+                <h4 style="color: #CCFF00; margin-top: 30px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">/// QUICK_START_PROTOCOL ///</h4>
+                <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-left: 4px solid #CCFF00; white-space: pre-wrap; font-family: monospace; font-size: 10px; color: #ccc; margin-bottom: 30px;">${installGuide}</pre>
+
+                <a href="${process.env.NEXT_PUBLIC_SITE_URL}${downloadUrl}" style="display: block; background-color: #CCFF00; color: #000; text-decoration: none; padding: 20px; text-align: center; font-weight: 900; text-transform: uppercase; font-size: 18px; border: 4px solid #000; box-shadow: 6px 6px 0 #000; font-style: italic;">
                   SECURE_UPLINK_DASHBOARD ->
                 </a>
               </div>

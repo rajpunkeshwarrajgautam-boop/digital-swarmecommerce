@@ -2,26 +2,48 @@
 
 import { motion } from "framer-motion";
 import { History, Hash, Calendar, CreditCard, ChevronRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { getUserOrders } from "@/app/actions/user-assets";
 
-// Mock order data
-const orders = [
-  {
-    id: "99281",
-    date: "MAR 25, 2026",
-    total: "₹3,999",
-    status: "FULFILLED",
-    items: ["SaaS Launchpad Pro"]
-  },
-  {
-    id: "98442",
-    date: "MAR 22, 2026",
-    total: "₹1,499",
-    status: "FULFILLED",
-    items: ["AI Agent Workforce (V1.2)"]
-  }
-];
+type OrderItem = {
+  price: number;
+  quantity: number;
+  products?: {
+    name: string;
+  } | {
+    name: string;
+  }[];
+};
+
+type Order = {
+  id: string;
+  status: string;
+  cashfree_order_id?: string;
+  created_at: string;
+  total_amount: number;
+  order_items?: OrderItem[];
+};
 
 export default function OrdersPage() {
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const res = await getUserOrders();
+        if (res.success && res.orders) {
+          setOrders(res.orders as Order[]);
+        }
+      } catch (e) {
+        console.error("Orders fetch error", e);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+    fetchData();
+  }, []);
+
   return (
     <div className="space-y-12">
       <header className="space-y-4">
@@ -40,7 +62,11 @@ export default function OrdersPage() {
       </header>
 
       <div className="space-y-6">
-        {orders.map((order, i) => (
+        {isLoading ? (
+           <div className="text-white/30 italic font-black uppercase">Retrieving transaction ledger...</div>
+        ) : orders.length === 0 ? (
+           <div className="text-white/30 italic font-black uppercase">No transactions found.</div>
+        ) : orders.map((order, i) => (
           <motion.div 
             key={order.id}
             initial={{ opacity: 0, x: 20 }}
@@ -52,21 +78,21 @@ export default function OrdersPage() {
               <div className="space-y-1 text-center md:text-left">
                 <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Order_Hash</p>
                 <p className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                   <Hash className="w-4 h-4 text-primary" /> {order.id}
+                   <Hash className="w-4 h-4 text-primary" /> {order.cashfree_order_id?.substring(0,10) || order.id.substring(0,8)}...
                 </p>
               </div>
 
               <div className="space-y-1 text-center md:text-left">
                 <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Timestamp</p>
                 <p className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                   <Calendar className="w-4 h-4 text-primary" /> {order.date}
+                   <Calendar className="w-4 h-4 text-primary" /> {new Date(order.created_at).toLocaleDateString()}
                 </p>
               </div>
 
               <div className="space-y-1 text-center md:text-left">
                 <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Total_Amount</p>
                 <p className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                   <CreditCard className="w-4 h-4 text-primary" /> {order.total}
+                   <CreditCard className="w-4 h-4 text-primary" /> ₹{order.total_amount}
                 </p>
               </div>
             </div>

@@ -9,7 +9,8 @@ import {
   Settings, 
   LogOut, 
   Shield, 
-  User as UserIcon
+  User as UserIcon,
+  Users
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
@@ -29,6 +30,7 @@ export default function DashboardLayout({
     { name: "Command Center", href: "/dashboard", icon: LayoutDashboard },
     { name: "Active Protocols", href: "/dashboard/assets", icon: Package },
     { name: "Signature History", href: "/dashboard/orders", icon: History },
+    { name: "Syndicate Network", href: "/dashboard/affiliate", icon: Users },
     { name: "System Config", href: "/dashboard/settings", icon: Settings },
   ];
 

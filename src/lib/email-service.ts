@@ -4,7 +4,7 @@ import { Resend } from 'resend';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-export async function captureLead(email: string, data: { url: string; source: string }): Promise<{ success: boolean; message?: string }> {
+export async function captureLead(email: string, data: { url?: string; source: string }): Promise<{ success: boolean; message?: string }> {
   // Mock capture lead for now or implement actual DB logging
   console.log("Captured lead:", email, data);
   return { success: true, message: "Lead captured successfully" };

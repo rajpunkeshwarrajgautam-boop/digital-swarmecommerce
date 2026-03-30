@@ -143,7 +143,7 @@ export function CartDrawer() {
             </div>
 
             {/* Sub-AOV Maximization Component */}
-            {items.length > 0 && !items.some(i => i.productId === "master-react-boilerplate") && (
+            {items.length > 0 && !items.some(i => i.productId === "ai-executive-playbook") && (
               <div className="relative z-10 px-8 py-6 mb-2">
                 <GlassCard className="p-4 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all group overflow-hidden">
                   <div className="absolute top-0 right-0 w-12 h-12 bg-primary/10 -mr-6 -mt-6 rotate-45 group-hover:scale-150 transition-transform" />
@@ -153,12 +153,12 @@ export function CartDrawer() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-[10px] font-mono font-black text-white uppercase tracking-tight leading-none mb-1">Scale Production</h4>
-                      <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest">Master React v.2 // -50% Off</p>
+                      <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest">AI Executive Playbook // Add for ₹299</p>
                     </div>
                     <button 
                       onClick={() => {
                           import("@/lib/data").then(module => {
-                              const upsell = module.products.find(p => p.id === "master-react-boilerplate");
+                              const upsell = module.products.find(p => p.id === "ai-executive-playbook");
                               if (upsell) addItem(upsell);
                           });
                       }}

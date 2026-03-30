@@ -146,19 +146,21 @@ function SuccessContent() {
              <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-2">{product.name}</h3>
              <p className="text-[10px] font-black uppercase text-black/40 mb-8 italic tracking-widest">Type: Neural_Extension_V3</p>
              
-             <div className="flex gap-4">
-                <a 
-                  href={product.downloadUrl} 
-                  className="flex-1 h-16 flex items-center justify-center gap-3 bg-black text-[#CCFF00] border-2 border-black font-black uppercase italic tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-[6px_6px_0_#000] active:translate-x-1 active:translate-y-1"
-                >
-                  <Download className="w-5 h-5" /> Download
-                </a>
-                <a 
-                  href={product.installGuide} 
-                  className="h-16 w-16 flex items-center justify-center bg-white border-2 border-black text-black hover:bg-black hover:text-white transition-all shadow-[4px_4px_0_#000]"
-                >
-                  <BookOpen className="w-6 h-6" />
-                </a>
+             <div className="flex flex-col gap-6">
+                 <div className="bg-black/5 p-4 border border-black italic">
+                   <h4 className="font-black text-xs uppercase mb-2 flex items-center gap-2"><BookOpen className="w-3 h-3" /> Quick Start Guide</h4>
+                   <div className="text-[10px] font-mono whitespace-pre-wrap leading-relaxed opacity-80">{product.installGuide}</div>
+                 </div>
+                 <div className="flex gap-4">
+                   <a 
+                     href={product.downloadUrl} 
+                     target="_blank"
+                     rel="noopener noreferrer"
+                     className="flex-1 h-16 flex items-center justify-center gap-3 bg-black text-[#CCFF00] border-2 border-black font-black uppercase italic tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-[6px_6px_0_#000] active:translate-x-1 active:translate-y-1"
+                   >
+                     <Download className="w-5 h-5" /> Access digital asset
+                   </a>
+                 </div>
              </div>
           </motion.div>
         ))}
