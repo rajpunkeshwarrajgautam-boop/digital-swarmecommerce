@@ -11,6 +11,8 @@ export async function GET() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 
   try {
+    if (!supabase) throw new Error("Supabase client is not initialized. Missing environment variables.");
+
     const { count, error } = await supabase
       .from('products')
       .select('*', { count: 'exact', head: true });

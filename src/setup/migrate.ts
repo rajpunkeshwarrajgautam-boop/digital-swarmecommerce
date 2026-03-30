@@ -16,6 +16,11 @@ async function migrate() {
   console.log(sql);
   console.log('-----------------------------------------------------------------------');
   
+  if (!supabaseAdmin) {
+    console.log('❌ DATABASE NEEDS UPDATE: Supabase Service Role Key is missing.');
+    return;
+  }
+
   // Alternatively, we can check if the columns exist by trying to select them
   const { error } = await supabaseAdmin.from('orders').select('cashfree_order_id').limit(1);
   if (error) {

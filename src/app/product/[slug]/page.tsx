@@ -132,7 +132,7 @@ export default function ProductPage() {
                   </div>
                   <div className="flex flex-col">
                      <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Security</span>
-                     <span className="text-[11px] font-mono text-white/60 font-black text-primary italic">FORGE_VERIFIED</span>
+                     <span className="text-[11px] font-mono font-black text-primary italic">FORGE_VERIFIED</span>
                   </div>
                </div>
             </GlassCard>
@@ -304,7 +304,7 @@ export default function ProductPage() {
         
         {/* Swarm Intelligence Layers */}
         <div className="mt-40 space-y-40">
-           <PlanetOnoReviews productId={product.id} />
+           <ReviewSystem productId={product.id} />
            <div className="border-t border-white/5 pt-40">
               <RelatedProducts category={product.category} currentProductId={product.id} />
            </div>
