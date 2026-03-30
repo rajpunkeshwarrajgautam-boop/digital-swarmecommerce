@@ -20,6 +20,13 @@
 - **REQUIREMENTS.md**: [Active](file:///d:/AI%20AGENT/antigravity-ecommerce/REQUIREMENTS.md)
 - **ROADMAP.md**: [Active](file:///d:/AI%20AGENT/antigravity-ecommerce/ROADMAP.md)
 
+## Quick Tasks Completed
+
+| # | Description | Date | Status | Commit |
+|---|-------------|------|--------|--------|
+| 1 | UI Audit Top 3 Fixes (Contrast, Touch, Thematic Copy) | 2026-03-30 | Verified ✓ | SHIPPED |
+
 ## Next Action
 
-Start task **M2.1**: Implement `CartDrawer` with ONO Orange accents and custom scrollbars.
+/gsd-new-milestone — Plan Milestone 2: Professional Infrastructure (Dashboard, Stripe, Subscriptions).
+

@@ -202,7 +202,7 @@ function MobileNavLink({ href, children, onClick }: { href: string; children: Re
     <Link 
       href={href} 
       onClick={onClick}
-      className="text-3xl font-outfit font-black uppercase italic tracking-tighter text-white hover:text-primary transition-all flex items-center gap-4 group"
+      className="min-h-[44px] py-4 text-3xl font-outfit font-black uppercase italic tracking-tighter text-white hover:text-primary transition-all flex items-center gap-4 group"
     >
       <span className="w-0 h-1 bg-primary transition-all group-hover:w-8" />
       {children}

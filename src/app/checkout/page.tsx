@@ -72,7 +72,7 @@ export default function CheckoutPage() {
     }
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) {
-      addToast("ERROR", "VALIDATION_FAULT", "Protocol requirements not satisfied.");
+      addToast("ERROR", "MATERIALIZATION_FAILURE", "Protocol requirements not satisfied.");
     }
     return Object.keys(newErrors).length === 0;
   };
@@ -110,7 +110,7 @@ export default function CheckoutPage() {
 
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "SYSTEM_EXCEPTION: Unhandled transport fault.";
-      addToast("ERROR", "UPLINK_CRITICAL", message);
+      addToast("ERROR", "UPLINK_CRITICAL_FAULT", message);
     } finally {
       setIsProcessing(false);
     }
