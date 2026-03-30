@@ -14,6 +14,11 @@ export const supabase = supabaseUrl && supabaseKey
 
 // Admin client for privileged operations requiring bypass of RLS
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+/**
+ * Gold Standard: supabaseAdmin is only available if SUPABASE_SERVICE_ROLE_KEY is set.
+ * Prevents accidental insecure fallback to anon-client for privileged ops.
+ */
 export const supabaseAdmin = serviceRoleKey && supabaseUrl
   ? createClient(supabaseUrl, serviceRoleKey)
-  : supabase;
+  : null;

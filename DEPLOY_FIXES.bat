@@ -1,8 +1,19 @@
 @echo off
-echo [ANTIGRAVITY] Shipping the UI/UX Overhaul...
-cd /d "d:\AI AGENT\antigravity-ecommerce"
+echo =======================================================
+echo [ DIGITAL SWARM FORGE ] INITIATING GLOBAL SYNCHRONIZATION
+echo =======================================================
+echo.
+echo Step 1: Staging modernized architectural components...
 git add .
-git commit -m "style: major UI/UX overhaul to fix typography, navigation, and spacing issues"
-git push origin main
-echo [ANTIGRAVITY] DEPLOY COMPLETE! Refresh digitalswarm.in in 2 minutes.
+echo.
+echo Step 2: Committing the Gold Standard Protocol...
+git commit -m "feat: GOLD STANDARD GLOBAL SYNC - ForgeToast, Branding & TS Hardening (v2.0)"
+echo.
+echo Step 3: Pushing to the Swarm Network (GitHub -^> Vercel)...
+git push origin main --force
+echo.
+echo =======================================================
+echo [ SUCCESS ] SYNCHRONIZATION COMPLETE.
+echo [ DEPLOY ] Vercel production build has been triggered.
+echo =======================================================
 pause

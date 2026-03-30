@@ -158,6 +158,13 @@ export async function POST() {
       );
     }
 
+    if (!supabaseAdmin) {
+      return NextResponse.json(
+        { message: 'Database service unavailable. Invalid or missing Service Role key.' },
+        { status: 500 }
+      );
+    }
+
     // ── Check if already seeded ─────────────────────────────────────────────
     const { data: existing, error: checkError } = await supabaseAdmin
       .from('products')

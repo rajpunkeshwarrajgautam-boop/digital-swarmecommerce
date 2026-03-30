@@ -28,11 +28,26 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
     }
 
-    // 1. Create the Order
+    // 1. Attempt Atomic Transaction via RPC (Gold Standard)
+    const { data: rpcData, error: rpcError } = await (supabaseAdmin as any).rpc('create_order_v3', {
+      p_user_email: customer.email,
+      p_total: total,
+      p_items: items
+    });
+
+    if (!rpcError && rpcData?.success) {
+      return NextResponse.json({ 
+        success: true, 
+        orderId: rpcData.order_id,
+        message: 'Order created via secure transaction'
+      });
+    }
+
+    // 2. Manual Fallback with Clean-up Logic
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
       .insert({
-        user_id: customer.email, // Using email as identifier for guest checkouts
+        user_id: customer.email,
         total: total,
         status: 'pending'
       })
@@ -40,14 +55,14 @@ export async function POST(request: Request) {
       .single();
 
     if (orderError) {
-      console.error('Order creation error:', orderError);
-      return NextResponse.json({ error: 'Failed to create order' }, { status: 500 });
+      console.error('[ORDERS/ROUTE] Creation Error:', orderError);
+      return NextResponse.json({ error: 'TRANS_FAULT: Order creation failed.' }, { status: 500 });
     }
 
-    // 2. Create the Order Items
-    const orderItems = items.map((item: { id: string, quantity: number, price: number }) => ({
+    // Attempt individual items insert
+    const orderItems = items.map((item: { productId?: string; id?: string; quantity: number; price: number }) => ({
       order_id: order.id,
-      product_id: item.id,
+      product_id: item.productId || item.id,
       quantity: item.quantity,
       price: item.price
     }));
@@ -57,9 +72,10 @@ export async function POST(request: Request) {
       .insert(orderItems);
 
     if (itemsError) {
-      console.error('Order items error:', itemsError);
-      // We could ideally delete the order here or handle partial fail
-      return NextResponse.json({ error: 'Failed to record order items' }, { status: 500 });
+      console.error('[ORDERS/ROUTE] Items Error:', itemsError);
+      // Emergency Cleanup: Delete order to avoid phantom record
+      await supabaseAdmin.from('orders').delete().eq('id', order.id);
+      return NextResponse.json({ error: 'TRANS_FAULT: Items provisioning failed. Record discarded.' }, { status: 500 });
     }
 
     // Return success for the flow completion

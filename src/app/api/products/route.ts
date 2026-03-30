@@ -49,46 +49,10 @@ export async function GET(request: Request) {
   const category = searchParams.get('category');
 
   try {
-    // ── Pre-Check & Sync Protocol ──────────────────────────────────────────
-    // Use admin client per default for sync logic to bypass RLS
-    if (supabaseAdmin) {
-      const { data: v3Check } = await supabaseAdmin
-        .from('products')
-        .select('name')
-        .eq('name', 'Next.js SaaS Starter Kit')
-        .maybeSingle();
-
-      // If database is not matching the v3 catalog, perform emergency wipe and sync
-      if (!v3Check) {
-        // Emergency wipe and sync protocol
-        
-        // Wipe old data
-        await supabaseAdmin.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
-        
-        const upsertData = staticProducts.map(p => ({
-          name: p.name,
-          description: p.description,
-          price: p.price,
-          category: p.category,
-          image: p.image,
-          in_stock: p.inStock,
-          rating: p.rating,
-          features: p.features,
-          specs: p.specs,
-          install_guide: p.installGuide,
-          download_url: p.downloadUrl
-        }));
-
-        const { error: syncError } = await supabaseAdmin
-          .from('products')
-          .insert(upsertData);
-
-        if (syncError) {
-          // Log sync error for debugging but don't expose to client
-          console.error(`[products/route] Sync Error: ${syncError.message}`);
-        }
-      }
-    }
+    /**
+     * Gold Standard: Product sync should be handled via migrations/seeds.
+     * We no longer perform destructive wipes on every GET request.
+     */
 
     // ── Build Supabase query ───────────────────────────────────────────────
     if (!supabase) {

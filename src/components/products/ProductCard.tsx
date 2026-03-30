@@ -5,7 +5,7 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, Heart, Zap, Cpu, Code2, ShoppingCart, Check, Terminal } from "lucide-react";
+import { Star, Heart, Cpu, Code2, ShoppingCart, Check, Terminal } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -85,15 +85,17 @@ export function ProductCard({ product }: ProductCardProps) {
   };
 
   return (
-    <GlassCard className="p-0 overflow-hidden h-full group flex flex-col">
-      <Link href={`/product/${product.id}`} className="block relative aspect-square overflow-hidden bg-white/5">
-        <Image
-          src={product.image}
-          fill
-          className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1"
-          alt={product.name}
-          loading="lazy"
-        />
+    <GlassCard className="p-0 overflow-hidden h-full group flex flex-col ono-reveal">
+      <Link href={`/product/${product.id}`} className="block relative aspect-square overflow-hidden bg-white/5 silk-reveal-mask">
+        <div className="ono-reveal h-full w-full">
+          <Image
+            src={product.image}
+            fill
+            className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1"
+            alt={product.name}
+            loading="lazy"
+          />
+        </div>
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
         
         {/* Most Popular Badge */}
@@ -119,7 +121,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
         {/* Price Tag */}
         <div className="absolute bottom-4 left-4 z-10">
-          <span className="font-outfit font-black text-lg text-white uppercase italic tracking-tighter">
+          <span className="font-outfit font-black text-lg text-white uppercase italic tracking-tighter glow-text">
             ₹{Math.round(product.price).toLocaleString("en-IN")}
           </span>
         </div>
@@ -131,7 +133,7 @@ export function ProductCard({ product }: ProductCardProps) {
           <StarRating rating={product.rating} />
         </div>
 
-        <h3 className="text-xl font-outfit font-black italic uppercase text-white group-hover:text-primary transition-colors line-clamp-1 leading-none">
+        <h3 className="text-xl font-outfit font-black italic uppercase text-white group-hover:text-accent transition-colors line-clamp-1 leading-none">
           {product.name}
         </h3>
 
