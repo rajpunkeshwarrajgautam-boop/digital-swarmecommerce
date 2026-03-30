@@ -14,3 +14,6 @@ A high-performance, "Planet ONO" brutalist industrial eCommerce platform. Focus 
 2. **Cart Management**: Persistent cart with industrial-styled UI.
 3. **Checkout Flow**: Secure payment integration.
 4. **Admin Dashboard**: Comprehensive order and product management.
+5. **Multi-Currency**: Global currency state with automatic exchange rate conversion.
+6. **Webhook Resiliency**: Idempotent payment processing and structured logging for auditability.
+7. **Performance Core**: Optimized LCP, Next/Font, and AVIF visual delivery.

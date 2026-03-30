@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/Button";
 import { getUserAssets } from "@/app/actions/user-assets";
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { useToastStore } from "@/components/ui/ForgeToast";
 
 type Asset = {
   id: string;
@@ -28,6 +29,7 @@ type Asset = {
 export default function AssetsPage() {
   const [assets, setAssets] = useState<Asset[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { addToast } = useToastStore();
 
   useEffect(() => {
     async function fetchData() {
@@ -93,12 +95,23 @@ export default function AssetsPage() {
                 </div>
                 <h3 className="text-xl font-black italic uppercase tracking-tighter leading-none truncate">{product?.name || "Unknown"}</h3>
                 
-                <div className="flex gap-4 pt-4">
+                <div className="flex gap-2 pt-4">
                    <Link href={product?.download_url || "#"} target="_blank" className="flex-1">
-                     <Button className="w-full bg-white text-black font-black uppercase italic text-[10px] tracking-widest hover:bg-primary hover:text-white transition-all">
-                        <Download className="w-3.5 h-3.5 mr-2" /> Extract
-                     </Button>
+                     <button className="w-full h-10 border border-white/10 bg-white/5 text-[9px] font-black uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all flex items-center justify-center">
+                        <Download className="w-3.5 h-3.5 mr-2" /> Extract_Archive
+                     </button>
                    </Link>
+                   <button 
+                    onClick={() => {
+                      if (asset.license_key) {
+                        navigator.clipboard.writeText(asset.license_key);
+                        addToast("SUCCESS", "PROTOCOL_SYNCED", "LICENSE_SIG COPIED TO LOCAL ARCHIVE");
+                      }
+                    }}
+                    className="px-4 h-10 border border-white/5 bg-white/2 hover:bg-primary/10 text-[9px] font-black uppercase tracking-widest text-primary border-primary/20 hover:border-primary transition-all"
+                   >
+                     Copy_SIG
+                   </button>
                 </div>
               </div>
             </motion.div>

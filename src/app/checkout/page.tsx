@@ -8,9 +8,22 @@ import Image from "next/image";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useToastStore } from "@/components/ui/ForgeToast";
 import { useRouter } from "next/navigation";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
+import { formatCurrency } from "@/lib/utils";
+
+import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
 
 export default function CheckoutPage() {
+  return (
+    <ForgeErrorBoundary>
+      <CheckoutContent />
+    </ForgeErrorBoundary>
+  );
+}
+
+function CheckoutContent() {
   const { items, getCartTotal } = useCartStore();
+  const { currency } = useCurrency();
   const addToast = useToastStore((s) => s.addToast);
   const router = useRouter();
   const [isClient, setIsClient] = useState(false);
@@ -86,7 +99,8 @@ export default function CheckoutPage() {
         body: JSON.stringify({ 
           total: total, 
           items, 
-          customer: formData 
+          customer: formData,
+          currency: currency
         }),
       });
       
@@ -97,6 +111,7 @@ export default function CheckoutPage() {
         throw new Error("GATEWAY_FAULT: Payment Session ID null.");
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const cashfree = new (window as any).Cashfree({
         mode: data.cfMode || "sandbox",
       });
@@ -306,7 +321,7 @@ export default function CheckoutPage() {
                         </span>
                       ) : (
                         <span className="flex items-center gap-4">
-                          <Lock className="w-6 h-6" /> INITIATE_TRANSFER ₹{total.toLocaleString("en-IN")}
+                          <Lock className="w-6 h-6" /> INITIATE_TRANSFER {formatCurrency(total, currency)}
                         </span>
                       )}
                     </ForgeButton>
@@ -352,7 +367,7 @@ export default function CheckoutPage() {
                       <div className="flex items-center gap-4">
                         <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest">QUANTITY: {String(item.quantity).padStart(2, '0')}</span>
                         <div className="h-3 w-px bg-white/10" />
-                        <span className="text-[9px] font-mono text-primary font-black uppercase tracking-widest italic shrink-0">₹{(item.price * item.quantity).toLocaleString("en-IN")}</span>
+                        <span className="text-[9px] font-mono text-primary font-black uppercase tracking-widest italic shrink-0">{formatCurrency(item.price * item.quantity, currency)}</span>
                       </div>
                     </div>
                   </div>
@@ -362,7 +377,7 @@ export default function CheckoutPage() {
               <div className="space-y-5 pt-10 border-t border-white/10">
                 <div className="flex justify-between text-[10px] font-mono font-black uppercase tracking-[0.2em] text-white/30">
                   <span>Subtotal_Value</span>
-                  <span>₹{total.toLocaleString("en-IN")}</span>
+                  <span>{formatCurrency(total, currency)}</span>
                 </div>
                 <div className="flex justify-between text-[10px] font-mono font-black uppercase tracking-[0.2em] text-white/30">
                     <span>Provisioning_GST</span>
@@ -371,8 +386,8 @@ export default function CheckoutPage() {
                 <div className="flex justify-between items-end mt-10 pt-10 border-t-2 border-primary/20 font-outfit">
                   <span className="text-xl font-black uppercase italic tracking-tighter text-white/40">Grand_Total</span>
                   <div className="flex flex-col items-end">
-                    <span className="text-[9px] font-mono text-primary uppercase tracking-widest mb-1 italic">Authorized_INR</span>
-                    <span className="text-5xl font-black italic tracking-tighter text-primary drop-shadow-[0_0_15px_rgba(255,107,53,0.2)]">₹{total.toLocaleString("en-IN")}</span>
+                    <span className="text-[9px] font-mono text-primary uppercase tracking-widest mb-1 italic">Authorized_{currency}</span>
+                    <span className="text-5xl font-black italic tracking-tighter text-primary drop-shadow-[0_0_15px_rgba(255,107,53,0.2)]">{formatCurrency(total, currency)}</span>
                   </div>
                 </div>
               </div>

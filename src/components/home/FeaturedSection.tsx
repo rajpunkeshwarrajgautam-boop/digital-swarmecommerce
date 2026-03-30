@@ -7,6 +7,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
+import { ProductCardSkeleton } from "@/components/ui/Skeleton";
 
 export function FeaturedSection() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -32,9 +33,9 @@ export function FeaturedSection() {
   if (loading) {
     return (
       <section id="catalog" className="py-24 container mx-auto px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
           {[1, 2, 3, 4, 5, 6].map((i) => (
-            <div key={i} className="aspect-square bg-white/5 rounded-2xl animate-pulse" />
+            <ProductCardSkeleton key={i} />
           ))}
         </div>
       </section>

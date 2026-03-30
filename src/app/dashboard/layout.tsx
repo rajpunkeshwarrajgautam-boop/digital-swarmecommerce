@@ -69,17 +69,27 @@ export default function DashboardLayout({
         </div>
 
         {/* Global Navigation */}
-        <nav className="flex-1 p-4 space-y-2">
+        <nav className="flex-1 p-4 space-y-3">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link key={item.href} href={item.href}>
                 <motion.div 
                   whileHover={{ x: 4 }}
-                  className={`flex items-center gap-4 p-4 transition-all border-4 ${isActive ? "bg-white text-black border-black shadow-[6px_6px_0_#ff6b35]" : "border-transparent text-white/40 hover:text-white hover:bg-white/5"}`}
+                  className={`flex items-center gap-4 p-4 transition-all relative overflow-hidden group ${isActive ? "bg-white text-black shadow-[8px_8px_0_#ff6b35]" : "text-white/40 hover:text-white hover:bg-white/5"}`}
                 >
-                  <item.icon className={`w-5 h-5 ${isActive ? "text-primary" : ""}`} />
-                  <span className="text-xs font-black uppercase tracking-widest">{item.name}</span>
+                  {isActive && (
+                    <motion.div 
+                      layoutId="active-nav"
+                      className="absolute left-0 top-0 w-1.5 h-full bg-primary"
+                    />
+                  )}
+                  <item.icon className={`w-5 h-5 transition-colors ${isActive ? "text-primary" : "group-hover:text-primary"}`} />
+                  <span className="text-[11px] font-black uppercase tracking-[0.2em]">{item.name}</span>
+                  
+                  {isActive && (
+                    <div className="ml-auto w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
+                  )}
                 </motion.div>
               </Link>
             );
@@ -87,24 +97,25 @@ export default function DashboardLayout({
         </nav>
 
         {/* System Status Segment */}
-        <div className="p-8 border-t-4 border-black space-y-6">
+        <div className="p-8 border-t-4 border-black space-y-6 bg-black/20">
           <div className="space-y-4">
              <div className="flex justify-between items-center text-[8px] font-black uppercase tracking-[.2em] text-white/20">
-                <span>System Integrity</span>
-                <span className="text-primary italic">Nominal</span>
+                <span>Core_Integrity</span>
+                <span className="text-primary italic animate-pulse">Operational</span>
              </div>
-             <div className="h-1 bg-white/5 rounded-full overflow-hidden">
+             <div className="h-1 bg-white/5 relative">
                 <motion.div 
                   initial={{ width: 0 }}
-                  animate={{ width: "88%" }}
-                  className="h-full bg-primary"
+                  animate={{ width: "94%" }}
+                  className="h-full bg-primary shadow-[0_0_8px_rgba(255,107,53,0.5)]"
                 />
              </div>
           </div>
           
           <SignOutButton>
-            <button className="flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-red-500 transition-colors">
-              <LogOut className="w-4 h-4" /> Terminate Session
+            <button className="flex items-center gap-3 text-[9px] font-black uppercase tracking-[0.3em] text-white/20 hover:text-red-500 transition-colors group">
+              <LogOut className="w-3.5 h-3.5 group-hover:-translate-x-1 transition-transform" /> 
+              Terminate_Session
             </button>
           </SignOutButton>
         </div>

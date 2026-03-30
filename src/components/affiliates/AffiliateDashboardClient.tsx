@@ -5,8 +5,23 @@ import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Copy, PlusCircle, TrendingUp, Users, DollarSign } from 'lucide-react';
 
-export default function AffiliateDashboardClient({ initialData, userId, userEmail }: any) {
-  const [data, setData] = useState(initialData);
+interface AffiliateData {
+  id: string;
+  user_id: string;
+  referral_code: string;
+  total_clicks?: number;
+  total_earnings?: number | string;
+  created_at?: string;
+}
+
+interface AffiliateDashboardProps {
+  initialData: AffiliateData | null;
+  userId: string;
+  userEmail: string;
+}
+
+export default function AffiliateDashboardClient({ initialData }: AffiliateDashboardProps) {
+  const [data, setData] = useState<AffiliateData | null>(initialData);
   const [loading, setLoading] = useState(false);
 
   const handleGenerateCode = async () => {
@@ -37,14 +52,14 @@ export default function AffiliateDashboardClient({ initialData, userId, userEmai
 
   if (!data) {
     return (
-      <div className="bg-white dark:bg-[#1a1c23] rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-gray-800">
+      <div className="bg-white dark:bg-[#1a1c23] rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-gray-800">
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white">Join the Swarm Partner Network</h2>
           <p className="text-gray-500 dark:text-gray-400 mt-2">Earn 30% lifetime commission on all digital products you refer.</p>
         </div>
         <div className="mt-4">
           <Button 
-            className="w-full sm:w-auto bg-gradient-to-r from-blue-600 to-indigo-500 text-white rounded-full h-12 px-8 font-bold" 
+            className="w-full sm:w-auto bg-linear-to-r from-blue-600 to-indigo-500 text-white rounded-full h-12 px-8 font-bold" 
             onClick={handleGenerateCode}
             disabled={loading}
           >
@@ -62,7 +77,7 @@ export default function AffiliateDashboardClient({ initialData, userId, userEmai
     <div className="space-y-8">
       
       {/* Tracking Link Section */}
-      <div className="bg-white dark:bg-[#1a1c23] rounded-[2rem] p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-gray-800">
+      <div className="bg-white dark:bg-[#1a1c23] rounded-4xl p-8 shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 dark:border-gray-800">
         <div className="mb-6">
           <h2 className="text-xl font-bold text-gray-900 dark:text-white">Your Tracking Link</h2>
           <p className="text-gray-500 dark:text-gray-400 mt-1">Share this exact URL to track your commissions.</p>
@@ -73,7 +88,7 @@ export default function AffiliateDashboardClient({ initialData, userId, userEmai
             readOnly 
             className="bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 border-none h-14 rounded-2xl text-lg sm:w-2/3 px-6" 
           />
-          <Button onClick={copyToClipboard} className="bg-gradient-to-r from-blue-600 to-indigo-500 text-white rounded-full h-14 px-8 font-bold w-full sm:w-auto whitespace-nowrap">
+          <Button onClick={copyToClipboard} className="bg-linear-to-r from-blue-600 to-indigo-500 text-white rounded-full h-14 px-8 font-bold w-full sm:w-auto whitespace-nowrap">
             <Copy className="mr-2 h-5 w-5" /> Copy Link
           </Button>
         </div>
@@ -113,7 +128,7 @@ export default function AffiliateDashboardClient({ initialData, userId, userEmai
             <DollarSign className="h-5 w-5 text-fuchsia-500" />
           </div>
           <div>
-            <div className="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-500">₹{parseFloat(data.total_earnings || 0).toFixed(2)}</div>
+            <div className="text-4xl font-extrabold text-transparent bg-clip-text bg-linear-to-r from-blue-600 to-indigo-500">₹{Number(data.total_earnings || 0).toFixed(2)}</div>
             <p className="text-sm text-gray-500 dark:text-gray-500 mt-2">Ready for Payout</p>
           </div>
         </div>

@@ -1,21 +1,25 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
+import { env } from '@/lib/env';
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { items, total, customer } = body;
+    const { items, total, customer, currency = 'INR' } = body;
 
-    const CLIENT_ID = (process.env.CASHFREE_APP_ID || '').replace(/['"]+/g, '').trim();
-    const CLIENT_SECRET = (process.env.CASHFREE_SECRET_KEY || '').replace(/['"]+/g, '').trim();
-    
-    if (!CLIENT_ID || !CLIENT_SECRET) {
-      console.error('[Cashfree Config Error] Missing API Keys');
-      return NextResponse.json({ 
-        error: 'Payment Gateway is not configured. Please add CASHFREE_APP_ID and CASHFREE_SECRET_KEY to environment variables.' 
-      }, { status: 500 });
-    }
+    const EXCHANGE_RATES: Record<string, number> = {
+      INR: 1,
+      USD: 0.012,
+      EUR: 0.011,
+      GBP: 0.0094,
+    };
+
+    const rate = EXCHANGE_RATES[currency as string] || 1;
+    const convertedTotal = (parseFloat(total) * rate).toFixed(2);
+
+    const CLIENT_ID = env.CASHFREE_APP_ID!;
+    const CLIENT_SECRET = env.CASHFREE_SECRET_KEY!;
     
     // Hard-detect environment based on the Secret Key signature
     const isProdKey = CLIENT_SECRET.startsWith('cfsk_ma_prod_');
@@ -23,10 +27,7 @@ export async function POST(request: Request) {
       ? 'https://api.cashfree.com/pg' 
       : 'https://sandbox.cashfree.com/pg';
 
-    let SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || 'https://digitalswarm.in';
-    if (SITE_URL === 'undefined' || !SITE_URL.startsWith('http')) {
-      SITE_URL = 'https://digitalswarm.in';
-    }
+    const SITE_URL = env.NEXT_PUBLIC_SITE_URL!.replace(/\/$/, '');
 
     if (!items || !items.length || !total || !customer?.email) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
@@ -106,8 +107,8 @@ export async function POST(request: Request) {
     // 4. Create Cashfree Order
     const cfPayload = {
       order_id: orderId,
-      order_amount: parseFloat(total).toFixed(2),
-      order_currency: 'INR',
+      order_amount: convertedTotal,
+      order_currency: currency,
       customer_details: {
         customer_id: customer.email.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 45),
         customer_email: customer.email,

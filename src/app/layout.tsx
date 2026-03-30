@@ -7,10 +7,27 @@ import { ClientProviders } from "@/components/providers/ClientProviders";
 import { VisualQuality } from "@/components/layout/VisualQuality";
 import { ForgeToast } from "@/components/ui/ForgeToast";
 import { AIConcierge } from "@/components/forge/AIConcierge";
+import Script from "next/script";
+import { env } from "@/lib/env";
+import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
-const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
-const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrains" });
+const inter = Inter({ 
+  subsets: ["latin"], 
+  variable: "--font-inter",
+  display: 'swap',
+});
+
+const outfit = Outfit({ 
+  subsets: ["latin"], 
+  variable: "--font-outfit",
+  display: 'swap',
+});
+
+const jetbrains = JetBrains_Mono({ 
+  subsets: ["latin"], 
+  variable: "--font-jetbrains",
+  display: 'swap',
+});
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://digitalswarm.in"),
@@ -78,16 +95,36 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${outfit.variable} ${jetbrains.variable} scroll-smooth`}>
       <body className="font-sans antialiased text-white selection:bg-primary selection:text-black">
-        <ClientProviders>
-          <VisualQuality />
-          <ForgeToast />
-          <AIConcierge />
-          <Header />
-          <main className="min-h-screen">
-            {children}
-          </main>
-          <Footer />
-        </ClientProviders>
+        <ForgeErrorBoundary>
+          <ClientProviders>
+            <VisualQuality />
+            <ForgeToast />
+            <AIConcierge />
+            <Header />
+            <Script
+              id="fb-pixel"
+              strategy="afterInteractive"
+              dangerouslySetInnerHTML={{
+                __html: `
+                  !function(f,b,e,v,n,t,s)
+                  {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+                  n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+                  if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+                  n.queue=[];t=b.createElement(e);t.async=!0;
+                  t.src=v;s=b.getElementsByTagName(e)[0];
+                  s.parentNode.insertBefore(t,s)}(window, document,'script',
+                  'https://connect.facebook.net/en_US/fbevents.js');
+                  fbq('init', '${env.NEXT_PUBLIC_FB_PIXEL_ID || ""}');
+                  fbq('track', 'PageView');
+                `,
+              }}
+            />
+            <main className="min-h-screen">
+              {children}
+            </main>
+            <Footer />
+          </ClientProviders>
+        </ForgeErrorBoundary>
       </body>
     </html>
   );

@@ -1,23 +1,35 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 
+export interface MemoryMetadata {
+  [key: string]: string | number | boolean | null | undefined | MemoryMetadata;
+}
+
+export interface UserPreferences {
+  theme: 'planet-ono-brutalist' | 'industrial-dark' | 'neon-glitch';
+  aiLevel: 'passive' | 'balanced' | 'aggressive';
+  autoSync: boolean;
+  currency?: string;
+  [key: string]: string | number | boolean | undefined;
+}
+
 export interface MemoryLog {
   id: string;
   timestamp: string;
   type: 'interaction' | 'preference' | 'system' | 'ai';
   content: string;
-  metadata?: Record<string, any>;
+  metadata?: MemoryMetadata;
 }
 
 interface MemoryState {
   logs: MemoryLog[];
-  userPreferences: Record<string, any>;
+  userPreferences: UserPreferences;
   lastSession: string;
   isSyncing: boolean;
   
   // Actions
-  addLog: (content: string, type?: MemoryLog['type'], metadata?: Record<string, any>) => void;
-  updatePreference: (key: string, value: any) => void;
+  addLog: (content: string, type?: MemoryLog['type'], metadata?: MemoryMetadata) => void;
+  updatePreference: <K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) => void;
   clearMemory: () => void;
   setSyncing: (status: boolean) => void;
 }
@@ -57,7 +69,14 @@ export const useMemoryStore = create<MemoryState>()(
         }));
       },
 
-      clearMemory: () => set({ logs: [], userPreferences: {} }),
+      clearMemory: () => set({ 
+        logs: [], 
+        userPreferences: {
+          theme: 'planet-ono-brutalist',
+          aiLevel: 'aggressive',
+          autoSync: true
+        } 
+      }),
       setSyncing: (status) => set({ isSyncing: status })
     }),
     {

@@ -8,9 +8,12 @@ import Link from "next/link";
 import Image from "next/image";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
+import { formatCurrency } from "@/lib/utils";
 
 export function CartDrawer() {
   const { items, addItem, removeItem, updateQuantity, isOpen, toggleCart, getCartTotal } = useCartStore();
+  const { currency } = useCurrency();
   const total = getCartTotal();
   const [isClient, setIsClient] = useState(false);
 
@@ -115,7 +118,7 @@ export function CartDrawer() {
                           </button>
                         </div>
                         <p className="text-xs font-mono text-primary font-black italic">
-                          ₹{(item.price * item.quantity).toLocaleString('en-IN')}
+                          {formatCurrency(item.price * item.quantity, currency)}
                         </p>
                       </div>
                       
@@ -153,7 +156,7 @@ export function CartDrawer() {
                     </div>
                     <div className="flex-1">
                       <h4 className="text-[10px] font-mono font-black text-white uppercase tracking-tight leading-none mb-1">Scale Production</h4>
-                      <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest">AI Executive Playbook // Add for ₹299</p>
+                      <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest">AI Executive Playbook // Add for {formatCurrency(299, currency)}</p>
                     </div>
                     <button 
                       onClick={() => {
@@ -177,12 +180,12 @@ export function CartDrawer() {
                 <div className="py-6 flex flex-col gap-4">
                   <div className="flex justify-between items-center">
                     <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/20">Aggregate Total</span>
-                    <span className="text-sm font-mono text-white/40">₹{total.toLocaleString('en-IN')}</span>
+                    <span className="text-sm font-mono text-white/40">{formatCurrency(total, currency)}</span>
                   </div>
                   <div className="flex justify-between items-end">
                     <span className="text-xs font-outfit font-black text-white uppercase italic tracking-tight">Final Settlement</span>
                     <span className="text-3xl font-outfit font-black text-primary drop-shadow-[0_0_15px_rgba(255,107,53,0.3)] italic">
-                      ₹{total.toLocaleString('en-IN')}
+                      {formatCurrency(total, currency)}
                     </span>
                   </div>
                 </div>

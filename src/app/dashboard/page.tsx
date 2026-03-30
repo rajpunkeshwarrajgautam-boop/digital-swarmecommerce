@@ -100,34 +100,41 @@ export default function DashboardPage() {
         </h1>
       </header>
 
-      {/* Primary Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Primary Metrics - High Density */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {[
-          { label: "Active Protocols", value: isLoading ? "-" : activeProtocols.length.toString().padStart(2, '0'), icon: Box },
-          { label: "Acquisition Tier", value: "ELITE", icon: ShieldCheck },
-          { label: "System Uptime", value: "100%", icon: Activity }
+          { label: "Active_Protocols", value: isLoading ? "--" : activeProtocols.length.toString().padStart(2, '0'), icon: Box, color: "text-primary" },
+          { label: "Total_Investment", value: isLoading ? "₹--" : `₹${activeProtocols.length * 2999}`, icon: CreditCard, color: "text-green-500" },
+          { label: "Security_Tier", value: "LEVEL_04", icon: ShieldCheck, color: "text-blue-500" },
+          { label: "Uptime_Status", value: "STABLE", icon: Activity, color: "text-primary animate-pulse" }
         ].map((stat, i) => (
           <motion.div 
             key={i}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="p-8 bg-white/5 border-4 border-black shadow-[8px_8px_0_#000] group hover:border-primary/20 transition-all"
+            className="p-6 bg-white/5 border-2 border-white/5 hover:border-primary/20 transition-all relative group overflow-hidden"
           >
-            <stat.icon className="w-6 h-6 text-primary mb-6 group-hover:scale-110 transition-transform" />
-            <p className="text-4xl font-black italic text-white mb-1 tracking-tighter">{stat.value}</p>
-            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">{stat.label}</p>
+            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white/5 group-hover:border-primary/40 transition-colors" />
+            <stat.icon className={`w-5 h-5 ${stat.color} mb-4 group-hover:scale-110 transition-transform`} />
+            <p className="text-3xl font-black italic text-white mb-1 tracking-tighter uppercase">{stat.value}</p>
+            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20">{stat.label}</p>
           </motion.div>
         ))}
       </div>
 
-      {/* Asset Repository */}
-      <section className="space-y-8">
-        <div className="flex items-center justify-between border-b-4 border-black pb-4">
-          <h2 className="text-2xl font-black italic uppercase tracking-tighter">Active Protocols</h2>
-          <Button variant="ghost" className="text-white/30 hover:text-white group">
-            All Assets <ChevronRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
-          </Button>
+      {/* Asset Repository Preview */}
+      <section className="space-y-6">
+        <div className="flex items-center justify-between border-b border-white/10 pb-4">
+          <div className="flex items-center gap-3">
+             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
+             <h2 className="text-xl font-black italic uppercase tracking-tighter">Live_Asset_Feed</h2>
+          </div>
+          <Link href="/dashboard/assets">
+            <Button variant="ghost" className="text-[9px] font-black uppercase tracking-widest text-white/30 hover:text-primary group">
+              Full Repository <ChevronRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
+            </Button>
+          </Link>
         </div>
 
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">

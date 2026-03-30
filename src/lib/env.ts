@@ -1,0 +1,64 @@
+import { z } from 'zod';
+
+/**
+ * Global Environment Configuration Schema
+ * 
+ * Digital Swarm uses strict validation to prevent integration faults 
+ * in production environments. If a critical key is missing, the 
+ * application will crash early with a descriptive error.
+ */
+
+const envSchema = z.object({
+  // --- PUBLIC PROTOCOLS ---
+  NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
+  NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3000'),
+  NEXT_PUBLIC_FB_PIXEL_ID: z.string().optional(),
+  NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
+
+  // --- ACCESS CONTROL PROTOCOLS ---
+  ADMIN_WHITELIST: z.string().default('admin@digitalswarm.in,test@example.com').transform((val) => val.split(',').map(s => s.trim().toLowerCase())),
+
+  // --- SERVER-SIDE SECRETS ---
+  SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  RESEND_API_KEY: z.string().min(1),
+  CASHFREE_APP_ID: z.string().min(1),
+  CASHFREE_SECRET_KEY: z.string().min(1),
+  STRIPE_SECRET_KEY: z.string().optional(), // Secondary gateway
+  ADMIN_EMAIL: z.string().email().optional(),
+  
+  // --- NODE ENV ---
+  NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+});
+
+// Logic to differentiate between Client and Server validation
+const isServer = typeof window === 'undefined';
+
+/**
+ * Environment Validator
+ * Returns the parsed environment or throws a descriptive fault.
+ */
+function validateEnv() {
+  try {
+    // On the client, we can only validate NEXT_PUBLIC_* variables
+    if (!isServer) {
+      return envSchema.partial().parse(process.env);
+    }
+    
+    // On the server, we validate everything
+    return envSchema.parse(process.env);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      const missingKeys = error.issues.map((issue) => issue.path.join('.')).join(', ');
+      console.error('❌ [ENV_FAULT] Critical environment variables missing:', missingKeys);
+      
+      // In production, we throw to prevent inconsistent states
+      if (process.env.NODE_ENV === 'production') {
+        throw new Error(`CRITICAL_INFRA_FAULT: Missing ${missingKeys}`);
+      }
+    }
+    return process.env as unknown as z.infer<typeof envSchema>;
+  }
+}
+
+export const env = validateEnv();

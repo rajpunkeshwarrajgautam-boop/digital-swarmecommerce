@@ -13,6 +13,7 @@ import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useForgeStore } from "@/lib/forge-store";
+import { CurrencySwitcher } from "./CurrencySwitcher";
 
 export function Header() {
   const pathname = usePathname();
@@ -62,12 +63,16 @@ export function Header() {
               </Logo>
             </Link>
             
-            {/* System Status Indicator (Pseudo-AI) */}
-            <div className="hidden xl:flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-              <span className={`w-1.5 h-1.5 rounded-full ${systemStatus === 'idle' ? 'bg-accent' : 'bg-primary'} animate-pulse shadow-[0_0_8px_currentColor]`} />
-              <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
-                Forge {systemStatus === 'idle' ? 'Ready' : 'Active'}
-              </span>
+            <div className="hidden xl:flex items-center gap-6">
+              <CurrencySwitcher />
+              
+              {/* System Status Indicator (Pseudo-AI) */}
+              <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
+                <span className={`w-1.5 h-1.5 rounded-full ${systemStatus === 'idle' ? 'bg-accent' : 'bg-primary'} animate-pulse shadow-[0_0_8px_currentColor]`} />
+                <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
+                  Forge {systemStatus === 'idle' ? 'Ready' : 'Active'}
+                </span>
+              </div>
             </div>
           </div>
 

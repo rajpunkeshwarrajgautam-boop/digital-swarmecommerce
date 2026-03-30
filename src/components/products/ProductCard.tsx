@@ -10,6 +10,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ForgeButton } from "@/components/ui/ForgeButton";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
+import { formatCurrency } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -56,6 +58,7 @@ function TechBadges({ category }: { category: string }) {
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isWishlisted } = useWishlistStore();
+  const { currency } = useCurrency();
 
   const [added, setAdded] = useState(false);
   const wishlisted = isWishlisted(product.id);
@@ -122,7 +125,7 @@ export function ProductCard({ product }: ProductCardProps) {
         {/* Price Tag */}
         <div className="absolute bottom-4 left-4 z-10">
           <span className="font-outfit font-black text-lg text-white uppercase italic tracking-tighter glow-text">
-            ₹{Math.round(product.price).toLocaleString("en-IN")}
+            {formatCurrency(product.price, currency)}
           </span>
         </div>
       </Link>

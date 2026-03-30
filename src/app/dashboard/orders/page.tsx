@@ -61,48 +61,62 @@ export default function OrdersPage() {
         </h1>
       </header>
 
-      <div className="space-y-6">
+      <div className="space-y-4">
         {isLoading ? (
-           <div className="text-white/30 italic font-black uppercase">Retrieving transaction ledger...</div>
+           <div className="text-white/30 italic font-black uppercase text-xs tracking-widest">Querying transaction_ledger...</div>
         ) : orders.length === 0 ? (
-           <div className="text-white/30 italic font-black uppercase">No transactions found.</div>
+           <div className="text-white/30 italic font-black uppercase text-xs tracking-widest border border-white/5 p-8 text-center">No active signatures found in history.</div>
         ) : orders.map((order, i) => (
           <motion.div 
             key={order.id}
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: i * 0.1 }}
-            className="group relative bg-white/5 border-4 border-black p-8 flex flex-col md:flex-row items-center justify-between gap-8 hover:border-primary/20 transition-all shadow-[8px_8px_0_#000]"
+            className="group relative bg-[#0d0d12] border-2 border-white/5 p-6 flex flex-col lg:flex-row items-center justify-between gap-8 hover:border-primary/40 transition-all"
           >
-            <div className="flex flex-col md:flex-row items-center gap-12 flex-1">
-              <div className="space-y-1 text-center md:text-left">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Order_Hash</p>
-                <p className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                   <Hash className="w-4 h-4 text-primary" /> {order.cashfree_order_id?.substring(0,10) || order.id.substring(0,8)}...
+            <div className="flex flex-col md:flex-row items-center gap-10 flex-1 w-full">
+              <div className="space-y-1 w-full md:w-auto">
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20">Protocol_ID</p>
+                <p className="text-sm font-black italic uppercase tracking-tighter flex items-center gap-2 text-white">
+                   <Hash className="w-3.5 h-3.5 text-primary" /> {order.cashfree_order_id?.substring(0,12) || order.id.substring(0,8)}
                 </p>
               </div>
 
-              <div className="space-y-1 text-center md:text-left">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Timestamp</p>
-                <p className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                   <Calendar className="w-4 h-4 text-primary" /> {new Date(order.created_at).toLocaleDateString()}
+              <div className="space-y-1 w-full md:w-auto">
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20">Signature_Date</p>
+                <p className="text-sm font-black italic uppercase tracking-tighter flex items-center gap-2 text-white">
+                   <Calendar className="w-3.5 h-3.5 text-primary" /> {new Date(order.created_at).toLocaleDateString()}
                 </p>
               </div>
 
-              <div className="space-y-1 text-center md:text-left">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Total_Amount</p>
-                <p className="text-xl font-black italic uppercase tracking-tighter flex items-center gap-2">
-                   <CreditCard className="w-4 h-4 text-primary" /> ₹{order.total_amount}
+              <div className="space-y-1 w-full md:w-auto">
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20">Value_Transferred</p>
+                <p className="text-sm font-black italic uppercase tracking-tighter flex items-center gap-2 text-white">
+                   <CreditCard className="w-3.5 h-3.5 text-primary" /> ₹{order.total_amount}
                 </p>
+              </div>
+
+              <div className="space-y-1 flex-1 w-full">
+                <p className="text-[8px] font-black uppercase tracking-[0.3em] text-white/20">Manifest_Items</p>
+                <div className="text-[10px] font-black uppercase tracking-widest text-primary italic truncate max-w-[200px]">
+                   {order.order_items?.map(item => {
+                     const prod = Array.isArray(item.products) ? item.products[0] : item.products;
+                     return prod?.name;
+                   }).join(" + ") || "Direct_Acquisition"}
+                </div>
               </div>
             </div>
 
-            <div className="flex items-center gap-6">
-               <span className="px-4 py-1.5 bg-green-500 text-black text-[10px] font-black uppercase italic tracking-widest shadow-[4px_4px_0_#000]">
-                  {order.status}
+            <div className="flex items-center gap-6 w-full lg:w-auto justify-between lg:justify-end border-t lg:border-t-0 border-white/5 pt-4 lg:pt-0">
+               <span className={`px-4 py-1 text-[9px] font-black uppercase italic tracking-[0.2em] ${
+                 order.status.toLowerCase() === 'paid' || order.status.toLowerCase() === 'completed' || order.status.toLowerCase() === 'success'
+                 ? 'bg-primary text-white shadow-[4px_4px_0_rgba(255,107,53,0.3)]' 
+                 : 'bg-white/10 text-white/40'
+               }`}>
+                  {order.status || 'PROCESSED'}
                </span>
-               <button className="p-4 bg-black border-2 border-white/10 hover:bg-white hover:text-black transition-all group">
-                  <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+               <button className="p-3 bg-white/5 border border-white/10 hover:bg-primary hover:text-white transition-all group">
+                  <ChevronRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                </button>
             </div>
           </motion.div>

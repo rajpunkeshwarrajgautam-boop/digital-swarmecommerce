@@ -5,8 +5,11 @@ import { Product } from "@/lib/types";
 import { useState } from "react";
 import { BadgeCheck, Building2, ArrowRight, ShieldCheck } from "lucide-react";
 import { ForgeButton } from "@/components/ui/ForgeButton";
+import { useCurrency } from "@/components/providers/CurrencyProvider";
+import { formatCurrency } from "@/lib/utils";
 
 export default function AddToCartButton({ product }: { product: Product }) {
+  const { currency } = useCurrency();
   const addItem = useCartStore((state) => state.addItem);
   const [isAdding, setIsAdding] = useState(false);
   const [licenseType, setLicenseType] = useState<"standard" | "whitelabel">("standard");
@@ -27,16 +30,16 @@ export default function AddToCartButton({ product }: { product: Product }) {
 
     addItem(cartProduct);
 
-    // Track AddToCart Event
-    if (typeof window !== 'undefined' && (window as any).fbq) {
-      (window as any).fbq('track', 'AddToCart', {
-        content_ids: [cartProduct.id],
-        content_name: cartProduct.name,
-        content_type: 'product',
-        value: finalPrice,
-        currency: 'INR'
-      });
-    }
+      // Track AddToCart Event
+      if (typeof window !== 'undefined' && (window as any).fbq) {
+        (window as any).fbq('track', 'AddToCart', {
+          content_ids: [cartProduct.id],
+          content_name: cartProduct.name,
+          content_type: 'product',
+          value: finalPrice,
+          currency: currency
+        });
+      }
 
     setTimeout(() => setIsAdding(false), 800);
   };
@@ -62,10 +65,10 @@ export default function AddToCartButton({ product }: { product: Product }) {
             <span className="text-[10px] font-mono font-black text-white/40 uppercase tracking-[0.3em]">Standard_Protocol</span>
             <BadgeCheck className={`w-6 h-6 ${!isWhitelabel ? "text-primary flex shadow-[0_0_15px_rgba(255,107,53,0.3)]" : "text-white/10"}`} />
           </div>
-          <div className="flex flex-col mb-4">
-             <span className="text-sm font-mono text-white/20 uppercase tracking-widest mb-1">Valuation</span>
-             <span className="text-3xl font-outfit font-black italic tracking-tighter text-white">₹{product.price.toLocaleString("en-IN")}</span>
-          </div>
+            <div className="flex flex-col mb-4">
+               <span className="text-sm font-mono text-white/20 uppercase tracking-widest mb-1">Valuation</span>
+               <span className="text-3xl font-outfit font-black italic tracking-tighter text-white">{formatCurrency(product.price, currency)}</span>
+            </div>
           <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest leading-relaxed">
             Deployment: Single Instance<br/>
             Redistribution: Prohibited
@@ -89,10 +92,10 @@ export default function AddToCartButton({ product }: { product: Product }) {
             <span className="text-[10px] font-mono font-black text-white/40 uppercase tracking-[0.3em]">Agency_Bypass</span>
             <Building2 className={`w-6 h-6 ${isWhitelabel ? "text-accent flex shadow-[0_0_15px_rgba(168,85,247,0.3)]" : "text-white/10"}`} />
           </div>
-          <div className="flex flex-col mb-4">
-             <span className="text-sm font-mono text-white/20 uppercase tracking-widest mb-1">Valuation</span>
-             <span className="text-3xl font-outfit font-black italic tracking-tighter text-white">₹{(product.price * 5).toLocaleString("en-IN")}</span>
-          </div>
+            <div className="flex flex-col mb-4">
+               <span className="text-sm font-mono text-white/20 uppercase tracking-widest mb-1">Valuation</span>
+               <span className="text-3xl font-outfit font-black italic tracking-tighter text-white">{formatCurrency(product.price * 5, currency)}</span>
+            </div>
           <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest leading-relaxed">
             Deployment: Unlimited Swarms<br/>
             Rights: Full Whitelabel Bypass
