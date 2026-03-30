@@ -51,6 +51,13 @@ export async function GET(
   const { id } = params;
 
   try {
+    if (!supabase) {
+      console.warn('[products/[id]] Database service unavailable, falling back to static registry.');
+      const staticProduct = fallbackData.find((p) => p.id === id);
+      if (staticProduct) return NextResponse.json(staticProduct);
+      return NextResponse.json({ error: 'Database service unavailable and product not found' }, { status: 500 });
+    }
+
     const isUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
 
     // ── 1. UUID lookup in Supabase ────────────────────────────────────────
