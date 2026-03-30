@@ -6,10 +6,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Lock, Truck, ShieldCheck, CreditCard, ChevronRight, ArrowLeft, Terminal, Activity } from "lucide-react";
 import Image from "next/image";
 import { ForgeButton } from "@/components/ui/ForgeButton";
-import Link from "next/link";
+import { useToastStore } from "@/components/ui/ForgeToast";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const { items, getCartTotal } = useCartStore();
+  const addToast = useToastStore((s) => s.addToast);
+  const router = useRouter();
   const [isClient, setIsClient] = useState(false);
   const [step, setStep] = useState(1);
   const [isProcessing, setIsProcessing] = useState(false);
@@ -30,6 +33,11 @@ export default function CheckoutPage() {
   useEffect(() => {
     setIsClient(true);
     
+    if (isClient && items.length === 0) {
+      addToast("WARNING", "MANIFEST_EMPTY", "No assets detected in current buffer. Returning to Registry.");
+      router.push("/products");
+    }
+    
     // Load Cashfree SDK
     const script = document.createElement("script");
     script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
@@ -39,7 +47,7 @@ export default function CheckoutPage() {
     return () => {
       document.body.removeChild(script);
     };
-  }, []);
+  }, [isClient, items.length, addToast, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -50,17 +58,22 @@ export default function CheckoutPage() {
   const validateStep = (currentStep: number) => {
     const newErrors: Record<string, string> = {};
     if (currentStep === 1) {
-      if (!formData.firstName.trim()) newErrors.firstName = "ERR_REQUIRED";
-      if (!formData.lastName.trim()) newErrors.lastName = "ERR_REQUIRED";
-      if (!formData.email.trim()) newErrors.email = "ERR_REQUIRED";
-      else if (!/\S+@\S+\.\S+/.test(formData.email)) newErrors.email = "ERR_INVALID_STR";
-      if (!formData.phone.trim()) newErrors.phone = "ERR_REQUIRED";
+      if (!formData.firstName.trim()) newErrors.firstName = "ID_REQUIRED";
+      if (!formData.lastName.trim()) newErrors.lastName = "ID_REQUIRED";
+      if (!formData.email.trim()) newErrors.email = "SYNC_REQ";
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) newErrors.email = "SYNC_INVALID";
+      if (!formData.phone.trim()) newErrors.phone = "COMMS_REQ";
+      else if (!/^\+?[\d\s-]{10,15}$/.test(formData.phone)) newErrors.phone = "COMMS_FAULT";
     } else if (currentStep === 2) {
-      if (!formData.address.trim()) newErrors.address = "ERR_REQUIRED";
-      if (!formData.city.trim()) newErrors.city = "ERR_REQUIRED";
-      if (!formData.zip.trim()) newErrors.zip = "ERR_REQUIRED";
+      if (!formData.address.trim()) newErrors.address = "ZONE_STATED";
+      if (!formData.city.trim()) newErrors.city = "T_REF_REQUIRED";
+      if (!formData.zip.trim()) newErrors.zip = "S_ZIP_REQUIRED";
+      else if (!/^\d{5,6}$/.test(formData.zip)) newErrors.zip = "S_ZIP_FAULT";
     }
     setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) {
+      addToast("ERROR", "VALIDATION_FAULT", "Protocol requirements not satisfied.");
+    }
     return Object.keys(newErrors).length === 0;
   };
 
@@ -88,6 +101,8 @@ export default function CheckoutPage() {
         mode: data.cfMode || "sandbox",
       });
 
+      addToast("INFO", "GATEWAY_LINK", "Initialising encrypted payment terminal.");
+
       await cashfree.checkout({
         paymentSessionId: data.paymentSessionId,
         redirectTarget: "_self" 
@@ -95,7 +110,7 @@ export default function CheckoutPage() {
 
     } catch (err: unknown) {
       const message = err instanceof Error ? err.message : "SYSTEM_EXCEPTION: Unhandled transport fault.";
-      alert(message);
+      addToast("ERROR", "UPLINK_CRITICAL", message);
     } finally {
       setIsProcessing(false);
     }

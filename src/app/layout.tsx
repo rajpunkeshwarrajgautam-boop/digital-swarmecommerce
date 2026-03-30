@@ -5,6 +5,8 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ClientProviders } from "@/components/providers/ClientProviders";
 import { VisualQuality } from "@/components/layout/VisualQuality";
+import { ForgeToast } from "@/components/ui/ForgeToast";
+import { AIConcierge } from "@/components/forge/AIConcierge";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
@@ -13,30 +15,30 @@ const jetbrains = JetBrains_Mono({ subsets: ["latin"], variable: "--font-jetbrai
 export const metadata: Metadata = {
   metadataBase: new URL("https://digitalswarm.in"),
   title: {
-    default: "GRAVITY | The Digital Forge for Elite Developers",
-    template: "%s | GRAVITY"
+    default: "DIGITAL SWARM | The Elite Digital Forge",
+    template: "%s | DIGITAL SWARM"
   },
-  description: "Accelerate your development with production-ready architectural stacks, AI-native boilerplates, and high-performance code protocols. Materialize your vision.",
+  description: "Accelerate your development with production-ready architectural stacks, AI-native boilerplates, and high-performance protocols. Materialize your vision in the Swarm.",
   keywords: ["SaaS Starter Kit", "AI Agent Boilerplate", "Next.js Template", "React UI Kit", "Digital Swarm", "Code Marketplace", "Premium Assets"],
-  authors: [{ name: "GRAVITY Team" }],
-  creator: "GRAVITY",
-  publisher: "GRAVITY",
+  authors: [{ name: "Swarm Architects" }],
+  creator: "DIGITAL SWARM",
+  publisher: "DIGITAL SWARM",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "GRAVITY | High-Performance Code Protocols",
+    title: "DIGITAL SWARM | High-Performance Code Protocols",
     description: "Stop rebuilding. Start shipping with the swarm. Premium architectural patterns for modern software.",
     url: "https://digitalswarm.in",
-    siteName: "GRAVITY",
+    siteName: "DIGITAL SWARM",
     images: [
       {
         url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "GRAVITY Forge Marketplace",
+        alt: "Digital Swarm Forge Marketplace",
       },
     ],
     locale: "en_IN",
@@ -44,10 +46,11 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "GRAVITY | The Digital Forge",
+    title: "DIGITAL SWARM | The Elite Forge",
     description: "Premium Next.js & AI templates for elite engineers.",
     images: ["/og-image.png"],
   },
+// ... (omitting robots/icons for brevity in chunk but will keep in actual file)
   robots: {
     index: true,
     follow: true,
@@ -67,8 +70,6 @@ export const metadata: Metadata = {
   manifest: "/site.webmanifest",
 };
 
-import { AIConcierge } from "@/components/forge/AIConcierge";
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -79,6 +80,7 @@ export default function RootLayout({
       <body className="font-sans antialiased text-white selection:bg-primary selection:text-black">
         <ClientProviders>
           <VisualQuality />
+          <ForgeToast />
           <AIConcierge />
           <Header />
           <main className="min-h-screen">

@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles, Terminal, Cpu, Zap, Command, Activity } from "lucide-react";
+import { X, Sparkles, Terminal, Cpu, Zap, Command } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForgeStore } from "@/lib/forge-store";
+import { useToastStore } from "@/components/ui/ForgeToast";
 
 export const AIConcierge = () => {
   const { isConciergeOpen, toggleConcierge, setSystemStatus } = useForgeStore();
+  const addToast = useToastStore((s) => s.addToast);
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
@@ -43,7 +45,7 @@ export const AIConcierge = () => {
       } else if (cmd.includes("home") || cmd.includes("exit")) {
         router.push("/");
       } else if (cmd.includes("status")) {
-        alert("SYSTEM_SAFE // ALL_PROTOCOL_OPERATIONAL // v2.04_FORGE");
+        addToast("SUCCESS", "SYSTEM_SAFE", "ALL_PROTOCOL_OPERATIONAL // v2.04_FORGE");
       } else {
         router.push(`/products?search=${encodeURIComponent(cmd)}`);
       }

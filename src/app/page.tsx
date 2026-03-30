@@ -89,7 +89,7 @@ export default function Home() {
                 Protocol.
               </h2>
               <p className="text-white/40 text-xl font-inter leading-relaxed max-w-xl">
-                 GRAVITY was engineered to solve the complexity crisis in modern web development. We provide the &quot;Industrial Base&quot; for your digital empire.
+                 DIGITAL SWARM was engineered to solve the complexity crisis in modern web development. We provide the &quot;Industrial Base&quot; for your digital empire.
               </p>
               
               <div className="flex gap-8 border-l border-white/10 pl-8">

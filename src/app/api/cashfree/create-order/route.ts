@@ -98,7 +98,7 @@ export async function POST(request: Request) {
         order_id: orderId,
         commission_amount: commission,
         status: 'pending'
-      }).then(({ error }) => {
+      }).then(({ error }: { error: { message: string } | null }) => {
         if (error) console.error('[Affiliate Logging Error]', error);
       });
     }
