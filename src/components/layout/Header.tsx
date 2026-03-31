@@ -58,8 +58,8 @@ export function Header() {
           {/* 1. LEFT: Logo & System Status */}
           <div className="flex items-center gap-6 shrink-0">
             <Link href="/" className="group">
-              <Logo className="text-2xl tracking-tighter transition-all group-hover:glow-text">
-                GRAVITY
+              <Logo className="text-2xl tracking-tighter transition-all group-hover:glow-text uppercase">
+                DIGITAL SWARM
               </Logo>
             </Link>
             
@@ -135,7 +135,7 @@ export function Header() {
                 <SignedOut>
                   <SignInButton mode="modal">
                     <button className="text-[11px] font-outfit font-black uppercase italic tracking-widest text-white/60 hover:text-primary transition-all">
-                      Access Forge
+                      Enter the Forge
                     </button>
                   </SignInButton>
                 </SignedOut>
@@ -191,7 +191,7 @@ export function Header() {
               
               <div className="flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">
                 <span>Status: Optimal</span>
-                <span>© GRAVITY 2026</span>
+                <span>© DIGITAL SWARM 2026</span>
               </div>
             </div>
           </motion.div>

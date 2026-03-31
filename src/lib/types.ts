@@ -12,10 +12,12 @@ export interface Product {
   specs?: Record<string, string>;
   demoUrl?: string;
   installGuide?: string;
-  downloadUrl?: string; // Link to the asset
+  downloadUrl?: string; 
   scarcityStock?: number;
   isFeatured?: boolean;
   sales?: number;
+  merchantId?: string;
+  isVerified?: boolean;
 }
 
 export interface CartItem {
@@ -26,4 +28,42 @@ export interface CartItem {
   quantity: number;
   image: string;
   category?: string;
+}
+
+export interface AdminProduct {
+  id: string;
+  name: string;
+  description: string;
+  price: number;
+  category: string;
+  image: string;
+  in_stock: boolean;
+  is_visible: boolean;
+  is_verified: boolean;
+  merchant_id: string;
+  rating: number;
+  version?: string;
+}
+
+export interface AdminOrder {
+  id: string;
+  created_at: string;
+  customer_name: string | null;
+  customer_email: string;
+  total: number;
+  status: string;
+  cashfree_order_id?: string;
+  order_items: AdminOrderItem[];
+}
+
+export interface AdminOrderItem {
+  id: string;
+  productId: string;
+  name: string;
+  price: number;
+  quantity: number;
+  merchantId: string;
+  products?: {
+    name: string;
+  };
 }

@@ -10,7 +10,9 @@ export interface UserPreferences {
   aiLevel: 'passive' | 'balanced' | 'aggressive';
   autoSync: boolean;
   currency?: string;
-  [key: string]: string | number | boolean | undefined;
+  market?: string;
+  viewedCategories: string[];
+  [key: string]: string | number | boolean | string[] | undefined;
 }
 
 export interface MemoryLog {
@@ -32,6 +34,7 @@ interface MemoryState {
   updatePreference: <K extends keyof UserPreferences>(key: K, value: UserPreferences[K]) => void;
   clearMemory: () => void;
   setSyncing: (status: boolean) => void;
+  addInterest: (categoryId: string) => void;
 }
 
 export const useMemoryStore = create<MemoryState>()(
@@ -41,7 +44,8 @@ export const useMemoryStore = create<MemoryState>()(
       userPreferences: {
         theme: 'planet-ono-brutalist',
         aiLevel: 'aggressive',
-        autoSync: true
+        autoSync: true,
+        viewedCategories: []
       },
       lastSession: new Date().toISOString(),
       isSyncing: false,
@@ -74,10 +78,23 @@ export const useMemoryStore = create<MemoryState>()(
         userPreferences: {
           theme: 'planet-ono-brutalist',
           aiLevel: 'aggressive',
-          autoSync: true
+          autoSync: true,
+          viewedCategories: []
         } 
       }),
-      setSyncing: (status) => set({ isSyncing: status })
+      setSyncing: (status) => set({ isSyncing: status }),
+      addInterest: (categoryId) => {
+        const { viewedCategories } = get().userPreferences;
+        if (!viewedCategories.includes(categoryId)) {
+          const updated = [categoryId, ...viewedCategories].slice(0, 5); // Keep top 5 interests
+          set((state) => ({
+            userPreferences: {
+              ...state.userPreferences,
+              viewedCategories: updated
+            }
+          }));
+        }
+      }
     }),
     {
       name: 'digitalswarm-synaptic-memory',

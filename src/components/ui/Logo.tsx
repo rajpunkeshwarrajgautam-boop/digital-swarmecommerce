@@ -24,7 +24,7 @@ export function Logo({
   
   return (
     <div className={cn("flex items-center gap-3 select-none group h-[40px] w-auto", className)}>
-      <span className="sr-only">GRAVITY - Code Templates & UI Kits</span>
+      <span className="sr-only">DIGITAL SWARM - Automation & Elite Digital Solutions</span>
       {/* Symbol Container: Replaced with Lottie Animation */}
       <div className="relative w-10 h-10 flex items-center justify-center shrink-0">
         {mounted && (
@@ -45,7 +45,7 @@ export function Logo({
         <span className="text-xl font-black italic tracking-tighter leading-none text-secondary transition-all duration-300 uppercase flex items-center gap-1.5">
             {children || (
               <>
-                GRAVITY
+                DIGITAL SWARM
               </>
             )}
         </span>

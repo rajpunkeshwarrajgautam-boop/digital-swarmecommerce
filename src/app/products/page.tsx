@@ -1,34 +1,21 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Product } from "@/lib/types";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { FilterSidebar } from "@/components/products/FilterSidebar";
 import { Terminal, Activity, Zap, Shield } from "lucide-react";
 import { motion } from "framer-motion";
 
+import { useSwarmSWR } from "@/hooks/useSwarmSWR";
+
 export default function ProductsPage() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { data: productsData, isLoading } = useSwarmSWR<Product[]>('/api/products');
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch('/api/products');
-        if (!res.ok) throw new Error('Failed to fetch');
-        const data = await res.json();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error loading products:", error);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProducts();
-  }, []);
+  const products = productsData || [];
 
   const categories = ["All", ...Array.from(new Set(products.map(p => p.category)))];
 
@@ -98,7 +85,7 @@ export default function ProductsPage() {
 
           {/* Main Product Area */}
           <main className="flex-1 min-w-0">
-            {loading ? (
+            {isLoading && !products.length ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="aspect-square bg-white/2 border border-white/5 animate-pulse" />

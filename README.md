@@ -53,7 +53,7 @@ All products, user licenses, and affiliate records are managed in real-time via 
 
     ```bash
     git clone [repository-url]
-    cd antigravity-ecommerce
+    cd digital-swarm-ecommerce
     ```
 
 2. **Install Dependencies**:

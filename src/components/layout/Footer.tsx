@@ -91,7 +91,7 @@ export function Footer() {
         <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="flex flex-col gap-2">
             <p className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-white/10 italic">
-              © {currentYear} THE_FORGE_PROTOCOL // SWARM_INFRASTRUCTURE
+              © {currentYear} DIGITAL_SWARM_PROTOCOL // SWARM_INFRASTRUCTURE
             </p>
             <p className="text-[8px] font-mono text-white/5 uppercase tracking-[0.5em]">
               STATUS_HEALTHY // NODES_ACTIVE: 12,042 // LATENCY: 24ms

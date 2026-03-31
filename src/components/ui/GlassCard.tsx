@@ -1,21 +1,22 @@
 "use client";
 
 import React from "react";
-import { motion } from "framer-motion";
+import { motion, HTMLMotionProps } from "framer-motion";
 
-interface GlassCardProps {
+interface GlassCardProps extends HTMLMotionProps<"div"> {
   children: React.ReactNode;
-  className?: string;
   delay?: number;
 }
 
 export const GlassCard: React.FC<GlassCardProps> = ({ 
   children, 
   className = "",
-  delay = 0 
+  delay = 0,
+  ...props
 }) => {
   return (
     <motion.div
+      {...props}
       initial={{ opacity: 0, y: 20 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}

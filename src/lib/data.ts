@@ -14,7 +14,9 @@ export const products: Product[] = [
     features: ['1-Click Duplicate', 'Automated Invoicing', 'Client Client Portals', 'Task Prioritization Matrix', 'Zero Coding Required'],
     specs: { Platform: 'Notion', Level: 'Beginner', Setup: '2 Mins', License: 'Personal', Support: 'Discord' },
     downloadUrl: "/downloads/notion-crm-protocol.html",
-    installGuide: "### Deployment\n1. Download the protocol.\n2. Click the secure link inside to open Notion.\n3. Click 'Duplicate' in the top right to install."
+    installGuide: "### Deployment\n1. Download the protocol.\n2. Click the secure link inside to open Notion.\n3. Click 'Duplicate' in the top right to install.",
+    merchantId: "SYSTEM",
+    isVerified: true
   },
   {
     id: "ai-social-automation",
@@ -29,7 +31,9 @@ export const products: Product[] = [
     features: ['Make.com Blueprint (.json)', 'OpenAI Integration', 'Auto-posts to X & LinkedIn', 'RSS Feed Watcher', 'Zero Coding Required'],
     specs: { Platform: 'Make.com', API: 'OpenAI', Output: 'Social Media', License: 'Business', Support: 'Documentation' },
     downloadUrl: "/downloads/ai-social-protocol.html",
-    installGuide: "### Automation Config\n1. Import the .json blueprint into Make.com.\n2. Connect your Twitter and OpenAI accounts.\n3. Turn the scenario ON."
+    installGuide: "### Automation Config\n1. Import the .json blueprint into Make.com.\n2. Connect your Twitter and OpenAI accounts.\n3. Turn the scenario ON.",
+    merchantId: "SYSTEM",
+    isVerified: true
   },
   {
     id: "cyberpunk-ui-kit",
@@ -44,7 +48,9 @@ export const products: Product[] = [
     features: ['100+ Figma Components', 'Global Color Variables', 'Auto-Layout Ready', 'Cyberpunk Neon Theme', 'Zero Coding Required'],
     specs: { Format: '.fig', Software: 'Figma', Typography: 'Google Fonts', License: 'Commercial', Support: 'Lifetime' },
     downloadUrl: "/downloads/cyberpunk-ui-protocol.html",
-    installGuide: "### Visual Injection\n1. Download the .fig file.\n2. Drag it into your Figma workspace.\n3. Copy components into your project."
+    installGuide: "### Visual Injection\n1. Download the .fig file.\n2. Drag it into your Figma workspace.\n3. Copy components into your project.",
+    merchantId: "SYSTEM",
+    isVerified: true
   },
   {
     id: "ai-executive-playbook",
@@ -59,6 +65,8 @@ export const products: Product[] = [
     features: ['50-Page PDF Manifesto', '150+ Copy-Paste Prompts', 'Outreach Frameworks', 'Case Studies Included', 'Zero Coding Required'],
     specs: { Format: 'PDF', Length: '50 Pages', Tools: 'ChatGPT/Claude', License: 'Personal', Support: 'Community' },
     downloadUrl: "/downloads/ai-executive-playbook.html",
-    installGuide: "### Tactical Download\n1. Download the PDF to your desktop.\n2. Bookmark the Prompt Database link on Page 12.\n3. Execute Chapter 3 immediately."
+    installGuide: "### Tactical Download\n1. Download the PDF to your desktop.\n2. Bookmark the Prompt Database link on Page 12.\n3. Execute Chapter 3 immediately.",
+    merchantId: "SYSTEM",
+    isVerified: true
   }
 ];

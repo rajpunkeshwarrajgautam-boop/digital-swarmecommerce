@@ -55,12 +55,16 @@ function TechBadges({ category }: { category: string }) {
   );
 }
 
+import { useSwarmPrefetch } from "@/hooks/useSwarmPrefetch";
+
 export function ProductCard({ product }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isWishlisted } = useWishlistStore();
   const { currency } = useCurrency();
+  const { prefetch } = useSwarmPrefetch();
 
   const [added, setAdded] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
   const wishlisted = isWishlisted(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -87,8 +91,33 @@ export function ProductCard({ product }: ProductCardProps) {
     }
   };
 
+  const handleMouseEnter = () => {
+    setIsHovered(true);
+    // Predictive Data Retrieval
+    prefetch(`/api/products/${product.id}`);
+  };
+
   return (
-    <GlassCard className="p-0 overflow-hidden h-full group flex flex-col ono-reveal">
+    <GlassCard 
+      className="p-0 overflow-hidden h-full group flex flex-col ono-reveal relative"
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Neural Link Intensity Indicator */}
+      <AnimatePresence>
+        {isHovered && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0 }}
+            className="absolute top-2 left-2 z-30 flex items-center gap-1.5 px-2 py-0.5 bg-accent/20 backdrop-blur-md border border-accent/30 rounded-full"
+          >
+            <div className="w-1 h-1 rounded-full bg-accent animate-pulse" />
+            <span className="text-[7px] font-mono uppercase tracking-[0.2em] text-accent">Neural_Link_Ready</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <Link href={`/product/${product.id}`} className="block relative aspect-square overflow-hidden bg-white/5 silk-reveal-mask">
         <div className="ono-reveal h-full w-full">
           <Image

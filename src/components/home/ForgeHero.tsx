@@ -1,14 +1,39 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Cpu, Zap, Shield, Sparkles, Terminal } from "lucide-react";
+import { Cpu, Zap, Shield, Sparkles } from "lucide-react";
 import { useForgeStore } from "@/lib/forge-store";
+import { useMemoryStore } from "@/lib/memory/MemoryStore";
 
 export const ForgeHero = () => {
   const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
+  const addInterest = useMemoryStore((state) => state.addInterest);
+  
+  const [personalization] = useState<{ market?: string; intent?: string }>(() => {
+    if (typeof window === 'undefined') return {};
+    
+    const cookies = document.cookie.split('; ').reduce((acc: Record<string, string>, curr) => {
+      const [key, value] = curr.split('=');
+      acc[key] = value;
+      return acc;
+    }, {});
+
+    return {
+      market: cookies.market_hint,
+      intent: cookies.intent_ref
+    };
+  });
+
+  useEffect(() => {
+    // Trace Entry Intent
+    addInterest('HOME_PROTOCOL');
+  }, [addInterest]);
+
+  const isLocalMarket = personalization.market === 'IN';
+  const hasIntent = !!personalization.intent;
 
   return (
     <section className="relative min-h-svh w-full flex items-center justify-center overflow-hidden bg-[#0a0a0f] py-40">
@@ -21,7 +46,7 @@ export const ForgeHero = () => {
         <div 
           className="absolute inset-0 opacity-[0.03]" 
           style={{ 
-            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90 text, #fff 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
             backgroundSize: '40px 40px'
           }} 
         />
@@ -39,7 +64,7 @@ export const ForgeHero = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
           </span>
           <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/50">
-            System Protocol 2.0 Active
+            {hasIntent ? `Welcome to the Swarm, node_${personalization.intent}` : "System Protocol 2.0 Active"}
           </span>
         </motion.div>
 
@@ -50,8 +75,8 @@ export const ForgeHero = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-6xl md:text-8xl lg:text-[10rem] font-outfit font-black italic tracking-tighter leading-[0.8] uppercase mb-8"
         >
-          Materialize <br />
-          <span className="text-white/20">Architectural</span> <br />
+          {isLocalMarket ? "Materialize" : "Architect"} <br />
+          <span className="text-white/20">Elite Digital</span> <br />
           <span className="text-primary glow-text">Protocols</span>
         </motion.h1>
 
@@ -62,7 +87,10 @@ export const ForgeHero = () => {
           transition={{ delay: 0.4 }}
           className="max-w-2xl text-lg md:text-xl text-white/40 font-inter mb-12"
         >
-          Zero-friction deployment for high-performance developer stacks. Hardened, modular, and AI-native architecture for the next era of software.
+          {isLocalMarket 
+            ? "Zero-friction deployment for India's high-performance developer stacks. Hardened, modular, and AI-native architecture."
+            : "Global architectural patterns for the next era of software. modular, and AI-native stacks for elite engineers."
+          }
         </motion.p>
 
         {/* CTAs */}
@@ -85,20 +113,20 @@ export const ForgeHero = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
           <InsightCard 
             icon={<Cpu className="w-5 h-5 text-accent" />}
-            label="Forge Stability"
+            label="Swarm Stability"
             value="99.98%"
             delay={0.8}
           />
            <InsightCard 
             icon={<Zap className="w-5 h-5 text-primary" />}
-            label="Deployment Velocity"
+            label="Neural Velocity"
             value="< 480ms"
             delay={0.9}
           />
            <InsightCard 
             icon={<Shield className="w-5 h-5 text-green-400" />}
-            label="Verified Security"
-            value="SOC2 Tier 1"
+            label="Encrypted Shield"
+            value="L4 Active"
             delay={1.0}
           />
         </div>

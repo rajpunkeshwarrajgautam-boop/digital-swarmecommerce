@@ -42,6 +42,8 @@ export interface ProductInput {
   category?: string;
   stock?: number;
   is_visible?: boolean;
+  is_verified?: boolean;
+  merchant_id?: string;
 }
 
 export async function createAdminProduct(data: ProductInput) {
@@ -103,10 +105,37 @@ export async function getAdminOrders() {
   return data;
 }
 
-/**
- * TELEMETRY AGGREGATION
- */
-export async function getAdminStats() {
+export interface RecentCart {
+  email: string | null;
+  created_at: string;
+  recovered: boolean;
+}
+
+export interface RecentAffiliate {
+  id: string;
+  user_id: string;
+  total_earnings: number;
+}
+
+export interface RecentPending {
+  id: string;
+  name: string;
+  merchant_id: string;
+  created_at: string;
+}
+
+export interface AdminStats {
+  grossVolume: number;
+  mrr: number;
+  leadsCount: number;
+  affiliatesCount: number;
+  recentCarts: RecentCart[];
+  recentAffiliates: RecentAffiliate[];
+  pendingSyncCount: number;
+  recentPending: RecentPending[];
+}
+
+export async function getAdminStats(): Promise<AdminStats> {
   await verifyAdmin();
   
   const [
@@ -114,16 +143,20 @@ export async function getAdminStats() {
     { count: leads },
     { count: affiliates },
     { data: recentCarts },
-    { data: recentAffiliates }
+    { data: recentAffiliates },
+    { data: recentPending }
   ] = await Promise.all([
     supabaseAdmin!.from("orders").select("total, status").eq("status", "paid"),
     supabaseAdmin!.from("leads").select("*", { count: "exact", head: true }),
     supabaseAdmin!.from("affiliates").select("*", { count: "exact", head: true }),
     supabaseAdmin!.from("abandoned_carts").select("email, created_at, recovered").order("created_at", { ascending: false }).limit(5),
-    supabaseAdmin!.from("affiliates").select("id, user_id, total_earnings").order("created_at", { ascending: false }).limit(5)
+    supabaseAdmin!.from("affiliates").select("id, user_id, total_earnings").order("created_at", { ascending: false }).limit(5),
+    supabaseAdmin!.from("products").select("id, name, merchant_id, created_at").eq("is_verified", false).order("created_at", { ascending: false }).limit(5)
   ]);
+  
+  const pendingSyncCount = (await supabaseAdmin!.from("products").select("*", { count: "exact", head: true }).eq("is_verified", false)).count || 0;
 
-  const grossVolume = orders?.reduce((acc, curr) => acc + (curr.total || 0), 0) || 0;
+  const grossVolume = orders?.reduce((acc: number, curr: { total: number }) => acc + (curr.total || 0), 0) || 0;
   const mrr = grossVolume * 0.15; 
 
   return {
@@ -131,7 +164,9 @@ export async function getAdminStats() {
     mrr,
     leadsCount: leads || 0,
     affiliatesCount: affiliates || 0,
-    recentCarts: recentCarts || [],
-    recentAffiliates: recentAffiliates || []
+    recentCarts: (recentCarts as unknown as RecentCart[]) || [],
+    recentAffiliates: (recentAffiliates as unknown as RecentAffiliate[]) || [],
+    pendingSyncCount,
+    recentPending: (recentPending as unknown as RecentPending[]) || []
   };
 }

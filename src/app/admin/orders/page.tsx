@@ -6,8 +6,10 @@ import { useEffect, useState } from "react";
 import { getAdminOrders } from "@/app/actions/admin";
 import { useToastStore } from "@/components/ui/ForgeToast";
 
+import { AdminOrder } from "@/lib/types";
+
 export default function AdminOrdersPage() {
-  const [orders, setOrders] = useState<any[]>([]);
+  const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addToast } = useToastStore();
 
@@ -114,9 +116,9 @@ export default function AdminOrdersPage() {
                     </td>
                     <td className="py-6 pr-6">
                        <div className="flex flex-col gap-0.5 max-w-[250px]">
-                          {order.order_items?.map((item: any, idx: number) => (
+                          {order.order_items?.map((item, idx) => (
                             <span key={idx} className="text-[9px] font-black uppercase tracking-widest text-[#CCFF00] truncate">
-                               // {item.products?.name}
+                               {item.products?.name || "Unknown_Protocol"} x{item.quantity}
                             </span>
                           )) || <span className="text-[9px] italic text-white/20">Direct_Inject</span>}
                        </div>

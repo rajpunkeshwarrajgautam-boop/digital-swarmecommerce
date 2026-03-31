@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { supabase, supabaseAdmin } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase';
 import { products as staticProducts } from '@/lib/data';
 
 export const dynamic = 'force-dynamic';
@@ -20,6 +20,8 @@ interface DBProduct {
   specs: Record<string, string> | null;
   install_guide: string | null;
   download_url: string | null;
+  merchant_id: string;
+  is_verified: boolean;
 }
 
 function normalizeProduct(p: DBProduct): Product {
@@ -41,6 +43,8 @@ function normalizeProduct(p: DBProduct): Product {
     specs: p.specs ?? staticMatch?.specs ?? {},
     installGuide: p.install_guide ?? staticMatch?.installGuide ?? undefined,
     downloadUrl: p.download_url ?? staticMatch?.downloadUrl ?? undefined,
+    merchantId: p.merchant_id || "SYSTEM",
+    isVerified: p.is_verified ?? true,
   };
 }
 
@@ -61,7 +65,8 @@ export async function GET(request: Request) {
 
     let query = supabase
       .from('products')
-      .select('id, name, description, price, category, image, in_stock, rating, features, specs, install_guide, download_url')
+      .select('id, name, description, price, category, image, in_stock, rating, features, specs, install_guide, download_url, merchant_id, is_verified')
+      .eq('is_verified', true)
       .order('created_at', { ascending: false });
 
     if (category) {

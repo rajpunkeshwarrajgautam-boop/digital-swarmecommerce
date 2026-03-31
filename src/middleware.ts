@@ -12,13 +12,23 @@ const isProtectedRoute = createRouteMatcher([
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect();
 
+  const response = NextResponse.next();
+  
+  // 1. Edge Geolocation (Market Detection)
+  const country = req.headers.get('x-vercel-ip-country') || 'IN';
+  if (!req.cookies.has('market_hint')) {
+    response.cookies.set('market_hint', country, { path: '/', maxAge: 60 * 60 * 24 * 7 });
+  }
+
+  // 2. Referral & Intent Personalization
   const ref = req.nextUrl.searchParams.get('ref');
   if (ref) {
-    const response = NextResponse.next();
     // 30-day tracking cookie
     response.cookies.set('affiliate_id', ref, { path: '/', maxAge: 60 * 60 * 24 * 30 });
-    return response;
+    response.cookies.set('intent_ref', ref, { path: '/', maxAge: 60 * 60 * 24 * 1 }); // 24h immediate personalized welcome
   }
+
+  return response;
 });
 
 export const config = {

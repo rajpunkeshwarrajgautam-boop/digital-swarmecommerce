@@ -1,41 +1,52 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Package, Plus, Trash2, Eye, EyeOff, Edit3 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { Package, Plus, Trash2, Eye, EyeOff, Edit3, ShieldCheck } from "lucide-react";
+import { useEffect, useState, useCallback } from "react";
 import { getAdminProducts, deleteAdminProduct, updateAdminProduct } from "@/app/actions/admin";
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import Image from "next/image";
 import { useToastStore } from "@/components/ui/ForgeToast";
+import { AdminProduct } from "@/lib/types";
 
 export default function AdminProductsPage() {
-  const [products, setProducts] = useState<any[]>([]);
+  const [products, setProducts] = useState<AdminProduct[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const { addToast } = useToastStore();
 
-  useEffect(() => {
-    fetchData();
-  }, []);
-
-  async function fetchData() {
+  const fetchData = useCallback(async () => {
     try {
       const data = await getAdminProducts();
-      setProducts(data);
+      setProducts(data as AdminProduct[]);
     } catch (e) {
       addToast("ERROR", "UPLINK_CRITICAL_FAULT", "FAILED TO RETRIEVE ASSET LEDGER");
     } finally {
       setIsLoading(false);
     }
-  }
+  }, [addToast]);
 
-  async function toggleVisibility(product: any) {
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  async function toggleVisibility(product: AdminProduct) {
     try {
       await updateAdminProduct(product.id, { is_visible: !product.is_visible });
       addToast("SUCCESS", "PROTOCOL_MODIFIED", "ASSET VISIBILITY UPDATED");
       fetchData();
     } catch (e) {
       addToast("ERROR", "UPLINK_FAILURE", "MANIFEST UPDATE REJECTED");
+    }
+  }
+
+  async function toggleVerification(product: AdminProduct) {
+    try {
+      await updateAdminProduct(product.id, { is_verified: !product.is_verified });
+      addToast("SUCCESS", "TRUST_PROTOCOL_UPDATED", "ASSET VERIFICATION TOGGLED");
+      fetchData();
+    } catch (e) {
+      addToast("ERROR", "UPLINK_FAILURE", "VERIFICATION SYNC ERROR");
     }
   }
 
@@ -101,14 +112,27 @@ export default function AdminProductsPage() {
             </div>
 
             <div className="flex flex-col items-center md:items-end gap-1 px-8 border-x-2 border-white/5 space-y-1">
+               <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Ownership_Node</span>
+               <span className="text-sm font-black italic text-[#CCFF00] font-mono tracking-tighter uppercase">{product.merchant_id || "SYSTEM"}</span>
+            </div>
+
+            <div className="flex flex-col items-center md:items-end gap-1 px-8 border-r-2 border-white/5 space-y-1">
                <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Market_Value</span>
-               <span className="text-2xl font-black italic text-[#CCFF00]">₹{product.price}</span>
+               <span className="text-2xl font-black italic text-white">₹{product.price}</span>
             </div>
 
             <div className="flex items-center gap-3 w-full md:w-auto justify-center">
                <button 
+                 onClick={() => toggleVerification(product)}
+                 title="Toggle Verification"
+                 className={`p-4 border-2 transition-all ${product.is_verified ? "border-[#CCFF00]/20 text-[#CCFF00] hover:bg-[#CCFF00]/10" : "border-yellow-500/40 text-yellow-500 hover:bg-yellow-500/10"}`}
+               >
+                 <ShieldCheck className="w-5 h-5" />
+               </button>
+               <button 
                  onClick={() => toggleVisibility(product)}
-                 className={`p-4 border-2 transition-all ${product.is_visible ? "border-[#CCFF00]/20 text-[#CCFF00] hover:bg-[#CCFF00]/10" : "border-red-500/40 text-red-400 hover:bg-red-500/10"}`}
+                 title="Toggle Visibility"
+                 className={`p-4 border-2 transition-all ${product.is_visible ? "border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/10" : "border-red-500/40 text-red-400 hover:bg-red-500/10"}`}
                >
                  {product.is_visible ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                </button>
