@@ -46,14 +46,26 @@ function validateEnv() {
     }
     
     // On the server, we validate everything
+    // Skip fatal errors during the BUILD PHASE (for static pre-rendering of 404s)
+    const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI === 'true';
+    
+    if (isBuildPhase) {
+      const result = envSchema.partial().safeParse(process.env);
+      if (!result.success) {
+        console.warn('⚠️ [BUILD_WARN] Environment keys missing during build (Safe):', result.error.issues.map(i => i.path.join('.')).join(', '));
+      }
+      return process.env as unknown as z.infer<typeof envSchema>;
+    }
+
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
       const missingKeys = error.issues.map((issue) => issue.path.join('.')).join(', ');
       console.error('❌ [ENV_FAULT] Critical environment variables missing:', missingKeys);
       
-      // In production, we throw to prevent inconsistent states
-      if (process.env.NODE_ENV === 'production') {
+      // In production, we throw to prevent inconsistent states—but NOT during build
+      const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI === 'true';
+      if (process.env.NODE_ENV === 'production' && !isBuildPhase) {
         throw new Error(`CRITICAL_INFRA_FAULT: Missing ${missingKeys}`);
       }
     }
