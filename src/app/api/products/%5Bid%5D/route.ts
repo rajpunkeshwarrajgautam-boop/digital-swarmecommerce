@@ -1,16 +1,12 @@
-import { NextResponse } from "next/server";
-import { products } from "@/lib/data";
+import { NextResponse } from 'next/server';
 
-export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
-) {
-  const { id } = await params;
-  const product = products.find((p) => p.id === id);
-
-  if (!product) {
-    return new NextResponse("Product not found", { status: 404 });
-  }
-
-  return NextResponse.json(product);
+/**
+ * DEPRECATED: This route handler was created with a URL-encoded path.
+ * Next.js 15 and the Digital Swarm architecture now use the standard [id] directory.
+ */
+export async function GET() {
+  return new NextResponse(
+    JSON.stringify({ error: 'Route Deprecated', use: '/api/products/[id]' }),
+    { status: 410, headers: { 'Content-Type': 'application/json' } }
+  );
 }
