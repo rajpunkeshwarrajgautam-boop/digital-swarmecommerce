@@ -22,7 +22,7 @@ export default async function AdminLayout({
   )?.emailAddress;
 
   // 3. Kick out non-admins using verified whitelist
-  const isAdmin = primaryEmail && env.ADMIN_WHITELIST!.includes(primaryEmail.toLowerCase());
+  const isAdmin = primaryEmail && env.ADMIN_WHITELIST?.includes(primaryEmail.toLowerCase()) || false;
 
   if (!isAdmin) {
     redirect("/");

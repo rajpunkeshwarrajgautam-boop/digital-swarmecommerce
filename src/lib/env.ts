@@ -80,4 +80,13 @@ function validateEnv() {
   }
 }
 
-export const env = validateEnv();
+// ── Final Materialization ───────────────────────────────────────────────────
+const validatedEnv = validateEnv();
+
+// 🚨 ULTIMATE SHIELD: Force default values at the object level to prevent 
+// "reading 'includes' of undefined" in client-side hydration.
+export const env = {
+  ...validatedEnv,
+  ADMIN_WHITELIST: validatedEnv.ADMIN_WHITELIST || ['admin@digitalswarm.in'],
+  ADMIN_EMAIL: validatedEnv.ADMIN_EMAIL || 'admin@digitalswarm.in'
+} as typeof validatedEnv;

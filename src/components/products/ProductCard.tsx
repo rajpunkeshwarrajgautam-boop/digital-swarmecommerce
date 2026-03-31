@@ -33,8 +33,8 @@ function StarRating({ rating }: { rating: number }) {
 }
 
 function TechBadges({ category }: { category: string }) {
-  const isAI = category.includes("AI") || category.includes("Agent");
-  const isWeb = category.includes("Web") || category.includes("Software") || category.includes("Boilerplates");
+  const isAI = category?.includes("AI") || category?.includes("Agent");
+  const isWeb = category?.includes("Web") || category?.includes("Software") || category?.includes("Boilerplates");
 
   return (
     <div className="flex flex-wrap items-center gap-2 mt-4">
