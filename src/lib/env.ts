@@ -36,19 +36,18 @@ const isServer = typeof window === 'undefined';
 
 /**
  * Environment Validator
- * Returns the parsed environment or throws a descriptive fault.
+ * Returns the parsed environment or warns about faults.
  */
 function validateEnv() {
+  const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI === 'true';
+
   try {
     // On the client, we can only validate NEXT_PUBLIC_* variables
     if (!isServer) {
       return envSchema.partial().parse(process.env);
     }
     
-    // On the server, we validate everything
-    // Skip fatal errors during the BUILD PHASE (for static pre-rendering of 404s)
-    const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI === 'true';
-    
+    // On the server during the build phase, use partial validation to allow static pre-rendering
     if (isBuildPhase) {
       const result = envSchema.partial().safeParse(process.env);
       if (!result.success) {
@@ -57,19 +56,27 @@ function validateEnv() {
       return process.env as unknown as z.infer<typeof envSchema>;
     }
 
+    // Standard runtime validation
     return envSchema.parse(process.env);
   } catch (error) {
     if (error instanceof z.ZodError) {
       const missingKeys = error.issues.map((issue) => issue.path.join('.')).join(', ');
-      console.error('❌ [ENV_FAULT] Critical environment variables missing:', missingKeys);
+      console.error('❌ [ENV_FAULT] Infrastructure configuration error:', missingKeys);
       
-      // In production, we throw to prevent inconsistent states—but NOT during build
-      const isBuildPhase = process.env.NEXT_PHASE === 'phase-production-build' || process.env.CI === 'true';
-      if (process.env.NODE_ENV === 'production' && !isBuildPhase) {
-        throw new Error(`CRITICAL_INFRA_FAULT: Missing ${missingKeys}`);
-      }
+      // LOG ONLY: We no longer throw at runtime to prevent total site failure.
+      // Instead, we let the features that need those keys fail gracefully.
     }
-    return process.env as unknown as z.infer<typeof envSchema>;
+    
+    // SAFE FALLBACK: Ensure critical array transformations are preserved even on failure
+    const rawEnv = process.env as any;
+    const whitelist = typeof rawEnv.ADMIN_WHITELIST === 'string' 
+      ? rawEnv.ADMIN_WHITELIST.split(',').map((s: string) => s.trim().toLowerCase())
+      : ['admin@digitalswarm.in']; // Absolute fallback
+
+    return {
+      ...process.env,
+      ADMIN_WHITELIST: whitelist,
+    } as unknown as z.infer<typeof envSchema>;
   }
 }
 
