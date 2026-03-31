@@ -9,7 +9,8 @@ import {
   ShieldCheck, 
   Clock,
   Box,
-  Activity
+  Activity,
+  CreditCard
 } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
