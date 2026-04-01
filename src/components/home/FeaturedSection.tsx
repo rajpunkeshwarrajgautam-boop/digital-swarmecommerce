@@ -61,7 +61,7 @@ export function FeaturedSection() {
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8"
         >
           <AnimatePresence mode="popLayout">
-            {products.map((product) => (
+            {products.map((product, index) => (
               <motion.div
                 key={product.id}
                 variants={{
@@ -70,7 +70,7 @@ export function FeaturedSection() {
                 }}
                 transition={{ duration: 0.5, ease: "easeOut" }}
               >
-                <ProductCard product={product} />
+                <ProductCard product={product} priority={index < 3} />
               </motion.div>
             ))}
           </AnimatePresence>
@@ -85,12 +85,12 @@ export function FeaturedSection() {
         >
           <Link href="/products">
             <ForgeButton variant="outline" size="lg">
-              Explore All Protocols
+              Explore Collection
               <ArrowRight className="w-5 h-5 ml-4 group-hover:translate-x-2 transition-transform" />
             </ForgeButton>
           </Link>
           <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] italic">
-            Synchronized with Global Swarm // Registry v2.0
+            Updated Real-Time // v2.0
           </p>
         </motion.div>
       </div>

@@ -13,10 +13,10 @@ export function NavbarMenu({ scrolled = false }: { scrolled?: boolean }) {
       <NavigationMenu.List className="flex items-center gap-2 list-none m-0 p-0">
         
         <NavigationMenu.Item>
-          <Link href="/products" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Products</Link>
+          <Link href="/products" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Shop</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/pricing" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Pricing</Link>
+          <Link href="/pricing" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Plans</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
           <Link href="/about" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>About</Link>
@@ -35,7 +35,7 @@ export function NavbarMenu({ scrolled = false }: { scrolled?: boolean }) {
 
       <div className="perspective-[2000px] absolute top-full left-0 flex w-full justify-center">
         <NavigationMenu.Viewport 
-        className="relative mt-8 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden border-4 border-black bg-white/95 backdrop-blur-3xl shadow-[32px_32px_0_#000] transition-[width,height] duration-500 sm:w-(--radix-navigation-menu-viewport-width)" 
+        className="relative mt-8 h-(--radix-navigation-menu-viewport-height) w-full overflow-hidden glass-panel border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.5)] transition-[width,height] duration-500 sm:w-(--radix-navigation-menu-viewport-width)" 
       />
       </div>
     </NavigationMenu.Root>

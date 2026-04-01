@@ -56,9 +56,9 @@ export function ProductGrid({ products }: ProductGridProps) {
       viewport={{ once: true, margin: "-100px" }}
       className="product-grid"
     >
-      {products.map((product) => (
+      {products.map((product, index) => (
         <motion.div key={product.id} variants={item}>
-          <ProductCard product={product} />
+          <ProductCard product={product} priority={index < 3} />
         </motion.div>
       ))}
     </motion.div>

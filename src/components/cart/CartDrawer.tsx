@@ -65,11 +65,11 @@ export function CartDrawer() {
             <div className="relative z-10 flex items-center justify-between p-8 border-b border-white/5 bg-white/1">
               <div className="flex flex-col">
                 <h2 className="text-2xl font-outfit font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
-                  Swarm <span className="text-primary italic">Container</span>
+                  Your <span className="text-primary italic">Cart</span>
                 </h2>
                 <div className="flex items-center gap-2 mt-1">
                   <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">{items.reduce((a, b) => a + b.quantity, 0)} Assets Secured</span>
+                  <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">{items.reduce((a, b) => a + b.quantity, 0)} Items Selected</span>
                 </div>
               </div>
               <button onClick={toggleCart} className="p-3 border border-white/5 bg-white/5 text-white/40 hover:text-white hover:border-primary/40 transition-all">
@@ -86,11 +86,11 @@ export function CartDrawer() {
                     <div className="absolute inset-0 border border-primary/20 rounded-full animate-ping" />
                   </div>
                   <div className="space-y-2">
-                    <h3 className="text-xl font-outfit font-black text-white/60 uppercase tracking-tight italic">Registry Empty</h3>
-                    <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest max-w-[200px] leading-relaxed">No protocols initialized. Acquire assets to scale production.</p>
+                    <h3 className="text-xl font-outfit font-black text-white/60 uppercase tracking-tight italic">Your Cart is Empty</h3>
+                    <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest max-w-[200px] leading-relaxed">Start adding premium assets to your collection.</p>
                   </div>
                   <ForgeButton onClick={toggleCart} className="w-full max-w-[200px]">
-                     View Arsenal
+                     Shop Now
                   </ForgeButton>
                 </div>
               ) : (
@@ -155,7 +155,7 @@ export function CartDrawer() {
                       <Zap className="w-5 h-5 text-primary" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-[10px] font-mono font-black text-white uppercase tracking-tight leading-none mb-1">Scale Production</h4>
+                      <h4 className="text-[10px] font-mono font-black text-white uppercase tracking-tight leading-none mb-1">Recommended for you</h4>
                       <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest">AI Executive Playbook // Add for {formatCurrency(299, currency)}</p>
                     </div>
                     <button 
@@ -167,7 +167,7 @@ export function CartDrawer() {
                       }}
                       className="text-[10px] font-mono font-black text-primary border-b border-primary/30 hover:border-primary transition-all pb-0.5"
                     >
-                      + INSTALL
+                      + ADD TO CART
                     </button>
                   </div>
                 </GlassCard>
@@ -192,7 +192,7 @@ export function CartDrawer() {
 
                 <Link href="/checkout" onClick={toggleCart} className="w-full block">
                   <ForgeButton className="w-full py-5 text-lg shadow-[0_10px_40px_rgba(255,107,53,0.2)]">
-                    Link Protocols <ArrowRight className="w-5 h-5 ml-4 inline-block"/>
+                    Secure Checkout <ArrowRight className="w-5 h-5 ml-4 inline-block"/>
                   </ForgeButton>
                 </Link>
 

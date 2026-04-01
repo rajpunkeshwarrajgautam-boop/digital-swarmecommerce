@@ -38,8 +38,8 @@ export function RelatedProducts({ category, currentProductId }: { category: stri
     <div className="mt-24 border-t border-border pt-16">
       <h2 className="text-3xl font-bold mb-8">Related Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        {related.map(product => (
-          <ProductCard key={product.id} product={product} />
+        {related.map((product, index) => (
+          <ProductCard key={product.id} product={product} priority={index < 2} />
         ))}
       </div>
     </div>

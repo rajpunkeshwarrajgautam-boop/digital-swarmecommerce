@@ -7,27 +7,14 @@ import { useCartStore } from "@/lib/store";
 import { Button } from "@/components/ui/Button";
 import { Check, Plus, ShoppingBag, Zap } from "lucide-react";
 import Image from "next/image";
+import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 
 export default function BundleBuilderPage() {
-  const [products, setProducts] = useState<Product[]>([]);
+  const { data: productsData, isLoading: loading } = useSwarmSWR<Product[]>("/api/products");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [loading, setLoading] = useState(true);
+  const products = productsData || [];
   const { addBundle } = useCartStore();
 
-  useEffect(() => {
-    async function fetchProducts() {
-      try {
-        const res = await fetch("/api/products");
-        const data = await res.json();
-        setProducts(data);
-      } catch (err) {
-        console.error("Failed to fetch products:", err);
-      } finally {
-        setLoading(false);
-      }
-    }
-    fetchProducts();
-  }, []);
 
   const toggleProduct = (id: string) => {
     if (selectedIds.includes(id)) {

@@ -13,36 +13,13 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { QuantumProductView } from "@/components/products/QuantumProductView";
 import { ScarcityEngine } from "@/components/products/ScarcityEngine";
 import { ReviewSystem } from "@/components/products/ReviewSystem";
+import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 
 export default function ProductPage() {
   const { slug } = useParams();
-  const [product, setProduct] = useState<Product | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState("");
+  const { data: product, isLoading: loading, error: swrError } = useSwarmSWR<Product>(slug ? `/api/products/${slug}` : null);
+  const error = swrError?.message || "";
 
-  useEffect(() => {
-    async function fetchProduct() {
-      if (!slug) return;
-      
-      try {
-        setLoading(true);
-        const res = await fetch(`/api/products/${slug}`);
-        if (!res.ok) {
-            if (res.status === 404) throw new Error("Product not found");
-            throw new Error("Failed to fetch product");
-        }
-        const data = await res.json();
-        setProduct(data);
-      } catch (err: unknown) {
-        const error = err as Error;
-        setError(error.message);
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchProduct();
-  }, [slug]);
 
   if (loading) {
     return (
@@ -75,10 +52,10 @@ export default function ProductPage() {
         <div className="w-20 h-20 rounded-full border border-white/5 flex items-center justify-center mb-8">
            <AlertCircle className="w-10 h-10 text-white/10" />
         </div>
-        <h1 className="text-4xl font-outfit font-black text-white uppercase italic tracking-tighter mb-4">Registry Fault</h1>
-        <p className="text-xs font-mono text-white/20 uppercase tracking-[0.4em] mb-12">{error || "Product identity not found in database"}</p>
+        <h1 className="text-4xl font-outfit font-black text-white uppercase italic tracking-tighter mb-4">Product Not Found</h1>
+        <p className="text-xs font-mono text-white/20 uppercase tracking-[0.4em] mb-12">{error || "The requested item is currently unavailable."}</p>
         <Link href="/products">
-            <ForgeButton>Re-link Catalog</ForgeButton>
+            <ForgeButton>Browse All Products</ForgeButton>
         </Link>
       </div>
     );
@@ -97,7 +74,7 @@ export default function ProductPage() {
       {/* Breadcrumbs / Back */}
       <div className="container mx-auto px-6 mb-12 relative z-10">
         <Link href="/products" className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-white/20 hover:text-primary transition-all flex items-center gap-4 group">
-          <span className="group-hover:-translate-x-2 transition-transform duration-300">[[ --- BACK</span> TO REGISTRY
+          <span className="group-hover:-translate-x-2 transition-transform duration-300">BACK</span> TO SHOP
         </Link>
       </div>
 
@@ -116,7 +93,7 @@ export default function ProductPage() {
                <div className="absolute top-0 right-0 p-3 opacity-10">
                   <Terminal className="w-12 h-12 text-white" />
                </div>
-               <h4 className="text-[10px] font-mono font-black uppercase text-white/20 tracking-[0.3em] mb-4">Metadata Analysis</h4>
+               <h4 className="text-[10px] font-mono font-black uppercase text-white/20 tracking-[0.3em] mb-4">Technical Specifications</h4>
                <div className="grid grid-cols-2 gap-y-3">
                   <div className="flex flex-col">
                      <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Architecture</span>
@@ -148,7 +125,7 @@ export default function ProductPage() {
                 {product.inStock ? (
                    <div className="px-3 py-1 border border-primary/20 bg-primary/5 text-primary text-[9px] font-mono font-black uppercase tracking-widest flex items-center gap-2 italic">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                    System Online
+                    In Stock
                    </div>
                 ) : (
                   <div className="px-3 py-1 border border-red-500/20 bg-red-500/5 text-red-500 text-[9px] font-mono font-black uppercase tracking-widest italic">Inventory Depleted</div>
@@ -161,7 +138,7 @@ export default function ProductPage() {
               
               <div className="flex flex-wrap items-end gap-10 mb-12">
                 <div className="flex flex-col">
-                  <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Asset Valuation</p>
+                  <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Price Tracking</p>
                   <div className="flex items-baseline gap-4">
                     <span className="text-5xl font-outfit font-black italic tracking-tighter text-primary">₹{product.price.toLocaleString("en-IN")}</span>
                     {product.originalPrice && (
@@ -177,7 +154,7 @@ export default function ProductPage() {
                     ))}
                   </div>
                   <div className="flex flex-col">
-                    <span className="text-[9px] font-mono text-white/20 uppercase leading-none mb-1">Trust Score</span>
+                    <span className="text-[9px] font-mono text-white/20 uppercase leading-none mb-1">Customer Rating</span>
                     <span className="font-outfit font-black italic text-xl text-white leading-none">{product.rating}</span>
                   </div>
                 </div>
@@ -187,7 +164,7 @@ export default function ProductPage() {
                 {product.demoUrl && (
                   <a href={product.demoUrl} target="_blank" rel="noopener noreferrer">
                     <button className="flex items-center gap-3 px-6 py-3 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-primary/40 text-white/60 hover:text-white transition-all text-[10px] font-mono font-black uppercase tracking-widest rounded-sm">
-                      <Eye className="w-4 h-4 text-primary" /> Launch Simulation
+                      <Eye className="w-4 h-4 text-primary" /> View Live Demo
                     </button>
                   </a>
                 )}
@@ -213,7 +190,7 @@ export default function ProductPage() {
               <div className="flex flex-col gap-6">
                 <h3 className="text-[11px] font-mono font-black text-white/40 uppercase tracking-[0.5em] flex items-center gap-4">
                   <span className="h-px flex-1 bg-white/10" /> 
-                  Protocol Description 
+                  Product Details 
                   <span className="h-px flex-1 bg-white/10" />
                 </h3>
                 
@@ -287,15 +264,15 @@ export default function ProductPage() {
               <div className="grid grid-cols-3 gap-8 py-10 border-y border-white/5">
                 <div className="flex flex-col items-center gap-4 group">
                   <Truck className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20 text-center">Instant Uplink</span>
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20 text-center">Instant Delivery</span>
                 </div>
                 <div className="flex flex-col items-center gap-4 group text-center">
                   <Shield className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Forge Secured</span>
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Secure Payments</span>
                 </div>
                 <div className="flex flex-col items-center gap-4 group text-center">
                   <RotateCcw className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Sync Guarantee</span>
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Satisfaction Guaranteed</span>
                 </div>
               </div>
             </div>

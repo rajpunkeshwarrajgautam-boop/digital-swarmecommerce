@@ -22,23 +22,23 @@ export default function Home() {
             <div className="max-w-md">
               <div className="flex items-center gap-3 mb-6">
                 <Activity className="w-5 h-5 text-accent animate-pulse" />
-                <span className="text-xs font-mono uppercase tracking-widest text-white/40 italic">Live Swarm Sync</span>
+                <span className="text-xs font-mono uppercase tracking-widest text-white/40 italic">Live Store Updates</span>
               </div>
               <h2 className="text-4xl font-outfit font-black italic uppercase leading-none mb-4">
-                Global Deployment <br />
+                Real-Time Sales <br />
                 <span className="text-primary italic">Status</span>
               </h2>
               <p className="text-white/30 text-sm font-inter">
-                Real-time tracking of architectural materializations across the global developer network.
+                Real-time tracking of premium asset purchases across our global network.
               </p>
             </div>
 
             <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
               {[
-                { label: "Active Nodes", value: "8,294", trend: "+12%" },
-                { label: "Total Forge Capacity", value: "48.2 TB", trend: "Optimal" },
-                { label: "Materialization Rate", value: "9.2/s", trend: "Stable" },
-                { label: "Community Entropy", value: "0.24", trend: "-5%" },
+                { label: "Happy Customers", value: "8,294", trend: "+12%" },
+                { label: "Assets Library", value: "48.2 TB", trend: "Optimal" },
+                { label: "Daily Downloads", value: "9.2/s", trend: "Stable" },
+                { label: "System Uptime", value: "99.9%", trend: "Stable" },
               ].map((stat, i) => (
                 <GlassCard key={i} className="py-4 px-6 border-white/5 bg-white/5">
                   <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest block mb-1">
@@ -63,10 +63,10 @@ export default function Home() {
       <div id="products" className="py-32">
         <div className="container mx-auto px-6 mb-16 text-center">
             <h2 className="text-5xl md:text-7xl font-outfit font-black italic uppercase tracking-tighter mb-4">
-              Premium <span className="text-primary italic">Protocols</span>
+              Premium <span className="text-primary italic">Products</span>
             </h2>
             <p className="text-white/40 max-w-xl mx-auto uppercase text-[11px] font-mono tracking-widest">
-                Select your architectural baseline for rapid deployment
+                Select your software foundation for rapid deployment
             </p>
         </div>
         <FeaturedSection />
@@ -84,9 +84,9 @@ export default function Home() {
                 <span className="text-[10px] font-mono font-black tracking-[0.3em] text-accent uppercase italic">System Core</span>
               </div>
               <h2 className="text-6xl md:text-8xl font-outfit font-black italic tracking-tighter uppercase leading-[0.8]">
-                 Hardened <br />
+                 Modern <br />
                 <span className="text-primary italic">Architecture</span> <br />
-                Protocol.
+                Standards.
               </h2>
               <p className="text-white/40 text-xl font-inter leading-relaxed max-w-xl">
                  DIGITAL SWARM was engineered to solve the complexity crisis in modern web development. We provide the &quot;Industrial Base&quot; for your digital empire.
@@ -104,7 +104,7 @@ export default function Home() {
               </div>
 
               <ForgeButton variant="outline" className="w-fit">
-                Examine Manifest
+                Learn More
               </ForgeButton>
             </div>
             
@@ -142,15 +142,15 @@ export default function Home() {
         <div className="container mx-auto px-6 flex flex-wrap justify-center items-center gap-12 md:gap-24 opacity-30 invert">
            <div className="flex items-center gap-3 grayscale">
              <Shield className="w-5 h-5 text-white" />
-             <span className="text-[10px] font-mono font-black uppercase tracking-widest text-white">Encrypted Pipeline</span>
+             <span className="text-[10px] font-mono font-black uppercase tracking-widest text-white">Secure Payments</span>
            </div>
            <div className="flex items-center gap-3 grayscale">
              <Zap className="w-5 h-5 text-white" />
-             <span className="text-[10px] font-mono font-black uppercase tracking-widest text-white">Instant Materialization</span>
+             <span className="text-[10px] font-mono font-black uppercase tracking-widest text-white">Instant Downloads</span>
            </div>
            <div className="flex items-center gap-3 grayscale">
              <CheckCircle2 className="w-5 h-5 text-white" />
-             <span className="text-[10px] font-mono font-black uppercase tracking-widest text-white">Swarm Verified</span>
+             <span className="text-[10px] font-mono font-black uppercase tracking-widest text-white">Quality Verified</span>
            </div>
         </div>
       </div>

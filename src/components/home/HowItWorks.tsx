@@ -35,10 +35,10 @@ export function HowItWorks() {
         <div className="flex flex-col items-center text-center gap-6 mb-24">
           <h2 className="text-5xl md:text-7xl font-outfit font-black text-white italic tracking-tighter uppercase leading-[0.9]">
             Rapid <span className="text-primary italic text-6xl md:text-8xl">Setup</span> <br />
-            Protocol
+            Process
           </h2>
           <p className="text-white/40 font-mono text-xs uppercase tracking-[0.4em] max-w-xl">
-             [ MISSION OBJECTIVE: ZERO-FRICTION PRODUCTION DOMINANCE ]
+             [ GO FROM CONCEPT TO LAUNCH IN MINUTES ]
           </p>
         </div>
 
@@ -76,7 +76,7 @@ export function HowItWorks() {
            <div className="flex items-center gap-4 px-8 py-3 bg-white/5 border border-white/5">
              <ArrowRight className="w-4 h-4 text-primary" />
              <span className="text-[10px] font-mono font-black uppercase text-white/20 tracking-[0.3em]">
-               System Status: Synchronized // v2.4.9
+               Live Build Stats // v2.4.9
              </span>
            </div>
         </div>

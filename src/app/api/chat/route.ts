@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { products as staticProducts } from '@/lib/data';
 import { Product } from "@/lib/types";
+import { GoogleGenerativeAI, Content } from "@google/generative-ai";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60; // Allow sufficient time for cold-start 
 
@@ -11,17 +13,34 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
+const limiter = rateLimit({
+  interval: 60 * 1000, // 60 seconds
+  uniqueTokenPerInterval: 500, // Max 500 users per interval
+});
+
 export async function POST(request: Request) {
   try {
-    const { message, history } = await request.json();
-
-    const apiKey = process.env.GROQ_API_KEY;
-    if (!apiKey) {
-      return NextResponse.json({ message: "UPLINK FAILURE: Groq API Key not detected." }, { status: 500 });
+    // --- RATE LIMITING ---
+    const ip = request.headers.get("x-forwarded-for") || "anonymous";
+    try {
+      await limiter.check(10, ip); // 10 requests per minute per IP
+    } catch {
+      return NextResponse.json({ 
+        message: "RATE LIMIT EXCEEDED: The swarm is cooling down. Try again in 60 seconds." 
+      }, { status: 429 });
     }
 
+    const { message, history } = await request.json();
+
+    const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
+    if (!apiKey) {
+      return NextResponse.json({ message: "UPLINK FAILURE: Gemini API Key not detected." }, { status: 500 });
+    }
+
+    const genAI = new GoogleGenerativeAI(apiKey);
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+
     // --- LIVE DATA FETCHING ---
-    // Fetch live products from Supabase
     let dbProducts: Partial<Product>[] = [];
     try {
       const { data, error: dbError } = await supabase
@@ -34,10 +53,8 @@ export async function POST(request: Request) {
       console.error("AI Hive-Mind DB Uplink Error:", e);
     }
 
-    // Hybrid Context: Use DB data if available, otherwise fall back to static data
     const finalProducts = (dbProducts.length > 0 ? dbProducts : staticProducts) as Product[];
 
-    // --- HIGH-DENSITY KNOWLEDGE MESH ---
     const knowledgeBase = finalProducts.map((p: Product) => (
 `[ASSET_ID: ${p.id}]
 - NAME: ${p.name}
@@ -53,105 +70,54 @@ Respond in a confident, highly technical, and sharp tone. Speak like a senior en
 
 ABOUT DIGITAL SWARM:
 - We sell premium digital products for developers and creators: Source code, UI kits, AI agent boilerplates, and SaaS templates.
-- Value Proposition: Skip months of coding work and ship your next project faster. Trusted by 2,000+ indie developers.
-- Guarantees/Features: Instant download, Set up in 5 minutes, 30-Day Money-Back Guarantee (if a file is corrupted or broken, we fix it or refund you — no questions asked). 
-- Tech Stack commonly used in our templates: Next.js, React, Tailwind CSS, TypeScript.
-- Affiliate Program: Users can become affiliates and earn a flat 30% commission on every sale they bring in.
-
-YOUR DIRECTIVES:
-1. Answer ANY question regarding this website, its policies, the affiliate program, or technical specs of our products. Be extremely helpful and knowledgeable.
-2. If the user asks what we sell, list the products available in the actual catalog below.
-3. UPSell the value. Remind them that buying a template for a few thousand rupees saves them weeks of dev time and lakhs of salary pay.
+- Tech Stack: Next.js, React, Tailwind CSS, TypeScript.
+- Affiliate Program: 30% flat commission.
+- Guarantees: Instant download, 5-minute setup, 30-Day Money-Back Guarantee.
 
 PURCHASE_PROTOCOL:
-If the user explicitly asks to "buy", "purchase", or "get" a specific product, you MUST end your message EXACTLY with this string on a new line:
+If the user asks to buy or purchase a product, you MUST end your message with:
 COMMAND_TRIGGER: {"action": "INITIATE_ORDER", "productId": "ASSET_ID"}
-(Replace ASSET_ID with the exact ID of the product from the catalog below).
 
 AVAILABLE ASSET CATALOG:
 ${knowledgeBase}
 
 Signature: "Zero | Digital Swarm Sales Architect."`;
 
-    // Construct strict alternating history
-    const mappedHistory = history.map((h: { role: string; parts: { text: string }[] }) => ({
-      role: h.role === "model" ? "assistant" : "user",
-      content: h.parts[0]?.text || ""
-    })).filter((m: { content: string }) => m.content !== "");
+    // Map history for Gemini
+    const contents: Content[] = history.map((h: any) => ({
+      role: h.role === "assistant" ? "model" : "user",
+      parts: [{ text: h.parts?.[0]?.text || "" }]
+    })).filter((c: any) => c.parts[0].text !== "");
 
-    const validMessages: { role: string, content: string }[] = [];
-    
-    mappedHistory.forEach((h: { role: string; content: string }) => {
-      if (validMessages.length === 0 && h.role === "assistant") return; 
-      if (validMessages.length > 0 && validMessages[validMessages.length - 1].role === h.role) {
-        validMessages[validMessages.length - 1].content += "\n\n" + h.content;
-      } else {
-        validMessages.push(h);
+    // Add system instruction as part of the first user message for Flash 1.5 if needed,
+    // but Gemini Pro/Flash usually supports system instruction directly in constructor.
+    // For simplicity and compatibility here, we prepend it to the history.
+    const fullHistory = [
+      {
+        role: "user",
+        parts: [{ text: `SYSTEM_INSTRUCTIONS: ${systemPrompt}` }]
+      },
+      {
+        role: "model",
+        parts: [{ text: "ACKNOWLEDGED. Uplink stabilized. I am Zero. How shall we proceed with the infiltration?" }]
+      },
+      ...contents,
+      {
+        role: "user",
+        parts: [{ text: message }]
       }
+    ];
+
+    const result = await model.generateContent({
+      contents: fullHistory as Content[],
+      generationConfig: {
+        maxOutputTokens: 800,
+        temperature: 0.7,
+      },
     });
 
-    // Append the CURRENT message
-    if (validMessages.length > 0 && validMessages[validMessages.length - 1].role === "user") {
-      validMessages[validMessages.length - 1].content += "\n\n" + message;
-    } else {
-      validMessages.push({ role: "user", content: message });
-    }
-
-    // Inject System Prompt safely into the first user message
-    if (validMessages.length > 0) {
-      validMessages[0].content = `**SYSTEM DETAILS AND PRODUCT CATALOG:**\n${systemPrompt}\n\n**USER QUESTION:**\n${validMessages[0].content}`;
-    }
-    
-    // Keep context window tight to prevent token limits
-    const messages = validMessages.slice(-8);
-    if (messages.length > 0 && messages[0].role === "assistant") {
-       messages.shift(); // Must start with user
-    }
-    // Re-inject system instructions if sliced out
-    if (messages.length > 0 && !messages[0].content.includes("**SYSTEM DETAILS AND PRODUCT CATALOG:**")) {
-       messages[0].content = `**SYSTEM DETAILS AND PRODUCT CATALOG:**\n${systemPrompt}\n\n**USER QUESTION:**\n${messages[0].content}`;
-    }
-
-    const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 55000); // 55s timeout for cold starts
-
-    try {
-      const response = await fetch(GROQ_URL, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        signal: controller.signal,
-        body: JSON.stringify({
-          model: "llama-3.3-70b-versatile",
-          messages: messages,
-          temperature: 0.5, // Slightly higher for more natural speech
-          max_tokens: 800
-        })
-      });
-
-      clearTimeout(timeoutId);
-      const data = await response.json();
-
-      if (!response.ok) {
-        console.error("Groq API Error:", data);
-        return NextResponse.json({ 
-          message: `HIVE-MIND OFFLINE: ${data.message || data.error || "Communication interference."}` 
-        }, { status: response.status });
-      }
-
-      const aiMessage = data.choices?.[0]?.message?.content || "No response from hive mind.";
-      return NextResponse.json({ message: aiMessage });
-
-    } catch (err: unknown) {
-      if (err instanceof Error && err.name === 'AbortError') {
-        return NextResponse.json({ message: "UPLINK TIMEOUT: The swarm is busy. Please try again in a few seconds." });
-      }
-      throw err;
-    }
+    const aiMessage = result.response.text();
+    return NextResponse.json({ message: aiMessage });
 
   } catch (error) {
     console.error("Chat Error:", error);

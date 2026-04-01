@@ -132,7 +132,17 @@ export async function POST(request: Request) {
       body: JSON.stringify(cfPayload),
     });
 
-    const cfData = await cfRes.json();
+    interface CashfreeOrderResponse {
+      order_id: string;
+      payment_session_id: string;
+      cf_order_id: string;
+      order_status: string;
+      message?: string;
+      code?: string;
+      type?: string;
+    }
+
+    const cfData = await cfRes.json() as CashfreeOrderResponse;
 
     if (!cfRes.ok) {
       console.error('[Cashfree Error Response]', {

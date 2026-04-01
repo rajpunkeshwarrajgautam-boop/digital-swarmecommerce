@@ -70,7 +70,7 @@ export function Header() {
               <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
                 <span className={`w-1.5 h-1.5 rounded-full ${systemStatus === 'idle' ? 'bg-accent' : 'bg-primary'} animate-pulse shadow-[0_0_8px_currentColor]`} />
                 <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
-                  Forge {systemStatus === 'idle' ? 'Ready' : 'Active'}
+                  Status: {systemStatus === 'idle' ? 'Online' : 'Active'}
                 </span>
               </div>
             </div>
@@ -93,7 +93,7 @@ export function Header() {
             >
               <Sparkles className="w-4 h-4 text-accent transition-transform group-hover:rotate-12" />
               <span className="text-xs font-mono uppercase tracking-tighter text-white/50 group-hover:text-white transition-colors">
-                Run AI Protocol
+                AI Assistant
               </span>
               <kbd className="hidden lg:block ml-2 px-1.5 py-0.5 bg-white/10 rounded text-[9px] text-white/30">/</kbd>
             </motion.button>
@@ -135,7 +135,7 @@ export function Header() {
                 <SignedOut>
                   <SignInButton mode="modal">
                     <button className="text-[11px] font-outfit font-black uppercase italic tracking-widest text-white/60 hover:text-primary transition-all">
-                      Enter the Forge
+                      Sign In
                     </button>
                   </SignInButton>
                 </SignedOut>
@@ -173,7 +173,7 @@ export function Header() {
             className="fixed inset-0 z-60 glass-panel lg:hidden flex flex-col p-8 pt-24"
           >
             <nav className="flex flex-col gap-6 mb-12">
-              {['Products', 'Forge Stats', 'The Swarm', 'Documentation'].map((item) => (
+              {['Shop', 'Analytics', 'Community', 'Guide'].map((item) => (
                 <MobileNavLink 
                   key={item} 
                   href={`/${item.toLowerCase().replace(' ', '-')}`} 
@@ -186,7 +186,7 @@ export function Header() {
 
             <div className="mt-auto flex flex-col gap-6">
               <ForgeButton className="w-full">
-                Initialize Search
+                Search Products
               </ForgeButton>
               
               <div className="flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">

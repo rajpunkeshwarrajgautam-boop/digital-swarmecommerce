@@ -64,7 +64,7 @@ export const ForgeHero = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
           </span>
           <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/50">
-            {hasIntent ? `Welcome to the Swarm, node_${personalization.intent}` : "System Protocol 2.0 Active"}
+            {hasIntent ? `Welcome Node ${personalization.intent}` : "Premium Assets Now Live"}
           </span>
         </motion.div>
 
@@ -75,9 +75,9 @@ export const ForgeHero = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-6xl md:text-8xl lg:text-[10rem] font-outfit font-black italic tracking-tighter leading-[0.8] uppercase mb-8"
         >
-          {isLocalMarket ? "Materialize" : "Architect"} <br />
+          {isLocalMarket ? "Launch" : "Build"} <br />
           <span className="text-white/20">Elite Digital</span> <br />
-          <span className="text-primary glow-text">Protocols</span>
+          <span className="text-primary glow-text">Experiences</span>
         </motion.h1>
 
         {/* Subtitle */}
@@ -101,11 +101,11 @@ export const ForgeHero = () => {
           className="flex flex-wrap items-center justify-center gap-6 mb-24"
         >
           <ForgeButton variant="primary" onClick={() => (window.location.href = "#products")}>
-            Materialize Stack
+            Shop the Store
           </ForgeButton>
           <ForgeButton variant="outline" onClick={toggleConcierge}>
             <Sparkles className="w-4 h-4 mr-2" />
-            Forge Concierge
+            AI Assistant
           </ForgeButton>
         </motion.div>
 

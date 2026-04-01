@@ -104,15 +104,30 @@ function CheckoutContent() {
         }),
       });
       
-      const data = await res.json();
+      interface CheckoutResponse {
+        success: boolean;
+        orderId: string;
+        paymentSessionId: string;
+        cfMode: string;
+        error?: string;
+      }
+      
+      const data = (await res.json()) as CheckoutResponse;
       if (data.error) throw new Error(data.error);
 
       if (!data.paymentSessionId) {
         throw new Error("GATEWAY_FAULT: Payment Session ID null.");
       }
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const cashfree = new (window as any).Cashfree({
+      // Define Cashfree interface for window
+      interface CashfreeSDK {
+        new (options: { mode: string }): {
+          checkout: (options: { paymentSessionId: string; redirectTarget: string }) => Promise<void>;
+        };
+      }
+
+      const Cashfree = (window as unknown as { Cashfree: CashfreeSDK }).Cashfree;
+      const cashfree = new Cashfree({
         mode: data.cfMode || "sandbox",
       });
 

@@ -30,7 +30,7 @@ export async function GET(request: Request) {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { product_id, user_name, rating, comment, verified } = body;
+    const { product_id, user_name, rating, comment, verified, images } = body;
 
     const { data, error } = await supabase
       .from("reviews")
@@ -40,7 +40,8 @@ export async function POST(request: Request) {
           user_name, 
           rating, 
           comment, 
-          verified: verified || false 
+          verified: verified || false,
+          images: images || []
         }
       ])
       .select()

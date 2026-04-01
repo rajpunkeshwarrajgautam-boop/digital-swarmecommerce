@@ -18,7 +18,7 @@ interface Message {
 }
 
 export function HiveMindChat() {
-  const { userPreferences, logs, addLog } = useMemoryStore();
+  const { logs, addLog } = useMemoryStore();
   const [isOpen, setIsOpen] = useState(false);
   const [message, setMessage] = useState("");
   const [history, setHistory] = useState<Message[]>([]);
@@ -65,7 +65,7 @@ export function HiveMindChat() {
         .map(log => ({
           role: log.type === 'ai' ? 'model' : 'user',
           text: log.content,
-          metadata: log.metadata
+          trigger: log.metadata?.trigger as Message['trigger']
         }));
       setHistory(chatHistory);
       setIsMemoryLoaded(true);
@@ -109,9 +109,12 @@ export function HiveMindChat() {
         })
       });
 
-      const data = await res.json();
+      interface ChatResponse {
+        message: string;
+      }
+      const data = (await res.json()) as ChatResponse;
       let aiText = data.message;
-      let trigger = undefined;
+      let trigger: Message['trigger'] = undefined;
 
       // Extract COMMAND_TRIGGER if present
       const triggerMatch = aiText.match(/COMMAND_TRIGGER:\s*(\{.*\})/);
@@ -119,8 +122,8 @@ export function HiveMindChat() {
         try {
           trigger = JSON.parse(triggerMatch[1]);
           aiText = aiText.replace(/COMMAND_TRIGGER:\s*\{.*\}/, "").trim();
-        } catch (e) {
-          console.error("Trigger parse error:", e);
+        } catch (err: unknown) {
+          console.error("Trigger parse error:", err);
         }
       }
 
@@ -168,7 +171,7 @@ export function HiveMindChat() {
             setIsOpen(!isOpen);
             setHasInteracted(true);
           }}
-          className={`pointer-events-auto p-3 sm:p-4 rounded-full shadow-lg border border-border/50 transition-all duration-500 relative z-[60] ${
+          className={`pointer-events-auto p-3 sm:p-4 rounded-full shadow-lg border border-border/50 transition-all duration-500 relative z-60 ${
             isOpen
               ? "bg-primary text-white opacity-100"
               : !hasInteracted
@@ -187,7 +190,7 @@ export function HiveMindChat() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[45]"
+            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-45"
             onClick={() => setIsOpen(false)}
           />
         )}

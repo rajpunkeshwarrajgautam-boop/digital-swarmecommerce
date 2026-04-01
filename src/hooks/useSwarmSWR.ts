@@ -28,7 +28,7 @@ export function useSwarmSWR<T = unknown>(
   const [error, setError] = useState<Error | null>(null);
   const [isLoading, setIsLoading] = useState(!data);
 
-  const revalidate = useCallback(async () => {
+  const revalidate = useCallback(async (retryCount = 0) => {
     if (!url) return;
 
     const cached = get(url);
@@ -51,6 +51,10 @@ export function useSwarmSWR<T = unknown>(
       setData(newData);
       setError(null);
     } catch (err) {
+      // Exponential Backoff Retry (Max 3 attempts)
+      if (retryCount < 3 && url) {
+        setTimeout(() => revalidate(retryCount + 1), 2000 * Math.pow(2, retryCount));
+      }
       setError(err instanceof Error ? err : new Error(String(err)));
     } finally {
       setIsLoading(false);
@@ -59,6 +63,18 @@ export function useSwarmSWR<T = unknown>(
 
   useEffect(() => {
     revalidate();
+
+    // Swarm Protocol: Real-time Revalidation Triggers
+    const handleFocus = () => revalidate();
+    const handleReconnect = () => revalidate();
+
+    window.addEventListener("focus", handleFocus);
+    window.addEventListener("online", handleReconnect);
+
+    return () => {
+      window.removeEventListener("focus", handleFocus);
+      window.removeEventListener("online", handleReconnect);
+    };
   }, [url, revalidate]);
 
   const mutate = useCallback((newData: T) => {

@@ -84,7 +84,7 @@ export const useMemoryStore = create<MemoryState>()(
       }),
       setSyncing: (status) => set({ isSyncing: status }),
       addInterest: (categoryId) => {
-        const { viewedCategories } = get().userPreferences;
+        const viewedCategories = get().userPreferences?.viewedCategories || [];
         if (!viewedCategories.includes(categoryId)) {
           const updated = [categoryId, ...viewedCategories].slice(0, 5); // Keep top 5 interests
           set((state) => ({

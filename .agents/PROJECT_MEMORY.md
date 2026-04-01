@@ -1,16 +1,17 @@
 # 🧠 Digital Swarm — Persistent Project Memory
+
 > **IMPORTANT**: This file is the single source of truth for all AI agents working on this project.
 > Read this FIRST before making any changes. Update this file at the END of every session.
-> Last Updated: 2026-03-20
+> Last Updated: 2026-03-31
 
 ---
 
 ## 🏗️ Project Identity
 
 | Key | Value |
-|---|---|
+| :--- | :--- |
 | **Project Name** | Digital Swarm |
-| **Live URL** | https://digitalswarm.in |
+| **Live URL** | <https://digitalswarm.in> |
 | **Vercel Project** | `antigravity-ecommerce` |
 | **GitHub Repo** | `rajpunkeshwarrajgautam-boop/digital-swarmecommerce` |
 | **Supabase Project** | `digitalswarm` |
@@ -27,12 +28,14 @@
 ## 🎨 Design System (DO NOT CHANGE WITHOUT REASON)
 
 ### Core Aesthetic: "Planet ONO / Brutalist Industrial"
+
 - **Style**: Dark, high-contrast, sharp edges, NO rounded corners on major elements
 - **Typography**: Black weight, italic, uppercase, tracking-tighter
 - **Font**: System sans + Inter
 - **Animations**: Framer Motion, GPU-accelerated, 200-400ms cubic-bezier
 
 ### Color Palette (from globals.css)
+
 ```css
 --primary:    hsl(45, 100%, 50%)   /* Deep Industrial Gold */
 --background: hsl(0, 0%, 2%)      /* Dystopian Void Black */
@@ -43,6 +46,7 @@
 ```
 
 ### UI Rules
+
 - Border style: `border-4 border-white` on feature panels
 - Shadows: `shadow-[25px_25px_0px_rgba(0,0,0,0.8)]` (brutalist offset)
 - No `rounded-*` on major containers (use `rounded-none`)
@@ -52,7 +56,7 @@
 
 ## 🗺️ Project Structure
 
-```
+```bash
 src/
 ├── app/
 │   ├── page.tsx              # Homepage (ParallaxHero + sections)
@@ -111,7 +115,7 @@ src/
 ## 🛍️ Product Catalog (data.ts — Source of Truth)
 
 | ID | Name | Price | Category | Download File |
-|---|---|---|---|---|
+| :--- | :--- | :--- | :--- | :--- |
 | `sentinel-research` | Sentinel Research Infiltrator (Universal Dashboard) | ₹3499 | AI Agents | `sentinel-research-optimized.zip` |
 | `swarm-sales` | Swarm Sales Infiltrator (Dashboard Edition) | ₹1999 | AI Agents | `swarm-sales-optimized.zip` |
 | `swarm-finance` | Swarm Finance Oracle (Dashboard Edition) | ₹2499 | AI Agents | `swarm-finance-optimized.zip` |
@@ -131,7 +135,7 @@ src/
 ## 🎁 Freebies (digitalswarm.in/freebies)
 
 | ID | Name | Type | Download File |
-|---|---|---|---|
+| :--- | :--- | :--- | :--- |
 | `saas-checklist` | Ultimate SaaS Launch Checklist | Guide | `saas-launch-checklist.txt` |
 | `ai-prompt-library` | AI Agent Prompt Library | Asset | `ai-prompt-library.txt` |
 | `mini-ui-kit` | Cyberpunk Mini UI Kit | Code | `cyberpunk-mini-ui-kit.tsx` |
@@ -143,8 +147,9 @@ src/
 ## 🗄️ Supabase Database Schema
 
 ### Tables
+
 | Table | Purpose | RLS |
-|---|---|---|
+| :--- | :--- | :--- |
 | `products` | Product catalog (synced from data.ts via schema.sql) | Public read |
 | `orders` | Payment orders from Cashfree | Service role only |
 | `order_items` | Line items per order | Service role only |
@@ -154,7 +159,8 @@ src/
 | `affiliates` | Affiliate applications + stats | Public insert only |
 
 ### Key ENV Variables (in Vercel)
-```
+
+```text
 NEXT_PUBLIC_SUPABASE_URL=...
 NEXT_PUBLIC_SUPABASE_ANON_KEY=...
 SUPABASE_SERVICE_ROLE_KEY=...
@@ -194,7 +200,7 @@ RESEND_API_KEY=...
 ## 🚧 Known Issues & Technical Debt
 
 | Issue | Status | File |
-|---|---|---|
+| :--- | :--- | :--- |
 | `llama3.2` in llama3.2 is a weak model for Aider | Open | N/A |
 | Freebie files are .txt/.tsx/.css (not PDFs) | Acceptable for now | `/public/downloads/` |
 | `rounded-[2rem]` could be `rounded-4xl` | Minor lint | `freebies/page.tsx:126` |
@@ -215,30 +221,30 @@ RESEND_API_KEY=...
 
 ## 📋 Session Log (What Was Done & When)
 
-### 2026-03-20 (Latest Session)
-- ✅ Cleared 1.1GB Antigravity IDE cache (click_feedback + webp recordings)
-- ✅ Fixed CartDrawer yellow block bug → dark theme
-- ✅ Implemented 5 functional freebie downloads (Guide/Asset/Code categories)
-- ✅ Applied CSS performance optimizations (`content-visibility`, `will-change`)
-- ✅ Updated all AI agent download URLs to `-optimized.zip` versions
-- ✅ Set up this persistent memory system
+### 2026-04-01 (Milestone 6.3 Finalized)
 
-### Previous Sessions
-- ✅ Implemented affiliate portal + commission dashboard
-- ✅ Built customer license portal with JWT verification
-- ✅ Integrated Cashfree payment gateway
-- ✅ Set up Google Analytics + Meta Pixel
-- ✅ Built floating AI chat widget
+- ✅ **Milestone 6.3 (Trust Ecosystem) Finalized**:
+  - **Media-Native Reviews**: Implemented Supabase Storage integration with `review-media` bucket.
+  - **Review Form Enhanced**: Added multi-image upload with real-time previews and removal.
+  - **Brutalist Gallery**: Digital product reviews now display "Visual Proof" in a high-density, industrial grid.
+- ✅ **AI Evolution (Gemini 1.5 Flash)**:
+  - Migrated the "Zero" AI Sales Architect from Groq to Google Gemini 1.5 Flash.
+  - Implemented industrial-grade rate limiting (10 requests/min/IP) to protect API costs.
+  - Fixed history mapping to align with Google AI SDK strict user/model alternating roles.
+- ✅ **Code Polish**: Refactored `ReviewSystem.tsx` to follow strict "Planet ONO" brutalist rules (sharper edges, no `rounded-3xl`).
+- ✅ **SEO Phase 2 (Canonical Tags)**:
+  - **Global Authority**: Implemented root canonical tags to prevent duplicate content penalties from subdomains or alternate URLs.
+  - **Dynamic Catalog SEO**: Engineered a server-side layout for the product detail route (`/product/[slug]`) to dynamically generate SEO metadata, canonical links, and high-fidelity OpenGraph/Twitter cards.
+  - **List Page Integrity**: Hardened the `/products` list page metadata with explicit canonical references.
+- 🚧 **Next Steps**: Mobile performance audit (Lighthouse: 90+ target) and full site performance crawl.
 
 ---
 
 ## 🎯 Next Steps / Backlog
 
-- [ ] Add PDF versions of freebie guides (currently .txt files)
-- [ ] Set up Aider with Gemini API key for better local development
-- [ ] Add product image optimization (next/image with proper sizes)
-- [ ] Implement affiliate click tracking (increment `affiliates.clicks` via API)
-- [ ] Add review submission form on product pages
-- [ ] Set up email automation for post-purchase license delivery
-- [ ] Add sitemap.xml and robots.txt for SEO
+- [x] Finalize Milestone 6.3 (Trust Ecosystem)
+- [x] SEO & Performance Hardening (Sitemap/Robots/LCP)
+- [x] Automated Inventory Sync from `data.ts` to Supabase
+- [x] SEO Phase 2: Canonical Tags & Metadata Optimization
 - [ ] Mobile performance audit (Lighthouse score target: >90)
+- [ ] Implement global SEO audit tracking component

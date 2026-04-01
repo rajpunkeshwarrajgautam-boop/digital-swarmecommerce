@@ -15,6 +15,7 @@ import { formatCurrency } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
+  priority?: boolean;
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -57,7 +58,7 @@ function TechBadges({ category }: { category: string }) {
 
 import { useSwarmPrefetch } from "@/hooks/useSwarmPrefetch";
 
-export function ProductCard({ product }: ProductCardProps) {
+export function ProductCard({ product, priority = false }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isWishlisted } = useWishlistStore();
   const { currency } = useCurrency();
@@ -125,7 +126,8 @@ export function ProductCard({ product }: ProductCardProps) {
             fill
             className="object-cover transition-transform duration-1000 ease-out group-hover:scale-110 group-hover:rotate-1"
             alt={product.name}
-            loading="lazy"
+            priority={priority}
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
@@ -191,7 +193,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex items-center gap-2"
                 >
-                  <Check className="w-3.5 h-3.5" /> Protocol Active
+                  <Check className="w-3.5 h-3.5" /> Added to Cart
                 </motion.span>
               ) : (
                 <motion.span
@@ -201,7 +203,7 @@ export function ProductCard({ product }: ProductCardProps) {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex items-center gap-2"
                 >
-                  <ShoppingCart className="w-3.5 h-3.5" /> Materialize
+                  <ShoppingCart className="w-3.5 h-3.5" /> Add to Cart
                 </motion.span>
               )}
             </AnimatePresence>
@@ -209,7 +211,7 @@ export function ProductCard({ product }: ProductCardProps) {
 
           <Link href={`/product/${product.id}`} className="w-full">
             <button className="w-full text-[10px] font-mono text-white/20 uppercase tracking-[0.3em] hover:text-white transition-colors">
-              Access Documentation
+              View Details
             </button>
           </Link>
         </div>

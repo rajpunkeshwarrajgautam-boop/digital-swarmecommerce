@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Star, User, ShieldCheck, Image as ImageIcon, Send } from "lucide-react";
+import { useState, useEffect, useRef } from "react";
+import { Star, User, ShieldCheck, Image as ImageIcon, Send, X, Loader2 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
 
 interface Review {
   id: string;
@@ -19,7 +20,10 @@ export function ReviewSystem({ productId }: { productId: string }) {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [showForm, setShowForm] = useState(false);
   const [newReview, setNewReview] = useState({ rating: 5, comment: "" });
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [previews, setPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     async function loadReviews() {
@@ -36,11 +40,52 @@ export function ReviewSystem({ productId }: { productId: string }) {
     loadReviews();
   }, [productId]);
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const files = Array.from(e.target.files);
+      setSelectedFiles(prev => [...prev, ...files]);
+      
+      const newPreviews = files.map(file => URL.createObjectURL(file));
+      setPreviews(prev => [...prev, ...newPreviews]);
+    }
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
+    setPreviews(prev => {
+      URL.revokeObjectURL(prev[index]);
+      return prev.filter((_, i) => i !== index);
+    });
+  };
+
+  const uploadImages = async (): Promise<string[]> => {
+    if (!supabase) return [];
+    
+    const uploadPromises = selectedFiles.map(async (file) => {
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name}`;
+      const { data, error } = await supabase.storage
+        .from("review-media")
+        .upload(fileName, file);
+      
+      if (error) throw error;
+      
+      const { data: { publicUrl } } = supabase.storage
+        .from("review-media")
+        .getPublicUrl(data.path);
+        
+      return publicUrl;
+    });
+
+    return Promise.all(uploadPromises);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     
     try {
+      const imageUrls = await uploadImages();
+      
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -49,7 +94,8 @@ export function ReviewSystem({ productId }: { productId: string }) {
           user_name: "Anonymous Developer",
           rating: newReview.rating,
           comment: newReview.comment,
-          verified: false
+          verified: false,
+          images: imageUrls
         })
       });
 
@@ -58,6 +104,8 @@ export function ReviewSystem({ productId }: { productId: string }) {
         setReviews([addedReview, ...reviews]);
         setShowForm(false);
         setNewReview({ rating: 5, comment: "" });
+        setSelectedFiles([]);
+        setPreviews([]);
       }
     } catch (err) {
       console.error("Failed to submit review:", err);
@@ -120,9 +168,44 @@ export function ReviewSystem({ productId }: { productId: string }) {
                 />
               </div>
 
-              <div className="flex gap-4">
-                <Button type="submit" isLoading={loading} className="gap-2">
-                  <Send className="w-4 h-4" /> Submit Report
+              <div className="space-y-4">
+                <label className="text-sm font-bold uppercase tracking-widest opacity-50">Visual Proof (Optional)</label>
+                <div className="flex flex-wrap gap-4">
+                  {previews.map((url, i) => (
+                    <div key={url} className="relative w-24 h-24 border-2 border-primary/40 rounded-xl overflow-hidden group">
+                      <img src={url} alt="Preview" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => removeFile(i)}
+                        className="absolute top-1 right-1 bg-black/60 rounded-full p-1 opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        <X className="w-4 h-4 text-white" />
+                      </button>
+                    </div>
+                  ))}
+                  <button
+                    type="button"
+                    onClick={() => fileInputRef.current?.click()}
+                    className="w-24 h-24 border-2 border-dashed border-white/10 rounded-xl flex flex-col items-center justify-center gap-2 hover:border-primary/40 hover:bg-primary/5 transition-all group"
+                  >
+                    <ImageIcon className="w-6 h-6 text-zinc-500 group-hover:text-primary transition-colors" />
+                    <span className="text-[10px] uppercase font-bold text-zinc-500 group-hover:text-primary transition-colors">Add Image</span>
+                  </button>
+                </div>
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleFileChange}
+                  className="hidden"
+                />
+              </div>
+
+              <div className="flex gap-4 pt-4">
+                <Button type="submit" isLoading={loading} className="gap-2 px-8">
+                  {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  Submit Report
                 </Button>
                 <Button type="button" variant="ghost" onClick={() => setShowForm(false)}>Cancel</Button>
               </div>
@@ -133,39 +216,43 @@ export function ReviewSystem({ productId }: { productId: string }) {
 
       <div className="space-y-6">
         {reviews.map((review) => (
-          <div key={review.id} className="bg-secondary/10 border border-border/50 p-6 rounded-3xl group">
-            <div className="flex justify-between items-start mb-4">
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center border border-white/10">
-                  <User className="w-5 h-5 text-zinc-500" />
+          <div key={review.id} className="bg-secondary/10 border border-border/50 p-8 rounded-none group hover:border-primary/30 transition-colors">
+            <div className="flex justify-between items-start mb-6">
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-none bg-zinc-900 flex items-center justify-center border border-white/10 group-hover:border-primary/40 transition-colors">
+                  <User className="w-6 h-6 text-zinc-500" />
                 </div>
                 <div>
-                  <h4 className="font-bold flex items-center gap-2">
+                  <h4 className="font-titan text-lg flex items-center gap-2">
                     {review.user_name}
                     {review.verified && (
-                      <span className="text-[10px] bg-green-500/10 text-green-500 px-2 py-0.5 rounded-full flex items-center gap-1 border border-green-500/20">
+                      <span className="text-[10px] bg-primary/10 text-primary px-2 py-0.5 rounded-none flex items-center gap-1 border border-primary/20">
                         <ShieldCheck className="w-3 h-3" /> VERIFIED DEPLOYER
                       </span>
                     )}
                   </h4>
-                  <div className="flex text-yellow-500 mt-0.5">
-                    {[...Array(review.rating)].map((_, i) => (
-                      <Star key={i} className="w-3 h-3 fill-current" />
+                  <div className="flex text-primary mt-1">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className={`w-3.5 h-3.5 ${i < review.rating ? "fill-current" : "text-zinc-800"}`} />
                     ))}
                   </div>
                 </div>
               </div>
-              <span className="text-xs text-muted-foreground">{new Date(review.created_at).toLocaleDateString()}</span>
+              <span className="text-xs text-muted-foreground font-mono">{new Date(review.created_at).toLocaleDateString()}</span>
             </div>
-            <p className="text-muted-foreground leading-relaxed">
+            <p className="text-muted-foreground leading-relaxed text-lg mb-6">
               {review.comment}
             </p>
             {review.images && review.images.length > 0 && (
-              <div className="flex gap-2 mt-4">
+              <div className="flex flex-wrap gap-3">
                 {review.images.map((img, i) => (
-                  <div key={i} className="w-16 h-16 rounded-lg bg-zinc-800 border border-white/10 flex items-center justify-center">
-                    <ImageIcon className="w-4 h-4 text-zinc-600" />
-                  </div>
+                  <motion.div 
+                    key={i} 
+                    whileHover={{ scale: 1.05 }}
+                    className="w-24 h-24 bg-zinc-900 border border-white/10 overflow-hidden cursor-zoom-in"
+                  >
+                    <img src={img} alt={`Review ${i}`} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all" />
+                  </motion.div>
                 ))}
               </div>
             )}

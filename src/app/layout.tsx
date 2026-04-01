@@ -80,11 +80,13 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: "/favicon.ico",
-    shortcut: "/favicon-16x16.png",
-    apple: "/apple-touch-icon.png",
+    icon: "/favicon.svg",
+    apple: "/favicon.svg",
   },
-  manifest: "/site.webmanifest",
+  alternates: {
+    canonical: "/",
+  },
+  manifest: undefined, // Removed until file is materialized
 };
 
 export default function RootLayout({

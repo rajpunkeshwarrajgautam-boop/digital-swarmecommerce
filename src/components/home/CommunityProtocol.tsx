@@ -49,11 +49,11 @@ export function CommunityProtocol() {
               className="inline-flex items-center gap-2 px-3 py-1 bg-primary text-black text-[10px] font-mono font-black uppercase tracking-[0.3em] mb-6 italic"
             >
               <Users className="w-3 h-3" />
-              Swarm Intelligence
+              Community Reviews
             </motion.div>
             <h2 className="text-6xl md:text-8xl font-outfit font-black text-white tracking-tighter uppercase italic leading-[0.8]">
               Global <br />
-              <span className="text-primary italic">Transmissions</span>
+              <span className="text-primary italic">Feedback</span>
             </h2>
           </div>
           <div className="flex items-center gap-6">
@@ -123,7 +123,7 @@ export function CommunityProtocol() {
         >
           <div className="h-px w-24 bg-white/10" />
           <p className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/10 italic text-center">
-            Join the Frequency / Verify Architecture / Deploy Empires
+            Join the Community / Scale Production / Build the Future
           </p>
         </motion.div>
       </div>

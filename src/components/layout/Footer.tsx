@@ -23,12 +23,12 @@ export function Footer() {
               <div className="flex items-center gap-4">
                 <Logo className="text-white" />
                 <div className="px-2 py-1 bg-primary/10 border border-primary/20 text-[8px] font-mono text-primary font-black uppercase tracking-widest italic">
-                  v3.12_STABLE
+                  STORE_V1.0
                 </div>
               </div>
             </Link>
             <p className="text-white/30 text-[11px] font-mono uppercase tracking-widest leading-loose italic max-w-xs">
-              Autonomous Code Forge. Premium Architectural Protocols for Elite Product Development. Secured by the Swarm Network.
+              Premium Development Assets. High-Performance Templates for Professional Engineering. Secured and Optimized.
             </p>
             <div className="flex items-center gap-5">
               {[Twitter, Github, Linkedin].map((Icon, i) => (
@@ -41,10 +41,10 @@ export function Footer() {
 
           {/* Products Column */}
           <div className="flex flex-col gap-10">
-            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">SYSTEM_PRODUCTS</h4>
+            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">OUR_COLLECTIONS</h4>
             <div className="flex flex-col gap-5">
               <FooterLink href="/products?category=SaaS" label="SaaS Kits" />
-              <FooterLink href="/products?category=AI" label="AI Protocols" />
+              <FooterLink href="/products?category=AI" label="AI Templates" />
               <FooterLink href="/products?category=Modern" label="Modern Stacks" />
               <FooterLink href="/products?category=Enterprise" label="Enterprise" />
             </div>
@@ -52,29 +52,29 @@ export function Footer() {
 
           {/* Support Column */}
           <div className="flex flex-col gap-10">
-            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">SUPPORT_LAYER</h4>
+            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">CUSTOMER_CARE</h4>
             <div className="flex flex-col gap-5">
-              <FooterLink href="/help" label="Help_Desktop" />
-              <FooterLink href="/contact" label="Comm_Interface" />
-              <FooterLink href="/refund" label="Asset_Reversal" />
-              <FooterLink href="/about" label="Forge_History" />
+              <FooterLink href="/help" label="Help Center" />
+              <FooterLink href="/contact" label="Contact Us" />
+              <FooterLink href="/refund" label="Refund Policy" />
+              <FooterLink href="/about" label="About Us" />
             </div>
           </div>
 
           {/* Legal Column */}
           <div className="flex flex-col gap-10">
-            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">LEGAL_MATRIX</h4>
+            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">LEGAL_INFO</h4>
             <div className="flex flex-col gap-5">
-              <FooterLink href="/terms" label="Service_Protocol" />
-              <FooterLink href="/privacy" label="Privacy_Matrix" />
-              <FooterLink href="/cookie" label="Data_Hydration" />
+              <FooterLink href="/terms" label="Terms of Service" />
+              <FooterLink href="/privacy" label="Privacy Policy" />
+              <FooterLink href="/cookie" label="Cookie Policy" />
             </div>
             
             {/* Payment Verification */}
             <div className="mt-6 pt-10 border-t border-white/5">
               <div className="flex items-center gap-4 mb-6">
                 <ShieldCheck className="w-5 h-5 text-primary animate-pulse" />
-                <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/20">L4_ENCRYPT_ACTIVE</span>
+                <span className="text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/20">SECURE_ORDER_SYNC</span>
               </div>
               <div className="relative h-6 w-32 grayscale brightness-200 contrast-200 opacity-20 hover:opacity-100 transition-opacity">
                  <Image 
@@ -91,10 +91,10 @@ export function Footer() {
         <div className="pt-16 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-10">
           <div className="flex flex-col gap-2">
             <p className="text-[10px] font-mono font-black uppercase tracking-[0.3em] text-white/10 italic">
-              © {currentYear} DIGITAL_SWARM_PROTOCOL // SWARM_INFRASTRUCTURE
+              © {currentYear} DIGITAL_SWARM_IN // PREMIUM ASSETS
             </p>
             <p className="text-[8px] font-mono text-white/5 uppercase tracking-[0.5em]">
-              STATUS_HEALTHY // NODES_ACTIVE: 12,042 // LATENCY: 24ms
+              VERIFIED SECURE // FAST GLOBAL DELIVERY
             </p>
           </div>
           <div className="flex items-center gap-12">
