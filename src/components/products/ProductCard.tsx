@@ -153,8 +153,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
           <Heart className={`w-3.5 h-3.5 ${wishlisted ? "fill-current" : ""}`} />
         </button>
 
-        {/* Price Tag */}
-        <div className="absolute bottom-4 left-4 z-10">
+        {/* Price Tag + Discount Anchor */}
+        <div className="absolute bottom-4 left-4 z-10 flex flex-col gap-0.5">
+          {product.originalPrice && (
+            <span className="font-outfit text-xs text-white/30 line-through italic tracking-tight">
+              {formatCurrency(product.originalPrice, currency)}
+            </span>
+          )}
           <span className="font-outfit font-black text-lg text-white uppercase italic tracking-tighter glow-text">
             {formatCurrency(product.price, currency)}
           </span>

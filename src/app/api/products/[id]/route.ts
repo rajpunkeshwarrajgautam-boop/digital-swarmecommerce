@@ -32,6 +32,7 @@ function normalizeProduct(p: DBProduct): Product {
     name: p.name,
     description: p.description,
     price: p.price,
+    originalPrice: staticMatch?.originalPrice,
     category: p.category,
     image: staticMatch?.image ?? p.image,
     inStock: p.in_stock ?? true,
