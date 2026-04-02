@@ -1,20 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Globe, ShoppingBag, GraduationCap, Landmark, ArrowRight, Target } from "lucide-react";
+import { Globe, ArrowRight, Activity, Terminal } from "lucide-react";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { products } from "@/lib/data";
-
-const verticals = [
-  { icon: ShoppingBag, name: "E-Commerce", desc: "Optimized storefronts and conversion engines." },
-  { icon: GraduationCap, name: "EdTech", desc: "Learning management and educational platforms." },
-  { icon: Landmark, name: "FinTech", desc: "Secure financial dashboards and payment nodes." },
-  { icon: Target, name: "Marketing", desc: "Ad-trackable landing pages and growth tools." }
-];
+import { seoData } from "@/lib/seo-data";
 
 export default function VerticalsPage() {
-  // Show a representative sample or all boilerplates as "Verticals"
-  const verticalProducts = products.filter(p => p.category === "Boilerplates" || p.category === "Dashboards");
+  // Filter for vertical skeletons and boilerplates
+  const verticalProducts = products.filter(p => p.category === "Boilerplates" || p.category === "Dashboards" || p.category === "Legal" || p.category === "Finance");
 
   return (
     <div className="min-h-screen bg-background pt-32 pb-24 relative overflow-hidden">

@@ -19,7 +19,7 @@ export default function AdminProductsPage() {
     try {
       const data = await getAdminProducts();
       setProducts(data as AdminProduct[]);
-    } catch (e) {
+    } catch {
       addToast("ERROR", "UPLINK_CRITICAL_FAULT", "FAILED TO RETRIEVE ASSET LEDGER");
     } finally {
       setIsLoading(false);
@@ -35,7 +35,7 @@ export default function AdminProductsPage() {
       await updateAdminProduct(product.id, { is_visible: !product.is_visible });
       addToast("SUCCESS", "PROTOCOL_MODIFIED", "ASSET VISIBILITY UPDATED");
       fetchData();
-    } catch (e) {
+    } catch {
       addToast("ERROR", "UPLINK_FAILURE", "MANIFEST UPDATE REJECTED");
     }
   }
@@ -45,7 +45,7 @@ export default function AdminProductsPage() {
       await updateAdminProduct(product.id, { is_verified: !product.is_verified });
       addToast("SUCCESS", "TRUST_PROTOCOL_UPDATED", "ASSET VERIFICATION TOGGLED");
       fetchData();
-    } catch (e) {
+    } catch {
       addToast("ERROR", "UPLINK_FAILURE", "VERIFICATION SYNC ERROR");
     }
   }
@@ -56,7 +56,7 @@ export default function AdminProductsPage() {
       await deleteAdminProduct(id);
       addToast("SUCCESS", "ASSET_REMOVED", "PROTOCOL DELETED FROM CORE STORAGE");
       fetchData();
-    } catch (e) {
+    } catch {
       addToast("ERROR", "DETONATION_FAILED", "REMOVAL_SEQUENCE ERROR");
     }
   }
@@ -136,9 +136,11 @@ export default function AdminProductsPage() {
                >
                  {product.is_visible ? <Eye className="w-5 h-5" /> : <EyeOff className="w-5 h-5" />}
                </button>
-               <button className="p-4 border-2 border-white/10 text-white/40 hover:text-white hover:bg-white/5 transition-all">
-                 <Edit3 className="w-5 h-5" />
-               </button>
+               <Link href={`/admin/products/edit/${product.id}`}>
+                 <button className="p-4 border-2 border-white/10 text-white/40 hover:text-white hover:bg-white/5 transition-all">
+                   <Edit3 className="w-5 h-5" />
+                 </button>
+               </Link>
                <button 
                  onClick={() => handleDelete(product.id)}
                  className="p-4 border-2 border-red-500/20 text-red-500/40 hover:text-red-500 hover:bg-red-500/5 transition-all"

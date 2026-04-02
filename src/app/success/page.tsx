@@ -58,6 +58,14 @@ function SuccessContent() {
         
         if (data.isPaid || data.success) {
           setPaymentStatus('paid');
+          // FETCH ORDER ITEMS FROM SERVER (NEW COMPLETION LOGIC)
+          if (data.orderId) {
+             const itemsRes = await fetch(`/api/orders/${data.orderId}/items`);
+             if (itemsRes.ok) {
+                const itemsData = await itemsRes.ok ? await itemsRes.json() : [];
+                setPurchasedItems(itemsData.items || []);
+             }
+          }
         } else {
           setPaymentStatus('failed');
         }

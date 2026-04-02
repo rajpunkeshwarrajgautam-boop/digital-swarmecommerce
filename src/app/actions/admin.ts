@@ -34,6 +34,18 @@ export async function getAdminProducts() {
   return data;
 }
 
+export async function getAdminProduct(id: string) {
+  await verifyAdmin();
+  const { data, error } = await supabaseAdmin!
+    .from("products")
+    .select("*")
+    .eq("id", id)
+    .single();
+    
+  if (error) throw error;
+  return data;
+}
+
 export interface ProductInput {
   name: string;
   description: string;
