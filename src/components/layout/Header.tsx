@@ -10,10 +10,12 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useForgeStore } from "@/lib/forge-store";
 import { CurrencySwitcher } from "./CurrencySwitcher";
+import { SystemBroadcast } from "./SystemBroadcast";
+import { useAudio } from "@/hooks/useAudio";
 
 export function Header() {
   const pathname = usePathname();
@@ -21,6 +23,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const { items: cartItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
+  const { playClick } = useAudio();
   const [mounted, setMounted] = useState(false);
   
   const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
@@ -49,15 +52,16 @@ export function Header() {
       <header 
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
           scrolled 
-            ? 'glass-panel py-3 border-b border-white/10' 
-            : 'bg-transparent py-6'
+            ? 'glass-panel border-b border-white/10' 
+            : 'bg-transparent'
         }`}
       >
-        <div className="container mx-auto px-6 flex items-center justify-between gap-8 h-12">
+        <SystemBroadcast />
+        <div className={`container mx-auto px-6 flex items-center justify-between gap-8 h-12 transition-all duration-500 ${scrolled ? 'py-3' : 'py-6'}`}>
           
           {/* 1. LEFT: Logo & System Status */}
           <div className="flex items-center gap-6 shrink-0">
-            <Link href="/" className="group">
+            <Link href="/" className="group" onClick={playClick}>
               <Logo className="text-2xl tracking-tighter transition-all group-hover:glow-text uppercase">
                 DIGITAL SWARM
               </Logo>
@@ -86,7 +90,7 @@ export function Header() {
             
             {/* AI Concierge Trigger (The "Input") */}
             <motion.button 
-              onClick={toggleConcierge}
+              onClick={() => { playClick(); toggleConcierge(); }}
               className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-accent/40 transition-all cursor-pointer group"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}

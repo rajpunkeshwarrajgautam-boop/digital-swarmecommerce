@@ -2,10 +2,11 @@
 
 import { useEffect } from "react";
 import { CustomCursor } from "@/components/ui/CustomCursor";
+import { CommandCenter } from "@/components/ui/CommandCenter";
 
 export function VisualQuality() {
   useEffect(() => {
-    // Implement a simple Lenis-like smooth scroll via CSS for now since we can't install packages
+    // Implement a simple Lenis-like smooth scroll via CSS for now
     document.documentElement.style.scrollBehavior = "smooth";
     
     // Global Intersection Observer for ONO reveals
@@ -22,7 +23,6 @@ export function VisualQuality() {
       });
     }, observerOptions);
 
-    // Intersection Observer for reveals stays as it is efficient
     const elementsToObserve = document.querySelectorAll(".silk-reveal-mask, .ono-text-split, .ono-reveal");
     elementsToObserve.forEach(el => revealObserver.observe(el));
 
@@ -31,5 +31,11 @@ export function VisualQuality() {
     };
   }, []);
 
-  return <CustomCursor />;
+  return (
+    <>
+      <CustomCursor />
+      <div className="fixed inset-0 pointer-events-none z-99 opacity-[0.03] noise-overlay" />
+      <CommandCenter />
+    </>
+  );
 }

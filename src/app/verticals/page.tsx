@@ -5,6 +5,7 @@ import { Globe, Shield, Activity, Terminal, Layers, Cpu, Database, Code, Zap } f
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { products } from "@/lib/data";
 import { seoData } from "@/lib/seo-data";
+import { useAudio } from "@/hooks/useAudio";
 
 const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   'Legal': Shield,
@@ -26,6 +27,7 @@ import { Product } from "@/lib/types";
 export default function VerticalsPage() {
   const [dbProducts, setDbProducts] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { playClick } = useAudio();
 
   useEffect(() => {
     const fetchVerticals = async () => {
@@ -98,7 +100,8 @@ export default function VerticalsPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className="p-8 bg-white/5 border border-white/5 rounded-[2rem] hover:border-primary/40 hover:bg-white/[0.07] transition-all group cursor-pointer"
+                  onClick={playClick}
+                  className="p-8 bg-white/5 border border-white/5 rounded-4xl hover:border-primary/40 hover:bg-white/[0.07] transition-all group cursor-pointer"
                 >
                   <Icon className="w-8 h-8 text-primary mb-6 transition-transform group-hover:scale-110" />
                   <h3 className="text-xl font-black uppercase italic tracking-tighter mb-2 group-hover:text-primary transition-colors">{v.industry}</h3>
