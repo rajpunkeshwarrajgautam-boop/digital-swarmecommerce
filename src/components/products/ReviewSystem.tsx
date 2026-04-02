@@ -62,6 +62,7 @@ export function ReviewSystem({ productId }: { productId: string }) {
     if (!supabase) return [];
     
     const uploadPromises = selectedFiles.map(async (file) => {
+      if (!supabase) throw new Error("Storage service unavailable");
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name}`;
       const { data, error } = await supabase.storage
         .from("review-media")
