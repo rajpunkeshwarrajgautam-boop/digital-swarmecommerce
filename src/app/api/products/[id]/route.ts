@@ -45,9 +45,10 @@ function normalizeProduct(p: DBProduct): Product {
 
 export async function GET(
   request: Request,
-  { params }: { params: { id: string } }
+  props: { params: Promise<{ id: string }> | { id: string } }
 ) {
-  const { id } = await (params as unknown as Promise<{ id: string }>);
+  const params = await props.params;
+  const { id } = params;
 
   try {
     if (!supabase) {

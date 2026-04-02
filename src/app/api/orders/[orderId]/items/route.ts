@@ -7,10 +7,11 @@ import { supabaseAdmin } from '@/lib/supabase';
  */
 export async function GET(
   request: Request,
-  { params }: { params: { orderId: string } }
+  props: { params: Promise<{ orderId: string }> | { orderId: string } }
 ) {
   try {
-    const { orderId } = await (params as unknown as Promise<{ orderId: string }>);
+    const params = await props.params;
+    const { orderId } = params;
 
     if (!orderId || !supabaseAdmin) {
       return NextResponse.json({ error: 'Order ID or Database unavailable' }, { status: 400 });
