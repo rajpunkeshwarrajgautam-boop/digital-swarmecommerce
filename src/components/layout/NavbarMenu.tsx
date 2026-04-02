@@ -13,19 +13,19 @@ export function NavbarMenu({ scrolled = false }: { scrolled?: boolean }) {
       <NavigationMenu.List className="flex items-center gap-2 list-none m-0 p-0">
         
         <NavigationMenu.Item>
-          <Link href="/products" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Shop</Link>
+          <Link href="/products" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Inventory</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/pricing" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Plans</Link>
+          <Link href="/verticals" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight text-primary shadow-[0_0_15px_rgba(204,255,0,0.3)]", scrolled ? "text-[#CCFF00]" : "text-primary")}>Sectors</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/about" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>About</Link>
+          <Link href="/pricing" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Plans</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/faq" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>FAQ</Link>
+          <Link href="/about" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Forge</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/blog" className={cn("px-4 py-2 text-sm font-bold transition-colors uppercase tracking-tight", textColor)}>Blog</Link>
+          <Link href="/blog" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Logs</Link>
         </NavigationMenu.Item>
 
         <NavigationMenu.Indicator className="fixed top-full z-1 flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]">
