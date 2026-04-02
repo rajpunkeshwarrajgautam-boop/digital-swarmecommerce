@@ -1,8 +1,8 @@
 "use client";
 
-import { use, useEffect, useState } from "react";
+import { use } from "react";
 import { motion } from "framer-motion";
-import { Terminal, Shield, Activity, ArrowRight, Layers, Cpu } from "lucide-react";
+import { Terminal, Shield, Activity, Layers } from "lucide-react";
 import { seoData } from "@/lib/seo-data";
 import { products } from "@/lib/data";
 import { ProductGrid } from "@/components/products/ProductGrid";
@@ -96,7 +96,7 @@ export default function IndustryProtocolPage({ params }: { params: Promise<{ slu
         <section className="mb-40 grid grid-cols-1 lg:grid-cols-12 gap-20">
            <div className="lg:col-span-12 space-y-12">
               <div className="flex items-center gap-6 pb-6 border-b border-white/5">
-                 <h2 className="text-4xl font-black italic uppercase tracking-tighter italic">Mission_Protocol</h2>
+                 <h2 className="text-4xl font-black italic uppercase tracking-tighter">Mission_Protocol</h2>
                  <div className="h-px bg-white/10 flex-1" />
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
@@ -119,7 +119,7 @@ export default function IndustryProtocolPage({ params }: { params: Promise<{ slu
         <section className="space-y-16">
            <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 border-b-2 border-white/5 pb-12">
               <div className="space-y-2">
-                 <h2 className="text-6xl font-black italic uppercase tracking-tighter italic">Protocol_Assets</h2>
+                 <h2 className="text-6xl font-black italic uppercase tracking-tighter">Protocol_Assets</h2>
                  <p className="text-[10px] font-black uppercase text-white/30 tracking-[0.4em] italic">Pre-Architected Vertical Skeletons v2.4</p>
               </div>
               <Link href="/products">
