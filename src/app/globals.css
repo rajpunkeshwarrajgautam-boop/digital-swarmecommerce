@@ -7,13 +7,13 @@
   --card-foreground: 0 0% 100%;
   --popover: 240 10% 9%;
   --popover-foreground: 0 0% 100%;
-  --primary: 142 70% 45%; /* Elite Green - Omega Standard */
+  --primary: 75 100% 50%; /* Elite Industrial Green (#CCFF00) */
   --primary-foreground: 0 0% 100%;
   --secondary: 240 8% 12%; /* #1c1c24 */
   --secondary-foreground: 0 0% 100%;
   --muted: 240 5% 15%;
   --muted-foreground: 240 5% 65%;
-  --accent: 142 70% 45%; /* Unified with primary for high-velocity focus */
+  --accent: 75 100% 50%; /* Unified with primary for high-velocity focus */
   --accent-foreground: 240 10% 4%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 100%;
@@ -109,7 +109,7 @@ main > section {
 
 .glass-card:hover {
   transform: translateY(-4px);
-  border-color: hsla(142, 70%, 45%, 0.3);
+  border-color: hsla(75, 100%, 50%, 0.3);
   background: hsla(240, 10%, 9%, 0.5);
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
 }
@@ -131,7 +131,7 @@ main > section {
   background: #fff;
   color: #000;
   transform: translateY(-1px);
-  box-shadow: 0 10px 25px hsla(142, 70%, 45%, 0.3);
+  box-shadow: 0 10px 25px hsla(75, 100%, 50%, 0.3);
 }
 
 .glow-text {

@@ -6,7 +6,7 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { products } from "@/lib/data";
 import { seoData } from "@/lib/seo-data";
 
-const iconMap: Record<string, any> = {
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
   'Legal': Shield,
   'Real Estate': Globe,
   'Finance': Database,
@@ -19,14 +19,48 @@ const iconMap: Record<string, any> = {
   'Home Services': Zap
 };
 
+import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
+import { Product } from "@/lib/types";
+
 export default function VerticalsPage() {
-  // Filter for products that might already be in the database
-  const verticalProducts = products.filter(p => p.category === "Boilerplates" || p.category === "Legal" || p.category === "Finance");
+  const [dbProducts, setDbProducts] = useState<Product[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchVerticals = async () => {
+      try {
+        if (!supabase) return;
+        const { data, error } = await supabase
+          .from('products')
+          .select('*')
+          .in('category', ['Legal', 'Real Estate', 'Finance', 'Healthcare', 'Digital Marketing', 'Copywriting', 'SaaS', 'E-commerce', 'Recruitment', 'Home Services']);
+        
+        if (error) throw error;
+        if (data) setDbProducts(data as Product[]);
+      } catch (err) {
+        console.error("Failed to fetch verticals:", err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchVerticals();
+  }, []);
+
+  // Filter local products for specific categories and merge with DB products
+  const localVerticals = products.filter(p => ["Legal", "Real Estate", "Finance"].includes(p.category));
+  
+  // Create a Map to ensure unique products by ID (DB products take precedence)
+  const allProductsMap = new Map();
+  localVerticals.forEach(p => allProductsMap.set(p.id, p));
+  dbProducts.forEach(p => allProductsMap.set(p.id, p));
+  
+  const verticalProducts = Array.from(allProductsMap.values());
 
   return (
     <div className="min-h-screen bg-[#0a0a0b] text-white pt-32 pb-24 relative overflow-hidden">
       {/* Heavy Grid Overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:40px_40px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-size-[40px_40px] mask-[radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)]" />
       
       <div className="container mx-auto px-6 relative z-10 w-full max-w-7xl">
         <header className="mb-20">
@@ -78,7 +112,7 @@ export default function VerticalsPage() {
             <div className="flex items-center gap-4">
               <span className="flex h-2 w-2 rounded-full bg-primary animate-pulse shadow-[0_0_8px_#CCFF00]" />
               <span className="text-[10px] font-black uppercase text-white/30 tracking-widest">
-                {verticalProducts.length > 0 ? `${verticalProducts.length} ACTIVE SOLUTIONS` : "ESTABLISHING SIGNAL..."}
+                {isLoading ? "CALIBRATING SIGNAL..." : `${verticalProducts.length} ACTIVE SOLUTIONS`}
               </span>
             </div>
           </div>

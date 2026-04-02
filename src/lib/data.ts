@@ -68,5 +68,50 @@ export const products: Product[] = [
     installGuide: "### Tactical Download\n1. Download the PDF to your desktop.\n2. Bookmark the Prompt Database link on Page 12.\n3. Execute Chapter 3 immediately.",
     merchantId: "SYSTEM",
     isVerified: true
+  },
+  {
+    id: "ai-for-lawyers",
+    name: "Elite Legal Protocol",
+    description: "Deploy elite multi-agent AI frameworks to automate doc review, legal research, and client onboarding.",
+    price: 4999,
+    category: "Legal",
+    image: "/images/products/ai-for-lawyers.webp",
+    inStock: true,
+    rating: 5.0,
+    features: ['Multi-Agent AI', 'Doc Review Automation', 'Legal Research Node', 'Secure Client Onboarding'],
+    specs: { Industry: 'Legal', Version: '2.4.0', Deploy: 'Cloud', License: 'Enterprise', Support: 'Priority' },
+    downloadUrl: "https://download.digitalswarm.in/assets/ai-for-lawyers.zip",
+    merchantId: "SYSTEM",
+    isVerified: true
+  },
+  {
+    id: "ai-for-real-estate",
+    name: "Elite Real Estate Protocol",
+    description: "Instantly pre-qualify leads, schedule viewings, and aggregate market pricing with our Real Estate AI system protocol.",
+    price: 4999,
+    category: "Real Estate",
+    image: "/images/products/ai-for-real-estate.webp",
+    inStock: true,
+    rating: 4.9,
+    features: ['Lead Pre-qualification', 'Viewing Scheduler', 'Market Pricing Aggregator', 'CRM Integration'],
+    specs: { Industry: 'Real Estate', Version: '2.4.0', Deploy: 'Cloud', License: 'Enterprise', Support: 'Priority' },
+    downloadUrl: "https://download.digitalswarm.in/assets/ai-for-real-estate.zip",
+    merchantId: "SYSTEM",
+    isVerified: true
+  },
+  {
+    id: "ai-for-finance",
+    name: "Elite Finance Protocol",
+    description: "Execute high-frequency market research and dynamic portfolio simulations using our autonomous AI node architecture.",
+    price: 4999,
+    category: "Finance",
+    image: "/images/products/ai-for-finance.webp",
+    inStock: true,
+    rating: 5.0,
+    features: ['HFT Market Research', 'Portfolio Simulation', 'Autonomous Node Sync', 'Risk Analysis Engine'],
+    specs: { Industry: 'Finance', Version: '2.4.0', Deploy: 'On-Prem/Cloud', License: 'Enterprise', Support: 'Priority' },
+    downloadUrl: "https://download.digitalswarm.in/assets/ai-for-finance.zip",
+    merchantId: "SYSTEM",
+    isVerified: true
   }
 ];

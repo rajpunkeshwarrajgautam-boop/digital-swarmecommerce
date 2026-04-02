@@ -10,7 +10,7 @@ export async function GET(
   { params }: { params: { orderId: string } }
 ) {
   try {
-    const { orderId } = params;
+    const { orderId } = await (params as unknown as Promise<{ orderId: string }>);
 
     if (!orderId || !supabaseAdmin) {
       return NextResponse.json({ error: 'Order ID or Database unavailable' }, { status: 400 });
@@ -31,7 +31,7 @@ export async function GET(
     }
 
     // 2. Flatten the dynamic product objects
-    const items = orderItems.map((oi: { products: any; quantity: number; price: number }) => ({
+    const items = orderItems.map((oi: { products: Record<string, unknown>; quantity: number; price: number }) => ({
       ...(oi.products as object),
       quantity: oi.quantity,
       price: oi.price
