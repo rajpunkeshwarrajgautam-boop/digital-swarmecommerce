@@ -39,10 +39,11 @@ export default function RootLayout({
   return (
     <html 
       lang="en" 
-      className={`${inter.variable} ${outfit.variable} ${jetbrains.variable} scroll-smooth`}
+      className={`${inter.variable} ${outfit.variable} ${jetbrains.variable} dark scroll-smooth`}
+      data-theme="dark"
       suppressHydrationWarning
     >
-      <body className="font-sans antialiased text-white selection:bg-primary selection:text-black">
+      <body className="font-sans antialiased bg-[#0a0a0b] text-white selection:bg-primary selection:text-black">
         <ForgeErrorBoundary>
           <ClientProviders>
             <VisualQuality />
