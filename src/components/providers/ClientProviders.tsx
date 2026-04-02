@@ -8,7 +8,7 @@ import { SwarmSWRProvider } from "@/lib/cache/SwarmSWR";
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
     <ClerkProvider>
-      <ThemeProvider attribute="class" defaultTheme="light" enableSystem={false}>
+      <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
         <SwarmSWRProvider>
           <CurrencyProvider>
             {children}

@@ -47,8 +47,12 @@ export default function VerticalsPage() {
     fetchVerticals();
   }, []);
 
-  // Filter local products for specific categories and merge with DB products
-  const localVerticals = products.filter(p => ["Legal", "Real Estate", "Finance"].includes(p.category));
+  // Filter local products for all elite categories and merge with DB products
+  const localVerticals = products.filter(p => [
+    "Legal", "Real Estate", "Finance", "Healthcare", 
+    "Digital Marketing", "Copywriting", "SaaS", 
+    "E-commerce", "Recruitment", "Home Services", "AI Agent"
+  ].includes(p.category));
   
   // Create a Map to ensure unique products by ID (DB products take precedence)
   const allProductsMap = new Map();
