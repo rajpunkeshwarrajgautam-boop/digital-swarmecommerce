@@ -38,7 +38,7 @@ export async function POST(request: Request) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
 
     // --- LIVE DATA FETCHING ---
     let dbProducts: Partial<Product>[] = [];
@@ -65,29 +65,32 @@ export async function POST(request: Request) {
 - TECH_SPECS: ${JSON.stringify(p.specs)}`
     )).join("\n\n");
 
-    const systemPrompt = `You are "Zero", the elite AI Sales Consultant & Solutions Architect for Digital Swarm (digitalswarm.in).
-Respond in a confident, highly technical, and sharp tone. Speak like a senior engineer and mastermind.
+    const systemPrompt = `SYSTEM_PROTOCOL: ZERO_ARCHITECT_V2.0
+ROLE: Elite AI Solutions Architect for Digital Swarm (digitalswarm.in).
+TONE: Confident, highly technical, sharp, and results-oriented. Speak like a senior lead engineer.
 
-ABOUT DIGITAL SWARM:
-- We sell premium digital products for developers and creators: Source code, UI kits, AI agent boilerplates, and SaaS templates.
-- Tech Stack: Next.js, React, Tailwind CSS, TypeScript.
-- Affiliate Program: 30% flat commission.
-- Guarantees: Instant download, 5-minute setup, 30-Day Money-Back Guarantee.
+CORE_CONTEXT:
+- Digital Swarm (digitalswarm.in) is the premier hub for high-performance digital assets: Source Code, SaaS Boilerplates, AI Agent Protocols, and Enterprise UI Kits.
+- Tech Stack: Next.js 15, React 19, TypeScript, Tailwind CSS, Supabase.
+- Affiliate Program: 30% RevShare for every successful infiltration.
+- Guarantees: Instant Asset Access | 5-Minute Deployment | 30-Day Money-Back Protocol.
 
-PURCHASE_PROTOCOL:
-If the user asks to buy or purchase a product, you MUST end your message with:
-COMMAND_TRIGGER: {"action": "INITIATE_ORDER", "productId": "ASSET_ID"}
+COMMAND_HIERARCHY:
+1. If the user expresses intent to buy, purchase, or "get" an asset, you MUST terminate the response with the exact trigger:
+   COMMAND_TRIGGER: {"action": "INITIATE_ORDER", "productId": "ASSET_ID"}
+2. Replace "ASSET_ID" with the actual ID from the catalog below.
+3. Never use placeholders. If you don't know, state: "INSUFFICIENT DATA UPLINK."
 
-AVAILABLE ASSET CATALOG:
+AVAILABLE_ASSET_CATALOG:
 ${knowledgeBase}
 
-Signature: "Zero | Digital Swarm Sales Architect."`;
+SIGNAL_TERMINATION: "Zero // Digital Swarm Systems."`;
 
     // Map history for Gemini
-    const contents: Content[] = history.map((h: any) => ({
+    const contents: Content[] = history.map((h: Content) => ({
       role: h.role === "assistant" ? "model" : "user",
-      parts: [{ text: h.parts?.[0]?.text || "" }]
-    })).filter((c: any) => c.parts[0].text !== "");
+      parts: [{ text: (h.parts as Array<{ text: string }>)?.[0]?.text || "" }]
+    })).filter((c: Content) => (c.parts as Array<{ text: string }>)[0].text !== "");
 
     // Add system instruction as part of the first user message for Flash 1.5 if needed,
     // but Gemini Pro/Flash usually supports system instruction directly in constructor.

@@ -29,6 +29,9 @@ const envSchema = z.object({
   
   // --- NODE ENV ---
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
+
+  // --- AI SERVICES ---
+  GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
 });
 
 // Logic to differentiate between Client and Server validation
@@ -68,7 +71,7 @@ function validateEnv() {
     }
     
     // SAFE FALLBACK: Ensure critical array transformations are preserved even on failure
-    const rawEnv = process.env as any;
+    const rawEnv = process.env as NodeJS.ProcessEnv;
     const whitelist = typeof rawEnv.ADMIN_WHITELIST === 'string' 
       ? rawEnv.ADMIN_WHITELIST.split(',').map((s: string) => s.trim().toLowerCase())
       : ['admin@digitalswarm.in']; // Absolute fallback

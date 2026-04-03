@@ -4,7 +4,8 @@ import { useState, useEffect, useRef } from "react";
 import { Star, User, ShieldCheck, Image as ImageIcon, Send, X, Loader2 } from "lucide-react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
-import { supabase } from "@/lib/supabase";
+import NextImage from "next/image";
+import { useUser } from "@clerk/nextjs";
 
 interface Review {
   id: string;
@@ -24,6 +25,7 @@ export function ReviewSystem({ productId }: { productId: string }) {
   const [previews, setPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { user, isSignedIn } = useUser();
 
   useEffect(() => {
     async function loadReviews() {
@@ -58,23 +60,30 @@ export function ReviewSystem({ productId }: { productId: string }) {
     });
   };
 
+  /**
+   * Uploads review images through the server-side API route.
+   * Using a server route ensures the service role key is used for storage,
+   * bypassing RLS policies that would block client-side direct uploads.
+   */
   const uploadImages = async (): Promise<string[]> => {
-    if (!supabase) return [];
-    
+    if (selectedFiles.length === 0) return [];
+
     const uploadPromises = selectedFiles.map(async (file) => {
-      if (!supabase) throw new Error("Storage service unavailable");
-      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}-${file.name}`;
-      const { data, error } = await supabase.storage
-        .from("review-media")
-        .upload(fileName, file);
-      
-      if (error) throw error;
-      
-      const { data: { publicUrl } } = supabase.storage
-        .from("review-media")
-        .getPublicUrl(data.path);
-        
-      return publicUrl;
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/reviews/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || "Upload failed");
+      }
+
+      const { url } = await res.json();
+      return url as string;
     });
 
     return Promise.all(uploadPromises);
@@ -92,10 +101,10 @@ export function ReviewSystem({ productId }: { productId: string }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           product_id: productId,
-          user_name: "Anonymous Developer",
+          user_name: user?.fullName || user?.username || "Anonymous Developer",
           rating: newReview.rating,
           comment: newReview.comment,
-          verified: false,
+          verified: isSignedIn || false,
           images: imageUrls
         })
       });
@@ -174,6 +183,7 @@ export function ReviewSystem({ productId }: { productId: string }) {
                 <div className="flex flex-wrap gap-4">
                   {previews.map((url, i) => (
                     <div key={url} className="relative w-24 h-24 border-2 border-primary/40 rounded-xl overflow-hidden group">
+                      {/* eslint-disable-next-line @next/next/no-img-element -- blob: URLs are not supported by next/image */}
                       <img src={url} alt="Preview" className="w-full h-full object-cover" />
                       <button
                         type="button"
@@ -252,7 +262,14 @@ export function ReviewSystem({ productId }: { productId: string }) {
                     whileHover={{ scale: 1.05 }}
                     className="w-24 h-24 bg-zinc-900 border border-white/10 overflow-hidden cursor-zoom-in"
                   >
-                    <img src={img} alt={`Review ${i}`} className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all" />
+                    <NextImage
+                      src={img}
+                      alt={`Review screenshot ${i + 1}`}
+                      width={96}
+                      height={96}
+                      unoptimized
+                      className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all"
+                    />
                   </motion.div>
                 ))}
               </div>
