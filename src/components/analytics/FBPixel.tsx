@@ -3,14 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
-declare global {
-  interface Window {
-    fbq: (...args: unknown[]) => void;
-    _fbq: unknown;
-  }
-}
 
-/**
  * Fires fbq('track', 'PageView') on every client-side route change.
  * The base fbq('init', ...) and fbq('track', 'PageView') for the initial
  * page load is handled directly in RootLayout via the <Script> tag.
