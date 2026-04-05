@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { usePathname, useSearchParams } from 'next/navigation';
 
+/**
 
  * Fires fbq('track', 'PageView') on every client-side route change.
  * The base fbq('init', ...) and fbq('track', 'PageView') for the initial
