@@ -1,16 +1,23 @@
-# 🔒 GOD MODE: State Anchor
+# DOMAIN: DIGITAL SWARM
+# STATE: STABLE
+# PHASE: Wave 3 Complete (SEO Blog Hub)
 
-**Timestamp:** 2026-04-05
-**Project:** Digital Swarm V2
-**Status:** Wave 1 & Wave 2 Executed.
+## ACTIVE ARCHITECTURE
+- Next.js 14/15 App Router | React 18 | Tailwind CSS | Framer Motion
+- Supabase (Backend/Auth)
+- Clerk (Secondary Auth)
+- Resend (Email Automation Pipeline)
 
-## Architecture Lock
-1. **Caching Engine:** Vercel `swr` has permanently replaced `SwarmSWR`. Do not attempt to use custom SWR hooks going forward; strictly use official caching imports to prevent type leaking.
-2. **Dependency Stack:** All deprecated gateway APIs (Razorpay, Stripe, Instamojo) have been purged from `package.json` and API trees to ensure a 30% smaller initial load chunk on Vercel deployment.
-3. **Type Safety:** The core UI screens and search loops have been scrubbed of `: any` castings. Future modifications strictly require Zod or generic casting using `unknown`.
+## CORE FEATURES IMPLEMENTED
+1.  **AI Product Store**: Tiered mapping for intelligent, dynamic AI agents.
+2.  **Conversion Infrastructure**: 
+    - Physical `ExitIntentModal` connected globally.
+    - Scarcity metrics injected into `ProductCard` arrays.
+3.  **Lead Capture Funnel**: Resend API dynamically delivers `omega_protocol.pdf` lead magnets on capture.
+4.  **Organic SEO Hub (The Neural Feed)**:
+    - `blog_posts` table actively running in Supabase.
+    - Dynamic index (`/blog`) and SEO slug pages (`/blog/[slug]`) fully deployed with read-only Data schemas.
 
-## Known States
-- The `ForgeButton.tsx` and `CommandCenter.tsx` ui modules have been preserved as atomic units to prevent "client-cascading" (the risk of turning all parent nodes into client components if `framer-motion` is pushed into the lowest leaf). They are currently stable and hyper-optimized.
-- The Vercel `npm run build` process has passed natively with 0 errors.
-
-*This file serves as a context preservation engine. Future agents or executions must read this file prior to beginning massive architectural changes.*
+## CRITICAL PATH FOR FUTURE
+- Project is technically COMPLETE for production revenue generation.
+- Next phase would involve tracking analytics via FB Pixel & monitoring Stripe/Cashfree conversions.

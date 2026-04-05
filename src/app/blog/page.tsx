@@ -3,55 +3,43 @@
 import { motion } from "framer-motion";
 import { Search, Calendar, Clock, ArrowRight, Rss } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import Link from "next/link";
+import { useState, useEffect } from "react";
 
-
-const blogPosts = [
-  {
-    title: "The Architecture of Speed: Next.js 14 Parallel Routes",
-    excerpt: "How we achieved 100/100 Lighthouse scores using parallel routing and edge computing.",
-    category: "Engineering",
-    date: "MAR 22, 2026",
-    readTime: "5 MIN READ",
-    image: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
-    slug: "architecture-of-speed"
-  },
-  {
-    title: "Securing Digital Assets: HMAC Signature Verification",
-    excerpt: "Deep dive into our standard security protocol for digital marketplace fulfillment.",
-    category: "Security",
-    date: "MAR 18, 2026",
-    readTime: "8 MIN READ",
-    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
-    slug: "securing-digital-assets"
-  },
-  {
-    title: "Atomic Design in the ONO Industrial Aesthetic",
-    excerpt: "Why we chose high-contrast, sharp-edged UI for the modern developer experience.",
-    category: "Design",
-    date: "MAR 12, 2026",
-    readTime: "4 MIN READ",
-    image: "https://images.unsplash.com/photo-1558591710-4b4a1ae0f04d?auto=format&fit=crop&q=80&w=800",
-    slug: "atomic-design-ono"
-  },
-  {
-    title: "Scaling to 10k Users: Supabase vs Traditional SQL",
-    excerpt: "The truth about serverless databases in rapid deployment environments.",
-    category: "DevOps",
-    date: "MAR 05, 2026",
-    readTime: "6 MIN READ",
-    image: "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&q=80&w=800",
-    slug: "scaling-supabase"
-  }
-];
+interface BlogPost {
+  title: string;
+  excerpt: string;
+  category: string;
+  date: string;
+  readTime: string;
+  image: string;
+  slug: string;
+}
 
 export default function BlogPage() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [activeCategory, setActiveCategory] = useState("All");
-  const categories = ["All", "Engineering", "Security", "Design", "DevOps"];
+
+  useEffect(() => {
+    fetch('/api/blog')
+      .then(res => res.json())
+      .then(data => {
+        if (Array.isArray(data)) setPosts(data);
+        setIsLoading(false);
+      })
+      .catch(err => {
+        console.error('Failed to fetch blog posts', err);
+        setIsLoading(false);
+      });
+  }, []);
+
+  // Dynamically extract unique categories from actual posts
+  const dynamicCategories = ["All", ...Array.from(new Set(posts.map(p => p.category)))];
 
   const filteredPosts = activeCategory === "All" 
-    ? blogPosts 
-    : blogPosts.filter(post => post.category === activeCategory);
+    ? posts 
+    : posts.filter(post => post.category === activeCategory);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white pt-32 pb-20 font-mono">
@@ -98,62 +86,66 @@ export default function BlogPage() {
 
         {/* Categories */}
         <div className="flex flex-wrap gap-4 mb-16">
-          {categories.map((cat, i) => (
-            <button 
-              key={i}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-6 py-2 border-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeCategory === cat ? "bg-primary border-primary text-white italic shadow-[6px_6px_0_#fff]" : "bg-white/5 border-white/10 text-white/40 hover:border-white/20"}`}
-            >
-              {cat}
-            </button>
-          ))}
+          {isLoading ? (
+             <div className="text-primary text-sm font-bold animate-pulse">SYNCING WITH SWARM...</div>
+          ) : (
+            dynamicCategories.map((cat: string, i: number) => (
+              <button 
+                key={i}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-6 py-2 border-2 text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeCategory === cat ? "bg-primary border-primary text-white italic shadow-[6px_6px_0_#fff]" : "bg-white/5 border-white/10 text-white/40 hover:border-white/20"}`}
+              >
+                {cat}
+              </button>
+            ))
+          )}
         </div>
 
         {/* Blog Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
           {filteredPosts.map((post, i) => (
-            <motion.article 
-              key={i}
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="group cursor-pointer"
-            >
-              <div className="relative aspect-video rounded-4xl bg-black overflow-hidden border-b-4 border-black mb-8">
-                  <Image 
-                    src={post.image} 
-                    alt={post.title} 
-                    fill 
-                    className="object-cover group-hover:scale-110 transition-transform duration-700" 
-                  />
-                <div className="absolute top-6 left-6 px-4 py-1.5 bg-black text-white text-[10px] font-black uppercase italic tracking-widest border border-white/10">
-                  {post.category}
-                </div>
-              </div>
-              
-              <div className="space-y-4">
-                <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white/30">
-                  <div className="flex items-center gap-2">
-                    <Calendar className="w-3.5 h-3.5" /> {post.date}
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Clock className="w-3.5 h-3.5" /> {post.readTime}
+            <Link key={i} href={`/blog/${post.slug}`} className="group cursor-pointer block">
+              <motion.article 
+                initial={{ opacity: 0, y: 30 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: i * 0.1 }}
+              >
+                <div className="relative aspect-video rounded-4xl bg-black overflow-hidden border-b-4 border-black mb-8">
+                    <Image 
+                      src={post.image} 
+                      alt={post.title} 
+                      fill 
+                      className="object-cover group-hover:scale-110 transition-transform duration-700" 
+                    />
+                  <div className="absolute top-6 left-6 px-4 py-1.5 bg-black text-white text-[10px] font-black uppercase italic tracking-widest border border-white/10">
+                    {post.category}
                   </div>
                 </div>
                 
-                <h3 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter leading-none group-hover:text-primary transition-colors">
-                  {post.title}
-                </h3>
-                
-                <p className="text-white/40 font-medium uppercase text-xs leading-relaxed max-w-xl">
-                  {post.excerpt}
-                </p>
-                
-                <div className="pt-4 flex items-center gap-2 text-primary font-black uppercase italic text-xs tracking-widest opacity-0 group-hover:opacity-100 transition-all">
-                  Read Report <ArrowRight className="w-4 h-4" />
+                <div className="space-y-4">
+                  <div className="flex items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white/30">
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-3.5 h-3.5" /> {post.date}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-3.5 h-3.5" /> {post.readTime}
+                    </div>
+                  </div>
+                  
+                  <h3 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter leading-none group-hover:text-primary transition-colors">
+                    {post.title}
+                  </h3>
+                  
+                  <p className="text-white/40 font-medium uppercase text-xs leading-relaxed max-w-xl">
+                    {post.excerpt}
+                  </p>
+                  
+                  <div className="pt-4 flex items-center gap-2 text-primary font-black uppercase italic text-xs tracking-widest opacity-0 group-hover:opacity-100 transition-all">
+                    Read Report <ArrowRight className="w-4 h-4" />
+                  </div>
                 </div>
-              </div>
-            </motion.article>
+              </motion.article>
+            </Link>
           ))}
         </div>
 

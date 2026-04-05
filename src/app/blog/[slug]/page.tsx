@@ -1,81 +1,112 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { blogPosts } from "@/lib/blog";
+import { supabaseAdmin } from "@/lib/supabase";
 import { notFound } from "next/navigation";
-import { use } from "react";
-import { ArrowLeft, User, Calendar, Tag } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
+import { ArrowLeft, Calendar, Clock, Tag, Share2 } from "lucide-react";
 
-export default function BlogPostPage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = use(params);
-  const post = blogPosts.find((p) => p.slug === slug);
+export const revalidate = 3600; // ISR every hour
 
-  if (!post) {
-     notFound();
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  if (!supabaseAdmin) return {};
+  
+  const { data } = await supabaseAdmin
+    .from("blog_posts")
+    .select("title, excerpt, image_url")
+    .eq("slug", params.slug)
+    .single();
+
+  if (!data) return {};
+
+  return {
+    title: `${data.title} | Digital Swarm`,
+    description: data.excerpt,
+    openGraph: {
+      title: data.title,
+      description: data.excerpt,
+      images: [data.image_url],
+    },
+  };
+}
+
+export default async function BlogPostPage({ params }: Readonly<{ params: { slug: string } }>) {
+  if (!supabaseAdmin) {
+    return <div className="min-h-screen text-white pt-40 px-6 text-center">Database not configured.</div>;
+  }
+
+  const { data: post, error } = await supabaseAdmin
+    .from("blog_posts")
+    .select("*")
+    .eq("slug", params.slug)
+    .single();
+
+  if (error || !post) {
+    notFound();
   }
 
   return (
-    <div className="min-h-screen bg-background text-white pb-32">
-       {/* Breadcrumb / Back */}
-       <div className="container mx-auto px-6 pt-24 pb-12">
-          <Link href="/blog" className="group inline-flex items-center gap-2 text-xs font-black uppercase tracking-[0.4em] text-white/40 hover:text-primary transition-colors italic">
-             <ArrowLeft className="w-4 h-4 group-hover:-translate-x-2 transition-transform" />
-             [ BACK_TO_LOGS ]
-          </Link>
-       </div>
-
-       <article className="container mx-auto px-6 max-w-4xl">
-          {/* Post Header */}
-          <div className="space-y-12">
-            <motion.div
-              initial={{ opacity: 0, scaleX: 0 }}
-              animate={{ opacity: 1, scaleX: 1 }}
-              transition={{ duration: 0.8 }}
-              className="bg-primary text-black px-4 py-1 text-[10px] font-black uppercase tracking-[0.5em] origin-left w-fit italic"
-            >
-              [ Strategic_Performance ]
-            </motion.div>
-
-            <h1 className="text-5xl md:text-8xl font-black italic uppercase tracking-tighter leading-[0.9]">
-              {post.title}
-            </h1>
-
-            <div className="flex flex-wrap gap-x-12 gap-y-6 pt-8 border-y border-white/5 py-8 text-[10px] font-black uppercase tracking-[0.4em] text-white/30 italic">
-               <span className="flex items-center gap-3"><User className="w-4 h-4 text-primary" /> {post.author}</span>
-               <span className="flex items-center gap-3"><Calendar className="w-4 h-4 text-primary" /> {post.date}</span>
-               <span className="flex items-center gap-3"><Tag className="w-4 h-4 text-primary" /> {post.category.replace('_', ' ')}</span>
+    <div className="min-h-screen bg-[#0a0a0f] text-white pt-32 pb-24 font-mono">
+      <div className="max-w-4xl mx-auto px-6">
+        
+        {/* Back Navigation */}
+        <Link 
+          href="/blog" 
+          className="inline-flex items-center text-white/50 hover:text-primary transition-colors text-xs font-black uppercase tracking-widest mb-10"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" /> Back to Intelligence
+        </Link>
+        
+        {/* Post Metadata Header */}
+        <header className="mb-12">
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex gap-2 mb-6">
+              {post.tags.map((tag: string) => (
+                <span key={tag} className="px-3 py-1 bg-white/5 border border-white/10 text-[10px] font-black uppercase tracking-[0.2em] text-primary shadow-[2px_2px_0_#CCFF00]">
+                  {tag}
+                </span>
+              ))}
             </div>
+          )}
 
-            <p className="text-2xl md:text-3xl text-primary font-black italic tracking-tighter leading-tight max-w-3xl opacity-80">
-              {post.excerpt}
-            </p>
-          </div>
+          <h1 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter leading-[1.1] mb-6">
+            {post.title}
+          </h1>
 
-          {/* Post Content */}
-          <div className="mt-24 prose prose-invert prose-headings:font-black prose-headings:italic prose-headings:uppercase prose-headings:tracking-tighter prose-p:text-xl prose-p:text-white/50 prose-p:font-bold prose-p:uppercase prose-p:italic prose-p:tracking-tighter prose-p:leading-relaxed prose-strong:text-white prose-strong:font-black max-w-none">
-             <div dangerouslySetInnerHTML={{ __html: post.content.replace(/\n\n/g, '<br/><br/>').replace(/### (.*)/g, '<h3 class="text-3xl mt-12 mb-6">$1</h3>').replace(/#### (.*)/g, '<h4 class="text-xl mt-8 mb-4 text-primary">$1</h4>') }} />
-          </div>
-
-          {/* Final Message */}
-          <div className="mt-32 p-12 bg-primary/5 border border-primary/20 relative overflow-hidden group">
-            <div className="absolute top-0 right-0 p-8 opacity-10 blur-3xl bg-primary w-64 h-64 rounded-none translate-x-1/2 -translate-y-1/2 transition-all group-hover:scale-150 duration-700" />
-            <div className="relative z-10 space-y-6">
-                <h2 className="text-3xl font-black italic uppercase tracking-tighter text-primary leading-none">Transmission_End</h2>
-                <p className="text-lg text-white/50 font-bold uppercase italic tracking-tighter leading-tight max-w-xl">
-                  Ready to deploy these protocols in your mainframe? <br/>
-                  Our agents are standing by for tactical consultation.
-                </p>
-                <div className="pt-6">
-                  <Link href="/contact">
-                    <button className="bg-primary text-black font-black px-12 py-5 uppercase italic tracking-[0.3em] hover:bg-white transition-all text-xs border-none shadow-[15px_15px_0px_rgba(var(--primary-rgb),0.1)] active:shadow-none">
-                      Initiate_Consultation
-                    </button>
-                  </Link>
-                </div>
+          <div className="flex flex-wrap items-center gap-6 text-[10px] font-black uppercase tracking-widest text-white/40 pb-8 border-b border-white/10">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-primary" />
+              {new Date(post.published_at).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' })}
             </div>
+            <div className="flex items-center gap-2">
+              <Clock className="w-4 h-4 text-primary" />
+              {post.reading_time_minutes} MIN READ
+            </div>
+            <div className="flex items-center gap-2">
+              <Tag className="w-4 h-4 text-primary" />
+              AUTHOR: {post.author}
+            </div>
+            <button className="ml-auto flex items-center gap-2 hover:text-white transition-colors">
+              <Share2 className="w-4 h-4" /> Share Protocol
+            </button>
           </div>
-       </article>
+        </header>
+
+        {/* Hero Image */}
+        <div className="relative aspect-21/9 w-full bg-black border-4 border-black mb-16 shadow-[12px_12px_0_rgba(255,255,255,0.05)] overflow-hidden">
+          <Image 
+            src={post.image_url}
+            alt={post.title}
+            fill
+            className="object-cover"
+            priority
+          />
+        </div>
+
+        {/* Content Body - Markdown Rendered */}
+        <div className="prose prose-invert prose-p:text-white/70 prose-headings:font-black prose-headings:italic prose-headings:uppercase prose-a:text-primary max-w-none pb-20 border-b border-white/10">
+          <div dangerouslySetInnerHTML={{ __html: post.content.replaceAll(/\n\n/g, '<br/><br/>').replaceAll(/^# (.*$)/gim, '<h1 class="text-3xl mt-8 mb-4 text-white">$1</h1>').replaceAll(/^## (.*$)/gim, '<h2 class="text-2xl mt-8 mb-4 tracking-tighter text-white/90">$1</h2>') }} />
+        </div>
+
+      </div>
     </div>
   );
 }

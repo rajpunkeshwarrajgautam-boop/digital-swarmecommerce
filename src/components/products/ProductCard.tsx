@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ForgeButton } from "@/components/ui/ForgeButton";
+import { ScarcityEngine } from "@/components/ui/ScarcityEngine";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { formatCurrency } from "@/lib/utils";
 
@@ -214,6 +215,9 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         )}
 
         <div className="mt-6 pt-6 border-t border-white/5 flex flex-col gap-3">
+          <div className="w-full pb-2">
+            <ScarcityEngine productId={product.id} />
+          </div>
           <ForgeButton
             variant={added ? "outline" : "primary"}
             size="sm"

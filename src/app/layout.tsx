@@ -9,6 +9,7 @@ import { AIConcierge } from "@/components/forge/AIConcierge";
 import Script from "next/script";
 import { env } from "@/lib/env";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
+import { ExitIntentModal } from "@/components/marketing/ExitIntentModal";
 import { metadata as siteMetadata } from "./metadata";
 
 const inter = Inter({ 
@@ -54,6 +55,7 @@ export default function RootLayout({
               <main className="grow">
                 {children}
               </main>
+              <ExitIntentModal />
               <Footer />
             </div>
             <Script
