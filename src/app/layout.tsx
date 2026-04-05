@@ -82,6 +82,9 @@ export default function RootLayout({
                 `,
               }}
             />
+                  <Suspense fallback={null}>
+                            <FBPixelPageView />
+                  </Suspense>
           </ClientProviders>
         </ForgeErrorBoundary>
       </body>
