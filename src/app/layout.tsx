@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -48,7 +49,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[#0a0a0b] text-white selection:bg-primary selection:text-black">
         <ForgeErrorBoundary>
           <ClientProviders>
-            <FBPixelPageView />
+<Suspense fallback={null}>            <FBPixelPageView /></Suspense>Suspense>
             <VisualQuality />
             <ForgeToast />
             <AIConcierge />
