@@ -49,7 +49,10 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[#0a0a0b] text-white selection:bg-primary selection:text-black">
         <ForgeErrorBoundary>
           <ClientProviders>
-<Suspense fallback={null}>            <FBPixelPageView /></Suspense>Suspense>
+        <Suspense fallback={null}>
+                    <FBPixelPageView />
+        </Suspense>
+            
             <VisualQuality />
             <ForgeToast />
             <AIConcierge />
