@@ -24,9 +24,9 @@ export default function SetupPage() {
         setMessage(data.message);
         setDetails(data.details);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       setStatus('error');
-      setMessage(err.message || 'Failed to connect');
+      setMessage(err instanceof Error ? err.message : 'Failed to connect');
     }
   };
 
@@ -72,7 +72,7 @@ export default function SetupPage() {
                     <p className="text-sm opacity-80">{message}</p>
                 </div>
             </div>
-            {status === 'error' && details && (
+            {status === 'error' && details !== null && (
                 <div className="mt-4 p-4 bg-black/30 rounded text-xs font-mono overflow-auto max-h-32">
                     {JSON.stringify(details, null, 2)}
                 </div>

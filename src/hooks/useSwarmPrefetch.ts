@@ -1,40 +1,19 @@
-"use client";
+import { preload } from 'swr';
 
-import { useCallback } from "react";
-import { useSwarmCache } from "@/lib/cache/SwarmSWR";
+const fetcher = async (url: string) => {
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('An error occurred while fetching the data.');
+  return res.json();
+};
 
 /**
- * useSwarmPrefetch: The Predictive Data Engine
- * Allows pre-warming the SwarmSWR cache before interaction.
+ * useSwarmPrefetch: Pre-warming mechanism for high-velocity transitions
  */
 export function useSwarmPrefetch() {
-  const { mutate, get } = useSwarmCache();
-
-  const prefetch = useCallback(async (url: string, ttl = 60000) => {
-    const cached = get(url);
-    const now = Date.now();
-
-    // Skip if valid cache exists
-    if (cached && now - cached.timestamp < ttl) {
-      return;
-    }
-
-    try {
-      // In-flight fetch (low priority as it's predictive)
-      const res = await fetch(url, { 
-        priority: 'low' 
-      } as RequestInit & { priority: string });
-
-      if (!res.ok) return;
-      const data = await res.json();
-      
-      // Materialize in global cache
-      mutate(url, data);
-    } catch {
-      // Silently fail as pre-fetch is optional
-      console.debug("[PREFETCH_SILENT_FAIL]", url);
-    }
-  }, [get, mutate]);
+  const prefetch = (url: string) => {
+    // Utilize SWR native preloading
+    preload(url, fetcher);
+  };
 
   return { prefetch };
 }

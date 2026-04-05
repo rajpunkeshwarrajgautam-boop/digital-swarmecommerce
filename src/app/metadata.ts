@@ -21,14 +21,6 @@ export const metadata: Metadata = {
     description: "Stop rebuilding. Start shipping with the swarm. Premium architectural patterns for modern software.",
     url: "https://digitalswarm.in",
     siteName: "DIGITAL SWARM",
-    images: [
-      {
-        url: "/og-image.png",
-        width: 1200,
-        height: 630,
-        alt: "Digital Swarm Forge Marketplace",
-      },
-    ],
     locale: "en_IN",
     type: "website",
   },
@@ -36,7 +28,6 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "DIGITAL SWARM | The Elite Forge",
     description: "Premium Next.js & AI templates for elite engineers.",
-    images: ["/og-image.png"],
   },
   robots: {
     index: true,

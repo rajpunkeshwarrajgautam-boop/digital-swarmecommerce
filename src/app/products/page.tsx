@@ -10,12 +10,12 @@ import { motion } from "framer-motion";
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 
 export default function ProductsPage() {
-  const { data: productsData, isLoading } = useSwarmSWR<any[]>('/api/products');
+  const { data: productsData, isLoading } = useSwarmSWR<Product[]>('/api/products');
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
   const [isNeural, setIsNeural] = useState(false);
-  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
   const rawProducts = useMemo(() => productsData || [], [productsData]);
@@ -45,11 +45,11 @@ export default function ProductsPage() {
 
         // Apply Local Category & Sort filters
         if (activeCategory !== "All") {
-          results = results.filter((p: any) => p.category === activeCategory);
+          results = results.filter((p: Product) => p.category === activeCategory);
         }
 
-        if (sortBy === "price-asc") results.sort((a: any, b: any) => a.price - b.price);
-        else if (sortBy === "price-desc") results.sort((a: any, b: any) => b.price - a.price);
+        if (sortBy === "price-asc") results.sort((a: Product, b: Product) => a.price - b.price);
+        else if (sortBy === "price-desc") results.sort((a: Product, b: Product) => b.price - a.price);
 
         setFilteredProducts(results);
       } catch (err) {
