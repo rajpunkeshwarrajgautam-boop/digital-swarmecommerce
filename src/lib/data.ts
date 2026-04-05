@@ -306,5 +306,39 @@ export const products: Product[] = [
     installGuide: "### Step 1 — Download Your Package\nExtract the .zip to find:\n- `README.md` — Start here\n- `prompt-library.md` — 65+ home services prompts\n- `quote-generator/` — Instant professional quote templates\n- `customer-comms/` — Job confirmation, reminder & follow-up messages\n- `review-system/` — Google review request sequence\n- `seasonal-campaigns/` — Summer, winter & holiday promotion copy\n\n### Step 2 — Generate Your First Quote\nOpen `quote-generator/`. Input your service type, scope, and materials. The AI generates a professional itemized quote in 2 minutes.\n\n### Step 3 — Set Up Customer Communications\nUse `customer-comms/` for job confirmation texts, 24-hour reminders, and post-job follow-ups in your CRM or SMS platform.\n\n### Step 4 — Automate Google Reviews\nUse the 3-message sequence in `review-system/`. Send post-job — designed to maximize 5-star review response rate.\n\n### Step 5 — Run Seasonal Campaigns\nEvery quarter, use `seasonal-campaigns/` to generate promotional emails and social posts for HVAC, landscaping, and cleaning.\n\n📧 **Priority Support**: support@digitalswarm.in | Subject: [HOME SERVICES PROTOCOL]",
     merchantId: "SYSTEM",
     isVerified: true
+  },
+  {
+    id: "starter-kit",
+    name: "Digital Swarm Starter Kit",
+    description: "Essential architecture for solo developers and quick MVP validation. Core Next.js 14 pattern, Standard Tailwind styling, and base Supabase integration.",
+    price: 1499,
+    originalPrice: 4999,
+    category: "Source Code",
+    image: "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+    inStock: true,
+    rating: 5.0,
+    features: ['Core Next.js 14 Pattern', 'Standard Tailwind Styling', 'Basic Supabase Integration', 'Single Domain License'],
+    specs: { Platform: 'Next.js 14', Deployment: 'Vercel', Language: 'TypeScript', License: 'Single Domain' },
+    downloadUrl: "/downloads/starter-kit.zip",
+    installGuide: "### Step 1 — Download Kit\nSave the ZIP to your workstation.\n\n### Step 2 — Initialize\nRun `npm install` and populate your `.env` following the README.\n\n📧 **Support**: support@digitalswarm.in",
+    merchantId: "SYSTEM",
+    isVerified: true
+  },
+  {
+    id: "nextjs-saas-kit",
+    name: "Digital Swarm Professional Kit",
+    description: "The gold standard for production-grade SaaS and agency deployments. Includes advanced AI route patterns, premium glassmorphic design system, and multi-domain licensing.",
+    price: 3999,
+    originalPrice: 9999,
+    category: "Source Code",
+    image: "https://images.unsplash.com/photo-1542831371-29b0f74f9713?auto=format&fit=crop&q=80&w=800",
+    inStock: true,
+    rating: 5.0,
+    features: ['Everything in Starter', 'Advanced AI Patterns', 'Integrated Payments', 'Multi-Domain License'],
+    specs: { Platform: 'Next.js 14', Deployment: 'Vercel', Security: 'Clerk Auth + Stripe/Cashfree', License: 'Multi-Domain' },
+    downloadUrl: "/downloads/pro-kit.zip",
+    installGuide: "### Step 1 — Download Elite Package\nAccess the pro architecture ZIP.\n\n### Step 2 — Gateway Configuration\nSetup your Supabase keys and Payment gateways using the provided CLI scripts.\n\n📧 **Support**: support@digitalswarm.in",
+    merchantId: "SYSTEM",
+    isVerified: true
   }
 ];
