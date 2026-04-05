@@ -10,6 +10,7 @@ import Script from "next/script";
 import { env } from "@/lib/env";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
 import { ExitIntentModal } from "@/components/marketing/ExitIntentModal";
+import { FBPixelPageView } from "@/components/analytics/FBPixel";
 import { metadata as siteMetadata } from "./metadata";
 
 const inter = Inter({ 
@@ -47,6 +48,7 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[#0a0a0b] text-white selection:bg-primary selection:text-black">
         <ForgeErrorBoundary>
           <ClientProviders>
+            <FBPixelPageView />
             <VisualQuality />
             <ForgeToast />
             <AIConcierge />
