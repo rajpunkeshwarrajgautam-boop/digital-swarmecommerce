@@ -6,6 +6,7 @@ import { X, Send, Lock } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { ForgeToast } from "@/components/ui/ForgeToast";
+import { trackLead } from "@/components/analytics/FBPixel";
 
 export function ExitIntentModal() {
   const [isOpen, setIsOpen] = useState(false);
@@ -62,6 +63,8 @@ export function ExitIntentModal() {
       });
 
       if (res.ok) {
+         // Fire FB Lead conversion event
+         trackLead('exit_intent_modal');
          window.dispatchEvent(new CustomEvent('forge-toast', { 
             detail: { message: "Blueprint sent securely to your inbox.", type: "success" }
          }));

@@ -8,6 +8,7 @@ import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types";
 import { LedgerReceipt } from "@/components/ui/LedgerReceipt";
+import { trackPurchase } from "@/components/analytics/FBPixel";
 
 const NodeStatusPulse = () => (
   <div className="flex items-center gap-2 px-3 py-1 bg-black/5 border border-black/10 rounded-full scale-90">
@@ -70,6 +71,9 @@ function SuccessContent() {
         
         if (data.isPaid || data.success) {
           setPaymentStatus('paid');
+          // Fire FB Purchase event for ad campaign optimization
+          const purchaseValue = data.amount ?? Number(localStorage.getItem('last_purchase_value') ?? 0);
+          trackPurchase(purchaseValue, data.orderId ?? orderId ?? 'unknown');
           if (data.ledger_entry) {
             setLedgerData(data.ledger_entry);
           }
