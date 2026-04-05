@@ -49,10 +49,11 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[#0a0a0b] text-white selection:bg-primary selection:text-black">
         <ForgeErrorBoundary>
           <ClientProviders>
-        <Suspense fallback={null}>
-                    <FBPixelPageView />
-        </Suspense>
-            
+            {/* FB Pixel SPA route tracking — fires PageView on every navigation */}
+            <Suspense fallback={null}>
+              <FBPixelPageView />
+            </Suspense>
+
             <VisualQuality />
             <ForgeToast />
             <AIConcierge />
@@ -64,6 +65,8 @@ export default function RootLayout({
               <ExitIntentModal />
               <Footer />
             </div>
+
+            {/* FB Pixel base init script — loads once, sets up fbq() */}
             <Script
               id="fb-pixel"
               strategy="afterInteractive"
@@ -82,9 +85,6 @@ export default function RootLayout({
                 `,
               }}
             />
-                  <Suspense fallback={null}>
-                            <FBPixelPageView />
-                  </Suspense>
           </ClientProviders>
         </ForgeErrorBoundary>
       </body>
