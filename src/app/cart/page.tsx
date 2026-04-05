@@ -19,7 +19,7 @@ export default function CartPage() {
           <ShoppingBag className="w-12 h-12 text-secondary/20" />
         </div>
         <h1 className="text-4xl font-black uppercase italic tracking-tighter mb-4">Your cart is empty</h1>
-        <p className="text-secondary/50 mb-8 max-w-md">Looks like you haven't added any premium code templates yet. Start building your empire today.</p>
+        <p className="text-secondary/50 mb-8 max-w-md">Looks like you haven&apos;t added any premium code templates yet. Start building your empire today.</p>
         <Link href="/products">
           <Button className="px-8 py-6 text-lg font-black uppercase tracking-widest">Browse Products</Button>
         </Link>
@@ -44,7 +44,7 @@ export default function CartPage() {
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, x: -100 }}
-                  className="group flex flex-col sm:flex-row items-center gap-6 p-6 bg-white border border-secondary/5 rounded-3xl hover:border-secondary/10 transition-all hover:shadow-2xl hover:shadow-secondary/5"
+                  className="group flex flex-col sm:flex-row items-center gap-6 p-6 bg-white/5 border border-white/10 backdrop-blur-sm rounded-3xl hover:border-white/20 transition-all hover:shadow-2xl hover:bg-white/10"
                 >
                   <div className="relative w-24 h-24 shrink-0 rounded-2xl overflow-hidden bg-secondary/5 border border-secondary/5">
                     <img src={item.image} alt={item.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
@@ -135,7 +135,7 @@ export default function CartPage() {
               </div>
             </div>
             
-            <div className="mt-6 p-6 border border-secondary/5 rounded-3xl flex items-center gap-4 bg-white/50 backdrop-blur-sm">
+            <div className="mt-6 p-6 border border-white/10 rounded-3xl flex items-center gap-4 bg-white/5 backdrop-blur-sm">
               <div className="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
                 <ShoppingBag className="w-6 h-6" />
               </div>

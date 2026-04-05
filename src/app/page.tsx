@@ -8,8 +8,15 @@ import { HowItWorks } from "@/components/home/HowItWorks";
 import { CommunityProtocol } from "@/components/home/CommunityProtocol";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ForgeButton } from "@/components/ui/ForgeButton";
+import { useState, useEffect } from "react";
 
 export default function Home() {
+  const [mounted, setMounted] = useState(false);
+  
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   return (
     <div className="flex flex-col min-h-screen relative z-10 w-full bg-background overflow-hidden">
       {/* 1. FORGE HERO (Primary Entry) */}
@@ -34,26 +41,32 @@ export default function Home() {
             </div>
 
             <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-              {[
-                { label: "Happy Customers", value: "8,294", trend: "+12%" },
-                { label: "Assets Library", value: "48.2 TB", trend: "Optimal" },
-                { label: "Daily Downloads", value: "9.2/s", trend: "Stable" },
-                { label: "System Uptime", value: "99.9%", trend: "Stable" },
-              ].map((stat, i) => (
-                <GlassCard key={i} className="py-4 px-6 border-white/5 bg-white/5">
-                  <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest block mb-1">
-                    {stat.label}
-                  </span>
-                  <div className="flex items-end justify-between">
-                    <span className="text-xl font-outfit font-black italic text-white uppercase leading-none">
-                      {stat.value}
+              {mounted ? (
+                [
+                  { label: "Happy Customers", value: "8,294", trend: "+12%" },
+                  { label: "Assets Library", value: "48.2 TB", trend: "Optimal" },
+                  { label: "Daily Downloads", value: "9.2/s", trend: "Stable" },
+                  { label: "System Uptime", value: "99.9%", trend: "Stable" },
+                ].map((stat, i) => (
+                  <GlassCard key={i} className="py-4 px-6 border-white/5 bg-white/5">
+                    <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest block mb-1">
+                      {stat.label}
                     </span>
-                    <span className="text-[8px] font-mono font-bold text-accent uppercase">
-                      {stat.trend}
-                    </span>
-                  </div>
-                </GlassCard>
-              ))}
+                    <div className="flex items-end justify-between">
+                      <span className="text-xl font-outfit font-black italic text-white uppercase leading-none">
+                        {stat.value}
+                      </span>
+                      <span className="text-[8px] font-mono font-bold text-accent uppercase">
+                        {stat.trend}
+                      </span>
+                    </div>
+                  </GlassCard>
+                ))
+              ) : (
+                Array(4).fill(0).map((_, i) => (
+                  <div key={i} className="h-20 bg-white/5 rounded-2xl animate-pulse" />
+                ))
+              )}
             </div>
           </div>
         </div>
@@ -112,9 +125,11 @@ export default function Home() {
                 <GlassCard className="p-2 border-white/10 bg-white/5 aspect-4/5 rounded-4xl overflow-hidden group">
                     <Image 
                         src="https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=1200" 
-                        alt="Forge Core" 
+                        alt="Forge Core Architecture visualization showing global data networks" 
                         fill
+                        priority
                         className="object-cover grayscale opacity-60 group-hover:scale-105 group-hover:opacity-100 transition-all duration-1000"
+                        sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     <div className="absolute inset-0 bg-linear-to-t from-[#0a0a0f] via-transparent to-transparent opacity-80" />
                     

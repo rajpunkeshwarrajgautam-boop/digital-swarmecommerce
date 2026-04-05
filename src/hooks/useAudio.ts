@@ -15,12 +15,23 @@ export function useAudio() {
       if (audioContext.current) return;
       
       try {
-        audioContext.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+        const ContextClass = (window.AudioContext || (window as any).webkitAudioContext);
+        if (!ContextClass) return;
+
+        audioContext.current = new ContextClass();
         
         // Decode base64 to buffer
         const response = await fetch(CLICK_SOUND);
+        if (!response.ok) throw new Error("Audio fetch failed");
+        
         const arrayBuffer = await response.arrayBuffer();
-        clickBuffer.current = await audioContext.current.decodeAudioData(arrayBuffer);
+        
+        // Use non-blocking decode
+        audioContext.current.decodeAudioData(arrayBuffer, (decodedData) => {
+          clickBuffer.current = decodedData;
+        }, (err) => {
+          console.warn("[AUDIO] Decode failed:", err);
+        });
       } catch (e) {
         console.warn("[AUDIO] Initializer failed:", e);
       }

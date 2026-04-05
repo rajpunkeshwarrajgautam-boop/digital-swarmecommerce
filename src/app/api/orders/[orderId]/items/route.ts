@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 /**
  * API Route to fetch purchased items for an order.
@@ -13,8 +14,33 @@ export async function GET(
     const params = await props.params;
     const { orderId } = params;
 
+    // 0. Authentication & Authorization Check
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized. Please sign in.' }, { status: 401 });
+    }
+
+    const user = await currentUser();
+    const userEmail = user?.emailAddresses[0]?.emailAddress;
+
     if (!orderId || !supabaseAdmin) {
       return NextResponse.json({ error: 'Order ID or Database unavailable' }, { status: 400 });
+    }
+
+    // Check ownership
+    const { data: order, error: ownershipError } = await supabaseAdmin
+      .from('orders')
+      .select('user_id')
+      .eq('id', orderId)
+      .single();
+
+    if (ownershipError || !order) {
+      return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+    }
+
+    if (order.user_id !== userEmail && order.user_id !== userId) {
+      console.warn(`[SECURITY] IDOR Attempt detected for order ${orderId} by user ${userEmail}`);
+      return NextResponse.json({ error: 'Operation not permitted' }, { status: 403 });
     }
 
     // 1. Fetch Order items with product details

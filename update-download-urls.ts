@@ -8,38 +8,28 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const BUCKET = "product-downloads";
 
-// Maps product name keyword → Supabase public URL
+// Maps product ID → Next.js public path
 const updates = [
-  {
-    nameKeyword: "Sales Infiltrator",
-    url: "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads/swarm-sales-infiltrator/swarm-sales-infiltrator.zip",
-  },
-  {
-    nameKeyword: "Finance Oracle",
-    url: "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads/swarm-finance-oracle/swarm-finance-oracle.zip",
-  },
-  {
-    nameKeyword: "Legal Architect",
-    url: "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads/swarm-legal-architect/swarm-legal-architect.zip",
-  },
-  {
-    nameKeyword: "Recruitment Command",
-    url: "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads/swarm-recruitment-command/swarm-recruitment-command.zip",
-  },
-  {
-    nameKeyword: "Trend Oracle",
-    url: "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads/swarm-trend-oracle/swarm-trend-oracle.zip",
-  },
-  {
-    nameKeyword: "Property Infiltrator",
-    url: "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads/swarm-property-infiltrator/swarm-property-infiltrator.zip",
-  },
-  {
-    nameKeyword: "Capital",
-    url: "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads/swarm-capital-oracle/swarm-capital-oracle.zip",
-  },
+  { id: "ai-social-automation", url: "/downloads/ai-social-protocol.html" },
+  { id: "ai-executive-playbook", url: "/downloads/ai-executive-playbook.html" },
+  { id: "ai-for-real-estate", url: "/downloads/swarm-property-optimized.html" },
+  { id: "ai-for-finance", url: "/downloads/swarm-capital-optimized.html" },
+  { id: "ai-for-healthcare", url: "/downloads/swarm-voice.html" },
+  { id: "sales-infiltrator", url: "/downloads/swarm-sales-optimized.zip" },
+  { id: "ai-for-recruitment", url: "/downloads/swarm-talent-optimized.html" },
+  { id: "ai-for-home-services", url: "/downloads/sentinel-voyager.html" },
+  { id: "ai-for-marketing", url: "/downloads/sentinel-seo-optimized.html" },
+  { id: "notion-crm-protocol", url: "/downloads/notion-crm-protocol.html" },
+  { id: "ai-for-lawyers", url: "/downloads/swarm-legal-optimized.html" },
+  { id: "cinema-infiltrator", url: "/downloads/swarm-cinema-infiltrator.zip" },
+  { id: "ai-for-copywriting", url: "/downloads/swarm-content-architect.html" },
+  { id: "ai-for-ecommerce", url: "/downloads/ai-services-agency.html" },
+  { id: "finance-infiltrator", url: "/downloads/swarm-finance-agent.zip" },
+  { id: "ai-for-saas", url: "/downloads/swarm-uiux-auditor.html" },
+  { id: "sentinel-research-infiltrator", url: "/downloads/sentinel-research-infiltrator.zip" },
+  { id: "ai-for-video", url: "/downloads/swarm-video-gen.zip" },
+  { id: "cyberpunk-ui-kit", url: "/downloads/cyberpunk-ui-protocol.html" },
 ];
 
 async function updateDownloadUrls() {
@@ -54,17 +44,17 @@ async function updateDownloadUrls() {
     return;
   }
 
-  console.log(`Found ${allProducts?.length ?? 0} products:\n`);
-  allProducts?.forEach((p) => console.log(`  [${p.id}] ${p.name}`));
-  console.log();
+  console.log(`Found ${allProducts?.length ?? 0} products in DB.\n`);
 
   for (const update of updates) {
-    const match = allProducts?.find((p) =>
-      p.name?.toLowerCase().includes(update.nameKeyword.toLowerCase())
+    // Robust matching: trim and case-insensitive check
+    const match = allProducts?.find(
+      (p) => p.id?.trim().toLowerCase() === update.id.trim().toLowerCase()
     );
 
     if (!match) {
-      console.warn(`⚠️  No product found matching: "${update.nameKeyword}"`);
+      console.warn(`⚠️  No product found in DB with ID: "${update.id}"`);
+      console.log(`   (Available IDs: ${allProducts?.map(p => p.id).join(', ')})`);
       continue;
     }
 
@@ -74,14 +64,13 @@ async function updateDownloadUrls() {
       .eq("id", match.id);
 
     if (error) {
-      console.error(`❌ Failed to update ${match.name}: ${error.message}`);
+      console.error(`❌ Failed to update ${match.id}: ${error.message}`);
     } else {
-      console.log(`✅ ${match.name}`);
-      console.log(`   → ${update.url}\n`);
+      console.log(`✅ SYNCED: [${match.id}] -> ${update.url}`);
     }
   }
 
-  console.log("🏁 Download URL sync complete!");
+  console.log("\n🏁 Download URL sync complete!");
 }
 
 updateDownloadUrls().catch(console.error);

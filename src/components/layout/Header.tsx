@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingBag, Heart, Sparkles } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart, Sparkles, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { NavbarMenu } from "./NavbarMenu";
@@ -31,6 +31,14 @@ export function Header() {
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalWishlist = wishlistItems.length;
+
+  const safePlayClick = () => {
+    try {
+      playClick();
+    } catch (e) {
+      console.warn("[HEADER] Audio skipped:", e);
+    }
+  };
 
   useEffect(() => {
     const handle = requestAnimationFrame(() => setMounted(true));
@@ -61,7 +69,7 @@ export function Header() {
           
           {/* 1. LEFT: Logo & System Status */}
           <div className="flex items-center gap-6 shrink-0">
-            <Link href="/" className="group" onClick={playClick}>
+            <Link href="/" className="group" onClick={safePlayClick}>
               <Logo className="text-2xl tracking-tighter transition-all group-hover:glow-text uppercase">
                 DIGITAL SWARM
               </Logo>
@@ -90,7 +98,8 @@ export function Header() {
             
             {/* AI Concierge Trigger (The "Input") */}
             <motion.button 
-              onClick={() => { playClick(); toggleConcierge(); }}
+              onClick={() => { safePlayClick(); toggleConcierge(); }}
+              aria-label="Toggle AI Assistant"
               className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-accent/40 transition-all cursor-pointer group"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.98 }}
@@ -103,9 +112,21 @@ export function Header() {
             </motion.button>
 
             <div className="flex items-center gap-2">
+              {/* Digital Vault (NFTs) */}
+              <SignedIn>
+                <Link href="/vault">
+                  <button className="relative p-2 text-white/60 hover:glow-text transition-all group" title="Digital Vault">
+                    <ShieldCheck className="w-5 h-5 group-hover:text-primary transition-colors" />
+                  </button>
+                </Link>
+              </SignedIn>
+
               {/* Wishlist */}
               <Link href="/wishlist">
-                <button className="relative p-2 text-white/60 hover:text-primary transition-colors group">
+                <button 
+                  aria-label={`View wishlist with ${totalWishlist} items`}
+                  className="relative p-2 text-white/60 hover:text-primary transition-colors group"
+                >
                   <Heart className="w-5 h-5" />
                   {mounted && totalWishlist > 0 && (
                     <span className="absolute top-1 right-1 bg-primary text-black text-[9px] font-black min-w-[14px] h-[14px] rounded-full flex items-center justify-center">
@@ -117,7 +138,10 @@ export function Header() {
               
               {/* Cart */}
               <Link href="/cart">
-                <button className="relative p-2 text-white/60 hover:text-primary transition-colors group">
+                <button 
+                  aria-label={`View cart with ${totalItems} items`}
+                  className="relative p-2 text-white/60 hover:text-primary transition-colors group"
+                >
                   <ShoppingBag className="w-5 h-5" />
                   {mounted && totalItems > 0 && (
                     <motion.span
@@ -137,7 +161,7 @@ export function Header() {
               {/* User / Auth */}
               <div className="flex items-center gap-3">
                 <SignedOut>
-                  <SignInButton mode="modal">
+                  <SignInButton mode="modal" fallbackRedirectUrl={pathname}>
                     <button className="text-[11px] font-outfit font-black uppercase italic tracking-widest text-white/60 hover:text-primary transition-all">
                       Sign In
                     </button>
@@ -189,7 +213,39 @@ export function Header() {
             </nav>
 
             <div className="mt-auto flex flex-col gap-6">
-              <ForgeButton className="w-full">
+              <div className="py-6 border-y border-white/5">
+                <SignedOut>
+                  <SignInButton mode="modal" fallbackRedirectUrl={pathname}>
+                    <button className="w-full py-4 text-sm font-black uppercase italic tracking-widest text-white/40 hover:text-primary transition-all border border-white/10 rounded-xl bg-white/2">
+                      Portal Entrance // Sign In
+                    </button>
+                  </SignInButton>
+                </SignedOut>
+                <SignedIn>
+                  <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
+                    <div className="flex items-center gap-4">
+                      <UserButton 
+                        appearance={{
+                          elements: {
+                            userButtonAvatarBox: "w-10 h-10 border border-primary shadow-[0_0_15px_rgba(204,255,0,0.2)]"
+                          }
+                        }}
+                      />
+                      <div className="flex flex-col">
+                        <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Active_Session</span>
+                        <span className="text-xs font-black uppercase text-primary">Identity_Verified</span>
+                      </div>
+                    </div>
+                    <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
+                      <button className="px-4 py-2 bg-white/10 rounded-lg text-[9px] font-mono uppercase tracking-widest hover:bg-primary hover:text-black transition-all">
+                        Profile
+                      </button>
+                    </Link>
+                  </div>
+                </SignedIn>
+              </div>
+
+              <ForgeButton data-action="search" className="w-full" onClick={() => setIsMenuOpen(false)}>
                 Search Products
               </ForgeButton>
               

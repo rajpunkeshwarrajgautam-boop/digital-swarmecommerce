@@ -28,6 +28,7 @@ async function syncInventory() {
       name: product.name,
       description: product.description,
       price: product.price,
+      original_price: product.originalPrice || null,
       category: product.category,
       image: product.image,
       in_stock: product.inStock,
@@ -38,6 +39,11 @@ async function syncInventory() {
       download_url: product.downloadUrl || null,
       merchant_id: product.merchantId || "SYSTEM",
       is_verified: product.isVerified || true,
+      scarcity_stock: product.scarcityStock || 0,
+      is_featured: product.isFeatured || false,
+      swarm_score: product.swarmScore || 85,
+      aura: product.aura || 'NEURAL_LINK_ACTIVE',
+      match_density: product.matchDensity || 75,
       updated_at: new Date().toISOString()
     };
 

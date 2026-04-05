@@ -5,7 +5,7 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, Heart, Cpu, Code2, ShoppingCart, Check, Terminal } from "lucide-react";
+import { Star, Heart, Cpu, Code2, ShoppingCart, Check, Terminal, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -112,6 +112,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0 }}
             className="absolute top-2 left-2 z-30 flex items-center gap-1.5 px-2 py-0.5 bg-accent/20 backdrop-blur-md border border-accent/30 rounded-full"
+            style={{ willChange: 'transform' }}
           >
             <div className="w-1 h-1 rounded-full bg-accent animate-pulse" />
             <span className="text-[7px] font-mono uppercase tracking-[0.2em] text-accent">Neural_Link_Ready</span>
@@ -144,6 +145,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         {/* Wishlist */}
         <button
           onClick={toggleWishlist}
+          aria-label={wishlisted ? `Remove ${product.name} from wishlist` : `Add ${product.name} to wishlist`}
           className={`absolute top-4 right-4 w-8 h-8 rounded-full flex items-center justify-center transition-all z-20 ${
             wishlisted
               ? "bg-primary text-black"
@@ -182,6 +184,35 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
 
         <TechBadges category={product.category} />
 
+        {/* Swarm Analytics Injection */}
+        {(product.swarmScore || product.matchDensity || product.aura) && (
+          <div className="mt-4 p-3 bg-white/2 border border-white/5 rounded-lg space-y-3">
+             {product.aura && (
+                <div className="flex items-center gap-2">
+                   <Sparkles className="w-3 h-3 text-accent animate-pulse" />
+                   <span className="text-[8px] font-mono font-black text-accent uppercase tracking-widest italic">
+                      {product.aura.replace('_', ' ')}
+                   </span>
+                </div>
+             )}
+             {product.matchDensity !== undefined && (
+                <div className="space-y-1.5">
+                   <div className="flex justify-between text-[7px] font-mono uppercase tracking-widest text-white/20">
+                      <span>Neural Match Density</span>
+                      <span className="text-primary">{product.matchDensity}%</span>
+                   </div>
+                   <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden">
+                      <motion.div 
+                         initial={{ width: 0 }}
+                         animate={{ width: `${product.matchDensity}%` }}
+                         className="h-full bg-primary"
+                      />
+                   </div>
+                </div>
+             )}
+          </div>
+        )}
+
         <div className="mt-6 pt-6 border-t border-white/5 flex flex-col gap-3">
           <ForgeButton
             variant={added ? "outline" : "primary"}
@@ -214,7 +245,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             </AnimatePresence>
           </ForgeButton>
 
-          <Link href={`/product/${product.id}`} className="w-full">
+          <Link href={`/product/${product.id}`} className="w-full" aria-label={`View details for ${product.name}`}>
             <button className="w-full text-[10px] font-mono text-white/20 uppercase tracking-[0.3em] hover:text-white transition-colors">
               View Details
             </button>

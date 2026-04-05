@@ -8,6 +8,10 @@ const BASE_URL = isProdKey
   : 'https://sandbox.cashfree.com/pg';
 
 import { supabaseAdmin } from '@/lib/supabase';
+import { LedgerService } from '@/lib/ledger';
+import { getNodeIdentity } from '@/lib/nodes';
+import { CommissionService } from '@/lib/commissions';
+import { TokenService } from '@/lib/token-minting';
 
 export async function POST(request: Request) {
   try {
@@ -98,12 +102,49 @@ export async function POST(request: Request) {
       }
     }
 
+    // 🛸 [LEDGER PROTOCOL] Generate verifiable proof of purchase
+    let ledgerEntry = null;
+    const node = getNodeIdentity(request.headers);
+
+    if (isPaid) {
+      try {
+        const entry = LedgerService.signPurchase(
+          orderId,
+          data.order_amount,
+          data.customer_details?.customer_email || 'anonymous@swarm.in'
+        );
+        // Tag with signing node
+        ledgerEntry = { 
+          orderId: entry.orderId,
+          signature: entry.signature,
+          timestamp: entry.timestamp,
+          amount: entry.amount,
+          customer: entry.customer,
+          node_id: node.id, 
+          region: node.region 
+        };
+
+        // 💰 [FINANCE PROTOCOL] Process commission split
+        await CommissionService.calculateSplit(orderId);
+
+        // 🏗️ [TOKEN PROTOCOL] Mint Digital Swarm Tokens (NFTs)
+        const mintResult = await TokenService.mintFromOrder(orderId, entry.signature);
+        if (mintResult.success) {
+            console.log(`[VAULT] Tokens minted: ${mintResult.tokens.join(', ')}`);
+        }
+
+      } catch (ledgerErr) {
+        console.error('[Ledger Protocol] Signing failed:', ledgerErr);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       isPaid,
       status: data.order_status,
       orderId: data.order_id,
       amount: data.order_amount,
+      ledger_entry: ledgerEntry,
     });
   } catch (err) {
     console.error('[Cashfree Verify] Error:', err);

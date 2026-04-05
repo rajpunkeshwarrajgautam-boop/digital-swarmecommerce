@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Product } from "@/lib/types";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { FilterSidebar } from "@/components/products/FilterSidebar";
@@ -10,30 +10,58 @@ import { motion } from "framer-motion";
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 
 export default function ProductsPage() {
-  const { data: productsData, isLoading } = useSwarmSWR<Product[]>('/api/products');
+  const { data: productsData, isLoading } = useSwarmSWR<any[]>('/api/products');
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
   const [sortBy, setSortBy] = useState("featured");
+  const [isNeural, setIsNeural] = useState(false);
+  const [filteredProducts, setFilteredProducts] = useState<any[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const products = productsData || [];
+  const rawProducts = useMemo(() => productsData || [], [productsData]);
 
-  const categories = ["All", ...Array.from(new Set(products.map(p => p.category)))];
+  const categories = useMemo(() => 
+    ["All", ...Array.from(new Set(rawProducts.map(p => p.category)))],
+    [rawProducts]
+  );
 
-  const filteredProducts = products
-    .filter(p => {
-      const q = searchQuery.toLowerCase();
-      const matchesSearch = p.name.toLowerCase().includes(q) || 
-                           p.description.toLowerCase().includes(q) ||
-                           p.category.toLowerCase().includes(q);
-      const matchesCategory = activeCategory === "All" || p.category === activeCategory;
-      return matchesSearch && matchesCategory;
-    })
-    .sort((a, b) => {
-      if (sortBy === "price-asc") return a.price - b.price;
-      if (sortBy === "price-desc") return b.price - a.price;
-      if (sortBy === "rating-desc") return (b.rating || 0) - (a.rating || 0);
-      return 0;
-    });
+  // 🛰️ NEURAL DISCOVERY ENGINE
+  useEffect(() => {
+    const searchSequence = async () => {
+      if (!searchQuery && !isNeural && activeCategory === "All") {
+        setFilteredProducts(rawProducts);
+        return;
+      }
+
+      setIsSearching(true);
+      try {
+        const res = await fetch('/api/marketplace/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: searchQuery, isNeural })
+        });
+        const data = await res.json();
+        let results = data.results || [];
+
+        // Apply Local Category & Sort filters
+        if (activeCategory !== "All") {
+          results = results.filter((p: any) => p.category === activeCategory);
+        }
+
+        if (sortBy === "price-asc") results.sort((a: any, b: any) => a.price - b.price);
+        else if (sortBy === "price-desc") results.sort((a: any, b: any) => b.price - a.price);
+
+        setFilteredProducts(results);
+      } catch (err) {
+        console.error('[SEARCH_FAULT] Uplink failure:', err);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+
+    const timer = setTimeout(searchSequence, 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery, isNeural, activeCategory, sortBy, rawProducts]);
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white pt-40 pb-32">
@@ -48,7 +76,7 @@ export default function ProductsPage() {
              <div className="h-px flex-1 bg-white/5" />
              <div className="flex items-center gap-3 px-4 py-1.5 bg-primary/10 border border-primary/20">
                 <Terminal className="w-3.5 h-3.5 text-primary" />
-                <span className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-primary italic">registry_lookup.v3</span>
+                <span className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-primary italic">registry_lookup.v4</span>
              </div>
              <div className="h-px flex-1 bg-white/5" />
           </div>
@@ -63,7 +91,7 @@ export default function ProductsPage() {
               <span className="text-white/10 italic">Registry</span>
             </motion.h1>
             <p className="text-[11px] font-mono text-white/30 uppercase tracking-[0.4em] max-w-xl italic leading-relaxed">
-              Autonomous asset distribution system. Authorized access only.
+              Autonomous asset distribution system. {isNeural ? 'Neural Link Discovery Active.' : 'Authorized access only.'}
             </p>
           </div>
         </header>
@@ -81,18 +109,30 @@ export default function ProductsPage() {
             sortBy={sortBy}
             setSortBy={setSortBy}
             resultsCount={filteredProducts.length}
+            isNeural={isNeural}
+            setIsNeural={setIsNeural}
           />
 
           {/* Main Product Area */}
           <main className="flex-1 min-w-0">
-            {isLoading && !products.length ? (
+            {isLoading || isSearching ? (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
                 {[1, 2, 3, 4, 5, 6].map((i) => (
                   <div key={i} className="aspect-square bg-white/2 border border-white/5 animate-pulse" />
                 ))}
               </div>
             ) : (
-              <ProductGrid products={filteredProducts} />
+              <div className="space-y-12">
+                <ProductGrid products={filteredProducts} />
+                {isNeural && filteredProducts.some(p => p.matchDensity) && (
+                   <div className="flex flex-col items-center gap-2 mt-8">
+                      <p className="text-[8px] font-mono font-black text-white/10 uppercase tracking-widest text-center">
+                        Atmospheric_Similarity_Ranking_Active
+                      </p>
+                      <div className="w-12 h-1 bg-primary/20 rounded-full" />
+                   </div>
+                )}
+              </div>
             )}
           </main>
         </div>
@@ -108,7 +148,8 @@ export default function ProductsPage() {
               </div>
               <div className="flex items-center gap-8 text-[9px] font-mono font-black uppercase tracking-[0.3em] text-white/10 italic">
                  <span className="flex items-center gap-3">
-                    <Activity className="w-3.5 h-3.5 animate-pulse" /> Live_Sync: Online
+                    <Activity className={`w-3.5 h-3.5 ${isSearching ? 'text-primary animate-spin' : 'animate-pulse'}`} /> 
+                    Live_Sync: {isSearching ? 'Processing_Neural_Link...' : 'Online'}
                  </span>
               </div>
            </div>

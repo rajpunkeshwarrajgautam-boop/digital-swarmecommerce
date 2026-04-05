@@ -1,12 +1,13 @@
 "use client";
 
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
-import { Package, TrendingUp, CheckCircle2, Plus, BarChart3, ShieldCheck } from "lucide-react";
+import { Package, TrendingUp, CheckCircle2, Plus, BarChart3, ShieldCheck, Globe } from "lucide-react";
 import Image from "next/image";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { motion } from "framer-motion";
 
 interface MerchantProduct {
   id: string;
@@ -61,58 +62,105 @@ export default function MerchantDashboard() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <StatsCard icon={<TrendingUp className="text-[#CCFF00]" />} label="Sync Velocity" value="84%" sub="LIFT_+12%" />
             <StatsCard icon={<Package className="text-cyan-400" />} label="Active Protocols" value={merchantProducts.length.toString()} sub="NODE_ALPHA" />
-            <StatsCard icon={<BarChart3 className="text-purple-400" />} label="Gross Distribution" value="₹24.8K" sub="REVENUE_REALIZED" />
+            <StatsCard icon={<BarChart3 className="text-purple-400" />} label="Avg. Merchant Share" value="70%" sub="DYNAMIC_TIERING_ACTIVE" />
             <StatsCard icon={<CheckCircle2 className="text-blue-400" />} label="Trust Integrity" value="99.2" sub="REPUTATION_SCORE" />
           </div>
 
-          <section className="space-y-6">
-            <div className="flex items-center justify-between border-b border-white/5 pb-4">
-              <h3 className="font-black uppercase tracking-widest text-sm text-white/40 italic">/// YOUR_DISTRIBUTED_STRIKES ///</h3>
-            </div>
-            
-            <div className="grid grid-cols-1 gap-4">
-              {merchantProducts.map((product) => (
-                <GlassCard key={product.id} className="p-4 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[#CCFF00]/30 transition-all group">
-                  <div className="flex items-center gap-6">
-                    <div className="w-16 h-16 bg-white/5 border border-white/10 relative overflow-hidden rounded-lg">
-                      <Image 
-                        src={product.image} 
-                        fill
-                        className="object-cover grayscale group-hover:grayscale-0 transition-all" 
-                        alt={product.name} 
-                      />
-                    </div>
-                    <div>
-                      <h4 className="text-xl font-black italic uppercase text-white leading-tight">{product.name}</h4>
-                      <div className="flex items-center gap-4 mt-1">
-                        <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{product.category}</span>
-                        <div className="flex items-center gap-1.5 text-[9px] font-black text-[#CCFF00] uppercase tracking-widest">
-                          <CheckCircle2 className="w-3 h-3" /> Status: Live
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {/* Main Content: Products */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <h3 className="font-black uppercase tracking-widest text-sm text-white/40 italic">{"/// YOUR_DISTRIBUTED_STRIKES ///"}</h3>
+              </div>
+              
+              <div className="grid grid-cols-1 gap-4">
+                {merchantProducts.map((product) => (
+                  <GlassCard key={product.id} className="p-4 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[#CCFF00]/30 transition-all group">
+                    <div className="flex items-center gap-6">
+                      <div className="w-16 h-16 bg-white/5 border border-white/10 relative overflow-hidden rounded-lg">
+                        <Image 
+                          src={product.image} 
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0 transition-all" 
+                          alt={product.name} 
+                        />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-black italic uppercase text-white leading-tight">{product.name}</h4>
+                        <div className="flex items-center gap-4 mt-1">
+                          <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{product.category}</span>
+                          <div className="flex items-center gap-1.5 text-[9px] font-black text-[#CCFF00] uppercase tracking-widest">
+                            <CheckCircle2 className="w-3 h-3" /> Status: Live
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-8 px-6 border-l border-white/5 md:h-12 w-full md:w-auto">
-                    <div className="flex flex-col">
-                      <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Revenue</span>
-                      <span className="font-mono text-sm text-white">₹{product.price}</span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Syncs</span>
-                      <span className="font-mono text-sm text-white">{product.sales || 0}</span>
-                    </div>
-                    <div className="flex flex-col">
-                      <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Health</span>
-                      <div className="flex gap-0.5 mt-1">
-                        {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-1 h-3 bg-[#CCFF00]" />)}
+                    
+                    <div className="flex items-center gap-8 px-6 border-l border-white/5 md:h-12 w-full md:w-auto">
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Share (70%)</span>
+                        <span className="font-mono text-sm text-[#CCFF00]">₹{(product.price * 0.7).toFixed(0)}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Syncs</span>
+                        <span className="font-mono text-sm text-white">{product.sales || 0}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Health</span>
+                        <div className="flex gap-0.5 mt-1">
+                          {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-1 h-3 bg-[#CCFF00]" />)}
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </GlassCard>
-              ))}
+                  </GlassCard>
+                ))}
+              </div>
             </div>
-          </section>
+
+            {/* Sidebar: Reputation & Tiers */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between border-b border-white/5 pb-4">
+                <h3 className="font-black uppercase tracking-widest text-sm text-white/40 italic">{"/// NODE_REPUTATION ///"}</h3>
+              </div>
+              
+              <GlassCard className="p-6 space-y-6">
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Current_Tier</span>
+                    <span className="text-[10px] font-mono font-black text-[#CCFF00] uppercase tracking-widest bg-[#CCFF00]/10 px-2 py-0.5 rounded">CORE_LEVEL</span>
+                  </div>
+                  <div className="h-2 bg-white/5 rounded-full overflow-hidden">
+                    <motion.div 
+                      initial={{ width: 0 }}
+                      animate={{ width: '70%' }}
+                      className="h-full bg-[#CCFF00] shadow-[0_0_10px_#CCFF00]"
+                    />
+                  </div>
+                  <p className="text-[9px] text-gray-500 italic font-inter text-pretty">Sync 10 more protocols to reach PRIME_LEVEL.</p>
+                </div>
+
+                <div className="space-y-4 pt-4 border-t border-white/5">
+                  <TierRow label="Initiate" rate="40% Fee" status="COMPLETED" active={false} />
+                  <TierRow label="Core" rate="30% Fee" status="ACTIVE" active={true} />
+                  <TierRow label="Prime" rate="20% Fee" status="LOCKED" active={false} />
+                </div>
+
+                <ForgeButton variant="ghost" className="w-full text-[10px] h-10 border-white/5 hover:bg-white/5">
+                  View_Fee_Schedule
+                </ForgeButton>
+              </GlassCard>
+
+              {/* Network Pulse Widget */}
+              <GlassCard className="p-4 flex items-center gap-4">
+                <div className="w-2 h-2 rounded-full bg-[#CCFF00] animate-ping" />
+                <div className="flex flex-col">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/80">Network_Uplink</span>
+                  <span className="text-[8px] font-mono text-gray-500 uppercase tracking-tighter">Latency: 24ms | Status: Nominal</span>
+                </div>
+                <Globe className="w-4 h-4 text-white/10 ml-auto" />
+              </GlassCard>
+            </div>
+          </div>
 
         </div>
       </main>
@@ -132,6 +180,18 @@ function StatsCard({ icon, label, value, sub }: { icon: React.ReactNode, label: 
         <span className="text-4xl font-black text-white italic tracking-tighter">{value}</span>
         <div className="text-[9px] font-black text-gray-600 uppercase tracking-widest italic">{sub}</div>
       </div>
+    </div>
+  );
+}
+
+function TierRow({ label, rate, status, active }: { label: string, rate: string, status: string, active: boolean }) {
+  return (
+    <div className={`flex items-center justify-between p-3 rounded-xl border ${active ? 'bg-[#CCFF00]/5 border-[#CCFF00]/20' : 'bg-transparent border-white/5'}`}>
+      <div className="flex flex-col">
+        <span className={`text-[10px] font-black uppercase tracking-widest ${active ? 'text-white' : 'text-white/40'}`}>{label}</span>
+        <span className="text-[8px] font-mono text-gray-500 uppercase">{rate}</span>
+      </div>
+      <span className={`text-[8px] font-mono font-black italic uppercase ${active ? 'text-[#CCFF00]' : 'text-white/20'}`}>{status}</span>
     </div>
   );
 }

@@ -7,6 +7,17 @@ import { motion } from "framer-motion";
 import { Suspense, useEffect, useState } from "react";
 import Image from "next/image";
 import { Product } from "@/lib/types";
+import { LedgerReceipt } from "@/components/ui/LedgerReceipt";
+
+const NodeStatusPulse = () => (
+  <div className="flex items-center gap-2 px-3 py-1 bg-black/5 border border-black/10 rounded-full scale-90">
+    <div className="relative w-2 h-2">
+      <div className="absolute inset-0 bg-[#CCFF00] rounded-full animate-ping opacity-75" />
+      <div className="relative w-2 h-2 bg-[#CCFF00] rounded-full shadow-[0_0_8px_#CCFF00]" />
+    </div>
+    <span className="text-[8px] font-black uppercase tracking-widest text-black/60 italic">Swarm_Node_Ready</span>
+  </div>
+);
 
 function SuccessContent() {
   const searchParams = useSearchParams();
@@ -18,6 +29,7 @@ function SuccessContent() {
   const [isVerifying, setIsVerifying] = useState(true);
   const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
   const [purchasedItems, setPurchasedItems] = useState<Product[]>([]);
+  const [ledgerData, setLedgerData] = useState<any>(null);
 
   useEffect(() => {
     const lastItems = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('last_purchase') || '[]') : [];
@@ -58,6 +70,9 @@ function SuccessContent() {
         
         if (data.isPaid || data.success) {
           setPaymentStatus('paid');
+          if (data.ledger_entry) {
+            setLedgerData(data.ledger_entry);
+          }
           // FETCH ORDER ITEMS FROM SERVER (NEW COMPLETION LOGIC)
           if (data.orderId) {
              const itemsRes = await fetch(`/api/orders/${data.orderId}/items`);
@@ -133,6 +148,32 @@ function SuccessContent() {
           </div>
         </div>
       </motion.div>
+
+      {/* Ledger Receipt Section */}
+      {ledgerData && (
+        <motion.div 
+          initial={{ y: 20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          className="space-y-6"
+        >
+            <div className="flex items-center gap-4 text-black/40">
+               <div className="h-px flex-1 bg-black/10" />
+               <NodeStatusPulse />
+               <div className="h-px flex-1 bg-black/10" />
+            </div>
+            <LedgerReceipt 
+              orderId={ledgerData.orderId}
+              signature={ledgerData.signature}
+              timestamp={ledgerData.timestamp}
+              amount={ledgerData.amount}
+              nodeId={ledgerData.node_id}
+            />
+            <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-mono font-black text-primary uppercase tracking-[0.3em] animate-pulse italic">
+              <ShieldCheck className="w-3 h-3" /> Digital_Assets_Tokenized_Securely
+            </div>
+        </motion.div>
+      )}
 
       {/* Assets Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -11,6 +11,8 @@ interface FilterSidebarProps {
   sortBy: string;
   setSortBy: (sort: string) => void;
   resultsCount: number;
+  isNeural: boolean;
+  setIsNeural: (val: boolean) => void;
 }
 
 export function FilterSidebar({
@@ -22,6 +24,8 @@ export function FilterSidebar({
   sortBy,
   setSortBy,
   resultsCount,
+  isNeural,
+  setIsNeural,
 }: FilterSidebarProps) {
   return (
     <aside className="w-full lg:w-80 flex flex-col gap-8 sticky top-32 h-fit">
@@ -35,7 +39,7 @@ export function FilterSidebar({
           </div>
           <input 
             type="text" 
-            placeholder="Search Registry..."
+            placeholder={isNeural ? "Conceptual Lookup..." : "Search Registry..."}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             className="flex-1 bg-transparent border-none outline-none text-[10px] font-mono uppercase tracking-widest italic text-white placeholder:text-white/10 py-3"
@@ -49,6 +53,25 @@ export function FilterSidebar({
             </button>
           )}
         </div>
+      </section>
+
+      {/* Neural Link Toggle */}
+      <section className="bg-white/2 border border-white/5 p-4 rounded-lg flex items-center justify-between group hover:border-primary/20 transition-all">
+         <div className="flex items-center gap-3">
+            <div className={`p-2 rounded-lg transition-colors ${isNeural ? 'bg-primary/20 text-primary shadow-[0_0_15px_rgba(204,255,0,0.2)]' : 'bg-white/5 text-white/20'}`}>
+               <Zap className="w-3.5 h-3.5" />
+            </div>
+            <div className="flex flex-col">
+               <span className={`text-[9px] font-black uppercase tracking-widest ${isNeural ? 'text-white' : 'text-white/20'}`}>Neural_Link</span>
+               <span className="text-[7px] font-mono text-white/10 uppercase tracking-widest">Semantic_Mapping</span>
+            </div>
+         </div>
+         <button 
+            onClick={() => setIsNeural(!isNeural)}
+            className={`w-10 h-5 rounded-full transition-all relative ${isNeural ? 'bg-primary' : 'bg-white/10'}`}
+          >
+            <div className={`absolute top-1 w-3 h-3 bg-white rounded-full shadow-lg transition-transform ${isNeural ? 'translate-x-6' : 'translate-x-1'}`} />
+          </button>
       </section>
 
       {/* Categories Module */}

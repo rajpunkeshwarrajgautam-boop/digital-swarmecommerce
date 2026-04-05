@@ -31,8 +31,17 @@ export function Footer() {
               Premium Development Assets. High-Performance Templates for Professional Engineering. Secured and Optimized.
             </p>
             <div className="flex items-center gap-5">
-              {[Twitter, Github, Linkedin].map((Icon, i) => (
-                <Link key={i} href="#" className="w-12 h-12 border border-white/5 bg-white/2 flex items-center justify-center text-white/20 hover:text-primary hover:border-primary/40 transition-all group">
+              {[
+                { Icon: Twitter, label: 'Twitter' },
+                { Icon: Github, label: 'GitHub' },
+                { Icon: Linkedin, label: 'LinkedIn' }
+              ].map(({ Icon, label }, i) => (
+                <Link 
+                  key={i} 
+                  href="#" 
+                  aria-label={`Follow us on ${label}`}
+                  className="w-12 h-12 border border-white/5 bg-white/2 flex items-center justify-center text-white/20 hover:text-primary hover:border-primary/40 transition-all group"
+                >
                    <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
                 </Link>
               ))}
@@ -58,6 +67,16 @@ export function Footer() {
               <FooterLink href="/contact" label="Contact Us" />
               <FooterLink href="/refund" label="Refund Policy" />
               <FooterLink href="/about" label="About Us" />
+            </div>
+          </div>
+
+          {/* Partner Column */}
+          <div className="flex flex-col gap-10">
+            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">PARTNER_NETWORK</h4>
+            <div className="flex flex-col gap-5">
+              <FooterLink href="/merchant/apply" label="Become a Merchant" />
+              <FooterLink href="/merchant" label="Merchant Portal" />
+              <FooterLink href="/help/merchants" label="Vendor Guidelines" />
             </div>
           </div>
 

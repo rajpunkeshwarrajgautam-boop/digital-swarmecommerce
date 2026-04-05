@@ -67,9 +67,12 @@ All products, user licenses, and affiliate records are managed in real-time via 
 
     ```env
     NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_key
-    CLERK_SECRET_KEY=your_key
+    CLERK_SECRET_KEY=your_secret
     NEXT_PUBLIC_SUPABASE_URL=your_url
     NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
+    SUPABASE_SERVICE_ROLE_KEY=your_service_key
+    CASHFREE_APP_ID=your_cashfree_app_id
+    CASHFREE_SECRET_KEY=your_cashfree_secret
     ```
 
 4. **Run Development Server**:

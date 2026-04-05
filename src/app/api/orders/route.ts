@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { rateLimit } from '@/lib/rate-limit';
+import { auth, currentUser } from '@clerk/nextjs/server';
 
 const limiter = rateLimit({
   interval: 60 * 1000, // 1 minute
@@ -9,6 +10,15 @@ const limiter = rateLimit({
 
 export async function POST(request: Request) {
   try {
+    // 0. Authentication Check
+    const { userId } = await auth();
+    if (!userId) {
+      return NextResponse.json({ error: 'Unauthorized. Identity required for provisioning.' }, { status: 401 });
+    }
+
+    const authUser = await currentUser();
+    const authEmail = authUser?.emailAddresses[0]?.emailAddress;
+
     // Rate Limit Check
     const ip = request.headers.get('x-forwarded-for') || 'anonymous';
     try {
@@ -22,6 +32,12 @@ export async function POST(request: Request) {
 
     if (!items || !items.length || !total || !customer?.email) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
+    }
+
+    // Shield against email spoofing
+    if (customer.email !== authEmail) {
+      console.warn(`[SECURITY] Attempted order spoofing: Auth=${authEmail} vs Payload=${customer.email}`);
+      return NextResponse.json({ error: 'Identity mismatch. Please use your authenticated email.' }, { status: 403 });
     }
 
     if (!supabaseAdmin) {

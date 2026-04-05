@@ -18,6 +18,9 @@ export interface Product {
   sales?: number;
   merchantId?: string;
   isVerified?: boolean;
+  swarmScore?: number;
+  aura?: 'RADIATING_ALPHA' | 'VOID_STATIC' | 'NEURAL_LINK_ACTIVE' | 'INDUSTRIAL_GLOW' | 'STABILITY_CORE';
+  matchDensity?: number;
 }
 
 export interface CartItem {

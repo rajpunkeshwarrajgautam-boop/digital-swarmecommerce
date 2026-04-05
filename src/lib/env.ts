@@ -21,6 +21,7 @@ const envSchema = z.object({
 
   // --- SERVER-SIDE SECRETS ---
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  SUPABASE_URL: z.string().url().optional(), // Fallback for local scripts
   RESEND_API_KEY: z.string().min(1),
   CASHFREE_APP_ID: z.string().min(1),
   CASHFREE_SECRET_KEY: z.string().min(1),
@@ -32,6 +33,9 @@ const envSchema = z.object({
 
   // --- AI SERVICES ---
   GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
+
+  // --- CROSS-SWARM PROTOCOLS ---
+  SWARM_SECRET: z.string().default('SWARM_ALPHA_SYNC_v1'),
 });
 
 // Logic to differentiate between Client and Server validation

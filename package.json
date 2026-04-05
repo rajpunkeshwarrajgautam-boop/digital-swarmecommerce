@@ -2,6 +2,7 @@
   "name": "digital-swarm-ecommerce",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -10,7 +11,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
-    "sync-inventory": "tsx scripts/sync-inventory.ts"
+    "sync-inventory": "tsx scripts/sync-inventory.ts",
+    "sync-urls": "tsx update-download-urls.ts"
   },
   "dependencies": {
     "@cashfreepayments/cashfree-js": "^1.0.6",

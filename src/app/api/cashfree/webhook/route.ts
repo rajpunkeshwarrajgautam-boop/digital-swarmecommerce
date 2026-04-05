@@ -9,18 +9,46 @@ export async function POST(request: Request) {
     const body = await request.text();
     const signature = request.headers.get('x-webhook-signature');
     const timestamp = request.headers.get('x-webhook-timestamp');
+    const clientIp = request.headers.get('x-forwarded-for')?.split(',')[0].trim() || request.headers.get('x-real-ip');
 
-    // 1. Signature Verification
-    if (signature && timestamp) {
-      const signedPayload = `${timestamp}${body}`;
-      const expectedSig = createHmac('sha256', CASHFREE_SECRET_KEY)
-        .update(signedPayload)
-        .digest('base64');
+    // 0. IP Whitelisting (Cashfree Production IPs)
+    const CASHFREE_IPS = [
+      '52.66.101.190',
+      '3.109.102.144',
+      '18.60.134.245',
+      '18.60.183.142',
+      '3.109.91.43',
+      '13.235.101.32'
+    ];
+    
+    // In production, we should enforce this. For now, we log if it's outside.
+    if (process.env.NODE_ENV === 'production' && clientIp && !CASHFREE_IPS.includes(clientIp)) {
+      console.warn(`[Webhook] Unauthorized IP attempt: ${clientIp}`);
+      // return NextResponse.json({ error: 'Unauthorized origin' }, { status: 403 });
+    }
 
-      if (expectedSig !== signature) {
-        console.error('[Webhook] Invalid signature detected');
-        return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
-      }
+    // 1. Signature & Timestamp Verification
+    if (!signature || !timestamp) {
+      return NextResponse.json({ error: 'Missing security headers' }, { status: 401 });
+    }
+
+    // A. Timestamp Drift Check (5-minute window)
+    const now = Date.now();
+    const webhookTime = parseInt(timestamp);
+    if (isNaN(webhookTime) || Math.abs(now - webhookTime) > 300000) {
+      console.error('[Webhook] Timestamp drift detected or invalid');
+      return NextResponse.json({ error: 'Timestamp expired' }, { status: 401 });
+    }
+
+    // B. Signature Matching
+    const signedPayload = `${timestamp}${body}`;
+    const expectedSig = createHmac('sha256', CASHFREE_SECRET_KEY)
+      .update(signedPayload)
+      .digest('base64');
+
+    if (expectedSig !== signature) {
+      console.error('[Webhook] Invalid signature detected');
+      return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
     }
 
     const event = JSON.parse(body);
