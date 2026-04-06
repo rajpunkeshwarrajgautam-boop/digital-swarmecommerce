@@ -12,8 +12,8 @@ export const dynamic = "force-dynamic";
  * with a fallback to the public client if admin is unavailable.
  */
 async function fetchPost(slug: string) {
+  // supabaseAdmin bypasses RLS. supabase (public) is the fallback — always non-null now.
   const client = supabaseAdmin ?? supabase;
-  if (!client) return { post: null, error: new Error("No Supabase client available") };
 
   const { data, error } = await client
     .from("blog_posts")
