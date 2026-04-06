@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Shield, RotateCcw, Truck, AlertCircle, ExternalLink, Eye, BookOpen, Terminal, ArrowRight } from "lucide-react";
@@ -14,11 +14,20 @@ import { QuantumProductView } from "@/components/products/QuantumProductView";
 import { ScarcityEngine } from "@/components/products/ScarcityEngine";
 import { ReviewSystem } from "@/components/products/ReviewSystem";
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
+import { trackViewContent } from "@/components/analytics/FBPixel";
 
 export default function ProductPage() {
   const { slug } = useParams();
   const { data: product, isLoading: loading, error: swrError } = useSwarmSWR<Product>(slug ? `/api/products/${slug}` : null);
   const error = swrError?.message || "";
+  const pixelFired = useRef(false);
+
+  useEffect(() => {
+    if (product && !pixelFired.current) {
+      trackViewContent(product.name, product.price);
+      pixelFired.current = true;
+    }
+  }, [product]);
 
 
   if (loading) {

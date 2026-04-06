@@ -9,6 +9,7 @@ import Image from "next/image";
 import { Product } from "@/lib/types";
 import { LedgerReceipt } from "@/components/ui/LedgerReceipt";
 import { trackPurchase } from "@/components/analytics/FBPixel";
+import { UpsellSection } from "@/components/marketing/UpsellSection";
 
 const NodeStatusPulse = () => (
   <div className="flex items-center gap-2 px-3 py-1 bg-black/5 border border-black/10 rounded-full scale-90">
@@ -232,6 +233,9 @@ function SuccessContent() {
             <button className="h-16 px-8 border-2 border-[#CCFF00] text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black font-black uppercase italic tracking-widest text-xs transition-all">Back_To_Home</button>
          </Link>
       </div>
+
+      {/* Post-Purchase Upsell — drives additional revenue from high-intent buyers */}
+      <UpsellSection excludeIds={purchasedItems.map((p) => p.id)} />
     </div>
   );
 }

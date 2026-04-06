@@ -10,7 +10,7 @@ import { useToastStore } from "@/components/ui/ForgeToast";
 import { useRouter } from "next/navigation";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { formatCurrency } from "@/lib/utils";
-
+import { trackInitiateCheckout } from "@/components/analytics/FBPixel";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
 
 export default function CheckoutPage() {
@@ -92,6 +92,8 @@ function CheckoutContent() {
 
   const handleCashfreePayment = async () => {
     setIsProcessing(true);
+    // Fire FB Pixel InitiateCheckout before gateway opens
+    trackInitiateCheckout(total);
     try {
       const res = await fetch('/api/cashfree/create-order', {
         method: 'POST',

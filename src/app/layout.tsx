@@ -10,8 +10,9 @@ import { AIConcierge } from "@/components/forge/AIConcierge";
 import Script from "next/script";
 import { env } from "@/lib/env";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
-import { ExitIntentModal } from "@/components/marketing/ExitIntentModal";
+import { ExitIntentABRouter } from "@/components/marketing/ExitIntentABRouter";
 import { FBPixelPageView } from "@/components/analytics/FBPixel";
+import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
 import { metadata as siteMetadata } from "./metadata";
 
 const inter = Inter({ 
@@ -54,6 +55,9 @@ export default function RootLayout({
               <FBPixelPageView />
             </Suspense>
 
+            {/* Affiliate click tracker — fires once per session when ?ref= cookie is set */}
+            <AffiliateTracker />
+
             <VisualQuality />
             <ForgeToast />
             <AIConcierge />
@@ -62,7 +66,7 @@ export default function RootLayout({
               <main className="grow">
                 {children}
               </main>
-              <ExitIntentModal />
+              <ExitIntentABRouter />
               <Footer />
             </div>
 

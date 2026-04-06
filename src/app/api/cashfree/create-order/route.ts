@@ -36,20 +36,22 @@ export async function POST(request: Request) {
     // 1. Generate clean Order ID
     const orderId = `DS_${Date.now()}`;
 
-    // 1.5. Resolve Affiliate Cookie (if any)
+    // 1.5. Resolve Affiliate Cookie → get ref_code for commission attribution
     const cookieStore = await cookies();
-    const affiliateCode = cookieStore.get('affiliate_id')?.value;
-    let affiliateRecordId = null;
+    const affiliateRef = cookieStore.get('affiliate_id')?.value || null;
 
-    if (affiliateCode && supabaseAdmin) {
+    // Validate the ref_code exists in our affiliates table (prevents spoofing)
+    let validatedAffiliateRef: string | null = null;
+    if (affiliateRef && supabaseAdmin) {
       const { data: affiliateMatch } = await supabaseAdmin
         .from('affiliates')
-        .select('id')
-        .eq('referral_code', affiliateCode)
+        .select('ref_code')
+        .eq('ref_code', affiliateRef)
+        .eq('status', 'active')
         .single();
-      
-      if (affiliateMatch) {
-        affiliateRecordId = affiliateMatch.id;
+
+      if (affiliateMatch?.ref_code) {
+        validatedAffiliateRef = affiliateMatch.ref_code;
       }
     }
 
@@ -57,17 +59,19 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
     }
 
-    // 2. Create Order in Supabase
+    // 2. Create Order in Supabase (with affiliate_ref + total_amount for commission)
     const { data: order, error: orderError } = await supabaseAdmin
       .from('orders')
       .insert({
         total: parseFloat(total),
+        total_amount: parseFloat(total),            // Used by webhook for commission calc
         status: 'pending',
         user_id: customer.email,
         cashfree_order_id: orderId,
         customer_email: customer.email,
         customer_name: `${customer.firstName} ${customer.lastName}`.trim(),
         customer_phone: customer.phone.replace(/[^0-9]/g, '') || '9999999999',
+        ...(validatedAffiliateRef && { affiliate_ref: validatedAffiliateRef }),
       })
       .select()
       .single();
@@ -91,17 +95,9 @@ export async function POST(request: Request) {
       });
     }
 
-    // 3.5 Log Affiliate Referral (Pending)
-    if (affiliateRecordId && supabaseAdmin) {
-      const commission = parseFloat(total) * 0.30;
-      supabaseAdmin.from('referrals').insert({
-        affiliate_id: affiliateRecordId,
-        order_id: orderId,
-        commission_amount: commission,
-        status: 'pending'
-      }).then(({ error }: { error: { message: string } | null }) => {
-        if (error) console.error('[Affiliate Logging Error]', error);
-      });
+    // 3.5 Log Affiliate impression in create-order (webhook handles commission on payment success)
+    if (validatedAffiliateRef) {
+      console.log(`[Affiliate] Order ${orderId} attributed to ref: ${validatedAffiliateRef}`);
     }
 
     // 4. Create Cashfree Order

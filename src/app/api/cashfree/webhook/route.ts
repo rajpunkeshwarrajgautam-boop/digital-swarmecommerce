@@ -147,6 +147,39 @@ export async function POST(request: Request) {
             await supabaseAdmin.from('webhook_logs').update({ status: 'partial_success_fulfillment_failed' }).eq('id', logEntry.id);
           }
         }
+
+        // 6. Affiliate Commission Crediting (10% of order total)
+        try {
+          const { data: orderRecord } = await supabaseAdmin
+            .from('orders')
+            .select('affiliate_ref, total_amount')
+            .eq('id', dbOrder.id)
+            .single();
+
+          if (orderRecord?.affiliate_ref) {
+            const commission = Math.round((orderRecord.total_amount || 0) * 0.10);
+            const { data: affiliate } = await supabaseAdmin
+              .from('affiliates')
+              .select('conversions, earnings')
+              .eq('ref_code', orderRecord.affiliate_ref)
+              .single();
+
+            if (affiliate) {
+              await supabaseAdmin
+                .from('affiliates')
+                .update({
+                  conversions: (affiliate.conversions || 0) + 1,
+                  earnings: (affiliate.earnings || 0) + commission,
+                })
+                .eq('ref_code', orderRecord.affiliate_ref);
+
+              console.log(`[Affiliate] Credited ₹${commission} to ref: ${orderRecord.affiliate_ref}`);
+            }
+          }
+        } catch (affiliateError) {
+          // Non-critical — log but don't fail the webhook
+          console.error('[Affiliate] Commission crediting failed:', affiliateError);
+        }
       }
     }
 
