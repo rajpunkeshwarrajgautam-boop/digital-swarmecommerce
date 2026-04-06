@@ -4,15 +4,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { ArrowLeft, Calendar, Clock, Tag, Share2 } from "lucide-react";
 
-// Disable ISR — always fetch fresh to prevent stale-cache 404s
+// Force dynamic rendering — no ISR cache that can serve stale 404s
 export const dynamic = "force-dynamic";
 
 /**
- * Fetch a blog post by slug using the admin client (bypasses RLS),
- * with a fallback to the public client if admin is unavailable.
+ * Fetch a blog post by slug.
+ * Tries supabaseAdmin first (bypasses RLS), falls back to public client.
  */
 async function fetchPost(slug: string) {
-  // supabaseAdmin bypasses RLS. supabase (public) is the fallback — always non-null now.
   const client = supabaseAdmin ?? supabase;
 
   const { data, error } = await client
@@ -22,14 +21,19 @@ async function fetchPost(slug: string) {
     .maybeSingle();
 
   if (error) {
-    console.error(`[Blog] Query error for slug "${slug}":`, error.message, error.details);
+    console.error(`[Blog] Query error for slug "${slug}":`, error.message);
   }
 
   return { post: data, error };
 }
 
-export async function generateMetadata({ params }: { params: { slug: string } }) {
-  const { post } = await fetchPost(params.slug);
+// ─── Next.js 15/16 — params is a Promise, must be awaited ────────────────────
+type BlogParams = Promise<{ slug: string }>;
+
+export async function generateMetadata({ params }: { params: BlogParams }) {
+  const { slug } = await params;
+  const { post } = await fetchPost(slug);
+
   if (!post) return { title: "Post Not Found | Digital Swarm" };
 
   return {
@@ -43,14 +47,13 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   };
 }
 
-export default async function BlogPostPage({
-  params,
-}: Readonly<{ params: { slug: string } }>) {
-  const { post, error } = await fetchPost(params.slug);
+export default async function BlogPostPage({ params }: { params: BlogParams }) {
+  // ⚠️ Must await params in Next.js 15+ — accessing synchronously gives undefined
+  const { slug } = await params;
+  const { post, error } = await fetchPost(slug);
 
-  // Show a diagnostic page instead of a generic 404 when there's a real DB error
   if (error && !post) {
-    console.error(`[Blog] Fatal: slug="${params.slug}" error="${error.message}"`);
+    console.error(`[Blog] Fatal: slug="${slug}" db-error="${error.message}"`);
     notFound();
   }
 
@@ -127,17 +130,17 @@ export default async function BlogPostPage({
           </div>
         )}
 
-        {/* Content Body — lightweight Markdown to HTML */}
+        {/* Content Body */}
         <div className="prose prose-invert prose-p:text-white/70 prose-headings:font-black prose-headings:italic prose-headings:uppercase prose-a:text-primary max-w-none pb-20 border-b border-white/10">
           <div
             dangerouslySetInnerHTML={{
               __html: (post.content ?? "")
-                .replace(/^# (.*$)/gim, '<h1 class="text-3xl mt-8 mb-4 text-white">$1</h1>')
-                .replace(/^## (.*$)/gim, '<h2 class="text-2xl mt-6 mb-3 text-white/90">$1</h2>')
-                .replace(/^### (.*$)/gim, '<h3 class="text-xl mt-4 mb-2 text-white/80">$1</h3>')
-                .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
-                .replace(/\*(.*?)\*/g, "<em>$1</em>")
-                .replace(/\n\n/g, "<br/><br/>"),
+                .replaceAll(/^# (.*$)/gim, '<h1 class="text-3xl mt-8 mb-4 text-white">$1</h1>')
+                .replaceAll(/^## (.*$)/gim, '<h2 class="text-2xl mt-6 mb-3 text-white/90">$1</h2>')
+                .replaceAll(/^### (.*$)/gim, '<h3 class="text-xl mt-4 mb-2 text-white/80">$1</h3>')
+                .replaceAll(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")
+                .replaceAll(/\*(.*?)\*/g, "<em>$1</em>")
+                .replaceAll(/\n\n/g, "<br/><br/>"),
             }}
           />
         </div>
