@@ -8,6 +8,7 @@ export interface Product {
   image: string;
   inStock: boolean;
   rating: number;
+  slug?: string;           // Optional: DB-backed products may expose a human-readable slug
   features?: string[];
   specs?: Record<string, string>;
   demoUrl?: string;
