@@ -1,8 +1,41 @@
 "use client";
 
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useSyncExternalStore,
+} from "react";
 
 type Currency = "INR" | "USD" | "EUR" | "GBP";
+
+const STORAGE_KEY = "selected_currency";
+const ALLOWED = new Set<string>(["INR", "USD", "EUR", "GBP"]);
+
+let currencyListeners: Array<() => void> = [];
+
+function subscribeCurrency(listener: () => void) {
+  currencyListeners = [...currencyListeners, listener];
+  return () => {
+    currencyListeners = currencyListeners.filter((l) => l !== listener);
+  };
+}
+
+function emitCurrency() {
+  for (const l of currencyListeners) l();
+}
+
+function readCurrencyFromStorage(): Currency {
+  if (typeof window === "undefined") return "INR";
+  const s = localStorage.getItem(STORAGE_KEY);
+  if (s && ALLOWED.has(s)) return s as Currency;
+  return "INR";
+}
+
+function writeCurrency(c: Currency) {
+  localStorage.setItem(STORAGE_KEY, c);
+  emitCurrency();
+}
 
 interface CurrencyContextType {
   currency: Currency;
@@ -13,27 +46,18 @@ interface CurrencyContextType {
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const [currency, setCurrencyState] = useState<Currency>("INR");
-  const [isLoading, setIsLoading] = useState(true);
+  const currency = useSyncExternalStore(
+    subscribeCurrency,
+    readCurrencyFromStorage,
+    (): Currency => "INR"
+  );
 
-  useEffect(() => {
-    const storedCurrency = localStorage.getItem("selected_currency") as Currency;
-    if (storedCurrency && ["INR", "USD", "EUR", "GBP"].includes(storedCurrency)) {
-      setCurrencyState(storedCurrency);
-    } else {
-      // Optional: Auto-detect logic can be added here
-      // For now, default to INR
-    }
-    setIsLoading(false);
+  const setCurrency = useCallback((newCurrency: Currency) => {
+    writeCurrency(newCurrency);
   }, []);
 
-  const setCurrency = (newCurrency: Currency) => {
-    setCurrencyState(newCurrency);
-    localStorage.setItem("selected_currency", newCurrency);
-  };
-
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, isLoading }}>
+    <CurrencyContext.Provider value={{ currency, setCurrency, isLoading: false }}>
       {children}
     </CurrencyContext.Provider>
   );

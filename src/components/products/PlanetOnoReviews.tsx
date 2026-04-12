@@ -1,8 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { supabase } from "@/lib/supabase";
-import { Star, Terminal, Send, Shield, User, MessageSquare } from "lucide-react";
+import { Star, Terminal, Shield, User, MessageSquare } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 
@@ -215,7 +214,9 @@ export function PlanetOnoReviews({ productId }: { productId: string }) {
                   </div>
 
                   <p className="text-sm text-white/50 leading-relaxed font-inter italic">
-                    "{review.comment}"
+                    <span className="text-white/30">&ldquo;</span>
+                    {review.comment}
+                    <span className="text-white/30">&rdquo;</span>
                   </p>
                 </motion.div>
                ))}

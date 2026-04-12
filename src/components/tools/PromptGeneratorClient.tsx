@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Lock, Unlock, ArrowRight, Zap, Copy, Terminal } from 'lucide-react';
@@ -57,7 +58,7 @@ EXECUTION INITIATED.`;
       } else {
         alert(data.error || 'Failed to unlock');
       }
-    } catch (e) {
+    } catch {
       alert("Network error.");
     }
     setUnlocking(false);
@@ -151,11 +152,11 @@ EXECUTION INITIATED.`;
                   <h4 className="text-white font-bold text-lg mb-1">Want an AI that actually executes this?</h4>
                   <p className="text-blue-200 text-sm">Stop copying text. Run it autonomously in our pre-built dashboard.</p>
                 </div>
-                <a href="/">
+                <Link href="/products">
                   <Button className="bg-white text-blue-900 hover:bg-gray-100 rounded-full font-bold whitespace-nowrap">
-                    Get Sentinel Infiltrator <ArrowRight className="ml-2 h-4 w-4" />
+                    Browse products <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
-                </a>
+                </Link>
               </div>
             </div>
           )}

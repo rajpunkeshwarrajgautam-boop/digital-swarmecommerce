@@ -11,7 +11,7 @@ interface AssetCardProps {
   token: {
     id: string;
     product_id: string;
-    mint_node: string;
+    mint_node?: string;
     created_at: string;
     product: {
       name: string;
@@ -288,7 +288,7 @@ export function AssetCard({ token }: AssetCardProps) {
               <span className="text-[8px] font-black uppercase tracking-[0.2em] text-white/20">Minting_Node</span>
               <div className="flex items-center gap-1.5 text-xs text-white/60">
                 <Cpu className="w-3 h-3" />
-                <span className="font-mono">{token.mint_node}</span>
+                <span className="font-mono">{token.mint_node ?? "—"}</span>
               </div>
             </div>
             <div className="space-y-1 text-right">

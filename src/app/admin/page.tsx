@@ -127,7 +127,7 @@ export default function AdminDashboard() {
 
       <div className="bg-black/40 border border-white/10 p-8 rounded-2xl space-y-6">
          <div className="flex items-center justify-between">
-            <h3 className="font-bold uppercase tracking-[0.3em] text-xs text-white/40 italic">/// SALES_VELOCITY_MATRIX ///</h3>
+            <h3 className="font-bold uppercase tracking-[0.3em] text-xs text-white/40 italic">{"/// SALES_VELOCITY_MATRIX ///"}</h3>
             <span className="text-[10px] font-black text-[#CCFF00] tracking-widest uppercase">Protocol_Active</span>
          </div>
          <div className="flex items-end gap-2 h-48 border-b border-l border-white/5 p-4">

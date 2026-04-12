@@ -1,10 +1,63 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, MapPin, Mail, Phone, Globe, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 
+const OPERATION_TYPES = [
+  "Enterprise Build",
+  "Custom AI Integration",
+  "Support Tier Query",
+  "Partnership Protocol",
+] as const;
+
 export default function ContactPage() {
+  const [callsign, setCallsign] = useState("");
+  const [email, setEmail] = useState("");
+  const [operationType, setOperationType] = useState<string>(OPERATION_TYPES[0]);
+  const [message, setMessage] = useState("");
+  const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [errorMsg, setErrorMsg] = useState("");
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setStatus("loading");
+    setErrorMsg("");
+    const parts = callsign.trim().split(/\s+/);
+    const firstName = parts[0]?.length ? parts[0] : "";
+    const lastName = parts.slice(1).join(" ");
+    const fullMessage = `Operation: ${operationType}\n\n${message.trim()}`;
+    try {
+      const res = await fetch("/api/contact", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          email: email.trim(),
+          message: fullMessage,
+        }),
+      });
+      const data = (await res.json().catch(() => ({}))) as { error?: string };
+      if (!res.ok) {
+        setStatus("error");
+        setErrorMsg(
+          data.error ||
+            "We could not save your message. Try again or email ops@digitalswarm.in."
+        );
+        return;
+      }
+      setStatus("success");
+      setCallsign("");
+      setEmail("");
+      setMessage("");
+    } catch {
+      setStatus("error");
+      setErrorMsg("Network error. Email ops@digitalswarm.in directly.");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white pt-32 pb-20 font-mono">
       <div className="container mx-auto px-6 max-w-7xl">
@@ -88,35 +141,44 @@ export default function ContactPage() {
                 <h2 className="text-3xl font-black italic uppercase tracking-tighter mb-10 text-black border-l-8 border-primary pl-6">
                    Transmission Input
                 </h2>
-                <form className="space-y-8">
+                <form className="space-y-8" onSubmit={handleSubmit}>
+                  {status === "success" && (
+                    <p className="text-sm font-bold text-green-700 border-4 border-green-600 bg-green-50 p-4">
+                      Message received. Our team will reply at the email you provided.
+                    </p>
+                  )}
+                  {status === "error" && errorMsg && (
+                    <p className="text-sm font-bold text-red-700 border-4 border-red-600 bg-red-50 p-4">
+                      {errorMsg}
+                    </p>
+                  )}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Callsign</label>
-                       <input type="text" placeholder="John Doe" className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000]" />
+                       <label htmlFor="contact-callsign" className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Callsign</label>
+                       <input id="contact-callsign" name="callsign" type="text" required placeholder="John Doe" value={callsign} onChange={(e) => setCallsign(e.target.value)} className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000]" />
                     </div>
                     <div className="space-y-2">
-                       <label className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Encryption Email</label>
-                       <input type="email" placeholder="john@ops.com" className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000]" />
+                       <label htmlFor="contact-email" className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Encryption Email</label>
+                       <input id="contact-email" name="email" type="email" required placeholder="john@ops.com" value={email} onChange={(e) => setEmail(e.target.value)} className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000]" />
                     </div>
                   </div>
                   
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Operation Type</label>
-                    <select className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000] appearance-none">
-                       <option>Enterprise Build</option>
-                       <option>Custom AI Integration</option>
-                       <option>Support Tier Query</option>
-                       <option>Partnership Protocol</option>
+                    <label htmlFor="contact-operation" className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Operation Type</label>
+                    <select id="contact-operation" name="operationType" value={operationType} onChange={(e) => setOperationType(e.target.value)} className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000] appearance-none">
+                       {OPERATION_TYPES.map((opt) => (
+                         <option key={opt} value={opt}>{opt}</option>
+                       ))}
                     </select>
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Encryption Message</label>
-                    <textarea rows={5} placeholder="State your objective..." className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000] resize-none"></textarea>
+                    <label htmlFor="contact-message" className="text-[10px] font-black uppercase tracking-widest text-black/40 ml-1">Encryption Message</label>
+                    <textarea id="contact-message" name="message" rows={5} required placeholder="State your objective..." value={message} onChange={(e) => setMessage(e.target.value)} className="w-full bg-black/5 border-4 border-black p-5 font-black uppercase italic tracking-tighter text-lg focus:bg-[#CCFF00] focus:ring-0 outline-none transition-all shadow-[6px_6px_0_#000] resize-none" />
                   </div>
 
-                  <Button className="w-full py-8 text-xl font-black uppercase tracking-widest bg-black text-white hover:bg-primary transition-all flex items-center justify-center gap-4">
-                     Execute Transmission <Send className="w-6 h-6" />
+                  <Button type="submit" disabled={status === "loading"} className="w-full py-8 text-xl font-black uppercase tracking-widest bg-black text-white hover:bg-primary transition-all flex items-center justify-center gap-4 disabled:opacity-50">
+                     {status === "loading" ? "Sending…" : (<><span>Execute Transmission</span> <Send className="w-6 h-6" /></>)}
                   </Button>
                 </form>
              </div>

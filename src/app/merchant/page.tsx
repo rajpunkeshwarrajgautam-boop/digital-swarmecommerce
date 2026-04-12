@@ -3,6 +3,8 @@
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 import { Package, TrendingUp, CheckCircle2, Plus, BarChart3, ShieldCheck, Globe } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
+import { useUser } from "@clerk/nextjs";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Header } from "@/components/layout/Header";
@@ -20,18 +22,44 @@ interface MerchantProduct {
 }
 
 export default function MerchantDashboard() {
-  const { data: products, isLoading } = useSwarmSWR<MerchantProduct[]>('/api/products');
-  
-  const merchantProducts = products?.filter(p => p.merchantId === "SYSTEM") || [];
+  const { user, isLoaded } = useUser();
+  const { data: products, isLoading } = useSwarmSWR<MerchantProduct[]>("/api/products");
 
-  if (isLoading && !products) {
+  const merchantProducts =
+    user?.id && products ? products.filter((p) => p.merchantId === user.id) : [];
+
+  if (!isLoaded || (isLoading && !products)) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
           <Package className="w-12 h-12 text-[#CCFF00] animate-pulse" />
-          <span className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-white/40 italic">Initializing_Merchant_Node...</span>
+          <span className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-white/40 italic">
+            Initializing_Merchant_Node...
+          </span>
         </div>
       </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <>
+        <Header />
+        <main className="min-h-screen bg-black pt-32 pb-24 px-6 flex flex-col items-center justify-center text-center gap-8 max-w-lg mx-auto">
+          <h1 className="text-5xl font-black text-white uppercase italic tracking-tighter">Merchant Control</h1>
+          <p className="text-gray-400 font-inter text-sm leading-relaxed">
+            Sign in to see products where your Clerk user ID matches{" "}
+            <span className="text-[#CCFF00] font-mono text-xs">merchant_id</span> in the database. New listings ship
+            fastest from the dashboard.
+          </p>
+          <Link href="/sign-in?redirect_url=/merchant">
+            <ForgeButton variant="primary" className="h-14 px-10">
+              Sign in to continue
+            </ForgeButton>
+          </Link>
+        </main>
+        <Footer />
+      </>
     );
   }
 
@@ -44,7 +72,9 @@ export default function MerchantDashboard() {
           <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
             <div>
               <div className="flex items-center gap-3 mb-2">
-                <div className="px-2 py-0.5 bg-accent/20 border border-accent/40 rounded text-[10px] font-mono font-black text-accent uppercase tracking-widest">Node_Alpha_7</div>
+                <div className="px-2 py-0.5 bg-accent/20 border border-accent/40 rounded text-[10px] font-mono font-black text-accent uppercase tracking-widest truncate max-w-[200px]">
+                  {user.username || user.primaryEmailAddress?.emailAddress?.split("@")[0] || "Merchant"}
+                </div>
                 <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#CCFF00]/10 border border-[#CCFF00]/30 rounded text-[10px] font-mono font-black text-[#CCFF00] uppercase tracking-widest">
                   <ShieldCheck className="w-3 h-3" /> Verified_Partner
                 </div>
@@ -54,9 +84,11 @@ export default function MerchantDashboard() {
                 Manage your architectural distributions and monitor the sync velocity of your distributed protocols.
               </p>
             </div>
-            <ForgeButton variant="primary" className="h-14 px-8">
-              <Plus className="w-4 h-4 mr-2" /> Propose_New_Protocol
-            </ForgeButton>
+            <Link href="/dashboard/add-product">
+              <ForgeButton variant="primary" className="h-14 px-8">
+                <Plus className="w-4 h-4 mr-2" /> Add_New_Product
+              </ForgeButton>
+            </Link>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
@@ -74,6 +106,26 @@ export default function MerchantDashboard() {
               </div>
               
               <div className="grid grid-cols-1 gap-4">
+                {merchantProducts.length === 0 && (
+                  <GlassCard className="p-10 text-center space-y-4 border-dashed border-white/20">
+                    <p className="text-white/60 font-inter text-sm">
+                      No live listings for your account yet. Publish a product with your merchant ID, or apply to join
+                      the partner program.
+                    </p>
+                    <div className="flex flex-wrap gap-3 justify-center">
+                      <Link href="/dashboard/add-product">
+                        <ForgeButton variant="primary" className="h-12 px-6">
+                          <Plus className="w-4 h-4 mr-2" /> Add product
+                        </ForgeButton>
+                      </Link>
+                      <Link href="/merchant/apply">
+                        <ForgeButton variant="ghost" className="h-12 px-6 border border-white/10">
+                          Partner application
+                        </ForgeButton>
+                      </Link>
+                    </div>
+                  </GlassCard>
+                )}
                 {merchantProducts.map((product) => (
                   <GlassCard key={product.id} className="p-4 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[#CCFF00]/30 transition-all group">
                     <div className="flex items-center gap-6">

@@ -14,9 +14,27 @@ interface ProfilePageProps {
   params: Promise<{ userId: string }>;
 }
 
+type PublicProfileToken = {
+  id: string;
+  product_id: string;
+  created_at: string;
+  product: {
+    name: string;
+    category: string;
+    image: string;
+  };
+};
+
+type PublicProfile = {
+  userId?: string;
+  tokens?: PublicProfileToken[];
+  stats?: { total: number; rank: string };
+  error?: string;
+};
+
 export default function PublicProfile({ params }: ProfilePageProps) {
   const { userId } = use(params);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<PublicProfile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -56,7 +74,7 @@ export default function PublicProfile({ params }: ProfilePageProps) {
                 <Loader2 className="w-12 h-12 text-primary animate-spin" />
                 <span className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-primary italic">Decrypting_Profile_Metadata...</span>
               </motion.div>
-            ) : profile?.tokens?.length > 0 ? (
+            ) : profile && profile.tokens && profile.tokens.length > 0 ? (
               <motion.div 
                 key="content"
                 initial={{ opacity: 0 }}
@@ -111,7 +129,7 @@ export default function PublicProfile({ params }: ProfilePageProps) {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    {profile.tokens.map((token: any) => (
+                    {profile.tokens.map((token) => (
                       <AssetPreview key={token.id} token={token} />
                     ))}
                   </div>
@@ -129,7 +147,7 @@ export default function PublicProfile({ params }: ProfilePageProps) {
                     <h2 className="text-5xl font-black italic uppercase tracking-tighter text-white">Identity_Null</h2>
                     <p className="text-gray-500 max-w-sm mx-auto font-inter">No verified artifacts found for the requested Swarm ID in our distributed registries.</p>
                   </div>
-                  <Link href="/shop">
+                  <Link href="/products">
                     <ForgeButton variant="primary" className="h-14 px-12">Return_to_Nexus</ForgeButton>
                   </Link>
               </motion.div>

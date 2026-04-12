@@ -17,16 +17,22 @@ export async function POST(request: Request) {
   try {
     const ip = request.headers.get('x-forwarded-for') || 'anonymous';
     
-    // 1. Rate Limit: 1 application per hour per IP
+    // 1. Rate Limit: 3 applications per hour per IP
     try {
-      await limiter.check(1, ip); 
+      await limiter.check(3, ip);
     } catch {
       return NextResponse.json({ error: 'System busy. Node uplink already active for this IP.' }, { status: 429 });
     }
 
     const { nodeName, specialization, portfolioUrl, description, contactEmail } = await request.json();
 
-    if (!nodeName || !specialization || !portfolioUrl || !contactEmail) {
+    if (
+      !nodeName?.trim() ||
+      !specialization?.trim() ||
+      !portfolioUrl?.trim() ||
+      !contactEmail?.trim() ||
+      !description?.trim()
+    ) {
       return NextResponse.json({ error: 'Incomplete node credentials.' }, { status: 400 });
     }
 
@@ -51,10 +57,13 @@ export async function POST(request: Request) {
     // In a production environment, this migration would be part of Phase 8.4 setup.
     if (error) {
       console.error('[ONBOARDING_ERROR] Database failure:', error.message);
-      return NextResponse.json({ 
-        success: true, // Returning success to avoid breaking UI, while logging the fault
-        message: 'Proposal received via failover storage.' 
-      });
+      return NextResponse.json(
+        {
+          error:
+            'We could not save your application. Confirm the merchant_applications table exists, or email ops@digitalswarm.in.',
+        },
+        { status: 503 }
+      );
     }
 
     return NextResponse.json({ 

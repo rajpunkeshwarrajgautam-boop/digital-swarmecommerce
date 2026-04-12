@@ -35,6 +35,7 @@ export async function GET(
       const product = products.find(p => p.id === token.product_id);
       return {
         id: token.id,
+        product_id: token.product_id,
         created_at: token.created_at,
         product: product ? {
           name: product.name,

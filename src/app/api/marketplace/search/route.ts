@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { SearchService } from '@/lib/search';
-import { products } from '@/lib/data';
+import { products as staticProducts } from '@/lib/data';
+import type { Product } from '@/lib/types';
 
 /**
  * ✨ NEURAL DISCOVERY UPLINK
@@ -11,14 +12,29 @@ export async function POST(req: Request) {
   try {
     const { query, isNeural } = await req.json();
 
+    const { origin } = new URL(req.url);
+    let catalog: Product[] = staticProducts;
+    try {
+      const r = await fetch(`${origin}/api/products`, {
+        cache: 'no-store',
+        headers: { Accept: 'application/json' },
+      });
+      if (r.ok) {
+        const data = (await r.json()) as Product[];
+        if (Array.isArray(data) && data.length > 0) catalog = data;
+      }
+    } catch {
+      /* keep static catalog */
+    }
+
     if (!query) {
-      return NextResponse.json({ results: products });
+      return NextResponse.json({ results: catalog });
     }
 
     // 1. Process Conceptual or Standard Search
-    const results = isNeural 
-      ? SearchService.neuralSearch(query, products)
-      : SearchService.tagSearch(query, products);
+    const results = isNeural
+      ? SearchService.neuralSearch(query, catalog)
+      : SearchService.tagSearch(query, catalog);
 
     return NextResponse.json({ 
       success: true, 

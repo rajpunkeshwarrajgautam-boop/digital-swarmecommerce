@@ -45,10 +45,14 @@ export async function POST(request: Request) {
       });
 
     if (error) {
-      // Table might not exist yet — gracefully degrade
-      console.warn('[contact] Supabase insert failed:', error.message);
-      // Still return success to user (acts like a queue)
-      return NextResponse.json({ success: true, queued: true });
+      console.error('[contact] Supabase insert failed:', error.message);
+      return NextResponse.json(
+        {
+          error:
+            'We could not store your message right now. Please email ops@digitalswarm.in or try again shortly.',
+        },
+        { status: 503 }
+      );
     }
 
     return NextResponse.json({ success: true });

@@ -10,9 +10,28 @@ import { Loader2, ShieldCheck, Box, ArrowRight } from 'lucide-react';
 import { ForgeButton } from '@/components/ui/ForgeButton';
 import Link from 'next/link';
 
+type VaultToken = {
+  id: string;
+  product_id: string;
+  mint_node?: string;
+  created_at: string;
+  metadata?: Record<string, unknown>;
+  product: {
+    name: string;
+    category: string;
+    image: string;
+  };
+};
+
+type VaultStatsPayload = {
+  total: number;
+  nodes: number;
+  rank: string;
+};
+
 export default function DigitalVault() {
-  const [tokens, setTokens] = useState<any[]>([]);
-  const [stats, setStats] = useState<any>(null);
+  const [tokens, setTokens] = useState<VaultToken[]>([]);
+  const [stats, setStats] = useState<VaultStatsPayload | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -57,7 +76,7 @@ export default function DigitalVault() {
               </p>
             </div>
             
-            <Link href="/shop">
+            <Link href="/products">
               <ForgeButton variant="ghost" className="h-14 px-8 group">
                 Acquire_New_Artifacts <ArrowRight className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform" />
               </ForgeButton>
@@ -118,7 +137,7 @@ export default function DigitalVault() {
                     <h2 className="text-4xl font-black italic uppercase tracking-tighter text-white">Vault_Inventory_Null</h2>
                     <p className="text-gray-500 max-w-sm mx-auto font-inter">Your ownership ledger is currently unpopulated. Acquire high-fidelity assets to populate your Swarm Repository.</p>
                 </div>
-                <Link href="/shop">
+                <Link href="/products">
                     <ForgeButton variant="primary" className="h-14 px-10">Start_Acquisition_Protocol</ForgeButton>
                 </Link>
               </motion.div>

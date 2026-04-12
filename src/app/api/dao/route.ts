@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { GovernanceService, Proposal } from '@/lib/governance';
+import { GovernanceService } from '@/lib/governance';
 import { supabaseAdmin } from '@/lib/supabase';
 
 /**

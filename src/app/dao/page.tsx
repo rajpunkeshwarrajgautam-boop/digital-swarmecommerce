@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Shield, Activity, Zap, TrendingUp, Target, BarChart3, Globe, Sparkles } from "lucide-react";
+import { Shield, Activity, Zap, TrendingUp, Target, BarChart3, Globe, Sparkles, type LucideIcon } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 
@@ -24,7 +24,9 @@ interface SwarmPulse {
 
 interface DaoSummary {
   proposals: Proposal[];
-  treasury_balance: number;
+  /** API returns camelCase */
+  treasuryBalance?: number;
+  treasury_balance?: number;
 }
 
 export default function GovernanceNexus() {
@@ -35,7 +37,7 @@ export default function GovernanceNexus() {
   const [isCasting, setIsCasting] = useState(false);
  
   const proposals = daoData?.proposals || [];
-  const treasuryBalance = daoData?.treasury_balance || 0;
+  const treasuryBalance = daoData?.treasuryBalance ?? daoData?.treasury_balance ?? 0;
   const pulse: SwarmPulse = pulseData?.pulse || { total_transfers: 0, total_votes: 0, treasury_velocity: 0, sync_level: 50 };
  
   const castVote = async (proposalId: string, vote: 'YES' | 'NO') => {
@@ -111,14 +113,14 @@ export default function GovernanceNexus() {
 
         {/* Global Navigation */}
         <nav className="flex gap-1 border-b border-white/5 mb-16">
-           {[
-             { id: 'proposals', label: 'Protocol Decisions', icon: Target },
-             { id: 'treasury', label: 'Treasury Flow', icon: BarChart3 },
-             { id: 'pulse', label: 'Swarm Pulse', icon: Globe }
-           ].map((tab) => (
+           {([
+             { id: "proposals" as const, label: "Protocol Decisions", icon: Target },
+             { id: "treasury" as const, label: "Treasury Flow", icon: BarChart3 },
+             { id: "pulse" as const, label: "Swarm Pulse", icon: Globe },
+           ] as const).map((tab) => (
               <button
                  key={tab.id}
-                 onClick={() => setActiveTab(tab.id as any)}
+                 onClick={() => setActiveTab(tab.id)}
                  className={`flex items-center gap-3 px-8 py-5 text-[10px] font-mono uppercase tracking-[0.3em] transition-all relative ${
                     activeTab === tab.id ? 'text-primary' : 'text-white/20 hover:text-white/40'
                  }`}
@@ -299,7 +301,7 @@ function ProposalCard({ proposal, onVote, isCasting }: { proposal: Proposal; onV
 interface PulseMetricProps {
   label: string;
   value: string;
-  icon: any;
+  icon: LucideIcon;
   trend: string;
   color?: string;
 }

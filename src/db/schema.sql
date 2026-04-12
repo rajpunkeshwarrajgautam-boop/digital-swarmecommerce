@@ -77,7 +77,26 @@ create table if not exists public.contact_messages (
   created_at timestamptz default now()
 );
 
--- ── 5. Product Reviews Table ────────────────────────────────────────────────
+-- ── 5. Merchant Applications (partner onboarding) ───────────────────────────
+
+create table if not exists public.merchant_applications (
+  id              uuid default gen_random_uuid() primary key,
+  node_name       text not null,
+  specialization  text not null,
+  portfolio_url   text not null,
+  description     text not null,
+  contact_email   text not null,
+  status          text not null default 'pending',
+  created_at      timestamptz not null default now()
+);
+
+create index if not exists merchant_applications_status_idx
+  on public.merchant_applications (status);
+
+create index if not exists merchant_applications_created_at_idx
+  on public.merchant_applications (created_at desc);
+
+-- ── 6. Product Reviews Table ────────────────────────────────────────────────
 create table if not exists public.reviews (
   id         uuid default gen_random_uuid() primary key,
   product_id text not null,
@@ -88,12 +107,13 @@ create table if not exists public.reviews (
   created_at timestamptz default now()
 );
 
--- ── 6. Row Level Security ────────────────────────────────────────────────────
+-- ── 7. Row Level Security ────────────────────────────────────────────────────
 
 alter table public.products         enable row level security;
 alter table public.orders           enable row level security;
 alter table public.order_items      enable row level security;
 alter table public.contact_messages  enable row level security;
+alter table public.merchant_applications enable row level security;
 alter table public.reviews          enable row level security;
 
 -- Products & Reviews: public read
@@ -106,7 +126,7 @@ create policy "Public reviews are viewable by everyone" on public.reviews for se
 -- Orders and contact messages: service role only (bypasses RLS)
 -- No public read/write policies. Backend uses supabaseAdmin (service role).
 
--- ── 6. Updated_at auto-trigger ───────────────────────────────────────────────
+-- ── 8. Updated_at auto-trigger ───────────────────────────────────────────────
 
 create or replace function public.handle_updated_at()
 returns trigger language plpgsql as $$
@@ -126,7 +146,7 @@ create trigger set_orders_updated_at
   before update on public.orders
   for each row execute procedure public.handle_updated_at();
 
--- ── 7. Full Product Catalog Seed ─────────────────────────────────────────────
+-- ── 9. Full Product Catalog Seed ─────────────────────────────────────────────
 -- Uses INSERT ... ON CONFLICT (name) DO UPDATE for idempotent re-runs.
 
 insert into public.products (name, description, price, category, image, in_stock, rating, features, specs, download_url)
@@ -316,7 +336,7 @@ on conflict (name) do update set
   specs        = excluded.specs,
   download_url = excluded.download_url,
   updated_at   = now();
--- ── 8. Phase 3 Scaling Tables (Affiliates & Licenses) ────────────────────────
+-- ── 10. Phase 3 Scaling Tables (Affiliates & Licenses) ────────────────────────
 
 -- customer_licenses table for the Secure JWT Portal
 create table if not exists public.customer_licenses (
