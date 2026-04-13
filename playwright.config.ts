@@ -1,5 +1,9 @@
 import { defineConfig, devices } from '@playwright/test';
 
+const productionUrl = process.env.PLAYWRIGHT_PRODUCTION_URL?.replace(/\/$/, '');
+const baseURL = productionUrl || 'http://localhost:3000';
+const useWebServer = !productionUrl && !process.env.PLAYWRIGHT_NO_WEBSERVER;
+
 /**
  * Playwright E2E Configuration
  * 
@@ -14,7 +18,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: 'http://localhost:3000',
+    baseURL,
     trace: 'on-first-retry',
   },
   projects: [
@@ -27,9 +31,11 @@ export default defineConfig({
       use: { ...devices['Desktop Safari'] },
     },
   ],
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://localhost:3000',
-    reuseExistingServer: !process.env.CI,
-  },
+  webServer: useWebServer
+    ? {
+        command: 'npm run dev',
+        url: 'http://localhost:3000',
+        reuseExistingServer: !process.env.CI,
+      }
+    : undefined,
 });

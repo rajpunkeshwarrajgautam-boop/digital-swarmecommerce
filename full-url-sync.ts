@@ -1,6 +1,7 @@
 import { createClient } from "@supabase/supabase-js";
 import * as dotenv from "dotenv";
 
+dotenv.config({ path: ".env.local" });
 dotenv.config();
 
 const supabase = createClient(
@@ -12,6 +13,7 @@ const storageOrigin =
   process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "") ??
   "https://uhswcljouelyprsinchj.supabase.co";
 const BASE = `${storageOrigin}/storage/v1/object/public/product-downloads`;
+const SITE_BASE = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") ?? "https://digitalswarm.in";
 
 // Map every product name in DB to the correct zip URL
 // Products without a dedicated zip → use the closest matching agent
@@ -46,6 +48,11 @@ const urlMap: Record<string, string> = {
   "Swarm Property Infiltrator (Market Oracle)":          `${BASE}/swarm-property-infiltrator/swarm-property-infiltrator.zip`,
   "Swarm Talent Infiltrator (HR Oracle)":                `${BASE}/swarm-recruitment-command/swarm-recruitment-command.zip`,
   "Swarm Voice Orator (Narrative Synth)":                `${BASE}/swarm-capital-oracle/swarm-capital-oracle.zip`,
+  // Non-agent bundles currently served from public site files
+  "1000 Manually Tested Web Applications": `${SITE_BASE}/downloads/1000-web-apps.pdf`,
+  "Ultimate Web Development Bundle": `${SITE_BASE}/downloads/ultimate-web-bundle.pdf`,
+  "Ultimate Mega Bundle": `${SITE_BASE}/downloads/mega-bundle.pdf`,
+  "Web Applications Collection": `${SITE_BASE}/downloads/web-apps-collection.pdf`,
 };
 
 async function fullSync() {
