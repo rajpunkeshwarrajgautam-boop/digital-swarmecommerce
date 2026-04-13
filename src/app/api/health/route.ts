@@ -30,7 +30,12 @@ export async function GET() {
     const probe = async (table: string): Promise<TableCheck> => {
       const { error } = await admin.from(table).select("id").limit(1);
       if (error) {
-        const missing = error.code === "42P01" || error.message?.includes("does not exist");
+        const msg = error.message ?? "";
+        const missing =
+          error.code === "42P01" ||
+          error.code === "PGRST205" ||
+          msg.includes("does not exist") ||
+          msg.includes("schema cache");
         return { ok: false, detail: missing ? "table_missing" : "query_error" };
       }
       return { ok: true };
