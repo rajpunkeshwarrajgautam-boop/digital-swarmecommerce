@@ -41,7 +41,8 @@ export function evaluateCatalogReadiness() {
   let totalChecks = 0;
 
   for (const product of products) {
-    const delivery = classifyDelivery(product.downloadUrl ?? "");
+    const downloadUrl = product.downloadUrl ?? "";
+    const delivery = classifyDelivery(downloadUrl);
     const cap = categoryPriceCaps[product.category];
 
     const checks: Array<[boolean, string, string]> = [
@@ -49,8 +50,8 @@ export function evaluateCatalogReadiness() {
       [Boolean(product.description?.trim()), "missing_description", "Product description is empty."],
       [Boolean(product.installGuide?.trim()), "missing_install_guide", "Install guide is missing."],
       [
-        Boolean(product.downloadUrl) &&
-          (product.downloadUrl.startsWith("/downloads/") || product.downloadUrl.startsWith("https://")),
+        Boolean(downloadUrl) &&
+          (downloadUrl.startsWith("/downloads/") || downloadUrl.startsWith("https://")),
         "invalid_download_url",
         "Download URL must be /downloads/* or absolute HTTPS URL.",
       ],
