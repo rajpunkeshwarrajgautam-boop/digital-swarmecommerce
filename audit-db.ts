@@ -55,6 +55,13 @@ async function auditDB() {
     console.log("❌ Bucket 'product-downloads' NOT FOUND");
   }
 
+  const reviewBucket = buckets?.find((b) => b.name === "review-media");
+  if (reviewBucket) {
+    console.log(`✅ Bucket 'review-media' exists (public: ${reviewBucket.public})`);
+  } else {
+    console.log("❌ Bucket 'review-media' NOT FOUND (review image uploads will fail)");
+  }
+
   // Summary
   console.log("\n" + "=".repeat(60));
   console.log(`\n${missingUrls === 0 ? "✅ ALL PRODUCTS" : `⚠️  ${missingUrls} PRODUCTS`} have download URLs configured.`);

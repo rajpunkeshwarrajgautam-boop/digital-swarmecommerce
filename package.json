@@ -13,6 +13,8 @@
     "test:e2e": "playwright test",
     "test:e2e:production": "playwright test tests/e2e/production-smoke.spec.ts --project=chromium",
     "db:apply-merchant-applications": "node scripts/apply-merchant-applications.mjs",
+    "storage:ensure-buckets": "node scripts/ensure-storage-buckets.mjs",
+    "storage:mirror-zips": "node scripts/mirror-product-zips-from-legacy.mjs",
     "sync-inventory": "tsx scripts/sync-inventory.ts",
     "sync-urls": "tsx update-download-urls.ts"
   },
