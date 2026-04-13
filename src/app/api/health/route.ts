@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabase, supabaseAdmin } from "@/lib/supabase";
+import { evaluateCatalogReadiness } from "@/lib/catalog-readiness";
 
 export const dynamic = "force-dynamic";
 
@@ -11,6 +12,7 @@ type TableCheck = { ok: boolean; detail?: string };
  */
 export async function GET() {
   const checks: Record<string, TableCheck | { ok: boolean; count?: number }> = {};
+  const catalog = evaluateCatalogReadiness();
 
   const { count, error: productsError } = await supabase
     .from("products")
@@ -54,13 +56,19 @@ export async function GET() {
       "ok" in checks.merchant_applications &&
       checks.merchant_applications.ok);
 
-  const overallOk = productsOk && adminTablesOk;
+  const catalogOk = catalog.score >= 9.5;
+  const overallOk = productsOk && adminTablesOk && catalogOk;
+  checks.catalog_readiness = {
+    ok: catalogOk,
+    detail: `score_${catalog.score}`,
+  };
 
   return NextResponse.json(
     {
       ok: overallOk,
       service: "digital-swarm-ecommerce",
       checks,
+      catalog,
     },
     { status: productsOk ? 200 : 503 }
   );

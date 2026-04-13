@@ -103,6 +103,14 @@ export default function ProductPage() {
       reviewCount: 1,
     },
   };
+  const downloadPath = product.downloadUrl ?? "";
+  const deliveryLabel = downloadPath.endsWith(".zip")
+    ? "Source code package (.zip)"
+    : downloadPath.endsWith(".html")
+      ? "Interactive playbook (.html)"
+      : downloadPath.endsWith(".pdf")
+        ? "Guide / document (.pdf)"
+        : "Digital asset package";
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative pb-32 pt-16 overflow-hidden">
@@ -324,6 +332,9 @@ export default function ProductPage() {
                 <Link href="/refund" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">30-day refund policy</Link>
                 <Link href="/terms" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">commercial licensing terms</Link>
                 <Link href="/privacy" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">privacy + compliance</Link>
+              </div>
+              <div className="border border-primary/20 bg-primary/5 p-5 text-[11px] font-mono text-primary/90 uppercase tracking-[0.15em]">
+                Delivery format: {deliveryLabel}
               </div>
             </div>
           </div>
