@@ -1,24 +1,18 @@
 type EventParams = Record<string, unknown>;
 
-declare global {
-  interface Window {
-    dataLayer?: Array<Record<string, unknown>>;
-    gtag?: (...args: unknown[]) => void;
-    fbq?: (...args: unknown[]) => void;
-  }
-}
-
 function pushDataLayer(event: string, params: EventParams = {}) {
   if (typeof window === "undefined") return;
-  window.dataLayer = window.dataLayer || [];
-  window.dataLayer.push({ event, ...params });
+  const w = window as Window & { dataLayer?: Array<Record<string, unknown>> };
+  w.dataLayer = w.dataLayer || [];
+  w.dataLayer.push({ event, ...params });
 }
 
 export function trackEcommerceEvent(event: string, params: EventParams = {}) {
   if (typeof window === "undefined") return;
   pushDataLayer(event, params);
-  if (typeof window.gtag === "function") {
-    window.gtag("event", event, params);
+  const w = window as Window & { gtag?: (...args: unknown[]) => void };
+  if (typeof w.gtag === "function") {
+    w.gtag("event", event, params);
   }
 }
 
