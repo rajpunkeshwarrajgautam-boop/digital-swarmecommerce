@@ -48,6 +48,13 @@ async function ensureBucket() {
 }
 
 async function main() {
+  if (url.includes("xbjdosyqgznveddlyiqh")) {
+    console.warn(
+      "\n⚠️  NEXT_PUBLIC_SUPABASE_URL points at the legacy project. Files would be copied to the same host.\n" +
+        "   Set URL + SUPABASE_SERVICE_ROLE_KEY to digital-swarm (uhswclj…), e.g.:\n" +
+        "   node --env-file=.env.vercel.production scripts/mirror-product-zips-from-legacy.mjs\n"
+    );
+  }
   await ensureBucket();
   console.log(`Mirroring ${OBJECT_PATHS.length} objects → ${url}\n`);
 
