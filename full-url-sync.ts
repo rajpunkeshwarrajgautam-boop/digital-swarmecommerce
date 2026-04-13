@@ -8,7 +8,10 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY!
 );
 
-const BASE = "https://xbjdosyqgznveddlyiqh.supabase.co/storage/v1/object/public/product-downloads";
+const storageOrigin =
+  process.env.NEXT_PUBLIC_SUPABASE_URL?.replace(/\/$/, "") ??
+  "https://uhswcljouelyprsinchj.supabase.co";
+const BASE = `${storageOrigin}/storage/v1/object/public/product-downloads`;
 
 // Map every product name in DB to the correct zip URL
 // Products without a dedicated zip → use the closest matching agent

@@ -10,11 +10,11 @@ import { createClient } from '@supabase/supabase-js';
  */
 const supabaseUrl =
   process.env.NEXT_PUBLIC_SUPABASE_URL ??
-  'https://xbjdosyqgznveddlyiqh.supabase.co'; // public — safe fallback
+  'https://uhswcljouelyprsinchj.supabase.co'; // digital-swarm — public fallback
 
 const supabaseAnonKey =
   process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ??
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhiamRvc3lxZ3pudmVkZGx5aXFoIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzI2ODYyMTQsImV4cCI6MjA4ODI2MjIxNH0.F-Etm9NqIRUhslc4Gro8EwuTU2wyqUZQWRG22quRuEk'; // public — safe fallback
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVoc3djbGpvdWVseXByc2luY2hqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzQ2NzgsImV4cCI6MjA4NjkxMDY3OH0._69eZIlifDPNyLVYMOKJezQDujrKYMZKesn5jYWXdPg'; // public — safe fallback
 
 const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
