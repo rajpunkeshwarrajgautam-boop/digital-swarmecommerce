@@ -15,6 +15,8 @@ import { ScarcityEngine } from "@/components/products/ScarcityEngine";
 import { ReviewSystem } from "@/components/products/ReviewSystem";
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 import { trackViewContent } from "@/components/analytics/FBPixel";
+import { trackViewItem } from "@/lib/web-analytics";
+import { Newsletter } from "@/components/home/Newsletter";
 
 export default function ProductPage() {
   const { slug } = useParams();
@@ -25,6 +27,12 @@ export default function ProductPage() {
   useEffect(() => {
     if (product && !pixelFired.current) {
       trackViewContent(product.name, product.price);
+      trackViewItem({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: product.category,
+      });
       pixelFired.current = true;
     }
   }, [product]);
@@ -70,8 +78,35 @@ export default function ProductPage() {
     );
   }
 
+  const productJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: product.name,
+    image: product.image,
+    description: product.description,
+    sku: product.id,
+    brand: {
+      "@type": "Brand",
+      name: "Digital Swarm",
+    },
+    offers: {
+      "@type": "Offer",
+      url: `https://digitalswarm.in/product/${product.id}`,
+      priceCurrency: "INR",
+      price: product.price,
+      availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+      itemCondition: "https://schema.org/NewCondition",
+    },
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: product.rating,
+      reviewCount: 1,
+    },
+  };
+
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative pb-32 pt-16 overflow-hidden">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
       {/* Decorative Forge Background */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
         style={{ 
@@ -284,6 +319,12 @@ export default function ProductPage() {
                   <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Satisfaction Guaranteed</span>
                 </div>
               </div>
+
+              <div className="grid gap-4 md:grid-cols-3 text-center text-[10px] font-mono uppercase tracking-[0.25em] text-white/50">
+                <Link href="/refund" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">30-day refund policy</Link>
+                <Link href="/terms" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">commercial licensing terms</Link>
+                <Link href="/privacy" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">privacy + compliance</Link>
+              </div>
             </div>
           </div>
         </div>
@@ -296,6 +337,7 @@ export default function ProductPage() {
            </div>
         </div>
       </div>
+      <Newsletter />
     </div>
   );
 }

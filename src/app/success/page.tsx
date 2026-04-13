@@ -10,6 +10,7 @@ import { Product } from "@/lib/types";
 import { LedgerReceipt } from "@/components/ui/LedgerReceipt";
 import { trackPurchase } from "@/components/analytics/FBPixel";
 import { UpsellSection } from "@/components/marketing/UpsellSection";
+import { trackPurchaseEvent } from "@/lib/web-analytics";
 
 const NodeStatusPulse = () => (
   <div className="flex items-center gap-2 px-3 py-1 bg-black/5 border border-black/10 rounded-full scale-90">
@@ -75,6 +76,16 @@ function SuccessContent() {
           // Fire FB Purchase event for ad campaign optimization
           const purchaseValue = data.amount ?? Number(localStorage.getItem('last_purchase_value') ?? 0);
           trackPurchase(purchaseValue, data.orderId ?? orderId ?? 'unknown');
+          trackPurchaseEvent(
+            purchaseValue,
+            data.orderId ?? orderId ?? "unknown",
+            lastItems.map((item: Product) => ({
+              id: item.id,
+              name: item.name,
+              price: item.price,
+              quantity: 1,
+            }))
+          );
           if (data.ledger_entry) {
             setLedgerData(data.ledger_entry);
           }

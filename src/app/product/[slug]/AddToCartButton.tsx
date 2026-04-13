@@ -7,6 +7,7 @@ import { BadgeCheck, Building2, ArrowRight, ShieldCheck } from "lucide-react";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { formatCurrency } from "@/lib/utils";
+import { trackAddToCart } from "@/lib/web-analytics";
 
 export default function AddToCartButton({ product }: { product: Product }) {
   const { currency } = useCurrency();
@@ -29,6 +30,13 @@ export default function AddToCartButton({ product }: { product: Product }) {
     };
 
     addItem(cartProduct);
+    trackAddToCart({
+      id: cartProduct.id,
+      name: cartProduct.name,
+      price: finalPrice,
+      quantity: 1,
+      category: cartProduct.category,
+    });
 
       // Track AddToCart Event
       if (typeof window !== 'undefined' && (window as any).fbq) {

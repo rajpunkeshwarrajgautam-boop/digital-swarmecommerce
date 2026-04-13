@@ -12,6 +12,7 @@ import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { formatCurrency } from "@/lib/utils";
 import { trackInitiateCheckout } from "@/components/analytics/FBPixel";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
+import { trackBeginCheckout } from "@/lib/web-analytics";
 
 export default function CheckoutPage() {
   return (
@@ -94,6 +95,15 @@ function CheckoutContent() {
     setIsProcessing(true);
     // Fire FB Pixel InitiateCheckout before gateway opens
     trackInitiateCheckout(total);
+    trackBeginCheckout(
+      total,
+      items.map((item) => ({
+        id: item.productId,
+        name: item.name,
+        price: item.price,
+        quantity: item.quantity,
+      }))
+    );
     try {
       const res = await fetch('/api/cashfree/create-order', {
         method: 'POST',

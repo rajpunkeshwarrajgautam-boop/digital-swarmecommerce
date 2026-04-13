@@ -6,6 +6,8 @@ import { ProductGrid } from "@/components/products/ProductGrid";
 import { FilterSidebar } from "@/components/products/FilterSidebar";
 import { Terminal, Activity, Zap, Shield } from "lucide-react";
 import { motion } from "framer-motion";
+import Link from "next/link";
+import { Newsletter } from "@/components/home/Newsletter";
 
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 
@@ -23,6 +25,26 @@ export default function ProductsPage() {
   const categories = useMemo(() => 
     ["All", ...Array.from(new Set(rawProducts.map(p => p.category)))],
     [rawProducts]
+  );
+  const comparisonProducts = useMemo(
+    () =>
+      [...filteredProducts]
+        .sort((a, b) => (b.rating * 100 + b.price / 1000) - (a.rating * 100 + a.price / 1000))
+        .slice(0, 3),
+    [filteredProducts]
+  );
+  const itemListJsonLd = useMemo(
+    () => ({
+      "@context": "https://schema.org",
+      "@type": "ItemList",
+      itemListElement: filteredProducts.slice(0, 12).map((product, index) => ({
+        "@type": "ListItem",
+        position: index + 1,
+        url: `https://digitalswarm.in/product/${product.id}`,
+        name: product.name,
+      })),
+    }),
+    [filteredProducts]
   );
 
   // 🛰️ NEURAL DISCOVERY ENGINE
@@ -65,6 +87,7 @@ export default function ProductsPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white pt-40 pb-32">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
       {/* Background Decor */}
       <div className="absolute inset-x-0 top-0 h-[500px] bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
       
@@ -167,7 +190,40 @@ export default function ProductsPage() {
            </div>
         </footer>
 
+        <section className="mt-20 border border-white/10 bg-white/2 p-8">
+          <h2 className="text-xl font-outfit font-black uppercase italic tracking-tight mb-6">Top Pick Comparison</h2>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead>
+                <tr className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 border-b border-white/10">
+                  <th className="py-3">Product</th>
+                  <th className="py-3">Category</th>
+                  <th className="py-3">Rating</th>
+                  <th className="py-3">Price</th>
+                  <th className="py-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {comparisonProducts.map((product) => (
+                  <tr key={product.id} className="border-b border-white/5 text-sm">
+                    <td className="py-4 font-bold">{product.name}</td>
+                    <td className="py-4 text-white/60">{product.category}</td>
+                    <td className="py-4 text-primary">{product.rating.toFixed(1)}</td>
+                    <td className="py-4">₹{product.price.toLocaleString("en-IN")}</td>
+                    <td className="py-4">
+                      <Link href={`/product/${product.id}`} className="text-primary hover:underline">
+                        View Offer
+                      </Link>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
       </div>
+      <Newsletter />
     </div>
   );
 }

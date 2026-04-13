@@ -13,6 +13,7 @@ import { ForgeButton } from "@/components/ui/ForgeButton";
 import { ScarcityEngine } from "@/components/ui/ScarcityEngine";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { formatCurrency } from "@/lib/utils";
+import { trackAddToCart } from "@/lib/web-analytics";
 
 interface ProductCardProps {
   product: Product;
@@ -74,6 +75,13 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     e.stopPropagation();
     if (added) return;
     addItem(product);
+    trackAddToCart({
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      quantity: 1,
+      category: product.category,
+    });
     setAdded(true);
     setTimeout(() => setAdded(false), 2000);
   };

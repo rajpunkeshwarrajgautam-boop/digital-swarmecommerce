@@ -13,6 +13,7 @@ import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
 import { ExitIntentABRouter } from "@/components/marketing/ExitIntentABRouter";
 import { FBPixelPageView } from "@/components/analytics/FBPixel";
 import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
+import { JsonLd } from "@/components/layout/JsonLd";
 import { metadata as siteMetadata } from "./metadata";
 
 const inter = Inter({ 
@@ -69,6 +70,7 @@ export default function RootLayout({
               <ExitIntentABRouter />
               <Footer />
             </div>
+            <JsonLd />
 
             {/* FB Pixel base init script — loads once, sets up fbq() */}
             <Script

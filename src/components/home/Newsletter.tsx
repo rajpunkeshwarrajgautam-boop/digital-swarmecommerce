@@ -3,6 +3,8 @@
 import { motion } from "framer-motion";
 import { Send, Radio, Sparkles, CheckCircle2, AlertCircle } from "lucide-react";
 import { useState } from "react";
+import { trackLead } from "@/components/analytics/FBPixel";
+import { trackEcommerceEvent } from "@/lib/web-analytics";
 
 /**
  * Newsletter subscription component.
@@ -30,6 +32,8 @@ export function Newsletter() {
       if (res.ok && data.success) {
         setStatus("success");
         setMessage("Signal acquired. Check your inbox.");
+        trackLead("newsletter");
+        trackEcommerceEvent("generate_lead", { source: "newsletter", placement: "onsite" });
         setEmail("");
       } else {
         setStatus("error");
