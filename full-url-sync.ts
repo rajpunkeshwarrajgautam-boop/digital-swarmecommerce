@@ -15,7 +15,17 @@ const BASE = `${storageOrigin}/storage/v1/object/public/product-downloads`;
 
 // Map every product name in DB to the correct zip URL
 // Products without a dedicated zip → use the closest matching agent
+// Canonical AI Agent titles: src/db/schema.sql (insert … on conflict name)
 const urlMap: Record<string, string> = {
+  // Schema seed (digital-swarm) — names must match `products.name` exactly
+  "Sentinel Research Infiltrator (AI Agent)": `${BASE}/swarm-trend-oracle/swarm-trend-oracle.zip`,
+  "Swarm Corporate Growth Team (Multi-Agent)": `${BASE}/swarm-sales-infiltrator/swarm-sales-infiltrator.zip`,
+  "Swarm Cinema Infiltrator (AI Movie Producer)": `${BASE}/swarm-trend-oracle/swarm-trend-oracle.zip`,
+  "Swarm Cinema Infiltrator (AI Producer)": `${BASE}/swarm-trend-oracle/swarm-trend-oracle.zip`,
+  "Swarm Browser MCP (Openwork Automation)": `${BASE}/swarm-capital-oracle/swarm-capital-oracle.zip`,
+  "Swarm Deep Research Agent (Llama3 Local)": `${BASE}/swarm-trend-oracle/swarm-trend-oracle.zip`,
+  "Swarm Multimodal UI/UX Engine (Nano Banana)": `${BASE}/swarm-trend-oracle/swarm-trend-oracle.zip`,
+
   // Exact matches (7 new standalone ZIPs)
   "Swarm Sales Infiltrator (Dashboard Edition)":      `${BASE}/swarm-sales-infiltrator/swarm-sales-infiltrator.zip`,
   "Swarm Finance Oracle (Dashboard Edition)":          `${BASE}/swarm-finance-oracle/swarm-finance-oracle.zip`,
@@ -35,7 +45,6 @@ const urlMap: Record<string, string> = {
   "Swarm Corporate Growth Team (Autonomous Sales)":      `${BASE}/swarm-sales-infiltrator/swarm-sales-infiltrator.zip`,
   "Swarm Property Infiltrator (Market Oracle)":          `${BASE}/swarm-property-infiltrator/swarm-property-infiltrator.zip`,
   "Swarm Talent Infiltrator (HR Oracle)":                `${BASE}/swarm-recruitment-command/swarm-recruitment-command.zip`,
-  "Swarm Cinema Infiltrator (AI Producer)":              `${BASE}/swarm-trend-oracle/swarm-trend-oracle.zip`,
   "Swarm Voice Orator (Narrative Synth)":                `${BASE}/swarm-capital-oracle/swarm-capital-oracle.zip`,
 };
 
