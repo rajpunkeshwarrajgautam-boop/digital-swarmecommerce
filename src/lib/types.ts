@@ -83,6 +83,26 @@ export interface AdminOpsDiagnostics {
   }>;
 }
 
+export interface AdminOrderTimelineResponse {
+  success: boolean;
+  order: {
+    id: string;
+    cashfreeOrderId?: string;
+    customerEmail: string;
+    status: string;
+  };
+  timeline: Array<{
+    timestamp: string;
+    title: string;
+    detail: string;
+    kind: "order" | "payment" | "webhook" | "license";
+  }>;
+  diagnostics: {
+    webhookLogsAvailable: boolean;
+    licensesFound: number;
+  };
+}
+
 export interface AdminOrderItem {
   id: string;
   productId: string;

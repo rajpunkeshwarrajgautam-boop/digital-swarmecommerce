@@ -1,17 +1,19 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { History, Hash, Calendar, CreditCard, User, Download, Activity, AlertTriangle, ShieldCheck, RefreshCw } from "lucide-react";
+import { History, Hash, Calendar, CreditCard, User, Download, Activity, AlertTriangle, ShieldCheck, RefreshCw, ChevronDown, ChevronUp } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAdminOrders, recheckOrderPayment, retryOrderFulfillment } from "@/app/actions/admin";
 import { useToastStore } from "@/components/ui/ForgeToast";
 
-import { AdminOpsDiagnostics, AdminOrder } from "@/lib/types";
+import { AdminOpsDiagnostics, AdminOrder, AdminOrderTimelineResponse } from "@/lib/types";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [ops, setOps] = useState<AdminOpsDiagnostics | null>(null);
   const [actionOrderId, setActionOrderId] = useState<string | null>(null);
+  const [openTimelineOrderId, setOpenTimelineOrderId] = useState<string | null>(null);
+  const [timelines, setTimelines] = useState<Record<string, AdminOrderTimelineResponse>>({});
   const [isLoading, setIsLoading] = useState(true);
   const { addToast } = useToastStore();
 
@@ -83,6 +85,30 @@ export default function AdminOrdersPage() {
       addToast("ERROR", "PAYMENT_RECHECK_FAILED", "GATEWAY RECHECK DID NOT COMPLETE");
     } finally {
       setActionOrderId(null);
+    }
+  }
+
+  async function toggleTimeline(orderId: string) {
+    if (openTimelineOrderId === orderId) {
+      setOpenTimelineOrderId(null);
+      return;
+    }
+
+    setOpenTimelineOrderId(orderId);
+
+    if (timelines[orderId]) {
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/admin/orders/${orderId}/timeline`, { cache: "no-store" });
+      if (!res.ok) {
+        throw new Error("timeline_failed");
+      }
+      const data = (await res.json()) as AdminOrderTimelineResponse;
+      setTimelines((current) => ({ ...current, [orderId]: data }));
+    } catch {
+      addToast("ERROR", "TIMELINE_LOAD_FAILED", "UNABLE TO LOAD ORDER TIMELINE");
     }
   }
 
@@ -177,18 +203,20 @@ export default function AdminOrdersPage() {
                   <th className="pb-4 pr-6 text-right">Value</th>
                   <th className="pb-4 pl-6 text-right">Status</th>
                   <th className="pb-4 pl-6 text-right">Recovery</th>
+                  <th className="pb-4 pl-6 text-right">Timeline</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
                 {orders.map((order, i) => (
-                  <motion.tr 
-                    key={order.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: i * 0.05 }}
-                    className="group hover:bg-white/2 transition-colors"
-                  >
-                    <td className="py-6 pr-6">
+                  <>
+                    <motion.tr 
+                      key={order.id}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: i * 0.05 }}
+                      className="group hover:bg-white/2 transition-colors"
+                    >
+                      <td className="py-6 pr-6">
                        <div className="flex flex-col gap-1">
                           <span className="text-[10px] font-mono text-white/40 tracking-wider flex items-center gap-1">
                              <Hash className="w-3 h-3" /> {order.cashfree_order_id || order.id.substring(0,8)}
@@ -227,7 +255,7 @@ export default function AdminOrdersPage() {
                           {order.status}
                        </span>
                     </td>
-                    <td className="py-6 pl-6 text-right">
+                      <td className="py-6 pl-6 text-right">
                       <div className="flex items-center justify-end gap-2">
                         {(order.status === "pending" || order.status === "failed") && (
                           <button
@@ -249,13 +277,65 @@ export default function AdminOrdersPage() {
                           </button>
                         )}
                       </div>
-                    </td>
-                  </motion.tr>
+                      </td>
+                      <td className="py-6 pl-6 text-right">
+                        <button
+                          onClick={() => toggleTimeline(order.id)}
+                          className="px-3 py-2 text-[9px] font-black uppercase tracking-widest border border-white/10 text-white/70 hover:text-black hover:bg-white transition-all inline-flex items-center gap-2"
+                        >
+                          {openTimelineOrderId === order.id ? <ChevronUp className="w-3 h-3" /> : <ChevronDown className="w-3 h-3" />}
+                          Trace
+                        </button>
+                      </td>
+                    </motion.tr>
+                    {openTimelineOrderId === order.id && (
+                      <tr className="bg-black/20">
+                        <td colSpan={7} className="px-6 py-5">
+                          <OrderTimelinePanel timeline={timelines[order.id]} />
+                        </td>
+                      </tr>
+                    )}
+                  </>
                 ))}
               </tbody>
             </table>
           </div>
         )}
+      </div>
+    </div>
+  );
+}
+
+function OrderTimelinePanel({ timeline }: { timeline?: AdminOrderTimelineResponse }) {
+  if (!timeline) {
+    return <div className="text-[10px] font-mono uppercase tracking-widest text-white/30">Loading diagnostic trace...</div>;
+  }
+
+  return (
+    <div className="space-y-4">
+      <div className="flex flex-wrap items-center gap-4 text-[10px] font-black uppercase tracking-widest text-white/40">
+        <span>{timeline.order.cashfreeOrderId || timeline.order.id}</span>
+        <span>Status: {timeline.order.status}</span>
+        <span>Licenses: {timeline.diagnostics.licensesFound}</span>
+      </div>
+      <div className="space-y-3">
+        {timeline.timeline.map((entry, index) => (
+          <div key={`${entry.timestamp}-${index}`} className="border border-white/5 bg-white/[0.02] px-4 py-3">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
+              <div className="space-y-1">
+                <div className="text-[10px] font-black uppercase tracking-widest text-[#CCFF00] italic">
+                  {entry.title}
+                </div>
+                <div className="text-[10px] font-mono text-white/50 uppercase tracking-widest">
+                  {entry.detail}
+                </div>
+              </div>
+              <div className="text-[10px] font-black uppercase tracking-widest text-white/30">
+                {new Date(entry.timestamp).toLocaleString()}
+              </div>
+            </div>
+          </div>
+        ))}
       </div>
     </div>
   );
