@@ -38,9 +38,20 @@ export async function POST(request: Request) {
 
     const isPaid = data.order_status === 'PAID';
     const newStatus = isPaid ? 'paid' : data.order_status.toLowerCase();
+    let transitionedToPaid = false;
+    let internalOrderId: string | null = null;
 
     // ── Update Supabase order status ─────────────────────────────────────────
     if (orderId.startsWith('DS_') && supabaseAdmin) {
+      const { data: existingOrder } = await supabaseAdmin
+        .from('orders')
+        .select('id, status')
+        .eq('cashfree_order_id', orderId)
+        .maybeSingle();
+
+      internalOrderId = existingOrder?.id || null;
+      transitionedToPaid = Boolean(isPaid && existingOrder && existingOrder.status !== 'paid');
+
       const { data: orderData, error: updateError } = await supabaseAdmin
         .from('orders')
         .update({
@@ -57,13 +68,13 @@ export async function POST(request: Request) {
       }
 
       // If just paid, trigger post-purchase logic (idempotent)
-      if (isPaid && orderData && supabaseAdmin) {
+      if (transitionedToPaid && orderData && supabaseAdmin) {
         // 1. Check if license already exists
         const { data: existingLicense } = await supabaseAdmin
           .from('customer_licenses')
           .select('id')
           .eq('order_id', orderId)
-          .single();
+          .maybeSingle();
 
         if (!existingLicense) {
           // 2. Fetch order items
@@ -106,7 +117,7 @@ export async function POST(request: Request) {
     let ledgerEntry = null;
     const node = getNodeIdentity(request.headers);
 
-    if (isPaid) {
+    if (transitionedToPaid && internalOrderId) {
       try {
         const entry = LedgerService.signPurchase(
           orderId,
@@ -125,10 +136,10 @@ export async function POST(request: Request) {
         };
 
         // 💰 [FINANCE PROTOCOL] Process commission split
-        await CommissionService.calculateSplit(orderId);
+        await CommissionService.calculateSplit(internalOrderId);
 
         // 🏗️ [TOKEN PROTOCOL] Mint Digital Swarm Tokens (NFTs)
-        const mintResult = await TokenService.mintFromOrder(orderId, entry.signature);
+        const mintResult = await TokenService.mintFromOrder(internalOrderId, entry.signature);
         if (mintResult.success) {
             console.log(`[VAULT] Tokens minted: ${mintResult.tokens.join(', ')}`);
         }

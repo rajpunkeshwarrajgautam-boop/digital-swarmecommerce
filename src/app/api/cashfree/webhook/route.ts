@@ -3,6 +3,8 @@ import { createHmac } from 'crypto';
 import { supabaseAdmin } from '@/lib/supabase';
 
 const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY!;
+const SUCCESS_EVENT = 'PAYMENT_SUCCESS_WEBHOOK';
+const FAILED_EVENT = 'PAYMENT_FAILED_WEBHOOK';
 
 export async function POST(request: Request) {
   try {
@@ -58,6 +60,10 @@ export async function POST(request: Request) {
     const cfOrderId = orderData?.order_id;
     const cfPaymentId = paymentData?.cf_payment_id;
 
+    if (!eventType || !cfOrderId || !cfPaymentId) {
+      return NextResponse.json({ error: 'Invalid webhook payload' }, { status: 400 });
+    }
+
     if (!supabaseAdmin) {
       return NextResponse.json({ error: 'Supabase admin client not initialized' }, { status: 500 });
     }
@@ -69,7 +75,7 @@ export async function POST(request: Request) {
       .select('status')
       .eq('cf_payment_id', cfPaymentId)
       .eq('event_type', eventType)
-      .single();
+      .maybeSingle();
 
     if (existingLog?.status === 'success') {
       console.log(`[Webhook] Duplicate event ignored: ${cfPaymentId} (${eventType})`);
@@ -85,7 +91,7 @@ export async function POST(request: Request) {
         event_type: eventType,
         raw_payload: event,
         status: 'pending'
-      })
+      }, { onConflict: 'cf_payment_id,event_type' })
       .select('id')
       .single();
 
@@ -94,7 +100,22 @@ export async function POST(request: Request) {
     }
 
     // 3. Status Transitions
-    if (eventType === 'PAYMENT_SUCCESS_WEBHOOK') {
+    if (eventType === SUCCESS_EVENT) {
+      const { data: existingOrder } = await supabaseAdmin
+        .from('orders')
+        .select('id, customer_email, status')
+        .eq('cashfree_order_id', cfOrderId)
+        .maybeSingle();
+
+      if (!existingOrder) {
+        if (logEntry?.id) {
+          await supabaseAdmin.from('webhook_logs').update({ status: 'error' }).eq('id', logEntry.id);
+        }
+        return NextResponse.json({ error: 'Order not found for webhook' }, { status: 404 });
+      }
+
+      const transitionedToPaid = existingOrder.status !== 'paid';
+
       // 4. Update order status
       const { data: dbOrder, error: orderUpdateError } = await supabaseAdmin
         .from('orders')
@@ -103,7 +124,7 @@ export async function POST(request: Request) {
           payment_id: cfPaymentId,
         })
         .eq('cashfree_order_id', cfOrderId)
-        .select('customer_email, id')
+        .select('customer_email, id, status')
         .single();
 
       if (orderUpdateError) {
@@ -114,7 +135,7 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'DB Update Failed' }, { status: 500 });
       }
 
-      if (dbOrder) {
+      if (dbOrder && transitionedToPaid) {
         // 5. Trigger fulfillment (Atomic/Async)
         const { data: orderItems } = await supabaseAdmin
           .from('order_items')
@@ -181,15 +202,28 @@ export async function POST(request: Request) {
           console.error('[Affiliate] Commission crediting failed:', affiliateError);
         }
       }
+
+      if (logEntry?.id) {
+        await supabaseAdmin.from('webhook_logs').update({ status: 'success' }).eq('id', logEntry.id);
+      }
     }
 
-    if (eventType === 'PAYMENT_FAILED_WEBHOOK') {
+    if (eventType === FAILED_EVENT) {
       await supabaseAdmin
         .from('orders')
         .update({ status: 'failed' })
         .eq('cashfree_order_id', cfOrderId);
       
-      await supabaseAdmin.from('webhook_logs').update({ status: 'success' }).eq('id', logEntry?.id);
+      if (logEntry?.id) {
+        await supabaseAdmin.from('webhook_logs').update({ status: 'success' }).eq('id', logEntry.id);
+      }
+    }
+
+    if (eventType !== SUCCESS_EVENT && eventType !== FAILED_EVENT) {
+      if (logEntry?.id) {
+        await supabaseAdmin.from('webhook_logs').update({ status: 'success' }).eq('id', logEntry.id);
+      }
+      return NextResponse.json({ success: true, message: 'Unhandled event ignored' });
     }
 
     return NextResponse.json({ success: true });

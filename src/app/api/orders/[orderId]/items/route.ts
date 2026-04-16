@@ -27,14 +27,22 @@ export async function GET(
       return NextResponse.json({ error: 'Order ID or Database unavailable' }, { status: 400 });
     }
 
-    // Check ownership
-    const { data: order, error: ownershipError } = await supabaseAdmin
+    // Resolve by either internal UUID (`orders.id`) or provider order id (`cashfree_order_id`).
+    const { data: orderById } = await supabaseAdmin
       .from('orders')
-      .select('user_id')
+      .select('id, user_id')
       .eq('id', orderId)
-      .single();
+      .maybeSingle();
 
-    if (ownershipError || !order) {
+    const { data: orderByGatewayId } = await supabaseAdmin
+      .from('orders')
+      .select('id, user_id')
+      .eq('cashfree_order_id', orderId)
+      .maybeSingle();
+
+    const order = orderById || orderByGatewayId;
+
+    if (!order) {
       return NextResponse.json({ error: 'Order not found' }, { status: 404 });
     }
 
@@ -50,7 +58,7 @@ export async function GET(
         *,
         products (*)
       `)
-      .eq('order_id', orderId);
+      .eq('order_id', order.id);
 
     if (fetchError) {
       console.error('[API OrderItems] Fetch Error:', fetchError.message);

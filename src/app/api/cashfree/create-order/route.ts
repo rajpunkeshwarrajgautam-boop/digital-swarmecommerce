@@ -3,6 +3,8 @@ import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { env } from '@/lib/env';
 
+type CheckoutItem = { id?: string; productId?: string; price: number; quantity?: number };
+
 export async function POST(request: Request) {
   try {
     const body = await request.json();
@@ -32,6 +34,9 @@ export async function POST(request: Request) {
     if (!items || !items.length || !total || !customer?.email) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
     }
+
+    const normalizedPhone = String(customer.phone || '').replace(/[^0-9]/g, '');
+    const safePhone = normalizedPhone || '9999999999';
 
     // 1. Generate clean Order ID
     const orderId = `DS_${Date.now()}`;
@@ -70,7 +75,7 @@ export async function POST(request: Request) {
         cashfree_order_id: orderId,
         customer_email: customer.email,
         customer_name: `${customer.firstName} ${customer.lastName}`.trim(),
-        customer_phone: customer.phone.replace(/[^0-9]/g, '') || '9999999999',
+        customer_phone: safePhone,
         ...(validatedAffiliateRef && { affiliate_ref: validatedAffiliateRef }),
       })
       .select()
@@ -81,18 +86,23 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database record failed' }, { status: 500 });
     }
 
-    // 3. Create Order Items (Async)
-    const orderItems = items.map((item: { id: string; price: number }) => ({
+    // 3. Create Order Items (blocking, so we can rollback cleanly on failure)
+    const orderItems = (items as CheckoutItem[]).map((item) => ({
       order_id: order.id,
-      product_id: item.id,
-      quantity: 1,
+      product_id: item.productId || item.id,
+      quantity: item.quantity || 1,
       price: item.price,
     }));
-    
-    if (supabaseAdmin) {
-      supabaseAdmin.from('order_items').insert(orderItems).then(({ error }: { error: { message: string } | null }) => {
-        if (error) console.error('[OrderItems Error]', error.message);
-      });
+
+    const { error: orderItemsError } = await supabaseAdmin
+      .from('order_items')
+      .insert(orderItems);
+
+    if (orderItemsError) {
+      // Prevent orphan pending orders with no item rows.
+      await supabaseAdmin.from('orders').delete().eq('id', order.id);
+      console.error('[OrderItems Error]', orderItemsError.message);
+      return NextResponse.json({ error: 'Order item persistence failed' }, { status: 500 });
     }
 
     // 3.5 Log Affiliate impression in create-order (webhook handles commission on payment success)
@@ -108,7 +118,7 @@ export async function POST(request: Request) {
       customer_details: {
         customer_id: customer.email.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 45),
         customer_email: customer.email,
-        customer_phone: customer.phone.replace(/[^0-9]/g, '').slice(-10) || '9999999999',
+        customer_phone: safePhone.slice(-10),
         customer_name: `${customer.firstName} ${customer.lastName}`.trim().slice(0, 100),
       },
       order_meta: {
@@ -141,6 +151,14 @@ export async function POST(request: Request) {
     const cfData = await cfRes.json() as CashfreeOrderResponse;
 
     if (!cfRes.ok) {
+      await supabaseAdmin
+        .from('orders')
+        .update({
+          status: 'failed',
+          updated_at: new Date().toISOString(),
+        })
+        .eq('id', order.id);
+
       console.error('[Cashfree Error Response]', {
         status: cfRes.status,
         data: cfData,
