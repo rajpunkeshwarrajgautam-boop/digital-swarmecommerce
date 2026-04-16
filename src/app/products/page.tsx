@@ -146,7 +146,10 @@ export default function ProductsPage() {
               </div>
             ) : (
               <div className="space-y-12">
-                <ProductGrid products={filteredProducts} />
+                <ProductGrid
+                  products={filteredProducts}
+                  listName={isNeural ? "products_registry_neural" : `products_registry_${activeCategory.toLowerCase().replace(/\s+/g, "_")}`}
+                />
                 {isNeural && filteredProducts.some(p => p.matchDensity) && (
                    <div className="flex flex-col items-center gap-2 mt-8">
                       <p className="text-[8px] font-mono font-black text-white/10 uppercase tracking-widest text-center">

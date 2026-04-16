@@ -24,6 +24,39 @@ export function trackViewItem(item: { id: string; name: string; price: number; c
   });
 }
 
+export function trackViewItemList(
+  listName: string,
+  items: Array<{ id: string; name: string; price: number; category?: string }>
+) {
+  trackEcommerceEvent("view_item_list", {
+    item_list_name: listName,
+    items: items.map((item, index) => ({
+      item_id: item.id,
+      item_name: item.name,
+      price: item.price,
+      item_category: item.category,
+      index,
+    })),
+  });
+}
+
+export function trackSelectItem(
+  listName: string,
+  item: { id: string; name: string; price: number; category?: string }
+) {
+  trackEcommerceEvent("select_item", {
+    item_list_name: listName,
+    items: [
+      {
+        item_id: item.id,
+        item_name: item.name,
+        price: item.price,
+        item_category: item.category,
+      },
+    ],
+  });
+}
+
 export function trackAddToCart(item: { id: string; name: string; price: number; quantity?: number; category?: string }) {
   trackEcommerceEvent("add_to_cart", {
     currency: "INR",

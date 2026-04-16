@@ -1,11 +1,14 @@
 "use client";
 
+import { useEffect, useRef } from "react";
 import { Product } from "@/lib/types";
 import { ProductCard } from "./ProductCard";
 import { motion, Variants } from "framer-motion";
+import { trackViewItemList } from "@/lib/web-analytics";
 
 interface ProductGridProps {
   products: Product[];
+  listName?: string;
 }
 
 const container: Variants = {
@@ -31,7 +34,26 @@ const item: Variants = {
   }
 };
 
-export function ProductGrid({ products }: ProductGridProps) {
+export function ProductGrid({ products, listName = "product_grid" }: ProductGridProps) {
+  const lastSignature = useRef<string>("");
+
+  useEffect(() => {
+    if (!products.length) return;
+    const signature = `${listName}:${products.map((product) => product.id).join("|")}`;
+    if (lastSignature.current === signature) return;
+
+    trackViewItemList(
+      listName,
+      products.slice(0, 24).map((product) => ({
+        id: product.id,
+        name: product.name,
+        price: product.price,
+        category: product.category,
+      }))
+    );
+    lastSignature.current = signature;
+  }, [products, listName]);
+
   if (products.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-center border border-white/5 bg-white/5 backdrop-blur-md silk-reveal-mask">
@@ -58,7 +80,7 @@ export function ProductGrid({ products }: ProductGridProps) {
     >
       {products.map((product, index) => (
         <motion.div key={product.id} variants={item}>
-          <ProductCard product={product} priority={index < 3} />
+          <ProductCard product={product} priority={index < 3} listName={listName} />
         </motion.div>
       ))}
     </motion.div>

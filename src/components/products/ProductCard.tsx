@@ -13,11 +13,12 @@ import { ForgeButton } from "@/components/ui/ForgeButton";
 import { ScarcityEngine } from "@/components/ui/ScarcityEngine";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { formatCurrency } from "@/lib/utils";
-import { trackAddToCart } from "@/lib/web-analytics";
+import { trackAddToCart, trackSelectItem } from "@/lib/web-analytics";
 
 interface ProductCardProps {
   product: Product;
   priority?: boolean;
+  listName?: string;
 }
 
 function StarRating({ rating }: { rating: number }) {
@@ -60,7 +61,7 @@ function TechBadges({ category }: { category: string }) {
 
 import { useSwarmPrefetch } from "@/hooks/useSwarmPrefetch";
 
-export function ProductCard({ product, priority = false }: ProductCardProps) {
+export function ProductCard({ product, priority = false, listName = "product_grid" }: ProductCardProps) {
   const addItem = useCartStore((state) => state.addItem);
   const { addItem: addToWishlist, removeItem: removeFromWishlist, isWishlisted } = useWishlistStore();
   const { currency } = useCurrency();
@@ -107,6 +108,15 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
     prefetch(`/api/products/${product.id}`);
   };
 
+  const handleSelectItem = () => {
+    trackSelectItem(listName, {
+      id: product.id,
+      name: product.name,
+      price: product.price,
+      category: product.category,
+    });
+  };
+
   return (
     <GlassCard 
       className="p-0 overflow-hidden h-full group flex flex-col ono-reveal relative"
@@ -129,7 +139,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
         )}
       </AnimatePresence>
 
-      <Link href={`/product/${product.id}`} className="block relative aspect-square overflow-hidden bg-white/5 silk-reveal-mask">
+      <Link href={`/product/${product.id}`} onClick={handleSelectItem} className="block relative aspect-square overflow-hidden bg-white/5 silk-reveal-mask">
         <div className="ono-reveal h-full w-full">
           <Image
             src={product.image}
@@ -257,7 +267,7 @@ export function ProductCard({ product, priority = false }: ProductCardProps) {
             </AnimatePresence>
           </ForgeButton>
 
-          <Link href={`/product/${product.id}`} className="w-full" aria-label={`View details for ${product.name}`}>
+          <Link href={`/product/${product.id}`} onClick={handleSelectItem} className="w-full" aria-label={`View details for ${product.name}`}>
             <button className="w-full text-[10px] font-mono text-white/20 uppercase tracking-[0.3em] hover:text-white transition-colors">
               View Details
             </button>
