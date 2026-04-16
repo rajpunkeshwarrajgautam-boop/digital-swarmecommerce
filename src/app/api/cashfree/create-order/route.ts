@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { env } from '@/lib/env';
+import { fetchWithRetry } from '@/lib/http';
 
 type CheckoutItem = { id?: string; productId?: string; price: number; quantity?: number };
 
@@ -126,7 +127,7 @@ export async function POST(request: Request) {
       },
     };
 
-    const cfRes = await fetch(`${BASE_URL}/orders`, {
+    const cfRes = await fetchWithRetry(`${BASE_URL}/orders`, {
       method: 'POST',
       headers: {
         'x-client-id': CLIENT_ID,
@@ -136,6 +137,9 @@ export async function POST(request: Request) {
         'Accept': 'application/json',
       },
       body: JSON.stringify(cfPayload),
+      timeoutMs: 10000,
+      retries: 2,
+      retryDelayMs: 700,
     });
 
     interface CashfreeOrderResponse {
@@ -188,6 +192,14 @@ export async function POST(request: Request) {
   } catch (err: unknown) {
     const error = err as Error;
     console.error('[Checkout API Error]', error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    const isTimeout = error.name === 'AbortError';
+    return NextResponse.json(
+      {
+        error: isTimeout
+          ? 'Payment gateway timed out. Please try again.'
+          : error.message,
+      },
+      { status: 500 }
+    );
   }
 }

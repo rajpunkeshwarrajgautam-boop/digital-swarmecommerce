@@ -12,6 +12,7 @@ import { LedgerService } from '@/lib/ledger';
 import { getNodeIdentity } from '@/lib/nodes';
 import { CommissionService } from '@/lib/commissions';
 import { TokenService } from '@/lib/token-minting';
+import { fetchWithRetry } from '@/lib/http';
 
 export async function POST(request: Request) {
   try {
@@ -21,13 +22,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Order ID required' }, { status: 400 });
     }
 
-    const response = await fetch(`${BASE_URL}/orders/${orderId}`, {
+    const response = await fetchWithRetry(`${BASE_URL}/orders/${orderId}`, {
       method: 'GET',
       headers: {
         'x-api-version': '2023-08-01',
         'x-client-id': CASHFREE_APP_ID,
         'x-client-secret': CASHFREE_SECRET_KEY,
       },
+      timeoutMs: 8000,
+      retries: 2,
+      retryDelayMs: 500,
     });
 
     const data = await response.json();
@@ -159,7 +163,16 @@ export async function POST(request: Request) {
     });
   } catch (err) {
     console.error('[Cashfree Verify] Error:', err);
-    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    const error = err as Error;
+    return NextResponse.json(
+      {
+        error:
+          error.name === 'AbortError'
+            ? 'Payment verification timed out. Please retry shortly.'
+            : 'Internal Server Error',
+      },
+      { status: 500 }
+    );
   }
 }
 
