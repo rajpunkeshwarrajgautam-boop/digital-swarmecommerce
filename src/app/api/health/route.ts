@@ -13,6 +13,10 @@ type TableCheck = { ok: boolean; detail?: string };
 export async function GET() {
   const checks: Record<string, TableCheck | { ok: boolean; count?: number }> = {};
   const catalog = evaluateCatalogReadiness();
+  const paymentConfigOk = Boolean(
+    process.env.CASHFREE_APP_ID && process.env.CASHFREE_SECRET_KEY
+  );
+  const cronSecretOk = Boolean(process.env.CRON_SECRET);
 
   const { count, error: productsError } = await supabase
     .from("products")
@@ -27,6 +31,7 @@ export async function GET() {
   if (!supabaseAdmin) {
     checks.contact_messages = { ok: false, detail: "service_role_unset" };
     checks.merchant_applications = { ok: false, detail: "service_role_unset" };
+    checks.webhook_logs = { ok: false, detail: "service_role_unset" };
   } else {
     const admin = supabaseAdmin;
     const probe = async (table: string): Promise<TableCheck> => {
@@ -45,6 +50,7 @@ export async function GET() {
 
     checks.contact_messages = await probe("contact_messages");
     checks.merchant_applications = await probe("merchant_applications");
+    checks.webhook_logs = await probe("webhook_logs");
   }
 
   const adminTablesOk =
@@ -61,6 +67,14 @@ export async function GET() {
   checks.catalog_readiness = {
     ok: catalogOk,
     detail: `score_${catalog.score}`,
+  };
+  checks.cashfree_config = {
+    ok: paymentConfigOk,
+    detail: paymentConfigOk ? "configured" : "missing_env",
+  };
+  checks.cron_secret = {
+    ok: cronSecretOk,
+    detail: cronSecretOk ? "configured" : "missing_env",
   };
 
   return NextResponse.json(

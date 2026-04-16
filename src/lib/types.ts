@@ -60,6 +60,29 @@ export interface AdminOrder {
   order_items: AdminOrderItem[];
 }
 
+export interface AdminOpsDiagnostics {
+  ok: boolean;
+  diagnostics: {
+    cashfreeConfigured: boolean;
+    cronSecretConfigured: boolean;
+    webhookLogsAvailable: boolean;
+  };
+  counters: {
+    pendingOlderThan30m: number;
+    failedLast24h: number;
+    paidLast24h: number;
+    webhookRetryBacklog: number | null;
+    pendingWebhookLogs: number | null;
+  };
+  recentStuckOrders: Array<{
+    id: string;
+    cashfree_order_id?: string;
+    customer_email: string;
+    status: string;
+    created_at: string;
+  }>;
+}
+
 export interface AdminOrderItem {
   id: string;
   productId: string;

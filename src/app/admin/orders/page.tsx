@@ -1,15 +1,16 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { History, Hash, Calendar, CreditCard, User, Download, ExternalLink } from "lucide-react";
+import { History, Hash, Calendar, CreditCard, User, Download, Activity, AlertTriangle, ShieldCheck } from "lucide-react";
 import { useEffect, useState } from "react";
 import { getAdminOrders } from "@/app/actions/admin";
 import { useToastStore } from "@/components/ui/ForgeToast";
 
-import { AdminOrder } from "@/lib/types";
+import { AdminOpsDiagnostics, AdminOrder } from "@/lib/types";
 
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
+  const [ops, setOps] = useState<AdminOpsDiagnostics | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { addToast } = useToastStore();
 
@@ -19,8 +20,14 @@ export default function AdminOrdersPage() {
 
   async function fetchData() {
     try {
-      const data = await getAdminOrders();
-      setOrders(data);
+      const [orderData, opsRes] = await Promise.all([
+        getAdminOrders(),
+        fetch("/api/admin/ops", { cache: "no-store" }),
+      ]);
+      setOrders(orderData);
+      if (opsRes.ok) {
+        setOps(await opsRes.json());
+      }
     } catch (e) {
       addToast("ERROR", "DATA_RETRIEVAL_FAILURE", "UNABLE TO SYNC LOGISTICS LEDGER");
     } finally {
@@ -69,6 +76,63 @@ export default function AdminOrdersPage() {
           <Download className="w-4 h-4" /> Export_CSV_Data
         </button>
       </header>
+
+      {ops && (
+        <section className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-4">
+          <OpsCard label="Pending > 30m" value={String(ops.counters.pendingOlderThan30m)} tone="warn" />
+          <OpsCard label="Failed 24h" value={String(ops.counters.failedLast24h)} tone="danger" />
+          <OpsCard label="Paid 24h" value={String(ops.counters.paidLast24h)} tone="ok" />
+          <OpsCard
+            label="Webhook Retry Backlog"
+            value={String(ops.counters.webhookRetryBacklog ?? 0)}
+            tone="warn"
+          />
+          <OpsCard
+            label="Cron / Gateway"
+            value={
+              ops.diagnostics.cashfreeConfigured && ops.diagnostics.cronSecretConfigured
+                ? "READY"
+                : "CHECK"
+            }
+            tone={
+              ops.diagnostics.cashfreeConfigured && ops.diagnostics.cronSecretConfigured
+                ? "ok"
+                : "danger"
+            }
+          />
+        </section>
+      )}
+
+      {ops && ops.recentStuckOrders.length > 0 && (
+        <section className="border border-white/5 bg-white/[0.02] p-6 space-y-4">
+          <div className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-[#CCFF00] italic">
+            <AlertTriangle className="w-3 h-3" /> Recovery Queue Snapshot
+          </div>
+          <div className="space-y-2">
+            {ops.recentStuckOrders.map((order) => (
+              <div
+                key={order.id}
+                className="flex flex-col md:flex-row md:items-center md:justify-between gap-2 border border-white/5 bg-black/20 px-4 py-3"
+              >
+                <div className="space-y-1">
+                  <div className="text-[10px] font-mono text-white/50">
+                    {order.cashfree_order_id || order.id}
+                  </div>
+                  <div className="text-xs font-black italic text-white">{order.customer_email}</div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <span className="text-[10px] font-black uppercase tracking-widest text-white/40">
+                    {new Date(order.created_at).toLocaleString()}
+                  </span>
+                  <span className="px-3 py-1 text-[9px] font-black uppercase italic bg-red-500/20 text-red-400 border border-red-500/40">
+                    {order.status}
+                  </span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
 
       <div className="space-y-2">
         {isLoading ? (
@@ -142,6 +206,33 @@ export default function AdminOrdersPage() {
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function OpsCard({
+  label,
+  value,
+  tone,
+}: {
+  label: string;
+  value: string;
+  tone: "ok" | "warn" | "danger";
+}) {
+  const toneClass =
+    tone === "ok"
+      ? "text-[#CCFF00]"
+      : tone === "warn"
+        ? "text-yellow-300"
+        : "text-red-400";
+  const Icon = tone === "ok" ? ShieldCheck : tone === "warn" ? Activity : AlertTriangle;
+
+  return (
+    <div className="border border-white/5 bg-white/[0.02] p-5 space-y-3">
+      <div className={`flex items-center gap-2 text-[10px] font-black uppercase tracking-widest italic ${toneClass}`}>
+        <Icon className="w-3 h-3" /> {label}
+      </div>
+      <div className={`text-3xl font-black italic tracking-tighter ${toneClass}`}>{value}</div>
     </div>
   );
 }
