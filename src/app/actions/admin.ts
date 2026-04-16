@@ -182,3 +182,78 @@ export async function getAdminStats(): Promise<AdminStats> {
     recentPending: (recentPending as unknown as RecentPending[]) || []
   };
 }
+
+export async function retryOrderFulfillment(orderId: string) {
+  await verifyAdmin();
+
+  if (!supabaseAdmin) {
+    throw new Error("DATABASE_UNAVAILABLE");
+  }
+
+  const { data: order, error: orderError } = await supabaseAdmin
+    .from("orders")
+    .select("id, cashfree_order_id, customer_email, status")
+    .eq("id", orderId)
+    .maybeSingle();
+
+  if (orderError || !order) {
+    throw new Error("ORDER_NOT_FOUND");
+  }
+
+  const { data: orderItems } = await supabaseAdmin
+    .from("order_items")
+    .select("product_id")
+    .eq("order_id", order.id);
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  const productId = orderItems?.[0]?.product_id || "unknown";
+
+  const response = await fetch(`${siteUrl}/api/webhooks/purchase`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      orderId: order.cashfree_order_id || order.id,
+      customerEmail: order.customer_email,
+      productId,
+    }),
+  });
+
+  if (!response.ok) {
+    throw new Error("FULFILLMENT_RETRY_FAILED");
+  }
+
+  revalidatePath("/admin/orders");
+  return { success: true };
+}
+
+export async function recheckOrderPayment(orderId: string) {
+  await verifyAdmin();
+
+  if (!supabaseAdmin) {
+    throw new Error("DATABASE_UNAVAILABLE");
+  }
+
+  const { data: order, error: orderError } = await supabaseAdmin
+    .from("orders")
+    .select("id, cashfree_order_id")
+    .eq("id", orderId)
+    .maybeSingle();
+
+  if (orderError || !order?.cashfree_order_id) {
+    throw new Error("CASHFREE_ORDER_NOT_FOUND");
+  }
+
+  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL?.replace(/\/$/, "") || "http://localhost:3000";
+  const response = await fetch(`${siteUrl}/api/cashfree/verify`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ orderId: order.cashfree_order_id }),
+  });
+
+  if (!response.ok) {
+    throw new Error("PAYMENT_RECHECK_FAILED");
+  }
+
+  revalidatePath("/admin/orders");
+  return { success: true };
+}

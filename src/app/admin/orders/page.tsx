@@ -1,9 +1,9 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { History, Hash, Calendar, CreditCard, User, Download, Activity, AlertTriangle, ShieldCheck } from "lucide-react";
+import { History, Hash, Calendar, CreditCard, User, Download, Activity, AlertTriangle, ShieldCheck, RefreshCw } from "lucide-react";
 import { useEffect, useState } from "react";
-import { getAdminOrders } from "@/app/actions/admin";
+import { getAdminOrders, recheckOrderPayment, retryOrderFulfillment } from "@/app/actions/admin";
 import { useToastStore } from "@/components/ui/ForgeToast";
 
 import { AdminOpsDiagnostics, AdminOrder } from "@/lib/types";
@@ -11,6 +11,7 @@ import { AdminOpsDiagnostics, AdminOrder } from "@/lib/types";
 export default function AdminOrdersPage() {
   const [orders, setOrders] = useState<AdminOrder[]>([]);
   const [ops, setOps] = useState<AdminOpsDiagnostics | null>(null);
+  const [actionOrderId, setActionOrderId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const { addToast } = useToastStore();
 
@@ -57,6 +58,32 @@ export default function AdminOrdersPage() {
     a.download = `digital-swarm-orders-${new Date().toISOString().split('T')[0]}.csv`;
     a.click();
     addToast("INFO", "CSV_EXPORT_COMPLETE", "TRANSACTION LOG GENERATED SUCCESSFULLY");
+  }
+
+  async function handleRetryFulfillment(orderId: string) {
+    try {
+      setActionOrderId(orderId);
+      await retryOrderFulfillment(orderId);
+      addToast("SUCCESS", "FULFILLMENT_RETRY_OK", "MANUAL FULFILLMENT RETRY COMPLETED");
+      await fetchData();
+    } catch {
+      addToast("ERROR", "FULFILLMENT_RETRY_FAILED", "UNABLE TO REPLAY PURCHASE FULFILLMENT");
+    } finally {
+      setActionOrderId(null);
+    }
+  }
+
+  async function handleRecheckPayment(orderId: string) {
+    try {
+      setActionOrderId(orderId);
+      await recheckOrderPayment(orderId);
+      addToast("SUCCESS", "PAYMENT_RECHECK_OK", "PAYMENT STATUS RECHECK COMPLETED");
+      await fetchData();
+    } catch {
+      addToast("ERROR", "PAYMENT_RECHECK_FAILED", "GATEWAY RECHECK DID NOT COMPLETE");
+    } finally {
+      setActionOrderId(null);
+    }
   }
 
   return (
@@ -149,6 +176,7 @@ export default function AdminOrdersPage() {
                   <th className="pb-4 pr-6">Fulfillment_Manifest</th>
                   <th className="pb-4 pr-6 text-right">Value</th>
                   <th className="pb-4 pl-6 text-right">Status</th>
+                  <th className="pb-4 pl-6 text-right">Recovery</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-white/5">
@@ -198,6 +226,29 @@ export default function AdminOrdersPage() {
                        }`}>
                           {order.status}
                        </span>
+                    </td>
+                    <td className="py-6 pl-6 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        {(order.status === "pending" || order.status === "failed") && (
+                          <button
+                            onClick={() => handleRecheckPayment(order.id)}
+                            disabled={actionOrderId === order.id}
+                            className="px-3 py-2 text-[9px] font-black uppercase tracking-widest border border-white/10 text-white/70 hover:text-black hover:bg-[#CCFF00] transition-all disabled:opacity-50"
+                          >
+                            {actionOrderId === order.id ? "WORKING" : "RECHECK"}
+                          </button>
+                        )}
+                        {order.status !== "paid" && (
+                          <button
+                            onClick={() => handleRetryFulfillment(order.id)}
+                            disabled={actionOrderId === order.id}
+                            className="px-3 py-2 text-[9px] font-black uppercase tracking-widest border border-primary/30 text-primary hover:bg-primary hover:text-black transition-all disabled:opacity-50 inline-flex items-center gap-2"
+                          >
+                            <RefreshCw className="w-3 h-3" />
+                            {actionOrderId === order.id ? "WORKING" : "RETRY"}
+                          </button>
+                        )}
+                      </div>
                     </td>
                   </motion.tr>
                 ))}
