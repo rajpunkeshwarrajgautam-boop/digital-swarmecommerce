@@ -43,6 +43,35 @@ export default clerkMiddleware(async (auth, req) => {
     }); // 24h immediate personalized welcome
   }
 
+  // 3. Marketing attribution persistence
+  const attributionKeys = [
+    'utm_source',
+    'utm_medium',
+    'utm_campaign',
+    'utm_content',
+    'utm_term',
+  ] as const;
+
+  for (const key of attributionKeys) {
+    const value = req.nextUrl.searchParams.get(key);
+    if (value) {
+      response.cookies.set(key, value, {
+        ...cookieBase,
+        maxAge: 60 * 60 * 24 * 30,
+      });
+    }
+  }
+
+  if (
+    attributionKeys.some((key) => req.nextUrl.searchParams.has(key)) &&
+    !req.cookies.has('landing_path')
+  ) {
+    response.cookies.set('landing_path', req.nextUrl.pathname, {
+      ...cookieBase,
+      maxAge: 60 * 60 * 24 * 30,
+    });
+  }
+
   return response;
 });
 

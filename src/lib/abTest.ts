@@ -33,3 +33,18 @@ export function trackABImpression(testName: string, variant: ABVariant): void {
   if (typeof globalThis.window === "undefined") return;
   sessionStorage.setItem(`ab_impression_${testName}`, variant);
 }
+
+export function getTrackedABExperiments(): Record<string, ABVariant> {
+  if (typeof globalThis.window === "undefined") return {};
+
+  const experiments: Record<string, ABVariant> = {};
+  for (let i = 0; i < sessionStorage.length; i += 1) {
+    const key = sessionStorage.key(i);
+    if (!key || !key.startsWith("ab_impression_")) continue;
+    const value = sessionStorage.getItem(key);
+    if (value === "A" || value === "B") {
+      experiments[key.replace("ab_impression_", "")] = value;
+    }
+  }
+  return experiments;
+}

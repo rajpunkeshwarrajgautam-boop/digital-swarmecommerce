@@ -1,3 +1,6 @@
+import { getTrackedABExperiments } from "@/lib/abTest";
+import { getAttributionContext } from "@/lib/attribution";
+
 type EventParams = Record<string, unknown>;
 
 function pushDataLayer(event: string, params: EventParams = {}) {
@@ -9,10 +12,16 @@ function pushDataLayer(event: string, params: EventParams = {}) {
 
 export function trackEcommerceEvent(event: string, params: EventParams = {}) {
   if (typeof window === "undefined") return;
-  pushDataLayer(event, params);
+  const enrichedParams = {
+    ...getAttributionContext(),
+    experiments: getTrackedABExperiments(),
+    ...params,
+  };
+
+  pushDataLayer(event, enrichedParams);
   const w = window as Window & { gtag?: (...args: unknown[]) => void };
   if (typeof w.gtag === "function") {
-    w.gtag("event", event, params);
+    w.gtag("event", event, enrichedParams);
   }
 }
 
