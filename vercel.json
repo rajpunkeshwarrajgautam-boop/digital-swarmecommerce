@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/cron/recover-fulfillment",
-      "schedule": "*/10 * * * *"
+      "schedule": "30 6 * * *"
     }
   ]
 }
