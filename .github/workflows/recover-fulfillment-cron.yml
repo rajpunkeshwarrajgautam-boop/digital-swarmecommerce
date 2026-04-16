@@ -1,0 +1,23 @@
+name: Recover Fulfillment Cron
+
+on:
+  schedule:
+    # Every 30 minutes (UTC) on GitHub-hosted scheduler
+    - cron: "*/30 * * * *"
+  workflow_dispatch:
+
+jobs:
+  recover-fulfillment:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Trigger recover-fulfillment endpoint
+        env:
+          RECOVER_FULFILLMENT_URL: ${{ secrets.RECOVER_FULFILLMENT_URL }}
+          CRON_SECRET: ${{ secrets.CRON_SECRET }}
+        run: |
+          URL="${RECOVER_FULFILLMENT_URL:-https://digitalswarm.in/api/cron/recover-fulfillment}"
+          echo "Triggering: $URL"
+          curl --fail --show-error --silent \
+            -H "authorization: Bearer ${CRON_SECRET}" \
+            "$URL"
