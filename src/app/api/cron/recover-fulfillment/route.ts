@@ -8,6 +8,11 @@ type WebhookLogRow = {
   processed_at: string;
 };
 
+type SupabaseError = {
+  code?: string;
+  message?: string;
+};
+
 /**
  * Retries purchase fulfillment for webhook rows that reached paid status
  * but failed during downstream provisioning.
@@ -36,6 +41,18 @@ export async function GET(req: Request) {
       .limit(50);
 
     if (fetchError) {
+      const err = fetchError as SupabaseError;
+      if (err.code === 'PGRST205') {
+        // Some environments may not yet have webhook_logs migrated.
+        return NextResponse.json({
+          success: true,
+          scanned: 0,
+          recovered: 0,
+          failed: 0,
+          skipped: true,
+          message: 'webhook_logs table not available in this environment',
+        });
+      }
       throw fetchError;
     }
 
