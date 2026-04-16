@@ -3,6 +3,10 @@
     {
       "path": "/api/drip/process",
       "schedule": "0 6 * * *"
+    },
+    {
+      "path": "/api/cron/recover-fulfillment",
+      "schedule": "*/10 * * * *"
     }
   ]
 }
