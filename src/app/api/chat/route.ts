@@ -6,6 +6,7 @@ import { GoogleGenerativeAI, Content } from "@google/generative-ai";
 import { rateLimit } from "@/lib/rate-limit";
 
 export const maxDuration = 60; // Allow sufficient time for cold-start 
+export const runtime = "nodejs";
 
 // Initialize Supabase client
 const supabase = createClient(
@@ -17,6 +18,55 @@ const limiter = rateLimit({
   interval: 60 * 1000, // 60 seconds
   uniqueTokenPerInterval: 500, // Max 500 users per interval
 });
+
+function detectPurchaseIntent(message: string, products: Array<{ id: string; name: string }>) {
+  const text = message.toLowerCase();
+  const wantsToBuy =
+    text.includes("buy") ||
+    text.includes("purchase") ||
+    text.includes("order") ||
+    text.includes("get this") ||
+    text.includes("get me");
+
+  if (!wantsToBuy) return null;
+
+  const exactMatch = products.find((p) => {
+    const idToken = p.id.toLowerCase().replace(/-/g, " ");
+    const nameToken = p.name.toLowerCase();
+    return text.includes(idToken) || text.includes(nameToken);
+  });
+
+  if (exactMatch) return exactMatch;
+
+  const messageTokens = new Set(normalizeName(message).split(" ").filter(Boolean));
+  let best: { id: string; name: string } | null = null;
+  let bestScore = 0;
+  for (const p of products) {
+    const productTokens = new Set(
+      `${normalizeName(p.name)} ${p.id.replace(/-/g, " ")}`
+        .split(" ")
+        .filter(Boolean)
+    );
+    let overlap = 0;
+    for (const t of productTokens) if (messageTokens.has(t)) overlap += 1;
+    const score = overlap / Math.max(1, productTokens.size);
+    if (overlap >= 2 && score > bestScore) {
+      best = p;
+      bestScore = score;
+    }
+  }
+
+  return best;
+}
+
+function normalizeName(value: string) {
+  return value
+    .toLowerCase()
+    .replace(/\([^)]*\)/g, " ")
+    .replace(/[^a-z0-9]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
 
 export async function POST(request: Request) {
   try {
@@ -30,7 +80,7 @@ export async function POST(request: Request) {
       }, { status: 429 });
     }
 
-    const { message, history } = await request.json();
+    const { message, history = [] } = await request.json();
 
     const apiKey = process.env.GOOGLE_GENERATIVE_AI_API_KEY;
     if (!apiKey) {
@@ -45,7 +95,7 @@ export async function POST(request: Request) {
     try {
       const { data, error: dbError } = await supabase
         .from("products")
-        .select("name, description, price, category, features, specs")
+        .select("id, name, description, price, category, features, specs")
         .eq("in_stock", true);
       
       if (!dbError && data) dbProducts = data;
@@ -53,17 +103,59 @@ export async function POST(request: Request) {
       console.error("AI Hive-Mind DB Uplink Error:", e);
     }
 
-    const finalProducts = (dbProducts.length > 0 ? dbProducts : staticProducts) as Product[];
+    const fallbackByName = new Map(staticProducts.map((p) => [normalizeName(p.name), p]));
+    const mergedSource = dbProducts.length > 0 ? [...dbProducts, ...staticProducts] : staticProducts;
+    const seenIds = new Set<string>();
+    const finalProducts = mergedSource.map((p) => {
+      const incomingName = normalizeName(String(p.name ?? ""));
+      const directFallback = fallbackByName.get(incomingName);
+      const fuzzyFallback =
+        directFallback ??
+        staticProducts.find((sp) => {
+          const staticName = normalizeName(sp.name);
+          return incomingName.includes(staticName) || staticName.includes(incomingName);
+        });
+      const fallback = fuzzyFallback;
+      return {
+        // Trigger IDs must match frontend catalog IDs (slugs), not DB UUIDs.
+        id: String(fallback?.id ?? p.id ?? "unknown"),
+        name: String(p.name ?? fallback?.name ?? "Unknown Asset"),
+        price: Number(p.price ?? fallback?.price ?? 0),
+        category: String(p.category ?? fallback?.category ?? "General"),
+        description: String(p.description ?? fallback?.description ?? ""),
+        features: Array.isArray(p.features) ? p.features : (fallback?.features ?? []),
+        specs: p.specs ?? fallback?.specs ?? {},
+      };
+    }).filter((p) => {
+      if (!p.id || p.id === "unknown" || seenIds.has(p.id)) return false;
+      seenIds.add(p.id);
+      return true;
+    });
 
-    const knowledgeBase = finalProducts.map((p: Product) => (
-`[ASSET_ID: ${p.id}]
+    const knowledgeBase = finalProducts
+      .map((p) => (
+        `[ASSET_ID: ${p.id}]
 - NAME: ${p.name}
 - PRICE: ₹${p.price}
 - CATEGORY: ${p.category}
-- INTEL: ${p.description.replace(/\n/g, ' ')}
+- INTEL: ${p.description.replace(/\n/g, " ")}
 - CORE_FEATURES: ${Array.isArray(p.features) ? p.features.join(" | ") : "N/A"}
 - TECH_SPECS: ${JSON.stringify(p.specs)}`
-    )).join("\n\n");
+      ))
+      .join("\n\n");
+
+    const purchaseMatch = detectPurchaseIntent(
+      String(message ?? ""),
+      finalProducts.map((p) => ({ id: p.id, name: p.name }))
+    );
+    if (purchaseMatch) {
+      return NextResponse.json({
+        message:
+          `Confirmed. ${purchaseMatch.name} is queued for checkout.\n` +
+          `COMMAND_TRIGGER: {"action":"INITIATE_ORDER","productId":"${purchaseMatch.id}"}\n` +
+          `Zero // Digital Swarm Systems.`,
+      });
+    }
 
     const systemPrompt = `SYSTEM_PROTOCOL: ZERO_ARCHITECT_V3.0
 ROLE: Elite AI Solutions Architect & Swarm Guardian for Digital Swarm (digitalswarm.in).
@@ -104,10 +196,12 @@ ${knowledgeBase}
 SIGNAL_TERMINATION: "Zero // Digital Swarm Systems."`;
 
     // Map history for Gemini
-    const contents: Content[] = history.map((h: Content) => ({
-      role: h.role === "assistant" ? "model" : "user",
-      parts: [{ text: (h.parts as Array<{ text: string }>)?.[0]?.text || "" }]
-    })).filter((c: Content) => (c.parts as Array<{ text: string }>)[0].text !== "");
+    const contents: Content[] = history
+      .map((h: Content) => ({
+        role: h.role === "model" || h.role === "assistant" ? "model" : "user",
+        parts: [{ text: (h.parts as Array<{ text: string }>)?.[0]?.text || "" }],
+      }))
+      .filter((c: Content) => (c.parts as Array<{ text: string }>)[0].text !== "");
 
     // Add system instruction as part of the first user message for Flash 1.5 if needed,
     // but Gemini Pro/Flash usually supports system instruction directly in constructor.
@@ -128,16 +222,24 @@ SIGNAL_TERMINATION: "Zero // Digital Swarm Systems."`;
       }
     ];
 
-    const result = await model.generateContent({
-      contents: fullHistory as Content[],
-      generationConfig: {
-        maxOutputTokens: 800,
-        temperature: 0.7,
-      },
-    });
+    try {
+      const result = await model.generateContent({
+        contents: fullHistory as Content[],
+        generationConfig: {
+          maxOutputTokens: 800,
+          temperature: 0.7,
+        },
+      });
 
-    const aiMessage = result.response.text();
-    return NextResponse.json({ message: aiMessage });
+      const aiMessage = result.response.text();
+      return NextResponse.json({ message: aiMessage });
+    } catch (aiError) {
+      console.error("Chat model invocation failed:", aiError);
+      return NextResponse.json({
+        message:
+          "Uplink interference detected. I can still assist with direct checkout commands - tell me which product to buy.",
+      });
+    }
 
   } catch (error) {
     console.error("Chat Error:", error);

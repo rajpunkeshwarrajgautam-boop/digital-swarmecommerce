@@ -32,18 +32,20 @@ export function Footer() {
             </p>
             <div className="flex items-center gap-5">
               {[
-                { Icon: Twitter, label: 'Twitter' },
-                { Icon: Github, label: 'GitHub' },
-                { Icon: Linkedin, label: 'LinkedIn' }
-              ].map(({ Icon, label }, i) => (
-                <Link 
+                { Icon: Twitter, label: 'Twitter', href: 'https://x.com' },
+                { Icon: Github, label: 'GitHub', href: 'https://github.com' },
+                { Icon: Linkedin, label: 'LinkedIn', href: 'https://linkedin.com' }
+              ].map(({ Icon, label, href }, i) => (
+                <a
                   key={i} 
-                  href="#" 
+                  href={href}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   aria-label={`Follow us on ${label}`}
                   className="w-12 h-12 border border-white/5 bg-white/2 flex items-center justify-center text-white/20 hover:text-primary hover:border-primary/40 transition-all group"
                 >
                    <Icon className="w-5 h-5 group-hover:scale-110 transition-transform" />
-                </Link>
+                </a>
               ))}
             </div>
           </div>
@@ -76,7 +78,7 @@ export function Footer() {
             <div className="flex flex-col gap-5">
               <FooterLink href="/merchant/apply" label="Become a Merchant" />
               <FooterLink href="/merchant" label="Merchant Portal" />
-              <FooterLink href="/help/merchants" label="Vendor Guidelines" />
+              <FooterLink href="/help" label="Vendor Guidelines" />
             </div>
           </div>
 

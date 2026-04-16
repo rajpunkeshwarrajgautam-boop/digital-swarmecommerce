@@ -22,7 +22,7 @@ const communityPosts = [
   {
     author: "CyberStacker",
     platform: "Discord",
-    content: "Integrated the payment protocol today. Cashfree sync was seamless. The industrial ONO UI is a massive vibe shift for my users.",
+    content: "Integrated the payment protocol today. Cashfree sync was seamless. The industrial monochrome UI is a massive vibe shift for my users.",
     stats: "Online Status: Active",
     link: "https://discord.com"
   }
@@ -34,7 +34,7 @@ export function CommunityProtocol() {
       {/* Decorative Technical Grid backdrop */}
       <div className="absolute inset-0 opacity-[0.03] pointer-events-none" 
         style={{ 
-            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90 text, #fff 1px, transparent 1px)`,
+            backgroundImage: `linear-gradient(#fff 1px, transparent 1px), linear-gradient(90deg, #fff 1px, transparent 1px)`,
             backgroundSize: '80px 80px'
         }} 
       />
@@ -124,6 +124,9 @@ export function CommunityProtocol() {
           <div className="h-px w-24 bg-white/10" />
           <p className="text-[10px] font-mono uppercase tracking-[0.5em] text-white/10 italic text-center">
             Join the Community / Scale Production / Build the Future
+          </p>
+          <p className="text-[9px] font-mono uppercase tracking-widest text-white/15 text-center max-w-md leading-relaxed">
+            Cards are stylized marketing vignettes, not verified quotes or links to live threads.
           </p>
         </motion.div>
       </div>

@@ -14,6 +14,7 @@ import { ExitIntentABRouter } from "@/components/marketing/ExitIntentABRouter";
 import { FBPixelPageView } from "@/components/analytics/FBPixel";
 import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
 import { JsonLd } from "@/components/layout/JsonLd";
+import { HiveMindChat } from "@/components/chat/HiveMindChat";
 import { metadata as siteMetadata } from "./metadata";
 
 const inter = Inter({ 
@@ -62,6 +63,7 @@ export default function RootLayout({
             <VisualQuality />
             <ForgeToast />
             <AIConcierge />
+            <HiveMindChat />
             <div className="relative min-h-screen flex flex-col">
               <Header />
               <main className="grow">

@@ -1,5 +1,23 @@
 import type { NextConfig } from "next";
 
+const isDev = process.env.NODE_ENV === "development";
+
+/** Tighten prod CSP: `unsafe-eval` is kept only in dev for tooling/hot reload. */
+const scriptSrc = [
+  "script-src 'self'",
+  "'unsafe-inline'",
+  ...(isDev ? (["'unsafe-eval'"] as const) : []),
+  "https://clerk.digitalswarm.in",
+  "https://*.clerk.accounts.dev",
+  "https://*.cashfree.com",
+  "https://sdk.cashfree.com",
+  "https://*.stripe.com",
+  "https://challenges.cloudflare.com",
+  "https://unpkg.com",
+  "https://cdnjs.cloudflare.com",
+  "https://connect.facebook.net",
+].join(" ");
+
 const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
@@ -50,7 +68,7 @@ const nextConfig: NextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://clerk.digitalswarm.in https://*.clerk.accounts.dev https://*.cashfree.com https://sdk.cashfree.com https://*.stripe.com https://challenges.cloudflare.com https://unpkg.com https://cdnjs.cloudflare.com https://connect.facebook.net",
+              scriptSrc,
               "connect-src 'self' data: https://*.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://*.cashfree.com https://api.cashfree.com https://sandbox.cashfree.com https://*.stripe.com https://ipapi.co https://*.lottiefiles.com https://www.facebook.com",
               "img-src 'self' data: blob: https: https://www.facebook.com https://i.pravatar.cc https://pravatar.cc",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",

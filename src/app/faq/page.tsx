@@ -3,6 +3,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { HelpCircle, Plus, Minus } from "lucide-react";
 import { useState } from "react";
+import Link from "next/link";
 
 const faqs = [
   {
@@ -117,9 +118,9 @@ export default function FAQPage() {
           <div className="relative z-10">
             <h2 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter mb-4">Still have questions?</h2>
             <p className="text-black/60 font-black uppercase text-xs tracking-widest mb-8">Direct line to our engineering team active 24/7.</p>
-            <button className="px-10 py-4 bg-black text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all shadow-xl">
+            <Link href="/contact" className="inline-block px-10 py-4 bg-black text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all shadow-xl">
               Initiate Contact
-            </button>
+            </Link>
           </div>
           <div className="absolute top-0 right-0 -mr-12 -mt-12 w-64 h-64 bg-black/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all" />
         </div>

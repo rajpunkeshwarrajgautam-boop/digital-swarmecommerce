@@ -88,8 +88,8 @@ export const ForgeHero = () => {
           className="max-w-2xl text-lg md:text-xl text-white/40 font-inter mb-12"
         >
           {isLocalMarket 
-            ? "Zero-friction deployment for India's high-performance developer stacks. Hardened, modular, and AI-native architecture."
-            : "Global architectural patterns for the next era of software. modular, and AI-native stacks for elite engineers."
+            ? "Zero-friction deployment for India's high-performance developer stacks—hardened, modular, and AI-native architecture."
+            : "Global architectural patterns for the next era of software: modular, AI-native stacks for elite engineers."
           }
         </motion.p>
 
@@ -130,6 +130,9 @@ export const ForgeHero = () => {
             delay={1.0}
           />
         </div>
+        <p className="mt-8 max-w-xl mx-auto text-center text-[10px] font-mono uppercase tracking-widest text-white/25">
+          Figures reflect design targets and internal benchmarks, not a live SLA.
+        </p>
       </div>
     </section>
   );
