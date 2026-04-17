@@ -8,16 +8,16 @@ Phase summaries in `.planning/phases/` mark **M4.1–M4.3**, **M5**, and **M7 sc
 
 ## Operator dashboards
 
-Central links: **[`.planning/DASHBOARDS.md`](DASHBOARDS.md)** (GitHub, Vercel, Supabase, live site, SQL hint).
+All console URLs and the SQL hint live in one file: **[`.planning/DASHBOARDS.md`](DASHBOARDS.md)**.
 
 ## Four-step delivery (status)
 
-| Step | Status | Notes |
-|------|--------|--------|
-| **1. Ship** | Done | `main` pushed; Vercel production deployed; `https://digitalswarm.in` on current build. |
-| **2. `webhook_logs` in Supabase** | Operator once | Run SQL from `supabase/migrations/20260417120000_webhook_logs.sql` in **Supabase → SQL Editor** if the table is not already present (see DASHBOARDS). |
-| **3. GA4 / GTM + reports** | Playbook ready | App uses **gtag** (`AdTracking.tsx`). Follow **[`.planning/analytics/GA4-hero-ab-playbook.md`](analytics/GA4-hero-ab-playbook.md)** for **custom dimensions** (`ab_variant`, `cta_kind`, …), **Explorations** (A vs B + funnel), optional **GTM**, and **DebugView**. |
-| **4. M7 UAT** | Pending | Run `/merchant` and admin queue checks from `phases/07-multi-vendor/07-UAT.md`. |
+| Step | Status | Docs & links |
+|------|--------|----------------|
+| **1. Ship** | Done | Code on **[GitHub `main`](https://github.com/rajpunkeshwarrajgautam-boop/digital-swarmecommerce)**; prod on **[digitalswarm.in](https://digitalswarm.in)**. **[Vercel project](https://vercel.com/rajpunkeshwarrajgautam-boops-projects/antigravity-ecommerce)** for env & deployments. Details: [DASHBOARDS.md](DASHBOARDS.md). |
+| **2. `webhook_logs` in Supabase** | Operator once | Run SQL from [`supabase/migrations/20260417120000_webhook_logs.sql`](../supabase/migrations/20260417120000_webhook_logs.sql) in Supabase **SQL Editor** (direct tab: [DASHBOARDS.md](DASHBOARDS.md)). **[Supabase dashboard](https://supabase.com/dashboard/project/uhswcljouelyprsinchj)**. |
+| **3. GA4 / GTM + reports** | Playbook ready | Full setup: **[`.planning/analytics/GA4-hero-ab-playbook.md`](analytics/GA4-hero-ab-playbook.md)** — event-scoped dimensions (`ab_variant`, `ab_test`, `cta_kind`, `cta_label`), A vs B exploration, funnel (impression → `primary_catalog` CTA) with `ab_variant` breakdown, DebugView, optional GTM. **[GA4](https://analytics.google.com/)** · **[GTM](https://tagmanager.google.com/)** · [DASHBOARDS.md](DASHBOARDS.md). |
+| **4. M7 UAT** | Pending | **[`phases/07-multi-vendor/07-UAT.md`](phases/07-multi-vendor/07-UAT.md)** — `/merchant`, admin queue, filing gaps. |
 
 ## Status snapshot
 
@@ -34,7 +34,7 @@ Central links: **[`.planning/DASHBOARDS.md`](DASHBOARDS.md)** (GitHub, Vercel, S
 
 ## Next actions (short)
 
-1. Complete **GA4 Admin** steps in the playbook (custom dimensions + one Exploration) — *cannot be automated without your Google login*.
+1. Complete **GA4 Admin** steps in the playbook (custom dimensions + one Exploration) — requires your Google login.
 2. Apply **`webhook_logs`** SQL in Supabase if not already applied.
 3. Execute **M7 UAT** when ready.
 
