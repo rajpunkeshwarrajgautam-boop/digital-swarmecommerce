@@ -11,6 +11,7 @@ jobs:
     timeout-minutes: 30
     # Shared by build, `next start` (Lighthouse), and any step that needs app config.
     env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
       SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
@@ -40,6 +41,12 @@ jobs:
 
       - name: Build app
         run: npm run build
+
+      - name: Verify GA script is present on production homepage
+        env:
+          PLAYWRIGHT_PRODUCTION_URL: https://digitalswarm.in
+        run: |
+          node -e "const expected='https://www.googletagmanager.com/gtag/js?id=G-RB0H8VHPS5'; fetch(process.env.PLAYWRIGHT_PRODUCTION_URL).then(r=>r.text()).then(html=>{ if(!html.includes(expected)){ throw new Error('Missing GA script URL: '+expected); } console.log('Verified GA script URL present:', expected); });"
 
       - name: E2E chromium
         run: npm run test:e2e:chromium
