@@ -131,3 +131,26 @@ export function trackHomepageHeroCta(
     cta_label: ctaLabel,
   });
 }
+
+/** Stable slug for GA4 custom dimension `contact_type` (register in Admin → Custom definitions). */
+const CONTACT_OPERATION_SLUG: Record<string, string> = {
+  "Enterprise Build": "enterprise_build",
+  "Custom AI Integration": "custom_ai_integration",
+  "Support Tier Query": "support_tier_query",
+  "Partnership Protocol": "partnership_protocol",
+};
+
+/**
+ * Fires after `/api/contact` succeeds. Use in Explore funnels with `contact_type` / `operation_type`.
+ */
+export function trackContactSubmit(operationTypeLabel: string) {
+  const fromMap = CONTACT_OPERATION_SLUG[operationTypeLabel];
+  const slug =
+    fromMap ??
+    operationTypeLabel.toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "");
+  const contact_type = slug.length > 0 ? slug : "unknown";
+  trackEcommerceEvent("contact_submit", {
+    contact_type,
+    operation_type: operationTypeLabel,
+  });
+}

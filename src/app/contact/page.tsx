@@ -4,6 +4,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { Send, MapPin, Mail, Phone, Globe, Shield, Zap } from "lucide-react";
 import { Button } from "@/components/ui/Button";
+import { trackContactSubmit } from "@/lib/web-analytics";
 
 const OPERATION_TYPES = [
   "Enterprise Build",
@@ -48,6 +49,7 @@ export default function ContactPage() {
         );
         return;
       }
+      trackContactSubmit(operationType);
       setStatus("success");
       setCallsign("");
       setEmail("");

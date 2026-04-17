@@ -42,4 +42,39 @@ test.describe("Hardware Sanity Protocol", () => {
     });
     await expect(page.locator("#contact-email, input[type='email']").first()).toBeVisible();
   });
+
+  test("contact form fires contact_submit on successful API response", async ({ page, browserName }) => {
+    test.skip(
+      browserName === "webkit",
+      "Playwright route mock for POST /api/contact is not consistently observed on WebKit; Chromium asserts the same behavior."
+    );
+    await page.route("**/api/contact", async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body: "{}",
+      });
+    });
+    await page.goto("/contact");
+    await page.locator("#contact-callsign").fill("Test User");
+    await page.locator("#contact-email").fill("test@example.com");
+    await page.locator("#contact-message").fill("Smoke test message");
+    await page.getByRole("button", { name: /execute transmission/i }).click();
+    await expect
+      .poll(
+        async () =>
+          page.evaluate(() => {
+            const dl = (window as Window & { dataLayer?: Array<Record<string, unknown>> }).dataLayer ?? [];
+            return dl.some(
+              (row) =>
+                row &&
+                typeof row === "object" &&
+                row.event === "contact_submit" &&
+                row.contact_type === "enterprise_build"
+            );
+          }),
+        { timeout: 20000 }
+      )
+      .toBeTruthy();
+  });
 });
