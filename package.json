@@ -19,7 +19,9 @@
     "storage:ensure-buckets": "node scripts/ensure-storage-buckets.mjs",
     "storage:mirror-zips": "node scripts/mirror-product-zips-from-legacy.mjs",
     "sync-inventory": "tsx scripts/sync-inventory.ts",
-    "sync-urls": "tsx update-download-urls.ts"
+    "sync-urls": "tsx update-download-urls.ts",
+    "open:dashboards": "node scripts/open-dashboards.mjs",
+    "playwright:install": "playwright install chromium"
   },
   "dependencies": {
     "@cashfreepayments/cashfree-js": "^1.0.6",
@@ -57,6 +59,7 @@
     "zustand": "^5.0.11"
   },
   "devDependencies": {
+    "@playwright/test": "^1.58.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20.19.37",
     "@types/react": "^19",

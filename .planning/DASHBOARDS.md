@@ -1,5 +1,7 @@
 # One-click dashboards (Digital Swarm)
 
+**Local:** from repo root run `npm run open:dashboards` — opens these URLs in **Playwright Chromium** (five tabs). This is not Cursor’s Simple Browser; it uses the Playwright-installed browser.
+
 Use these when operating the stack (replace nothing unless your fork uses different orgs).
 
 | Surface | URL |
