@@ -14,6 +14,20 @@ test.describe("Production smoke @prod", () => {
     await expect(page).toHaveTitle(/DIGITAL SWARM|Digital Swarm/i);
   });
 
+  test("ga gtag script loads on home", async ({ page }) => {
+    const requests: string[] = [];
+    page.on("request", (request) => {
+      const url = request.url();
+      if (url.includes("googletagmanager.com/gtag/js?id=")) {
+        requests.push(url);
+      }
+    });
+
+    await page.goto(`${base}/`, { waitUntil: "networkidle" });
+    await expect(page.locator("script[src*='googletagmanager.com/gtag/js?id=']")).toHaveCount(1);
+    expect(requests.some((url) => url.includes("G-RB0H8VHPS5"))).toBeTruthy();
+  });
+
   test("products page loads", async ({ page }) => {
     await page.goto(`${base}/products`);
     await expect(page.getByRole("heading", { level: 1 })).toBeVisible({ timeout: 15000 });

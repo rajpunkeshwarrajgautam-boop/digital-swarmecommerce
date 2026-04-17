@@ -42,12 +42,6 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: Verify GA script is present on production homepage
-        env:
-          PLAYWRIGHT_PRODUCTION_URL: https://digitalswarm.in
-        run: |
-          node -e "const expected='https://www.googletagmanager.com/gtag/js?id=G-RB0H8VHPS5'; fetch(process.env.PLAYWRIGHT_PRODUCTION_URL).then(r=>r.text()).then(html=>{ if(!html.includes(expected)){ throw new Error('Missing GA script URL: '+expected); } console.log('Verified GA script URL present:', expected); });"
-
       - name: E2E chromium
         run: npm run test:e2e:chromium
         env:
