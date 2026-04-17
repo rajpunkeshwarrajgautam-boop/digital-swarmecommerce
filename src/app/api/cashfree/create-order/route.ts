@@ -21,8 +21,28 @@ async function resolveOrderItemProductId(
   if (isProductUuid(rawId)) return rawId;
   const staticProduct = fallbackProducts.find((p) => p.id === rawId);
   if (!staticProduct) return null;
-  const { data } = await admin.from('products').select('id').eq('name', staticProduct.name).maybeSingle();
-  return data?.id ?? null;
+
+  const { data: byName } = await admin
+    .from('products')
+    .select('id')
+    .eq('name', staticProduct.name)
+    .maybeSingle();
+  if (byName?.id) return byName.id;
+
+  // Production rows often differ by title; slug still appears in download_url / static path.
+  const { data: byDownload } = await admin
+    .from('products')
+    .select('id')
+    .ilike('download_url', `%${rawId}%`)
+    .maybeSingle();
+  if (byDownload?.id) return byDownload.id;
+
+  const { data: byInstall } = await admin
+    .from('products')
+    .select('id')
+    .ilike('install_guide', `%${rawId}%`)
+    .maybeSingle();
+  return byInstall?.id ?? null;
 }
 
 export async function POST(request: Request) {
