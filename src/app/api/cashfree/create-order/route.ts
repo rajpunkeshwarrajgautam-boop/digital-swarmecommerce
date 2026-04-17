@@ -4,8 +4,26 @@ import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
 import { env } from '@/lib/env';
 import { fetchWithRetry } from '@/lib/http';
+import { products as fallbackProducts } from '@/lib/data';
 
 type CheckoutItem = { id?: string; productId?: string; price: number; quantity?: number };
+
+function isProductUuid(value: string): boolean {
+  return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
+}
+
+/** Cart uses slug ids (e.g. notion-crm-protocol); order_items.product_id FK targets products.id (uuid). */
+async function resolveOrderItemProductId(
+  admin: NonNullable<typeof supabaseAdmin>,
+  rawId: string | undefined,
+): Promise<string | null> {
+  if (!rawId) return null;
+  if (isProductUuid(rawId)) return rawId;
+  const staticProduct = fallbackProducts.find((p) => p.id === rawId);
+  if (!staticProduct) return null;
+  const { data } = await admin.from('products').select('id').eq('name', staticProduct.name).maybeSingle();
+  return data?.id ?? null;
+}
 
 export async function POST(request: Request) {
   try {
@@ -142,12 +160,30 @@ export async function POST(request: Request) {
     }
 
     // 3. Create Order Items (blocking, so we can rollback cleanly on failure)
-    const orderItems = (items as CheckoutItem[]).map((item) => ({
-      order_id: order.id,
-      product_id: item.productId || item.id,
-      quantity: item.quantity || 1,
-      price: item.price,
-    }));
+    const orderItems: Array<{
+      order_id: string;
+      product_id: string;
+      quantity: number;
+      price: number;
+    }> = [];
+
+    for (const item of items as CheckoutItem[]) {
+      const rawPid = item.productId || item.id;
+      const productId = await resolveOrderItemProductId(supabaseAdmin, rawPid ? String(rawPid) : undefined);
+      if (!productId) {
+        await supabaseAdmin.from('orders').delete().eq('id', orderUuid);
+        return NextResponse.json(
+          { error: `Unknown or unpublished product: ${String(rawPid ?? '')}` },
+          { status: 400 },
+        );
+      }
+      orderItems.push({
+        order_id: order.id,
+        product_id: productId,
+        quantity: item.quantity || 1,
+        price: item.price,
+      });
+    }
 
     const { error: orderItemsError } = await supabaseAdmin
       .from('order_items')
