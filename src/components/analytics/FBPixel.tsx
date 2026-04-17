@@ -6,7 +6,7 @@ import { usePathname, useSearchParams } from 'next/navigation';
 /**
 
  * Fires fbq('track', 'PageView') on every client-side route change.
- * The base fbq('init', ...) and initial PageView are handled by AdTracking.tsx.
+ * The base fbq('init', ...) and initial PageView are handled in `app/layout.tsx`.
  * This component handles SPA navigation tracking.
  */
 export function FBPixelPageView() {

@@ -12,6 +12,7 @@ import { env } from "@/lib/env";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
 import { ExitIntentABRouter } from "@/components/marketing/ExitIntentABRouter";
 import { FBPixelPageView } from "@/components/analytics/FBPixel";
+import { AdTracking } from "@/components/layout/AdTracking";
 import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
 import { JsonLd } from "@/components/layout/JsonLd";
 import { HiveMindChat } from "@/components/chat/HiveMindChat";
@@ -55,6 +56,7 @@ export default function RootLayout({
             {/* FB Pixel SPA route tracking — fires PageView on every navigation */}
             <Suspense fallback={null}>
               <FBPixelPageView />
+              <AdTracking />
             </Suspense>
 
             {/* Affiliate click tracker — fires once per session when ?ref= cookie is set */}
