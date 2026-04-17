@@ -53,6 +53,8 @@ alter table public.orders add column if not exists payment_id         text;
 alter table public.orders add column if not exists customer_name      text;
 alter table public.orders add column if not exists customer_phone     text;
 alter table public.orders add column if not exists updated_at        timestamptz default now();
+alter table public.orders add column if not exists total_amount       numeric(10, 2);
+alter table public.orders add column if not exists affiliate_ref      text;
 
 -- ── 3. Order Items Table ─────────────────────────────────────────────────────
 

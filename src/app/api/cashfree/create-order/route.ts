@@ -65,24 +65,48 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
     }
 
-    // 2. Create Order in Supabase (with affiliate_ref + total_amount for commission)
-    const { data: order, error: orderError } = await supabaseAdmin
+    // 2. Create Order in Supabase
+    // Extended row includes total_amount + affiliate_ref (webhook / dashboard). Older DBs
+    // may only have schema.sql columns — retry minimal row so checkout still works.
+    const totalNum = parseFloat(total);
+    const customerName = `${customer.firstName} ${customer.lastName}`.trim();
+    const minimalOrderRow = {
+      total: totalNum,
+      status: 'pending' as const,
+      user_id: customer.email,
+      cashfree_order_id: orderId,
+      customer_email: customer.email,
+      customer_name: customerName,
+      customer_phone: safePhone,
+    };
+    const extendedOrderRow = {
+      ...minimalOrderRow,
+      total_amount: totalNum,
+      ...(validatedAffiliateRef && { affiliate_ref: validatedAffiliateRef }),
+    };
+
+    let order = null;
+    let orderError = null;
+    const extended = await supabaseAdmin
       .from('orders')
-      .insert({
-        total: parseFloat(total),
-        total_amount: parseFloat(total),            // Used by webhook for commission calc
-        status: 'pending',
-        user_id: customer.email,
-        cashfree_order_id: orderId,
-        customer_email: customer.email,
-        customer_name: `${customer.firstName} ${customer.lastName}`.trim(),
-        customer_phone: safePhone,
-        ...(validatedAffiliateRef && { affiliate_ref: validatedAffiliateRef }),
-      })
+      .insert(extendedOrderRow)
       .select()
       .single();
+    order = extended.data;
+    orderError = extended.error;
 
     if (orderError) {
+      console.warn('[create-order] Extended orders insert failed, retrying minimal schema', orderError.message);
+      const minimal = await supabaseAdmin
+        .from('orders')
+        .insert(minimalOrderRow)
+        .select()
+        .single();
+      order = minimal.data;
+      orderError = minimal.error;
+    }
+
+    if (orderError || !order) {
       console.error('[DB Error]', orderError);
       return NextResponse.json({ error: 'Database record failed' }, { status: 500 });
     }

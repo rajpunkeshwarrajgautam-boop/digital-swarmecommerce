@@ -173,16 +173,28 @@ export async function POST(request: Request) {
         try {
           const { data: orderRecord } = await supabaseAdmin
             .from('orders')
-            .select('affiliate_ref, total_amount')
+            .select('*')
             .eq('id', dbOrder.id)
             .single();
 
-          if (orderRecord?.affiliate_ref) {
-            const commission = Math.round((orderRecord.total_amount || 0) * 0.10);
+          const ref = orderRecord && typeof orderRecord === 'object' && 'affiliate_ref' in orderRecord
+            ? (orderRecord as { affiliate_ref?: string | null }).affiliate_ref
+            : null;
+          const orderTotal =
+            orderRecord && typeof orderRecord === 'object'
+              ? Number(
+                  (orderRecord as { total_amount?: unknown; total?: unknown }).total_amount ??
+                    (orderRecord as { total?: unknown }).total ??
+                    0,
+                )
+              : 0;
+
+          if (ref) {
+            const commission = Math.round(orderTotal * 0.10);
             const { data: affiliate } = await supabaseAdmin
               .from('affiliates')
               .select('conversions, earnings')
-              .eq('ref_code', orderRecord.affiliate_ref)
+              .eq('ref_code', ref)
               .single();
 
             if (affiliate) {
@@ -192,9 +204,9 @@ export async function POST(request: Request) {
                   conversions: (affiliate.conversions || 0) + 1,
                   earnings: (affiliate.earnings || 0) + commission,
                 })
-                .eq('ref_code', orderRecord.affiliate_ref);
+                .eq('ref_code', ref);
 
-              console.log(`[Affiliate] Credited ₹${commission} to ref: ${orderRecord.affiliate_ref}`);
+              console.log(`[Affiliate] Credited ₹${commission} to ref: ${ref}`);
             }
           }
         } catch (affiliateError) {
