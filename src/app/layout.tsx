@@ -1,4 +1,5 @@
 import { Suspense } from 'react';
+import dynamic from 'next/dynamic';
 import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
@@ -6,7 +7,6 @@ import { Footer } from "@/components/layout/Footer";
 import { ClientProviders } from "@/components/providers/ClientProviders";
 import { VisualQuality } from "@/components/layout/VisualQuality";
 import { ForgeToast } from "@/components/ui/ForgeToast";
-import { AIConcierge } from "@/components/forge/AIConcierge";
 import Script from "next/script";
 import { env } from "@/lib/env";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
@@ -15,8 +15,16 @@ import { FBPixelPageView } from "@/components/analytics/FBPixel";
 import { AdTracking } from "@/components/layout/AdTracking";
 import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
 import { JsonLd } from "@/components/layout/JsonLd";
-import { HiveMindChat } from "@/components/chat/HiveMindChat";
 import { metadata as siteMetadata } from "./metadata";
+
+const AIConcierge = dynamic(
+  () => import("@/components/forge/AIConcierge").then((m) => ({ default: m.AIConcierge })),
+  { ssr: false },
+);
+const HiveMindChat = dynamic(
+  () => import("@/components/chat/HiveMindChat").then((m) => ({ default: m.HiveMindChat })),
+  { ssr: false },
+);
 
 const inter = Inter({ 
   subsets: ["latin"], 

@@ -15,10 +15,11 @@ export function CustomCursor() {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (window.matchMedia("(pointer: coarse)").matches) return; // skip touch devices
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
 
     let mouseX = 0, mouseY = 0;
     let ringX = 0, ringY = 0;
-    let rafId: number;
+    let rafId = 0;
 
     const onMove = (e: MouseEvent) => {
       mouseX = e.clientX;
@@ -59,23 +60,47 @@ export function CustomCursor() {
 
     const lerp = (a: number, b: number, n: number) => a + (b - a) * n;
 
-    const animate = () => {
-      ringX = lerp(ringX, mouseX, 0.1);
-      ringY = lerp(ringY, mouseY, 0.1);
+    let rafRunning = false;
+    const stopRingRaf = () => {
+      if (rafRunning) {
+        cancelAnimationFrame(rafId);
+        rafRunning = false;
+      }
+    };
+
+    const tickRing = () => {
+      ringX = lerp(ringX, mouseX, 0.12);
+      ringY = lerp(ringY, mouseY, 0.12);
       if (ringRef.current) {
-        const w = parseInt(ringRef.current.style.width || "40");
+        const w = parseInt(ringRef.current.style.width || "40", 10);
         ringRef.current.style.transform = `translate(${ringX - w / 2}px, ${ringY - w / 2}px)`;
         ringRef.current.style.opacity = "1";
       }
-      rafId = requestAnimationFrame(animate);
+      const dx = mouseX - ringX;
+      const dy = mouseY - ringY;
+      if (dx * dx + dy * dy < 0.64) {
+        stopRingRaf();
+        return;
+      }
+      rafId = requestAnimationFrame(tickRing);
     };
 
-    document.addEventListener("mousemove", onMove);
-    rafId = requestAnimationFrame(animate);
+    const ensureRingRaf = () => {
+      if (rafRunning) return;
+      rafRunning = true;
+      rafId = requestAnimationFrame(tickRing);
+    };
+
+    const onMoveWrapped = (e: MouseEvent) => {
+      onMove(e);
+      ensureRingRaf();
+    };
+
+    document.addEventListener("mousemove", onMoveWrapped, { passive: true });
 
     return () => {
-      document.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(rafId);
+      document.removeEventListener("mousemove", onMoveWrapped);
+      stopRingRaf();
     };
   }, []);
 
