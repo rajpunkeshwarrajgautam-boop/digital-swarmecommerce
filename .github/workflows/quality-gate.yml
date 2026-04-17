@@ -40,11 +40,13 @@ jobs:
         run: npm run test:e2e:chromium
         env:
           PLAYWRIGHT_NO_WEBSERVER: "1"
+          PLAYWRIGHT_PRODUCTION_URL: https://digitalswarm.in
 
       - name: E2E webkit
         run: npm run test:e2e:webkit
         env:
           PLAYWRIGHT_NO_WEBSERVER: "1"
+          PLAYWRIGHT_PRODUCTION_URL: https://digitalswarm.in
 
       - name: Lighthouse CI
         run: npm run perf:lighthouse
