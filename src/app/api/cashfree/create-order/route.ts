@@ -109,11 +109,11 @@ export async function POST(request: Request) {
     });
 
     if (!restRes.ok) {
-      let orderError: { code?: string; message?: string } = { message: await restRes.text() };
+      let orderError: { code?: string; message?: string; hint?: string | null } = {};
       try {
-        orderError = (await restRes.json()) as { code?: string; message?: string };
+        orderError = (await restRes.json()) as { code?: string; message?: string; hint?: string | null };
       } catch {
-        /* keep text body */
+        orderError = { message: await restRes.text() };
       }
       console.error('[DB Error] orders insert (REST)', restRes.status, orderError);
       return NextResponse.json(
@@ -121,6 +121,7 @@ export async function POST(request: Request) {
           error: 'Database record failed',
           code: orderError.code,
           message: orderError.message,
+          hint: orderError.hint,
         },
         { status: 500 },
       );
