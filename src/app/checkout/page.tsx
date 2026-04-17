@@ -13,6 +13,7 @@ import { formatCurrency } from "@/lib/utils";
 import { trackInitiateCheckout } from "@/components/analytics/FBPixel";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
 import { trackBeginCheckout } from "@/lib/web-analytics";
+import { load as loadCashfree } from "@cashfreepayments/cashfree-js";
 
 export default function CheckoutPage() {
   return (
@@ -46,21 +47,14 @@ function CheckoutContent() {
 
   useEffect(() => {
     setIsClient(true);
-    
-    if (isClient && items.length === 0) {
+  }, []);
+
+  useEffect(() => {
+    if (!isClient) return;
+    if (items.length === 0) {
       addToast("WARNING", "MANIFEST_EMPTY", "No assets detected in current buffer. Returning to Registry.");
       router.push("/products");
     }
-    
-    // Load Cashfree SDK
-    const script = document.createElement("script");
-    script.src = "https://sdk.cashfree.com/js/v3/cashfree.js";
-    script.async = true;
-    document.body.appendChild(script);
-
-    return () => {
-      document.body.removeChild(script);
-    };
   }, [isClient, items.length, addToast, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -117,37 +111,34 @@ function CheckoutContent() {
       });
       
       interface CheckoutResponse {
-        success: boolean;
-        orderId: string;
-        paymentSessionId: string;
-        cfMode: string;
+        success?: boolean;
+        orderId?: string;
+        paymentSessionId?: string;
+        cfMode?: string;
         error?: string;
       }
       
       const data = (await res.json()) as CheckoutResponse;
-      if (data.error) throw new Error(data.error);
+      if (!res.ok || data.error) {
+        throw new Error(data.error || `Order failed (${res.status})`);
+      }
 
       if (!data.paymentSessionId) {
         throw new Error("GATEWAY_FAULT: Payment Session ID null.");
       }
 
-      // Define Cashfree interface for window
-      interface CashfreeSDK {
-        new (options: { mode: string }): {
-          checkout: (options: { paymentSessionId: string; redirectTarget: string }) => Promise<void>;
-        };
-      }
+      const mode = data.cfMode === "production" ? "production" : "sandbox";
+      const cashfree = await loadCashfree({ mode });
 
-      const Cashfree = (window as unknown as { Cashfree: CashfreeSDK }).Cashfree;
-      const cashfree = new Cashfree({
-        mode: data.cfMode || "sandbox",
-      });
+      if (!cashfree) {
+        throw new Error("GATEWAY_FAULT: Cashfree SDK unavailable in this environment.");
+      }
 
       addToast("INFO", "GATEWAY_LINK", "Initialising encrypted payment terminal.");
 
       await cashfree.checkout({
         paymentSessionId: data.paymentSessionId,
-        redirectTarget: "_self" 
+        redirectTarget: "_self",
       });
 
     } catch (err: unknown) {
