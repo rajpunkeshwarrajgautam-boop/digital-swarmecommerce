@@ -157,7 +157,14 @@ export async function POST(request: Request) {
       // Prevent orphan pending orders with no item rows.
       await supabaseAdmin.from('orders').delete().eq('id', order.id);
       console.error('[OrderItems Error]', orderItemsError.message);
-      return NextResponse.json({ error: 'Order item persistence failed' }, { status: 500 });
+      return NextResponse.json(
+        {
+          error: 'Order item persistence failed',
+          code: orderItemsError.code,
+          message: orderItemsError.message,
+        },
+        { status: 500 },
+      );
     }
 
     // 3.5 Log Affiliate impression in create-order (webhook handles commission on payment success)
