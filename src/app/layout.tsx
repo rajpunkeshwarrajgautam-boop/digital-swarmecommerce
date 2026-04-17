@@ -5,7 +5,6 @@ import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ClientProviders } from "@/components/providers/ClientProviders";
-import { VisualQuality } from "@/components/layout/VisualQuality";
 import { ForgeToast } from "@/components/ui/ForgeToast";
 import Script from "next/script";
 import { env } from "@/lib/env";
@@ -23,6 +22,10 @@ const AIConcierge = dynamic(
 );
 const HiveMindChat = dynamic(
   () => import("@/components/chat/HiveMindChat").then((m) => ({ default: m.HiveMindChat })),
+  { ssr: false },
+);
+const VisualQuality = dynamic(
+  () => import("@/components/layout/VisualQuality").then((m) => ({ default: m.VisualQuality })),
   { ssr: false },
 );
 
