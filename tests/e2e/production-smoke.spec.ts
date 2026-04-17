@@ -15,17 +15,19 @@ test.describe("Production smoke @prod", () => {
   });
 
   test("ga gtag script loads on home", async ({ page }) => {
-    const requests: string[] = [];
-    page.on("request", (request) => {
-      const url = request.url();
-      if (url.includes("googletagmanager.com/gtag/js?id=")) {
-        requests.push(url);
-      }
-    });
-
     await page.goto(`${base}/`, { waitUntil: "networkidle" });
     await expect(page.locator("script[src*='googletagmanager.com/gtag/js?id=']")).toHaveCount(1);
-    expect(requests.some((url) => url.includes("G-RB0H8VHPS5"))).toBeTruthy();
+    const gaState = await page.evaluate(() => {
+      const script = document.querySelector(
+        "script[src*='googletagmanager.com/gtag/js?id=']"
+      ) as HTMLScriptElement | null;
+      return {
+        scriptSrc: script?.src ?? "",
+        hasDataLayer: Array.isArray((window as Window & { dataLayer?: unknown[] }).dataLayer),
+      };
+    });
+    expect(gaState.scriptSrc).toContain("G-RB0H8VHPS5");
+    expect(gaState.hasDataLayer).toBeTruthy();
   });
 
   test("products page loads", async ({ page }) => {
