@@ -70,7 +70,7 @@ const nextConfig: NextConfig = {
             value: [
               "default-src 'self'",
               scriptSrc,
-              "connect-src 'self' data: https://*.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://*.cashfree.com https://api.cashfree.com https://sandbox.cashfree.com https://*.stripe.com https://ipapi.co https://*.lottiefiles.com https://www.facebook.com https://www.google-analytics.com https://region1.google-analytics.com https://stats.g.doubleclick.net",
+              "connect-src 'self' data: https://*.supabase.co https://*.clerk.accounts.dev https://clerk.digitalswarm.in https://*.cashfree.com https://api.cashfree.com https://sandbox.cashfree.com https://*.stripe.com https://ipapi.co https://*.lottiefiles.com https://www.facebook.com https://www.google-analytics.com https://region1.google-analytics.com https://stats.g.doubleclick.net https://www.google.com https://www.googletagmanager.com https://analytics.google.com",
               "img-src 'self' data: blob: https: https://www.facebook.com https://i.pravatar.cc https://pravatar.cc",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",

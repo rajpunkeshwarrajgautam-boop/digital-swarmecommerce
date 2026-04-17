@@ -6,9 +6,6 @@ import { CommandCenter } from "@/components/ui/CommandCenter";
 
 export function VisualQuality() {
   useEffect(() => {
-    // Implement a simple Lenis-like smooth scroll via CSS for now
-    document.documentElement.style.scrollBehavior = "smooth";
-    
     // Global Intersection Observer for ONO reveals
     const observerOptions = {
       threshold: 0.1,

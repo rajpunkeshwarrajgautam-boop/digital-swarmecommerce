@@ -1,11 +1,10 @@
 import { Suspense } from 'react';
-import dynamic from 'next/dynamic';
 import { Inter, Outfit, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ClientProviders } from "@/components/providers/ClientProviders";
-import { ForgeToast } from "@/components/ui/ForgeToast";
+import { RootClientWidgets } from "@/components/providers/RootClientWidgets";
 import Script from "next/script";
 import { env } from "@/lib/env";
 import { ForgeErrorBoundary } from "@/components/ui/ForgeErrorBoundary";
@@ -15,19 +14,6 @@ import { AdTracking } from "@/components/layout/AdTracking";
 import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
 import { JsonLd } from "@/components/layout/JsonLd";
 import { metadata as siteMetadata } from "./metadata";
-
-const AIConcierge = dynamic(
-  () => import("@/components/forge/AIConcierge").then((m) => ({ default: m.AIConcierge })),
-  { ssr: false },
-);
-const HiveMindChat = dynamic(
-  () => import("@/components/chat/HiveMindChat").then((m) => ({ default: m.HiveMindChat })),
-  { ssr: false },
-);
-const VisualQuality = dynamic(
-  () => import("@/components/layout/VisualQuality").then((m) => ({ default: m.VisualQuality })),
-  { ssr: false },
-);
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -57,7 +43,7 @@ export default function RootLayout({
   return (
     <html 
       lang="en" 
-      className={`${inter.variable} ${outfit.variable} ${jetbrains.variable} dark scroll-smooth`}
+      className={`${inter.variable} ${outfit.variable} ${jetbrains.variable} dark`}
       data-theme="dark"
       suppressHydrationWarning
     >
@@ -73,10 +59,7 @@ export default function RootLayout({
             {/* Affiliate click tracker — fires once per session when ?ref= cookie is set */}
             <AffiliateTracker />
 
-            <VisualQuality />
-            <ForgeToast />
-            <AIConcierge />
-            <HiveMindChat />
+            <RootClientWidgets />
             <div className="relative min-h-screen flex flex-col">
               <Header />
               <main className="grow">

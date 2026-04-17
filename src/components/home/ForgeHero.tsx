@@ -26,21 +26,21 @@ export const ForgeHero = () => {
     trackABImpression(HOMEPAGE_HERO_AB_KEY, v);
     trackHomepageHeroImpression(HOMEPAGE_HERO_AB_KEY, v);
   }, []);
-  
-  const [personalization] = useState<{ market?: string; intent?: string }>(() => {
-    if (typeof window === 'undefined') return {};
-    
-    const cookies = document.cookie.split('; ').reduce((acc: Record<string, string>, curr) => {
-      const [key, value] = curr.split('=');
+
+  /** Empty on SSR + first paint; cookies applied after mount to avoid hydration text mismatch (#418). */
+  const [personalization, setPersonalization] = useState<{ market?: string; intent?: string }>({});
+
+  useEffect(() => {
+    const cookies = document.cookie.split("; ").reduce((acc: Record<string, string>, curr) => {
+      const [key, value] = curr.split("=");
       acc[key] = value;
       return acc;
     }, {});
-
-    return {
+    setPersonalization({
       market: cookies.market_hint,
-      intent: cookies.intent_ref
-    };
-  });
+      intent: cookies.intent_ref,
+    });
+  }, []);
 
   useEffect(() => {
     // Trace Entry Intent

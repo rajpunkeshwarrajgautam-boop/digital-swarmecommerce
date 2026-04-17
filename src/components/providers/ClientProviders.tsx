@@ -8,7 +8,7 @@ import { SwarmHueSync } from "./SwarmHueSync";
 
 export function ClientProviders({ children }: { children: React.ReactNode }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider signInFallbackRedirectUrl="/" signUpFallbackRedirectUrl="/">
       <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
         <SwarmHueSync />
         <CurrencyProvider>

@@ -6,22 +6,17 @@ import { ExitIntentModalB } from "./ExitIntentModalB";
 import { getABVariant, trackABImpression, type ABVariant } from "@/lib/abTest";
 
 /**
- * Routes the exit intent modal to Variant A or B based on the user's
- * persisted A/B assignment. Uses a lazy useState initializer so variant
- * is read from localStorage only on the client, avoiding hydration mismatch
- * and the setState-in-effect anti-pattern.
+ * Routes exit intent to variant A or B from localStorage.
+ * Variant is applied in useEffect so SSR and the first client frame match (no hydration mismatch).
  */
 export function ExitIntentABRouter() {
-  const [variant] = useState<ABVariant | null>(() => {
-    if (typeof globalThis.window === "undefined") return null;
-    return getABVariant("exit_intent_modal");
-  });
+  const [variant, setVariant] = useState<ABVariant | null>(null);
 
   useEffect(() => {
-    if (variant) {
-      trackABImpression("exit_intent_modal", variant);
-    }
-  }, [variant]);
+    const v = getABVariant("exit_intent_modal");
+    setVariant(v);
+    trackABImpression("exit_intent_modal", v);
+  }, []);
 
   if (!variant) return null;
   return variant === "B" ? <ExitIntentModalB /> : <ExitIntentModal />;

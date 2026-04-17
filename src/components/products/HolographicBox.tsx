@@ -2,7 +2,19 @@
 
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import Image from "next/image";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+
+/** Deterministic “asset id” so SSR and client match (avoids React #418 from Math.random). */
+function stableAssetId(name: string, image: string): string {
+  const s = `${name}|${image}`;
+  let h = 2166136261;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  const n = h >>> 0;
+  return n.toString(36).toUpperCase().slice(0, 7).padEnd(7, "0");
+}
 
 interface HolographicBoxProps {
   image: string;
@@ -20,7 +32,7 @@ export function HolographicBox({ image, name }: HolographicBoxProps) {
   const rotateY = useTransform(mouseXSpring, [-0.5, 0.5], ["-20deg", "20deg"]);
 
   const [isHovered, setIsHovered] = useState(false);
-  const [assetId] = useState(() => Math.random().toString(36).substring(7).toUpperCase());
+  const assetId = useMemo(() => stableAssetId(name, image), [name, image]);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
     const rect = e.currentTarget.getBoundingClientRect();

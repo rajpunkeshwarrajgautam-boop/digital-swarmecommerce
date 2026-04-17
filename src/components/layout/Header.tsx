@@ -103,19 +103,18 @@ export function Header() {
           <div className="flex items-center gap-4">
             
             {/* AI Concierge Trigger (The "Input") */}
-            <motion.button 
+            <button
+              type="button"
               onClick={() => { safePlayClick(); toggleConcierge(); }}
               aria-label="Toggle AI Assistant"
-              className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-accent/40 transition-all cursor-pointer group"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.98 }}
+              className="hidden md:flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-accent/40 transition-transform duration-150 hover:scale-105 active:scale-[0.98] cursor-pointer group"
             >
               <Sparkles className="w-4 h-4 text-accent transition-transform group-hover:rotate-12" />
               <span className="text-xs font-mono uppercase tracking-tighter text-white/50 group-hover:text-white transition-colors">
                 AI Assistant
               </span>
               <kbd className="hidden lg:block ml-2 px-1.5 py-0.5 bg-white/10 rounded text-[9px] text-white/30">/</kbd>
-            </motion.button>
+            </button>
 
             <div className="flex items-center gap-2">
               {/* Digital Vault (NFTs) */}
@@ -150,14 +149,9 @@ export function Header() {
                 >
                   <ShoppingBag className="w-5 h-5" />
                   {mounted && totalItems > 0 && (
-                    <motion.span
-                      key={totalItems}
-                      initial={{ scale: 1.5 }}
-                      animate={{ scale: 1 }}
-                      className="absolute top-1 right-1 bg-accent text-black text-[9px] font-black min-w-[14px] h-[14px] rounded-full flex items-center justify-center"
-                    >
+                    <span className="absolute top-1 right-1 bg-accent text-black text-[9px] font-black min-w-[14px] h-[14px] rounded-full flex items-center justify-center transition-transform duration-200">
                       {totalItems}
-                    </motion.span>
+                    </span>
                   )}
                 </button>
               </Link>
@@ -203,7 +197,7 @@ export function Header() {
             initial={{ opacity: 0, x: '100%' }}
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
-            transition={{ type: "spring", damping: 30, stiffness: 300 }}
+            transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
             className="fixed inset-0 z-60 glass-panel lg:hidden flex flex-col p-8 pt-24"
           >
             <nav className="flex flex-col gap-6 mb-12">

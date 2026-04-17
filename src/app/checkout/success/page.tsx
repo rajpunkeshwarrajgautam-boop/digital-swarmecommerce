@@ -9,14 +9,13 @@ import { useCartStore } from "@/lib/store";
 
 export default function SuccessPage() {
   const { clearCart } = useCartStore();
-  const [confirmationId] = useState(() => `DS-ACQU-00${Math.floor(Date.now() / 1000)}`);
+  const [confirmationId, setConfirmationId] = useState<string | null>(null);
 
   useEffect(() => {
+    setConfirmationId(`DS-ACQU-00${Math.floor(Date.now() / 1000)}`);
     // 1. Clear cart
     clearCart();
     
-    // 2. Log Tracking Event for Analytics (Marketing Infiltration)
-    console.log("MARKETING_PROTOCOL_SUCCESS: Order acquired. Signaling partners...");
   }, [clearCart]);
 
   return (
@@ -82,7 +81,7 @@ export default function SuccessPage() {
           
           <div className="mt-12 pt-8 border-t border-secondary/5">
             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-secondary/30 text-center w-full">
-              Confirmation ID: {confirmationId}
+              Confirmation ID: {confirmationId ?? "—"}
             </p>
           </div>
         </motion.div>
