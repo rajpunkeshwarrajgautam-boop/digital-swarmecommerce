@@ -71,6 +71,29 @@ async function resolveOrderItemProductId(
     if (byPriceCat?.id) return byPriceCat.id;
   }
 
+  const meaningful = staticProduct.name
+    .replace(/^(The|A|An)\s+/i, '')
+    .split(/\s+/)
+    .map((w) => w.replace(/[^a-z0-9]/gi, ''))
+    .filter((w) => w.length >= 5)
+    .slice(0, 2);
+  if (meaningful.length >= 2) {
+    const { data: byNameTokens } = await admin
+      .from('products')
+      .select('id')
+      .ilike('name', `%${meaningful[0]}%`)
+      .ilike('name', `%${meaningful[1]}%`)
+      .maybeSingle();
+    if (byNameTokens?.id) return byNameTokens.id;
+  } else if (meaningful.length === 1) {
+    const { data: byNameToken } = await admin
+      .from('products')
+      .select('id')
+      .ilike('name', `%${meaningful[0]}%`)
+      .maybeSingle();
+    if (byNameToken?.id) return byNameToken.id;
+  }
+
   return null;
 }
 
