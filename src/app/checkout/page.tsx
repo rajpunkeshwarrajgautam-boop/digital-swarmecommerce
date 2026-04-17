@@ -116,11 +116,14 @@ function CheckoutContent() {
         paymentSessionId?: string;
         cfMode?: string;
         error?: string;
+        /** PostgREST / Postgres error code when order persistence fails */
+        code?: string;
       }
       
       const data = (await res.json()) as CheckoutResponse;
       if (!res.ok || data.error) {
-        throw new Error(data.error || `Order failed (${res.status})`);
+        const hint = data.code ? ` (${data.code})` : '';
+        throw new Error((data.error || `Order failed (${res.status})`) + hint);
       }
 
       if (!data.paymentSessionId) {

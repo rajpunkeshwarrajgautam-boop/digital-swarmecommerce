@@ -1,3 +1,4 @@
+import { randomBytes } from 'crypto';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
@@ -36,11 +37,16 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid order data' }, { status: 400 });
     }
 
+    const totalNum = Number.parseFloat(String(total));
+    if (!Number.isFinite(totalNum) || totalNum < 0) {
+      return NextResponse.json({ error: 'Invalid order total' }, { status: 400 });
+    }
+
     const normalizedPhone = String(customer.phone || '').replace(/[^0-9]/g, '');
     const safePhone = normalizedPhone || '9999999999';
 
-    // 1. Generate clean Order ID
-    const orderId = `DS_${Date.now()}`;
+    // 1. Generate clean Order ID (suffix avoids rare UNIQUE(cashfree_order_id) collisions)
+    const orderId = `DS_${Date.now()}_${randomBytes(3).toString('hex')}`;
 
     // 1.5. Resolve Affiliate Cookie → get ref_code for commission attribution
     const cookieStore = await cookies();
@@ -65,10 +71,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
     }
 
-    // 2. Create Order in Supabase
-    // Extended row includes total_amount + affiliate_ref (webhook / dashboard). Older DBs
-    // may only have schema.sql columns — retry minimal row so checkout still works.
-    const totalNum = parseFloat(total);
+    // 2. Create Order in Supabase — insert ONLY base columns (schema.sql). Optional fields
+    // (total_amount, affiliate_ref) are applied via UPDATE so a missing migration cannot
+    // block payment; extended insert was still failing on some production DBs.
     const customerName = `${customer.firstName} ${customer.lastName}`.trim();
     const minimalOrderRow = {
       total: totalNum,
@@ -79,36 +84,41 @@ export async function POST(request: Request) {
       customer_name: customerName,
       customer_phone: safePhone,
     };
-    const extendedOrderRow = {
-      ...minimalOrderRow,
-      total_amount: totalNum,
-      ...(validatedAffiliateRef && { affiliate_ref: validatedAffiliateRef }),
-    };
 
-    let order = null;
-    let orderError = null;
-    const extended = await supabaseAdmin
+    const inserted = await supabaseAdmin
       .from('orders')
-      .insert(extendedOrderRow)
-      .select()
-      .single();
-    order = extended.data;
-    orderError = extended.error;
+      .insert(minimalOrderRow)
+      .select();
+
+    const orderError = inserted.error;
+    const order = inserted.data?.[0] ?? null;
 
     if (orderError) {
-      console.warn('[create-order] Extended orders insert failed, retrying minimal schema', orderError.message);
-      const minimal = await supabaseAdmin
-        .from('orders')
-        .insert(minimalOrderRow)
-        .select()
-        .single();
-      order = minimal.data;
-      orderError = minimal.error;
+      console.error('[DB Error] orders insert', JSON.stringify(orderError));
+      return NextResponse.json(
+        {
+          error: 'Database record failed',
+          code: orderError.code,
+        },
+        { status: 500 },
+      );
     }
 
-    if (orderError || !order) {
-      console.error('[DB Error]', orderError);
-      return NextResponse.json({ error: 'Database record failed' }, { status: 500 });
+    if (!order) {
+      console.error('[DB Error] orders insert returned no row');
+      return NextResponse.json({ error: 'Database record failed', code: 'NO_ROW' }, { status: 500 });
+    }
+
+    const optional: Record<string, number | string> = { total_amount: totalNum };
+    if (validatedAffiliateRef) optional.affiliate_ref = validatedAffiliateRef;
+
+    const { error: optionalErr } = await supabaseAdmin
+      .from('orders')
+      .update(optional)
+      .eq('id', order.id);
+
+    if (optionalErr) {
+      console.warn('[create-order] Optional orders columns not updated (migration may be pending):', optionalErr.message);
     }
 
     // 3. Create Order Items (blocking, so we can rollback cleanly on failure)
