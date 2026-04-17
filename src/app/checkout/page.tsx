@@ -118,12 +118,14 @@ function CheckoutContent() {
         error?: string;
         /** PostgREST / Postgres error code when order persistence fails */
         code?: string;
+        message?: string;
       }
       
       const data = (await res.json()) as CheckoutResponse;
       if (!res.ok || data.error) {
         const hint = data.code ? ` (${data.code})` : '';
-        throw new Error((data.error || `Order failed (${res.status})`) + hint);
+        const detail = data.message ? ` — ${data.message}` : '';
+        throw new Error((data.error || `Order failed (${res.status})`) + hint + detail);
       }
 
       if (!data.paymentSessionId) {

@@ -87,16 +87,40 @@ export async function POST(request: Request) {
       customer_phone: safePhone,
     };
 
-    // Avoid INSERT ... RETURNING / `.select()` after insert: PostgREST can return PGRST204 when
-    // the DB has columns not yet in its schema cache (common right after migrations).
-    const { error: orderError } = await supabaseAdmin.from('orders').insert(minimalOrderRow);
+    // Use raw PostgREST with `Prefer: return=minimal` so the INSERT has no RETURNING clause.
+    // The Supabase JS client defaults to `return=representation`, which makes PostgREST project
+    // every column into the response; any column present in Postgres but missing from the
+    // API schema cache surfaces as PGRST204 (production issue after ALTER TABLE).
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+    if (!supabaseUrl || !serviceKey) {
+      return NextResponse.json({ error: 'Database service unavailable' }, { status: 500 });
+    }
 
-    if (orderError) {
-      console.error('[DB Error] orders insert', JSON.stringify(orderError));
+    const restRes = await fetch(`${supabaseUrl.replace(/\/$/, '')}/rest/v1/orders`, {
+      method: 'POST',
+      headers: {
+        apikey: serviceKey,
+        Authorization: `Bearer ${serviceKey}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify(minimalOrderRow),
+    });
+
+    if (!restRes.ok) {
+      let orderError: { code?: string; message?: string } = { message: await restRes.text() };
+      try {
+        orderError = (await restRes.json()) as { code?: string; message?: string };
+      } catch {
+        /* keep text body */
+      }
+      console.error('[DB Error] orders insert (REST)', restRes.status, orderError);
       return NextResponse.json(
         {
           error: 'Database record failed',
           code: orderError.code,
+          message: orderError.message,
         },
         { status: 500 },
       );
