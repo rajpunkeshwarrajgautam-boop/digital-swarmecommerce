@@ -1,4 +1,4 @@
-import { getTrackedABExperiments } from "@/lib/abTest";
+import { getTrackedABExperiments, type ABVariant } from "@/lib/abTest";
 import { getAttributionContext } from "@/lib/attribution";
 
 type EventParams = Record<string, unknown>;
@@ -106,5 +106,28 @@ export function trackPurchaseEvent(total: number, transactionId: string, items: 
       price: item.price,
       quantity: item.quantity,
     })),
+  });
+}
+
+/** Homepage hero A/B: fires once per mount (prod); map in GTM/GA4 as custom event. */
+export function trackHomepageHeroImpression(abTestKey: string, variant: ABVariant) {
+  trackEcommerceEvent("homepage_hero_impression", {
+    ab_test: abTestKey,
+    ab_variant: variant,
+  });
+}
+
+/** Homepage hero primary/secondary CTA; includes variant for funnel analysis. */
+export function trackHomepageHeroCta(
+  abTestKey: string,
+  variant: ABVariant,
+  kind: "primary_catalog" | "secondary_concierge",
+  ctaLabel: string
+) {
+  trackEcommerceEvent("homepage_hero_cta_click", {
+    ab_test: abTestKey,
+    ab_variant: variant,
+    cta_kind: kind,
+    cta_label: ctaLabel,
   });
 }

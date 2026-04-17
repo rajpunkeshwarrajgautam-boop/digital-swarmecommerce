@@ -8,6 +8,7 @@ import { Cpu, Zap, Shield, Sparkles } from "lucide-react";
 import { useForgeStore } from "@/lib/forge-store";
 import { useMemoryStore } from "@/lib/memory/MemoryStore";
 import { getABVariant, trackABImpression, type ABVariant } from "@/lib/abTest";
+import { trackHomepageHeroCta, trackHomepageHeroImpression } from "@/lib/web-analytics";
 
 /** Persisted key for homepage hero copy / CTA experiment (see ExitIntentABRouter pattern). */
 export const HOMEPAGE_HERO_AB_KEY = "homepage_hero";
@@ -23,6 +24,7 @@ export const ForgeHero = () => {
     const v = getABVariant(HOMEPAGE_HERO_AB_KEY);
     setHeroVariant(v);
     trackABImpression(HOMEPAGE_HERO_AB_KEY, v);
+    trackHomepageHeroImpression(HOMEPAGE_HERO_AB_KEY, v);
   }, []);
   
   const [personalization] = useState<{ market?: string; intent?: string }>(() => {
@@ -132,10 +134,23 @@ export const ForgeHero = () => {
           transition={{ delay: 0.6 }}
           className="flex flex-wrap items-center justify-center gap-6 mb-24"
         >
-          <ForgeButton variant="primary" onClick={() => (window.location.href = "#products")}>
+          <ForgeButton
+            variant="primary"
+            onClick={() => {
+              const label = isB ? "Browse catalog" : "Shop the Store";
+              trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "primary_catalog", label);
+              window.location.href = "#products";
+            }}
+          >
             {isB ? "Browse catalog" : "Shop the Store"}
           </ForgeButton>
-          <ForgeButton variant="outline" onClick={toggleConcierge}>
+          <ForgeButton
+            variant="outline"
+            onClick={() => {
+              trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "secondary_concierge", "AI Assistant");
+              toggleConcierge();
+            }}
+          >
             <Sparkles className="w-4 h-4 mr-2" />
             AI Assistant
           </ForgeButton>
