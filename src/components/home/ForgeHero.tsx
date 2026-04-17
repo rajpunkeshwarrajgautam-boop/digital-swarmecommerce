@@ -1,16 +1,29 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useLayoutEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Cpu, Zap, Shield, Sparkles } from "lucide-react";
 import { useForgeStore } from "@/lib/forge-store";
 import { useMemoryStore } from "@/lib/memory/MemoryStore";
+import { getABVariant, trackABImpression, type ABVariant } from "@/lib/abTest";
+
+/** Persisted key for homepage hero copy / CTA experiment (see ExitIntentABRouter pattern). */
+export const HOMEPAGE_HERO_AB_KEY = "homepage_hero";
 
 export const ForgeHero = () => {
   const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
   const addInterest = useMemoryStore((state) => state.addInterest);
+
+  /** Default A for SSR + first client frame; real assignment applied in useLayoutEffect before paint. */
+  const [heroVariant, setHeroVariant] = useState<ABVariant>("A");
+
+  useLayoutEffect(() => {
+    const v = getABVariant(HOMEPAGE_HERO_AB_KEY);
+    setHeroVariant(v);
+    trackABImpression(HOMEPAGE_HERO_AB_KEY, v);
+  }, []);
   
   const [personalization] = useState<{ market?: string; intent?: string }>(() => {
     if (typeof window === 'undefined') return {};
@@ -34,6 +47,8 @@ export const ForgeHero = () => {
 
   const isLocalMarket = personalization.market === 'IN';
   const hasIntent = !!personalization.intent;
+
+  const isB = heroVariant === "B";
 
   return (
     <section className="relative min-h-svh w-full flex items-center justify-center overflow-hidden bg-[#0a0a0f] py-40">
@@ -64,7 +79,11 @@ export const ForgeHero = () => {
             <span className="relative inline-flex rounded-full h-2 w-2 bg-accent"></span>
           </span>
           <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/50">
-            {hasIntent ? `Welcome Node ${personalization.intent}` : "Premium Assets Now Live"}
+            {hasIntent
+              ? `Welcome Node ${personalization.intent}`
+              : isB
+                ? "Secure checkout · Instant delivery"
+                : "Premium Assets Now Live"}
           </span>
         </motion.div>
 
@@ -75,9 +94,19 @@ export const ForgeHero = () => {
           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-6xl md:text-8xl lg:text-[10rem] font-outfit font-black italic tracking-tighter leading-[0.8] uppercase mb-8"
         >
-          {isLocalMarket ? "Launch" : "Build"} <br />
-          <span className="text-white/20">Elite Digital</span> <br />
-          <span className="text-primary glow-text">Experiences</span>
+          {isB ? (
+            <>
+              {isLocalMarket ? "Go live" : "Ship"} <br />
+              <span className="text-white/20">Premium</span> <br />
+              <span className="text-primary glow-text">Digital products</span>
+            </>
+          ) : (
+            <>
+              {isLocalMarket ? "Launch" : "Build"} <br />
+              <span className="text-white/20">Elite Digital</span> <br />
+              <span className="text-primary glow-text">Experiences</span>
+            </>
+          )}
         </motion.h1>
 
         {/* Subtitle */}
@@ -87,10 +116,13 @@ export const ForgeHero = () => {
           transition={{ delay: 0.4 }}
           className="max-w-2xl text-lg md:text-xl text-white/40 font-inter mb-12"
         >
-          {isLocalMarket 
-            ? "Zero-friction deployment for India's high-performance developer stacks—hardened, modular, and AI-native architecture."
-            : "Global architectural patterns for the next era of software: modular, AI-native stacks for elite engineers."
-          }
+          {isB
+            ? isLocalMarket
+              ? "Curated assets and stacks built for Indian teams—instant download, modular upgrades, checkout you can trust."
+              : "Curated digital assets and implementation patterns for teams optimizing for speed, quality, and conversion."
+            : isLocalMarket
+              ? "Zero-friction deployment for India's high-performance developer stacks—hardened, modular, and AI-native architecture."
+              : "Global architectural patterns for the next era of software: modular, AI-native stacks for elite engineers."}
         </motion.p>
 
         {/* CTAs */}
@@ -101,7 +133,7 @@ export const ForgeHero = () => {
           className="flex flex-wrap items-center justify-center gap-6 mb-24"
         >
           <ForgeButton variant="primary" onClick={() => (window.location.href = "#products")}>
-            Shop the Store
+            {isB ? "Browse catalog" : "Shop the Store"}
           </ForgeButton>
           <ForgeButton variant="outline" onClick={toggleConcierge}>
             <Sparkles className="w-4 h-4 mr-2" />

@@ -1,0 +1,31 @@
+---
+description: Every user message is expanded into intent, plan, execution, and verification before acting.
+alwaysApply: true
+---
+
+# Command coordinator (always)
+
+Treat **every** user message—short or long—as input that must be normalized into reliable engineering work. Do not wait for the user to “write a good prompt.”
+
+## Mandatory pipeline (in order)
+
+1. **Restate intent** in one or two precise sentences (what to build, fix, verify, deploy, or answer).
+2. **Infer constraints** when unstated: scope (minimal diff), environment (local vs prod), risk (data/secrets), and success criteria.
+3. **Pick execution mode** without asking unless blocked: read-only exploration vs code edits vs shell/deploy. Default to **minimal change** that satisfies the goal.
+4. **Plan briefly**: ordered steps, likely files or areas, and how you will **verify** (tests, build, lint, smoke check—whatever fits the repo).
+5. **Execute**: use tools; prefer running commands yourself when the environment allows.
+6. **Verify** after substantive edits: run the most relevant check available (e.g. `npm test`, `npm run build`, targeted script). If none exist, state what manual check applies.
+7. **Report**: what changed, where, how to validate, and any follow-ups only if they are necessary for correctness or safety.
+
+## Safety gates (non-negotiable)
+
+- **Secrets**: never echo real tokens; use placeholders in chat; prefer env/secret stores over committing credentials.
+- **Destructive / prod**: pushing, production deploys, schema drops, or irreversible data ops require explicit user instruction in the message; if ambiguous, **stop and ask once** with the smallest possible clarification.
+- **Scope**: no drive-by refactors or unrelated files; every line in the diff should serve the user’s goal.
+
+## Style
+
+- Match existing project patterns (imports, naming, formatting).
+- Prefer concrete artifacts (paths, commands run, outcomes) over vague summaries.
+
+This rule does not replace product-specific conventions elsewhere; it **coordinates** how all messages are handled.
