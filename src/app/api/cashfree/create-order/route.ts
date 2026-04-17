@@ -42,7 +42,36 @@ async function resolveOrderItemProductId(
     .select('id')
     .ilike('install_guide', `%${rawId}%`)
     .maybeSingle();
-  return byInstall?.id ?? null;
+  if (byInstall?.id) return byInstall.id;
+
+  const { data: byDesc } = await admin
+    .from('products')
+    .select('id')
+    .ilike('description', `%${rawId}%`)
+    .maybeSingle();
+  if (byDesc?.id) return byDesc.id;
+
+  // Same list price can exist on multiple SKUs; category disambiguates (e.g. Notion vs Source Code @ ₹1499).
+  let { data: byPriceCat } = await admin
+    .from('products')
+    .select('id')
+    .eq('price', staticProduct.price)
+    .eq('category', staticProduct.category)
+    .maybeSingle();
+  if (byPriceCat?.id) return byPriceCat.id;
+
+  const catPrefix = staticProduct.category.split(/\s+/)[0];
+  if (catPrefix.length >= 3) {
+    ({ data: byPriceCat } = await admin
+      .from('products')
+      .select('id')
+      .eq('price', staticProduct.price)
+      .ilike('category', `${catPrefix}%`)
+      .maybeSingle());
+    if (byPriceCat?.id) return byPriceCat.id;
+  }
+
+  return null;
 }
 
 export async function POST(request: Request) {
