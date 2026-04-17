@@ -85,10 +85,13 @@ export async function POST(request: Request) {
       customer_phone: safePhone,
     };
 
+    // PostgREST returns inserted rows; `select()` with no args projects ALL columns. If the DB
+    // has columns not yet in PostgREST's schema cache (common after ALTER), the request fails
+    // with PGRST204 — so only request `id`, which is always cache-safe.
     const inserted = await supabaseAdmin
       .from('orders')
       .insert(minimalOrderRow)
-      .select();
+      .select('id');
 
     const orderError = inserted.error;
     const order = inserted.data?.[0] ?? null;
