@@ -12,6 +12,17 @@ function isProductUuid(value: string): boolean {
   return /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(value);
 }
 
+const WHITELABEL_CART_SUFFIX = '-whitelabel';
+
+/** AddToCartButton uses `${baseId}-whitelabel` for agency tier; DB row is still the base catalog product. */
+function baseCatalogSlugFromCartId(rawId: string): string {
+  const lower = rawId.toLowerCase();
+  if (lower.endsWith(WHITELABEL_CART_SUFFIX)) {
+    return rawId.slice(0, rawId.length - WHITELABEL_CART_SUFFIX.length);
+  }
+  return rawId;
+}
+
 /** Cart uses slug ids (e.g. notion-crm-protocol); order_items.product_id FK targets products.id (uuid). */
 async function resolveOrderItemProductId(
   admin: NonNullable<typeof supabaseAdmin>,
@@ -19,7 +30,8 @@ async function resolveOrderItemProductId(
 ): Promise<string | null> {
   if (!rawId) return null;
   if (isProductUuid(rawId)) return rawId;
-  const staticProduct = fallbackProducts.find((p) => p.id === rawId);
+  const catalogSlug = baseCatalogSlugFromCartId(rawId);
+  const staticProduct = fallbackProducts.find((p) => p.id === catalogSlug);
   if (!staticProduct) return null;
 
   const { data: byName } = await admin
@@ -33,21 +45,21 @@ async function resolveOrderItemProductId(
   const { data: byDownload } = await admin
     .from('products')
     .select('id')
-    .ilike('download_url', `%${rawId}%`)
+    .ilike('download_url', `%${catalogSlug}%`)
     .maybeSingle();
   if (byDownload?.id) return byDownload.id;
 
   const { data: byInstall } = await admin
     .from('products')
     .select('id')
-    .ilike('install_guide', `%${rawId}%`)
+    .ilike('install_guide', `%${catalogSlug}%`)
     .maybeSingle();
   if (byInstall?.id) return byInstall.id;
 
   const { data: byDesc } = await admin
     .from('products')
     .select('id')
-    .ilike('description', `%${rawId}%`)
+    .ilike('description', `%${catalogSlug}%`)
     .maybeSingle();
   if (byDesc?.id) return byDesc.id;
 
