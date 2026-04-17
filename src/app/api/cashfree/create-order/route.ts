@@ -1,4 +1,4 @@
-import { randomBytes } from 'crypto';
+import { randomBytes, randomUUID } from 'crypto';
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { supabaseAdmin } from '@/lib/supabase';
@@ -75,7 +75,9 @@ export async function POST(request: Request) {
     // (total_amount, affiliate_ref) are applied via UPDATE so a missing migration cannot
     // block payment; extended insert was still failing on some production DBs.
     const customerName = `${customer.firstName} ${customer.lastName}`.trim();
+    const orderUuid = randomUUID();
     const minimalOrderRow = {
+      id: orderUuid,
       total: totalNum,
       status: 'pending' as const,
       user_id: customer.email,
@@ -85,16 +87,9 @@ export async function POST(request: Request) {
       customer_phone: safePhone,
     };
 
-    // PostgREST returns inserted rows; `select()` with no args projects ALL columns. If the DB
-    // has columns not yet in PostgREST's schema cache (common after ALTER), the request fails
-    // with PGRST204 — so only request `id`, which is always cache-safe.
-    const inserted = await supabaseAdmin
-      .from('orders')
-      .insert(minimalOrderRow)
-      .select('id');
-
-    const orderError = inserted.error;
-    const order = inserted.data?.[0] ?? null;
+    // Avoid INSERT ... RETURNING / `.select()` after insert: PostgREST can return PGRST204 when
+    // the DB has columns not yet in its schema cache (common right after migrations).
+    const { error: orderError } = await supabaseAdmin.from('orders').insert(minimalOrderRow);
 
     if (orderError) {
       console.error('[DB Error] orders insert', JSON.stringify(orderError));
@@ -107,10 +102,7 @@ export async function POST(request: Request) {
       );
     }
 
-    if (!order) {
-      console.error('[DB Error] orders insert returned no row');
-      return NextResponse.json({ error: 'Database record failed', code: 'NO_ROW' }, { status: 500 });
-    }
+    const order = { id: orderUuid };
 
     const optional: Record<string, number | string> = { total_amount: totalNum };
     if (validatedAffiliateRef) optional.affiliate_ref = validatedAffiliateRef;
@@ -118,7 +110,7 @@ export async function POST(request: Request) {
     const { error: optionalErr } = await supabaseAdmin
       .from('orders')
       .update(optional)
-      .eq('id', order.id);
+      .eq('id', orderUuid);
 
     if (optionalErr) {
       console.warn('[create-order] Optional orders columns not updated (migration may be pending):', optionalErr.message);
