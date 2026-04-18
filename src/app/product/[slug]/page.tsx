@@ -208,6 +208,11 @@ export default function ProductPage() {
             <div className="relative group">
                <div className="absolute -inset-1 bg-primary/20 blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-1000" />
                <QuantumProductView image={product.image} name={product.name} />
+               <p className="mt-4 text-[10px] font-mono text-white/40 uppercase tracking-[0.2em] leading-relaxed max-w-xl">
+                 Cover image is Digital Swarm catalog artwork for this SKU - not a live capture of Notion, Figma, Make,
+                 or other third-party tools. What you receive (files, links, and what you build yourself) is exactly what
+                 the delivery URL and description state.
+               </p>
             </div>
             
             {/* Tech Specs Summary Table */}

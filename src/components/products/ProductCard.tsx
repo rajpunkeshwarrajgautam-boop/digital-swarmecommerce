@@ -114,6 +114,7 @@ export function ProductCard({ product, priority = false, listName = "product_gri
             alt={product.name}
             priority={priority}
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            unoptimized={product.image.endsWith(".svg")}
           />
         </div>
         <div className="absolute inset-0 bg-linear-to-t from-black/80 via-transparent to-transparent opacity-60" />
