@@ -35,7 +35,8 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata = siteMetadata;
 
-const FB_PIXEL_FALLBACK = "1214081075936306";
+/** When `NEXT_PUBLIC_FB_PIXEL_ID` is unset — use “Digital Swarm Pixel” in Events Manager (917022824541013). Set env on Vercel to override. */
+const FB_PIXEL_FALLBACK = "917022824541013";
 
 export default function RootLayout({
   children,
