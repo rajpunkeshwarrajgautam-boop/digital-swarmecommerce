@@ -1,4 +1,4 @@
-This is a free bonus asset from Digital Swarm. 
+Digital Swarm — Prompt snippets (also bundled inside swarm-paid-prompt-core.md for paid SKUs).
 Use these AI prompts to automate your deep research and sales intelligence workflows.
 
 ### 🤖 General Agent Activation

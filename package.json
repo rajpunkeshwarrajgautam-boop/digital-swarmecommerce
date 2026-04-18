@@ -19,7 +19,9 @@
     "storage:ensure-buckets": "node scripts/ensure-storage-buckets.mjs",
     "storage:mirror-zips": "node scripts/mirror-product-zips-from-legacy.mjs",
     "sync-inventory": "tsx scripts/sync-inventory.ts",
-    "sync-urls": "tsx update-download-urls.ts"
+    "sync-urls": "tsx update-download-urls.ts",
+    "build:delivery-zips": "node scripts/build-delivery-zips.mjs",
+    "truth:delivery-html": "node scripts/truth-delivery-pages.mjs"
   },
   "dependencies": {
     "@cashfreepayments/cashfree-js": "^1.0.6",

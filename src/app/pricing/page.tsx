@@ -10,13 +10,13 @@ const tiers = [
   {
     name: "Starter Kit",
     price: "₹1,499",
-    desc: "Essential architecture for solo developers and quick MVP validation.",
+    desc: "ZIP bundle: Swarm paid prompt core (Markdown), audits, checklists, and token CSS — ready for ChatGPT / Claude workflows.",
     features: [
-      "Core Next.js 14 Pattern",
-      "Standard Tailwind Styling",
-      "Basic Supabase Integration",
-      "Standard Support",
-      "Single Domain License"
+      "swarm-paid-prompt-core.md",
+      "Launch + stack audit text packs",
+      "Design-system token CSS",
+      "Portable ZIP (READ_ME_FIRST inside)",
+      "Email support"
     ],
     buttonText: "Acquire Starter",
     link: "/product/starter-kit",
@@ -25,14 +25,13 @@ const tiers = [
   {
     name: "Professional",
     price: "₹3,999",
-    desc: "The gold standard for production-grade SaaS and agency deployments.",
+    desc: "Starter bundle plus a React/Tailwind sample module you can adapt — same prompt-first scope, more UI velocity.",
     features: [
       "Everything in Starter",
-      "Advanced AI Route Patterns",
-      "Premium Design System",
-      "Stripe/Razorpay Integrated",
-      "Multi-Domain License",
-      "Priority Discord Access"
+      "cyberpunk-mini-ui-kit.tsx sample",
+      "Same Markdown prompt core",
+      "ZIP fulfillment with manifest",
+      "Email support"
     ],
     buttonText: "Acquire Pro",
     link: "/product/nextjs-saas-kit",
