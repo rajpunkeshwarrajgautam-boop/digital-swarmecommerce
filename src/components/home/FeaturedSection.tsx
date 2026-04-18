@@ -89,8 +89,8 @@ export function FeaturedSection() {
               <ArrowRight className="w-5 h-5 ml-4 group-hover:translate-x-2 transition-transform" />
             </ForgeButton>
           </Link>
-          <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] italic">
-            Updated Real-Time // v2.0
+          <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] italic text-center max-w-md">
+            Full catalog on /products — same checkout, delivery pages under /downloads/
           </p>
         </motion.div>
       </div>

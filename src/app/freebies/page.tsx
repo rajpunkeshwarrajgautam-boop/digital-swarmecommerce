@@ -4,14 +4,17 @@ import { Download, Gift, ArrowRight, Zap, Target, Sparkles } from "lucide-react"
 import { Button } from "@/components/ui/Button";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import { useState } from "react";
+import { trackLead } from "@/components/analytics/FBPixel";
+import { trackEcommerceEvent } from "@/lib/web-analytics";
 
 const freebies = [
   {
     id: "saas-checklist",
     name: "Ultimate SaaS Launch Checklist",
-    description: "A comprehensive 150+ point checklist to go from idea to $1k MRR. Used by 500+ founders.",
+    description: "A comprehensive 150+ point checklist to go from idea to first revenue — structured for solo founders and small teams.",
     icon: <Target className="w-8 h-8 text-primary" />,
-    stats: "2.4k Downloads",
+    stats: "Free · .txt",
     type: "Guide",
     downloadUrl: "/downloads/saas-launch-checklist.txt"
   },
@@ -20,7 +23,7 @@ const freebies = [
     name: "AI Agent Prompt Library",
     description: "Expert-crafted prompts for Claude, GPT-4, and Midjourney to automate your development workflow.",
     icon: <Sparkles className="w-8 h-8 text-accent" />,
-    stats: "1.8k Downloads",
+    stats: "Free · .txt",
     type: "Asset",
     downloadUrl: "/downloads/ai-prompt-library.txt"
   },
@@ -29,7 +32,7 @@ const freebies = [
     name: "Cyberpunk Mini UI Kit",
     description: "A selection of premium React components from our main UI Kit. Buttons, cards, and inputs.",
     icon: <Zap className="w-8 h-8 text-primary" />,
-    stats: "3.2k Downloads",
+    stats: "Free · .tsx",
     type: "Code",
     downloadUrl: "/downloads/cyberpunk-mini-ui-kit.tsx"
   },
@@ -38,7 +41,7 @@ const freebies = [
     name: "SaaS Tech Stack Audit 2025",
     description: "A deep-dive research report on the most efficient tools for building high-scale startups in 2025.",
     icon: <Target className="w-8 h-8 text-blue-400" />,
-    stats: "New Release",
+    stats: "Free · .txt",
     type: "Guide",
     downloadUrl: "/downloads/saas-tech-stack-audit.txt"
   },
@@ -47,13 +50,45 @@ const freebies = [
     name: "Digital Swarm Design System",
     description: "Figma and CSS design tokens for the ultimate cyberpunk aesthetic. Includes neon palettes and UI elements.",
     icon: <Sparkles className="w-8 h-8 text-amber-400" />,
-    stats: "Featured",
+    stats: "Free · .css",
     type: "Asset",
     downloadUrl: "/downloads/design-system-tokens.css"
   }
 ];
 
 export default function FreebiesPage() {
+  const [listEmail, setListEmail] = useState("");
+  const [listStatus, setListStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [listMessage, setListMessage] = useState("");
+
+  async function handleNewsletter(e: React.FormEvent) {
+    e.preventDefault();
+    if (!listEmail.trim()) return;
+    setListStatus("loading");
+    setListMessage("");
+    try {
+      const res = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: listEmail.trim() }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setListStatus("success");
+        setListMessage("Check your inbox to confirm.");
+        trackLead("freebies_newsletter");
+        trackEcommerceEvent("generate_lead", { source: "freebies", placement: "onsite" });
+        setListEmail("");
+      } else {
+        setListStatus("error");
+        setListMessage(data.error || "Could not subscribe. Try again.");
+      }
+    } catch {
+      setListStatus("error");
+      setListMessage("Network error. Retry in a moment.");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-background py-24">
       <div className="container mx-auto px-4">
@@ -138,20 +173,41 @@ export default function FreebiesPage() {
           <div className="relative z-10 max-w-2xl mx-auto space-y-6 sm:space-y-8">
             <h2 className="text-2xl sm:text-4xl font-black tracking-tight italic">Join the Swarm</h2>
             <p className="text-base sm:text-lg text-muted-foreground">
-              We ship new freebies every Saturday. Join 4,200+ developers getting the edge in their inbox.
+              Get drops when we publish new freebies and paid protocols. One email field — powered by the same Resend pipeline as the rest of the site.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 items-center justify-center">
-              <input 
-                type="email" 
-                placeholder="Enter your email" 
+            <form
+              onSubmit={handleNewsletter}
+              className="flex flex-col sm:flex-row gap-4 items-center justify-center"
+            >
+              <input
+                type="email"
+                name="email"
+                value={listEmail}
+                onChange={(e) => setListEmail(e.target.value)}
+                placeholder="Enter your email"
+                required
+                autoComplete="email"
                 className="w-full sm:w-80 h-12 sm:h-14 rounded-full bg-background border border-border px-6 focus:outline-hidden focus:ring-2 focus:ring-primary/50 transition-all text-sm"
               />
-              <Button className="w-full sm:w-auto h-12 sm:h-14 px-8 rounded-full gap-2 text-sm">
-                Join the List <ArrowRight className="w-4 h-4" />
+              <Button
+                type="submit"
+                disabled={listStatus === "loading"}
+                className="w-full sm:w-auto h-12 sm:h-14 px-8 rounded-full gap-2 text-sm"
+              >
+                {listStatus === "loading" ? "Sending…" : "Join the list"}
+                <ArrowRight className="w-4 h-4" />
               </Button>
-            </div>
+            </form>
+            {listMessage ? (
+              <p
+                className={`text-sm ${listStatus === "error" ? "text-red-400" : "text-primary"}`}
+                role="status"
+              >
+                {listMessage}
+              </p>
+            ) : null}
             <p className="text-[10px] sm:text-xs text-muted-foreground opacity-50 italic">
-              No spam. Just code, assets, and value. Unsubscribe anytime.
+              No spam. Unsubscribe anytime (link in the welcome email).
             </p>
           </div>
         </div>

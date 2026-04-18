@@ -1,6 +1,8 @@
 "use client";
 
 import React, { useEffect, useLayoutEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
@@ -14,6 +16,7 @@ import { trackHomepageHeroCta, trackHomepageHeroImpression } from "@/lib/web-ana
 export const HOMEPAGE_HERO_AB_KEY = "homepage_hero";
 
 export const ForgeHero = () => {
+  const router = useRouter();
   const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
   const addInterest = useMemoryStore((state) => state.addInterest);
 
@@ -139,7 +142,7 @@ export const ForgeHero = () => {
             onClick={() => {
               const label = isB ? "Browse catalog" : "Shop the Store";
               trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "primary_catalog", label);
-              window.location.href = "#products";
+              router.push("/products");
             }}
           >
             {isB ? "Browse catalog" : "Shop the Store"}
@@ -154,31 +157,40 @@ export const ForgeHero = () => {
             <Sparkles className="w-4 h-4 mr-2" />
             AI Assistant
           </ForgeButton>
+          <Link
+            href="/freebies"
+            onClick={() =>
+              trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "tertiary_freebies", "Free downloads")
+            }
+            className="text-[11px] font-mono font-black uppercase tracking-[0.25em] text-white/40 hover:text-primary transition-colors underline-offset-4 hover:underline"
+          >
+            Free downloads →
+          </Link>
         </motion.div>
 
         {/* Quick Insights Cards */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-5xl">
-          <InsightCard 
+          <InsightCard
             icon={<Cpu className="w-5 h-5 text-accent" />}
-            label="Swarm Stability"
-            value="99.98%"
+            label="Delivery"
+            value="Instant"
             delay={0.8}
           />
-           <InsightCard 
+          <InsightCard
             icon={<Zap className="w-5 h-5 text-primary" />}
-            label="Neural Velocity"
-            value="< 480ms"
+            label="Checkout"
+            value="Secure"
             delay={0.9}
           />
-           <InsightCard 
+          <InsightCard
             icon={<Shield className="w-5 h-5 text-green-400" />}
-            label="Encrypted Shield"
-            value="L4 Active"
+            label="Listings"
+            value="Honest"
             delay={1.0}
           />
         </div>
         <p className="mt-8 max-w-xl mx-auto text-center text-[10px] font-mono uppercase tracking-widest text-white/25">
-          Figures reflect design targets and internal benchmarks, not a live SLA.
+          We do not display fabricated customer counts — read each product page for exact deliverables.
         </p>
       </div>
     </section>

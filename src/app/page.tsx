@@ -2,21 +2,15 @@
 
 import { CheckCircle2, Shield, Zap, Terminal, Activity } from "lucide-react";
 import Image from "next/image";
+import Link from "next/link";
 import { FeaturedSection } from "@/components/home/FeaturedSection";
 import { ForgeHero } from "@/components/home/ForgeHero";
 import { HowItWorks } from "@/components/home/HowItWorks";
 import { CommunityProtocol } from "@/components/home/CommunityProtocol";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ForgeButton } from "@/components/ui/ForgeButton";
-import { useState, useEffect } from "react";
 
 export default function Home() {
-  const [mounted, setMounted] = useState(false);
-  
-  useEffect(() => {
-    setMounted(true);
-  }, []);
-
   return (
     <div className="flex flex-col min-h-screen relative z-10 w-full bg-background overflow-hidden">
       {/* 1. FORGE HERO (Primary Entry) */}
@@ -28,45 +22,52 @@ export default function Home() {
           <div className="flex flex-col md:flex-row items-center justify-between gap-12">
             <div className="max-w-md">
               <div className="flex items-center gap-3 mb-6">
-                <Activity className="w-5 h-5 text-accent animate-pulse" />
-                <span className="text-xs font-mono uppercase tracking-widest text-white/40 italic">Live Store Updates</span>
+                <Activity className="w-5 h-5 text-accent" />
+                <span className="text-xs font-mono uppercase tracking-widest text-white/40 italic">Shop with confidence</span>
               </div>
               <h2 className="text-4xl font-outfit font-black italic uppercase leading-none mb-4">
-                Real-Time Sales <br />
-                <span className="text-primary italic">Status</span>
+                Honest digital <br />
+                <span className="text-primary italic">Delivery</span>
               </h2>
               <p className="text-white/30 text-sm font-inter">
-                Real-time tracking of premium asset purchases across our global network.
+                No inflated metrics — just what we control: checkout, download links, and listings that match your files.
               </p>
+              <div className="mt-6 flex flex-wrap gap-3 text-[10px] font-mono uppercase tracking-widest">
+                <Link href="/refund" className="text-primary hover:underline">
+                  Refund policy
+                </Link>
+                <span className="text-white/15">/</span>
+                <Link href="/faq" className="text-primary hover:underline">
+                  FAQ
+                </Link>
+                <span className="text-white/15">/</span>
+                <Link href="/freebies" className="text-primary hover:underline">
+                  Free downloads
+                </Link>
+              </div>
             </div>
 
             <div className="flex-1 grid grid-cols-2 lg:grid-cols-4 gap-4 w-full">
-              {mounted ? (
-                [
-                  { label: "Happy Customers", value: "8,294", trend: "+12%" },
-                  { label: "Assets Library", value: "48.2 TB", trend: "Optimal" },
-                  { label: "Daily Downloads", value: "9.2/s", trend: "Stable" },
-                  { label: "System Uptime", value: "99.9%", trend: "Stable" },
-                ].map((stat, i) => (
-                  <GlassCard key={i} className="py-4 px-6 border-white/5 bg-white/5">
-                    <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest block mb-1">
-                      {stat.label}
+              {[
+                { label: "Instant access", value: "Post-checkout", trend: "Links + email" },
+                { label: "Secure pay", value: "Gateways", trend: "Cards & more" },
+                { label: "Clear scope", value: "Per SKU", trend: "See product page" },
+                { label: "Support", value: "Email", trend: "support@digitalswarm.in" },
+              ].map((stat, i) => (
+                <GlassCard key={i} className="py-4 px-6 border-white/5 bg-white/5">
+                  <span className="text-[9px] font-mono text-white/20 uppercase tracking-widest block mb-1">
+                    {stat.label}
+                  </span>
+                  <div className="flex items-end justify-between gap-2">
+                    <span className="text-lg font-outfit font-black italic text-white uppercase leading-tight">
+                      {stat.value}
                     </span>
-                    <div className="flex items-end justify-between">
-                      <span className="text-xl font-outfit font-black italic text-white uppercase leading-none">
-                        {stat.value}
-                      </span>
-                      <span className="text-[8px] font-mono font-bold text-accent uppercase">
-                        {stat.trend}
-                      </span>
-                    </div>
-                  </GlassCard>
-                ))
-              ) : (
-                Array(4).fill(0).map((_, i) => (
-                  <div key={i} className="h-20 bg-white/5 rounded-2xl animate-pulse" />
-                ))
-              )}
+                    <span className="text-[8px] font-mono font-bold text-accent uppercase text-right shrink-0">
+                      {stat.trend}
+                    </span>
+                  </div>
+                </GlassCard>
+              ))}
             </div>
           </div>
         </div>
@@ -106,19 +107,29 @@ export default function Home() {
               </p>
               
               <div className="flex gap-8 border-l border-white/10 pl-8">
-                <div className="flex flex-col">
-                  <span className="text-4xl font-outfit font-black text-white italic leading-none mb-2 underline decoration-primary decoration-4 underline-offset-8 uppercase">8K+</span>
-                  <span className="text-[10px] font-mono uppercase text-white/20 tracking-widest">Successful Builds</span>
+                <div className="flex flex-col max-w-[200px]">
+                  <span className="text-2xl font-outfit font-black text-white italic leading-none mb-2 uppercase">
+                    Markdown + HTML
+                  </span>
+                  <span className="text-[10px] font-mono uppercase text-white/20 tracking-widest">
+                    Paid SKUs ship real download pages — no mystery archives.
+                  </span>
                 </div>
-                <div className="flex flex-col">
-                  <span className="text-4xl font-outfit font-black text-white italic leading-none mb-2 underline decoration-accent decoration-4 underline-offset-8 uppercase">12s</span>
-                  <span className="text-[10px] font-mono uppercase text-white/20 tracking-widest">Time to Proto</span>
+                <div className="flex flex-col max-w-[200px]">
+                  <span className="text-2xl font-outfit font-black text-white italic leading-none mb-2 uppercase">
+                    ZIP kits
+                  </span>
+                  <span className="text-[10px] font-mono uppercase text-white/20 tracking-widest">
+                    Starter &amp; Pro bundles list every file inside the archive.
+                  </span>
                 </div>
               </div>
 
-              <ForgeButton variant="outline" className="w-fit">
-                Learn More
-              </ForgeButton>
+              <Link href="/about">
+                <ForgeButton variant="outline" className="w-fit">
+                  Learn more
+                </ForgeButton>
+              </Link>
             </div>
             
             <div className="relative">

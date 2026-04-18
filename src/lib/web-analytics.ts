@@ -121,7 +121,7 @@ export function trackHomepageHeroImpression(abTestKey: string, variant: ABVarian
 export function trackHomepageHeroCta(
   abTestKey: string,
   variant: ABVariant,
-  kind: "primary_catalog" | "secondary_concierge",
+  kind: "primary_catalog" | "secondary_concierge" | "tertiary_freebies",
   ctaLabel: string
 ) {
   trackEcommerceEvent("homepage_hero_cta_click", {

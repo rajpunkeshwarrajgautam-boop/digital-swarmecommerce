@@ -6,8 +6,17 @@ export const metadata: Metadata = {
     default: "DIGITAL SWARM | The Elite Digital Forge",
     template: "%s | DIGITAL SWARM"
   },
-  description: "Accelerate your development with production-ready architectural stacks, AI-native boilerplates, and high-performance protocols. Materialize your vision in the Swarm.",
-  keywords: ["SaaS Starter Kit", "AI Agent Boilerplate", "Next.js Template", "React UI Kit", "Digital Swarm", "Code Marketplace", "Premium Assets"],
+  description:
+    "Buy digital products with instant delivery: AI prompt libraries, elite vertical playbooks, starter ZIPs, and Notion templates. Secure checkout on digitalswarm.in — India and global cards where enabled.",
+  keywords: [
+    "AI prompts India",
+    "digital products instant download",
+    "Notion CRM template",
+    "AI agent prompts",
+    "SaaS checklist",
+    "Digital Swarm",
+    "elite AI protocols",
+  ],
   authors: [{ name: "Swarm Architects" }],
   creator: "DIGITAL SWARM",
   publisher: "DIGITAL SWARM",
@@ -17,8 +26,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "DIGITAL SWARM | High-Performance Code Protocols",
-    description: "Stop rebuilding. Start shipping with the swarm. Premium architectural patterns for modern software.",
+    title: "DIGITAL SWARM | Digital products & AI protocols",
+    description:
+      "Instant-download digital goods: prompts, playbooks, kits, and templates. Honest listings, secure checkout, refund policy on-site.",
     url: "https://digitalswarm.in",
     siteName: "DIGITAL SWARM",
     locale: "en_IN",
