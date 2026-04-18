@@ -111,6 +111,17 @@ export default function ProductPage() {
       : downloadPath.endsWith(".pdf")
         ? "Guide / document (.pdf)"
         : "Digital asset package";
+  /** Short PDP chip — must not imply a shipped proprietary .json blueprint. */
+  const deliveryChip =
+    downloadPath.endsWith(".zip")
+      ? "ZIP archive (post-purchase)"
+      : downloadPath.endsWith(".html")
+        ? "HTML delivery page"
+        : downloadPath.endsWith(".pdf")
+          ? "PDF delivery"
+          : downloadPath
+            ? "Digital delivery"
+            : "";
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative pb-32 pt-16 overflow-hidden">
@@ -220,9 +231,17 @@ export default function ProductPage() {
                     </button>
                   </a>
                 )}
-                <button className="flex items-center gap-3 px-6 py-3 text-white/20 hover:text-primary transition-all text-[10px] font-mono font-black uppercase tracking-widest">
-                  <ExternalLink className="w-3.5 h-3.5" /> Core_Manifest.json
-                </button>
+                {deliveryChip && downloadPath.startsWith("/") && (
+                  <Link
+                    href={downloadPath}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="flex items-center gap-3 px-6 py-3 border border-white/10 bg-white/5 hover:bg-white/10 hover:border-primary/40 text-white/50 hover:text-primary transition-all text-[10px] font-mono font-black uppercase tracking-widest rounded-sm"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0" />
+                    {deliveryChip}
+                  </Link>
+                )}
               </div>
 
               {/* Scarcity Engine (Industrial Refinement) */}
