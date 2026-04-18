@@ -41,7 +41,7 @@ export default function ProductPage() {
 
   useEffect(() => {
     if (product && !pixelFired.current) {
-      trackViewContent(product.name, product.price);
+      trackViewContent(product.name, product.price, 'INR', product.id);
       trackViewItem({
         id: product.id,
         name: product.name,

@@ -35,11 +35,15 @@ const jetbrains = JetBrains_Mono({
 
 export const metadata = siteMetadata;
 
+const FB_PIXEL_FALLBACK = "1214081075936306";
+
 export default function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const fbPixelId = env.NEXT_PUBLIC_FB_PIXEL_ID || FB_PIXEL_FALLBACK;
+
   return (
     <html 
       lang="en" 
@@ -84,11 +88,20 @@ export default function RootLayout({
                   t.src=v;s=b.getElementsByTagName(e)[0];
                   s.parentNode.insertBefore(t,s)}(window, document,'script',
                   'https://connect.facebook.net/en_US/fbevents.js');
-                  fbq('init', '${env.NEXT_PUBLIC_FB_PIXEL_ID || "1128362615591321"}');
+                  fbq('init', '${fbPixelId}');
                   fbq('track', 'PageView');
                 `,
               }}
             />
+            <noscript>
+              <img
+                height="1"
+                width="1"
+                style={{ display: "none" }}
+                src={`https://www.facebook.com/tr?id=${fbPixelId}&ev=PageView&noscript=1`}
+                alt=""
+              />
+            </noscript>
           </ClientProviders>
         </ForgeErrorBoundary>
       </body>

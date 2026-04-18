@@ -56,6 +56,17 @@ export function trackPurchase(value: number, orderId: string, currency = 'INR') 
 /**
  * Fire a FB Pixel ViewContent event for product pages.
  */
-export function trackViewContent(productName: string, value: number, currency = 'INR') {
-  trackFBEvent('ViewContent', { content_name: productName, content_type: 'product', value, currency });
+export function trackViewContent(
+  productName: string,
+  value: number,
+  currency = 'INR',
+  contentId?: string
+) {
+  trackFBEvent('ViewContent', {
+    content_name: productName,
+    content_type: 'product',
+    value,
+    currency,
+    ...(contentId ? { content_ids: [contentId] } : {}),
+  });
 }
