@@ -1,5 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import {
+  normalizeProductFromDb,
+  type DbProductRow,
+} from "@/lib/mergeStaticProductFromDb";
 
 /**
  * GET /api/products/featured
@@ -22,7 +26,8 @@ export async function GET() {
 
     if (error) throw error;
 
-    return NextResponse.json(data || [], {
+    const rows = (data || []) as DbProductRow[];
+    return NextResponse.json(rows.map(normalizeProductFromDb), {
       headers: {
         "Cache-Control": "public, s-maxage=60, stale-while-revalidate=300",
       },

@@ -1,59 +1,9 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { products as staticProducts } from '@/lib/data';
+import { normalizeProductFromDb } from '@/lib/mergeStaticProductFromDb';
 
 export const dynamic = 'force-dynamic';
-
-// Normalize Supabase snake_case fields to match the Product type (camelCase)
-import { Product } from "@/lib/types";
-
-interface DBProduct {
-  id: string;
-  name: string;
-  description: string;
-  price: number;
-  category: string;
-  image: string;
-  in_stock: boolean;
-  rating: number;
-  features: string[] | null;
-  specs: Record<string, string> | null;
-  install_guide: string | null;
-  download_url: string | null;
-  merchant_id: string;
-  is_verified: boolean;
-}
-
-function normalizeProduct(p: DBProduct): Product {
-  // Merge DB record with static fulfillment data by ID (more reliable than name matching)
-  const staticMatch = staticProducts.find(
-    (sp) => sp.id === p.id
-  );
-
-  // Fallback: match by name if ID lookup fails (e.g. DB has different slug)
-  const staticFallback = staticMatch ?? staticProducts.find(
-    (sp) => sp.name.trim().toLowerCase() === p.name.trim().toLowerCase()
-  );
-
-  return {
-    id: staticFallback?.id ?? p.id,
-    name: p.name,
-    description: p.description,
-    price: p.price,
-    // originalPrice is sourced exclusively from static registry (luxury anchoring)
-    originalPrice: staticFallback?.originalPrice,
-    category: p.category,
-    image: staticFallback?.image ?? p.image,
-    inStock: p.in_stock ?? true,
-    rating: p.rating ?? 5.0,
-    features: p.features ?? staticFallback?.features ?? [],
-    specs: p.specs ?? staticFallback?.specs ?? {},
-    installGuide: p.install_guide ?? staticFallback?.installGuide ?? undefined,
-    downloadUrl: p.download_url ?? staticFallback?.downloadUrl ?? undefined,
-    merchantId: p.merchant_id || "SYSTEM",
-    isVerified: p.is_verified ?? true,
-  };
-}
 
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
@@ -94,7 +44,7 @@ export async function GET(request: Request) {
       return NextResponse.json(result);
     }
 
-    return NextResponse.json(data.map(normalizeProduct));
+    return NextResponse.json(data.map(normalizeProductFromDb));
 
   } catch {
     // Fallback to static products on unexpected errors

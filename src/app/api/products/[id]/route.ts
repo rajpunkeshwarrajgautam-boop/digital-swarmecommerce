@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 import { products as fallbackData } from '@/lib/data';
+import { normalizeProductFromDb } from '@/lib/mergeStaticProductFromDb';
 
 export const dynamic = 'force-dynamic';
-
-import { Product } from "@/lib/types";
 
 interface DBProduct {
   id: string;
@@ -19,29 +18,6 @@ interface DBProduct {
   specs: Record<string, string> | null;
   install_guide: string | null;
   download_url: string | null;
-}
-
-function normalizeProduct(p: DBProduct): Product {
-  // Find matching static product for fulfillment links (by name or slug id)
-  const staticMatch = fallbackData.find(
-    (sp) => sp.name === p.name || sp.id === p.id
-  );
-
-  return {
-    id: staticMatch?.id ?? p.id,
-    name: p.name,
-    description: p.description,
-    price: p.price,
-    originalPrice: staticMatch?.originalPrice,
-    category: p.category,
-    image: staticMatch?.image ?? p.image,
-    inStock: p.in_stock ?? true,
-    rating: p.rating ?? 5.0,
-    features: p.features ?? staticMatch?.features ?? [],
-    specs: p.specs ?? staticMatch?.specs ?? {},
-    installGuide: p.install_guide ?? staticMatch?.installGuide ?? undefined,
-    downloadUrl: p.download_url ?? staticMatch?.downloadUrl ?? undefined,
-  };
 }
 
 export async function GET(
@@ -69,7 +45,7 @@ export async function GET(
         .eq('id', id)
         .single();
 
-      if (dbProduct) return NextResponse.json(normalizeProduct(dbProduct));
+      if (dbProduct) return NextResponse.json(normalizeProductFromDb(dbProduct));
       if (error) console.warn('[products/[id]] UUID lookup failed:', error.message);
     }
 
@@ -89,7 +65,7 @@ export async function GET(
 
         if (dbByName) {
           // Merge DB data with static fulfillment links
-          return NextResponse.json(normalizeProduct({
+          return NextResponse.json(normalizeProductFromDb({
             ...dbByName,
             id, // keep the slug-based id for frontend routing
           }));
