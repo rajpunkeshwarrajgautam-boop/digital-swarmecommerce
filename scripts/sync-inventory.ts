@@ -1,7 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import { products } from "../src/lib/data";
 import * as dotenv from "dotenv";
-import { Product } from "../src/lib/types";
 
 dotenv.config();
 
@@ -15,6 +14,22 @@ if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
 
 const supabase = createClient(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY);
 
+/** Columns safe for typical `products` tables (UUID ids; optional columns omitted). */
+function toDbPayload(product: (typeof products)[number]) {
+  return {
+    name: product.name,
+    description: product.description,
+    price: product.price,
+    category: product.category,
+    image: product.image,
+    in_stock: product.inStock,
+    rating: product.rating,
+    features: product.features || [],
+    specs: product.specs || {},
+    download_url: product.downloadUrl || null,
+  };
+}
+
 async function syncInventory() {
   console.log("🚀 START_SYNC: Orchestrating Digital Swarm Inventory...");
   console.log(`📦 Found ${products.length} products in local catalog (data.ts)`);
@@ -22,39 +37,33 @@ async function syncInventory() {
   for (const product of products) {
     console.log(`\n🔍 PROCESSING: [${product.id}] ${product.name}`);
 
-    // Map Product (camelCase) to DB Schema (snake_case)
-    const dbProduct = {
-      id: product.id,
-      name: product.name,
-      description: product.description,
-      price: product.price,
-      original_price: product.originalPrice || null,
-      category: product.category,
-      image: product.image,
-      in_stock: product.inStock,
-      rating: product.rating,
-      features: product.features || [],
-      specs: product.specs || {},
-      install_guide: product.installGuide || null,
-      download_url: product.downloadUrl || null,
-      merchant_id: product.merchantId || "SYSTEM",
-      is_verified: product.isVerified || true,
-      scarcity_stock: product.scarcityStock || 0,
-      is_featured: product.isFeatured || false,
-      swarm_score: product.swarmScore || 85,
-      aura: product.aura || 'NEURAL_LINK_ACTIVE',
-      match_density: product.matchDensity || 75,
-      updated_at: new Date().toISOString()
-    };
+    const payload = toDbPayload(product);
 
-    const { error } = await supabase
+    const { data: existing, error: lookupError } = await supabase
       .from("products")
-      .upsert(dbProduct, { onConflict: "id" });
+      .select("id")
+      .eq("name", product.name)
+      .maybeSingle();
 
-    if (error) {
-      console.error(`   ❌ SYNC_FAILED: ${error.message}`);
+    if (lookupError) {
+      console.error(`   ❌ LOOKUP_FAILED: ${lookupError.message}`);
+      continue;
+    }
+
+    if (existing?.id) {
+      const { error } = await supabase.from("products").update(payload).eq("id", existing.id);
+      if (error) {
+        console.error(`   ❌ UPDATE_FAILED: ${error.message}`);
+      } else {
+        console.log(`   ✅ UPDATED: ${product.name}`);
+      }
     } else {
-      console.log(`   ✅ SYNC_SUCCESS: ${product.name} synchronized.`);
+      const { error } = await supabase.from("products").insert(payload);
+      if (error) {
+        console.error(`   ❌ INSERT_FAILED: ${error.message}`);
+      } else {
+        console.log(`   ✅ INSERTED: ${product.name}`);
+      }
     }
   }
 
