@@ -5,12 +5,11 @@ import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
 import Link from "next/link";
 import Image from "next/image";
-import { Star, Heart, Cpu, Code2, ShoppingCart, Check, Terminal, Sparkles } from "lucide-react";
+import { Heart, Cpu, Code2, ShoppingCart, Check, Terminal, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ForgeButton } from "@/components/ui/ForgeButton";
-import { ScarcityEngine } from "@/components/ui/ScarcityEngine";
 import { useCurrency } from "@/components/providers/CurrencyProvider";
 import { formatCurrency } from "@/lib/utils";
 import { trackAddToCart, trackSelectItem } from "@/lib/web-analytics";
@@ -21,22 +20,7 @@ interface ProductCardProps {
   listName?: string;
 }
 
-function StarRating({ rating }: { rating: number }) {
-  return (
-    <div className="flex items-center gap-1" aria-label={`Rated ${rating} out of 5`}>
-      {[1, 2, 3, 4, 5].map((s) => (
-        <Star
-          key={s}
-          className={`w-2.5 h-2.5 ${
-            s <= Math.round(rating) ? "fill-accent text-accent" : "text-white/10"
-          }`}
-        />
-      ))}
-    </div>
-  );
-}
-
-function TechBadges({ category }: { category: string }) {
+function TechBadges({ category, version }: { category: string; version?: string }) {
   const isAI = category?.includes("AI") || category?.includes("Agent");
   const isWeb = category?.includes("Web") || category?.includes("Software") || category?.includes("Boilerplates");
 
@@ -44,17 +28,19 @@ function TechBadges({ category }: { category: string }) {
     <div className="flex flex-wrap items-center gap-2 mt-4">
       {isAI && (
         <div className="flex items-center gap-1.5 px-2 py-0.5 bg-accent/5 border border-accent/20 text-[9px] font-mono uppercase tracking-widest text-accent">
-          <Cpu className="w-3 h-3" /> Neural
+          <Cpu className="w-3 h-3" /> AI / Agent
         </div>
       )}
       {isWeb && (
         <div className="flex items-center gap-1.5 px-2 py-0.5 bg-primary/5 border border-primary/20 text-[9px] font-mono uppercase tracking-widest text-primary">
-          <Code2 className="w-3 h-3" /> High-Perf
+          <Code2 className="w-3 h-3" /> Software
         </div>
       )}
-      <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 text-[9px] font-mono uppercase tracking-widest text-white/30">
-        <Terminal className="w-3 h-3" /> v2.0
-      </div>
+      {version && (
+        <div className="flex items-center gap-1.5 px-2 py-0.5 bg-white/5 border border-white/5 text-[9px] font-mono uppercase tracking-widest text-white/40">
+          <Terminal className="w-3 h-3" /> {version}
+        </div>
+      )}
     </div>
   );
 }
@@ -68,7 +54,6 @@ export function ProductCard({ product, priority = false, listName = "product_gri
   const { prefetch } = useSwarmPrefetch();
 
   const [added, setAdded] = useState(false);
-  const [isHovered, setIsHovered] = useState(false);
   const wishlisted = isWishlisted(product.id);
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -103,8 +88,6 @@ export function ProductCard({ product, priority = false, listName = "product_gri
   };
 
   const handleMouseEnter = () => {
-    setIsHovered(true);
-    // Predictive Data Retrieval
     prefetch(`/api/products/${product.id}`);
   };
 
@@ -121,24 +104,7 @@ export function ProductCard({ product, priority = false, listName = "product_gri
     <GlassCard 
       className="p-0 overflow-hidden h-full group flex flex-col ono-reveal relative"
       onMouseEnter={handleMouseEnter}
-      onMouseLeave={() => setIsHovered(false)}
     >
-      {/* Neural Link Intensity Indicator */}
-      <AnimatePresence>
-        {isHovered && (
-          <motion.div
-            initial={{ opacity: 0, scale: 0 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0 }}
-            className="absolute top-2 left-2 z-30 flex items-center gap-1.5 px-2 py-0.5 bg-accent/20 backdrop-blur-md border border-accent/30 rounded-full"
-            style={{ willChange: 'transform' }}
-          >
-            <div className="w-1 h-1 rounded-full bg-accent animate-pulse" />
-            <span className="text-[7px] font-mono uppercase tracking-[0.2em] text-accent">Neural_Link_Ready</span>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <Link href={`/product/${product.id}`} onClick={handleSelectItem} className="block relative aspect-square overflow-hidden bg-white/5 silk-reveal-mask">
         <div className="ono-reveal h-full w-full">
           <Image
@@ -188,9 +154,11 @@ export function ProductCard({ product, priority = false, listName = "product_gri
       </Link>
 
       <div className="p-6 flex flex-col flex-1 gap-2">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between gap-2">
           <span className="text-[10px] font-mono uppercase tracking-[0.2em] text-primary">{product.category}</span>
-          <StarRating rating={product.rating} />
+          <span className="text-[9px] font-mono text-white/25 uppercase tracking-widest text-right">
+            Reviews on product page
+          </span>
         </div>
 
         <h3 className="text-xl font-outfit font-black italic uppercase text-white group-hover:text-accent transition-colors line-clamp-1 leading-none">
@@ -201,7 +169,7 @@ export function ProductCard({ product, priority = false, listName = "product_gri
           {product.description}
         </p>
 
-        <TechBadges category={product.category} />
+        <TechBadges category={product.category} version={product.specs?.Version} />
 
         {/* Swarm Analytics Injection */}
         {(product.swarmScore || product.matchDensity || product.aura) && (
@@ -233,9 +201,6 @@ export function ProductCard({ product, priority = false, listName = "product_gri
         )}
 
         <div className="mt-6 pt-6 border-t border-white/5 flex flex-col gap-3">
-          <div className="w-full pb-2">
-            <ScarcityEngine productId={product.id} />
-          </div>
           <ForgeButton
             variant={added ? "outline" : "primary"}
             size="sm"

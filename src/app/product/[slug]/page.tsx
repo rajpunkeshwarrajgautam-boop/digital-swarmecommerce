@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { Shield, RotateCcw, Truck, AlertCircle, ExternalLink, Eye, BookOpen, Terminal, ArrowRight } from "lucide-react";
@@ -18,11 +18,26 @@ import { trackViewContent } from "@/components/analytics/FBPixel";
 import { trackViewItem } from "@/lib/web-analytics";
 import { Newsletter } from "@/components/home/Newsletter";
 
+/** Flatten common markdown for JSON-LD (no fabricated review text). */
+function plainTextFromMd(s: string): string {
+  return s
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 8000);
+}
+
 export default function ProductPage() {
   const { slug } = useParams();
   const { data: product, isLoading: loading, error: swrError } = useSwarmSWR<Product>(slug ? `/api/products/${slug}` : null);
   const error = swrError?.message || "";
   const pixelFired = useRef(false);
+  const [reviewStats, setReviewStats] = useState<{ count: number; avg: number } | null>(null);
+
+  useEffect(() => {
+    pixelFired.current = false;
+  }, [slug]);
 
   useEffect(() => {
     if (product && !pixelFired.current) {
@@ -35,7 +50,71 @@ export default function ProductPage() {
       });
       pixelFired.current = true;
     }
-  }, [product]);
+  }, [product, slug]);
+
+  useEffect(() => {
+    if (!product?.id) {
+      setReviewStats(null);
+      return;
+    }
+    let cancelled = false;
+    setReviewStats(null);
+    (async () => {
+      try {
+        const res = await fetch(`/api/reviews?productId=${product.id}`);
+        const data = await res.json();
+        if (cancelled) return;
+        if (!Array.isArray(data) || data.length === 0) {
+          setReviewStats({ count: 0, avg: 0 });
+          return;
+        }
+        const sum = data.reduce(
+          (acc: number, r: { rating?: number }) => acc + (Number(r.rating) || 0),
+          0
+        );
+        setReviewStats({ count: data.length, avg: sum / data.length });
+      } catch {
+        if (!cancelled) setReviewStats({ count: 0, avg: 0 });
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [product?.id]);
+
+  const productJsonLd = useMemo(() => {
+    if (!product) return null;
+    const desc = plainTextFromMd(product.description);
+    const base: Record<string, unknown> = {
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: product.name,
+      image: product.image,
+      description: desc,
+      sku: product.id,
+      brand: {
+        "@type": "Brand",
+        name: "Digital Swarm",
+      },
+      offers: {
+        "@type": "Offer",
+        url: `https://digitalswarm.in/product/${product.id}`,
+        priceCurrency: "INR",
+        price: product.price,
+        availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+        itemCondition: "https://schema.org/NewCondition",
+      },
+    };
+    if (reviewStats && reviewStats.count > 0) {
+      const rv = Math.min(5, Math.max(1, Math.round(reviewStats.avg * 10) / 10));
+      base.aggregateRating = {
+        "@type": "AggregateRating",
+        ratingValue: rv,
+        reviewCount: reviewStats.count,
+      };
+    }
+    return base;
+  }, [product, reviewStats]);
 
 
   if (loading) {
@@ -78,31 +157,6 @@ export default function ProductPage() {
     );
   }
 
-  const productJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Product",
-    name: product.name,
-    image: product.image,
-    description: product.description,
-    sku: product.id,
-    brand: {
-      "@type": "Brand",
-      name: "Digital Swarm",
-    },
-    offers: {
-      "@type": "Offer",
-      url: `https://digitalswarm.in/product/${product.id}`,
-      priceCurrency: "INR",
-      price: product.price,
-      availability: product.inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-      itemCondition: "https://schema.org/NewCondition",
-    },
-    aggregateRating: {
-      "@type": "AggregateRating",
-      ratingValue: product.rating,
-      reviewCount: 1,
-    },
-  };
   const downloadPath = product.downloadUrl ?? "";
   const deliveryLabel = downloadPath.endsWith(".zip")
     ? "Source code package (.zip)"
@@ -125,7 +179,12 @@ export default function ProductPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0f] relative pb-32 pt-16 overflow-hidden">
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }} />
+      {productJsonLd && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(productJsonLd) }}
+        />
+      )}
       {/* Decorative Forge Background */}
       <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
         style={{ 
@@ -156,24 +215,21 @@ export default function ProductPage() {
                <div className="absolute top-0 right-0 p-3 opacity-10">
                   <Terminal className="w-12 h-12 text-white" />
                </div>
-               <h4 className="text-[10px] font-mono font-black uppercase text-white/20 tracking-[0.3em] mb-4">Technical Specifications</h4>
+               <h4 className="text-[10px] font-mono font-black uppercase text-white/20 tracking-[0.3em] mb-1">Product specs</h4>
+               <p className="text-[9px] font-mono text-white/25 uppercase tracking-widest mb-4">
+                 Sourced from the catalog entry for this SKU (not the store codebase stack).
+               </p>
                <div className="grid grid-cols-2 gap-y-3">
-                  <div className="flex flex-col">
-                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Architecture</span>
-                     <span className="text-[11px] font-mono text-white/60">AI-Native Hybrid</span>
-                  </div>
-                  <div className="flex flex-col">
-                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Core Tech</span>
-                     <span className="text-[11px] font-mono text-white/60">Next.js 15+ / TS</span>
-                  </div>
-                  <div className="flex flex-col">
-                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">License</span>
-                     <span className="text-[11px] font-mono text-white/60">Commercial Standard</span>
-                  </div>
-                  <div className="flex flex-col">
-                     <span className="text-[9px] font-mono text-white/10 uppercase mb-1">Security</span>
-                     <span className="text-[11px] font-mono font-black text-primary italic">FORGE_VERIFIED</span>
-                  </div>
+                  {Object.keys(product.specs || {}).length === 0 ? (
+                    <p className="text-[11px] font-mono text-white/40 col-span-2">No structured specs listed for this SKU.</p>
+                  ) : (
+                    Object.entries(product.specs || {}).map(([key, value]) => (
+                      <div key={key} className="flex flex-col min-w-0">
+                        <span className="text-[9px] font-mono text-white/10 uppercase mb-1 truncate">{key.replace(/_/g, " ")}</span>
+                        <span className="text-[11px] font-mono text-white/60 break-words" title={value}>{value}</span>
+                      </div>
+                    ))
+                  )}
                </div>
             </GlassCard>
           </div>
@@ -210,16 +266,38 @@ export default function ProductPage() {
                   </div>
                 </div>
                 
-                <div className="flex items-center gap-4 pb-1">
-                  <div className="flex gap-1">
-                    {[1,2,3,4,5].map((s) => (
-                        <div key={s} className={`w-1.5 h-6 ${s <= Math.round(product.rating) ? 'bg-primary' : 'bg-white/5'}`} />
-                    ))}
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-[9px] font-mono text-white/20 uppercase leading-none mb-1">Customer Rating</span>
-                    <span className="font-outfit font-black italic text-xl text-white leading-none">{product.rating}</span>
-                  </div>
+                <div className="flex items-center gap-4 pb-1 min-h-[3rem]">
+                  {reviewStats === null ? (
+                    <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">Loading reviews…</span>
+                  ) : reviewStats.count > 0 ? (
+                    <>
+                      <div className="flex gap-1" aria-label={`Average rating ${reviewStats.avg.toFixed(1)} of 5`}>
+                        {[1, 2, 3, 4, 5].map((s) => (
+                          <div
+                            key={s}
+                            className={`w-1.5 h-6 ${s <= Math.round(reviewStats.avg) ? "bg-primary" : "bg-white/5"}`}
+                          />
+                        ))}
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[9px] font-mono text-white/20 uppercase leading-none mb-1">Customer reviews</span>
+                        <span className="font-outfit font-black italic text-xl text-white leading-none">
+                          {Math.round(reviewStats.avg * 10) / 10}
+                        </span>
+                        <span className="text-[9px] font-mono text-white/35 mt-1">
+                          Based on {reviewStats.count} published review{reviewStats.count === 1 ? "" : "s"}
+                        </span>
+                      </div>
+                    </>
+                  ) : (
+                    <div className="flex flex-col max-w-sm">
+                      <span className="text-[9px] font-mono text-white/20 uppercase leading-none mb-1">Customer reviews</span>
+                      <span className="text-[11px] font-mono text-white/45 leading-snug">
+                        No published reviews for this product yet. Stars and aggregate scores appear only after real
+                        customer feedback is submitted below.
+                      </span>
+                    </div>
+                  )}
                 </div>
               </div>
 
