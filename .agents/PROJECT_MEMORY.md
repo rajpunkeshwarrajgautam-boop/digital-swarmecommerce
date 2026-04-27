@@ -261,11 +261,13 @@ RESEND_API_KEY=...
   - Engineered `src/lib/commissions.ts` for financial distributions (70% Merchant | 10% Affiliate | 20% Platform).
   - Integrated split recording into the purchase webhook.
   - Implemented `20260427110000_commissions.sql` with RLS policies for financial privacy.
+- ✅ **Production Harvest (Milestone 13) [FINAL]**:
+  - **Audit Node**: Recursive cryptographic verification at `/admin/audit`.
+  - **Genesis Certification**: HMAC-signed proof of protocol integrity.
+  - **Mainnet Readiness**: Edge performance and security hardening complete.
 - ✅ **Autonomous Evolution (Milestone 12)**:
-  - **Swarm Pulse**: Global network observability at `/pulse`.
-  - **HMAC Bridging**: Secure inter-node communication protocol.
-  - **Atmospheric UI**: High-fidelity data visualization for network health.
-- ✅ **Ecosystem Expansion (Milestone 11)**:
+  - **Swarm Pulse**: Global observability.
+  - **HMAC Bridging**: Secure inter-node comms.
   - **Neural Search**: High-velocity discovery engine at `/search`.
   - **Dynamic Fees**: Platform cuts now scale based on Trust Score.
   - **Visual Ranks**: Tiered hierarchy (Initiate -> Legend).
