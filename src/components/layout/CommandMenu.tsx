@@ -51,7 +51,7 @@ export function CommandMenu() {
                 <Search className="w-5 h-5 text-secondary/40 mr-3" />
                 <Command.Input
                   autoFocus
-                  placeholder="Search Swarm Protocols (⌘K)..."
+                  placeholder="Execute System Directive (⌘K)..."
                   className="flex-1 bg-transparent outline-none text-secondary font-bold placeholder:text-secondary/20 h-10"
                 />
                 <div className="flex items-center gap-1 ml-4">
@@ -59,20 +59,20 @@ export function CommandMenu() {
                 </div>
               </div>
 
-              <Command.List className="max-h-[350px] overflow-y-auto p-4 scrollbar-hide">
+              <Command.List className="max-h-[450px] overflow-y-auto p-4 scrollbar-hide">
                 <Command.Empty className="py-12 text-center text-secondary/40 font-bold italic">
                   Critical Error: No matching protocols found.
                 </Command.Empty>
 
                 <Command.Group heading="Directives" className="mb-4">
-                  <Item icon={BrainCircuit} onSelect={() => runCommand(() => router.push('/ai-agents'))}>AI Agents</Item>
-                  <Item icon={Code2} onSelect={() => runCommand(() => router.push('/software-stacks'))}>Software Stacks</Item>
-                  <Item icon={Cpu} onSelect={() => runCommand(() => router.push('/neural-swarms'))}>Neural Swarms</Item>
-                  <Item icon={Rocket} onSelect={() => runCommand(() => router.push('/elite-access'))}>Elite Access</Item>
+                  <Item icon={Search} onSelect={() => runCommand(() => router.push('/search'))}>Neural Discovery</Item>
+                  <Item icon={Activity} onSelect={() => runCommand(() => router.push('/pulse'))}>Swarm Pulse</Item>
+                  <Item icon={BrainCircuit} onSelect={() => runCommand(() => router.push('/merchant/tasks'))}>Command Center</Item>
+                  <Item icon={ShieldCheck} onSelect={() => runCommand(() => router.push('/admin/audit'))}>Audit Node</Item>
                 </Command.Group>
 
-                <Command.Group heading="Products" className="mb-4">
-                   {products.map(product => (
+                <Command.Group heading="Inventory" className="mb-4">
+                   {products.slice(0, 5).map(product => (
                      <Item 
                        key={product.id} 
                        icon={ShoppingCart} 
@@ -86,8 +86,9 @@ export function CommandMenu() {
                    ))}
                 </Command.Group>
 
-                <Command.Group heading="System">
+                <Command.Group heading="Architecture">
                   <Item icon={LayoutDashboard} onSelect={() => runCommand(() => router.push('/pricing'))}>Pricing Protocol</Item>
+                  <Item icon={Rocket} onSelect={() => runCommand(() => router.push('/elite-access'))}>Elite Access</Item>
                   <Item icon={X} onSelect={() => setOpen(false)}>Close Terminal</Item>
                 </Command.Group>
               </Command.List>

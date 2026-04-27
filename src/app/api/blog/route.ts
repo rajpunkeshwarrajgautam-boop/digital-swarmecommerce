@@ -7,15 +7,22 @@ export async function GET() {
       return NextResponse.json({ error: 'Database not connected' }, { status: 500 });
     }
 
+    // Check if table exists (simple query)
     const { data, error } = await supabaseAdmin
       .from('blog_posts')
       .select('*')
       .order('published_at', { ascending: false });
 
-    if (error) throw error;
+    if (error) {
+      if (error.code === '42P01') { // Table not found
+        console.warn('[Blog API] Table blog_posts does not exist yet.');
+        return NextResponse.json([]);
+      }
+      throw error;
+    }
 
     // Map database fields to the UI schema
-    const uiPosts = data.map((post) => ({
+    const uiPosts = (data || []).map((post) => ({
       title: post.title,
       excerpt: post.excerpt,
       category: post.tags && post.tags.length > 0 ? post.tags[0] : "Engineering",
@@ -28,6 +35,6 @@ export async function GET() {
     return NextResponse.json(uiPosts);
   } catch (error: any) {
     console.error('[Blog API Error]', error);
-    return NextResponse.json({ error: 'Failed to fetch blog posts' }, { status: 500 });
+    return NextResponse.json({ error: 'Failed to fetch blog posts', details: error.message }, { status: 500 });
   }
 }
