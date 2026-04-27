@@ -2,7 +2,8 @@
 
 ## Current milestone
 
-**Milestone 10 — Reputation Economy** (Dynamic Fees ✅)
+**Milestone 11 — Ecosystem Expansion** (Neural Search & Royalties ✅)
+
 
 
 

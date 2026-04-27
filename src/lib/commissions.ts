@@ -16,11 +16,21 @@ export interface SplitResult {
  * ARCHITECTURAL_PROTOCOL: Financial Distribution Logic
  * Calculates the split between the Merchant, the Affiliate (if applicable), and the Digital Swarm Platform.
  * Default Logic: 70/10/20 (Adjustable)
+ * Royalty Logic: Optional creator royalty for secondary/recurring transactions.
  */
-export function calculateSplits(data: CommissionSplit, platformFeePercent: number = 20): SplitResult {
+export function calculateSplits(
+  data: CommissionSplit, 
+  platformFeePercent: number = 20,
+  creatorRoyaltyPercent: number = 0
+): SplitResult & { creatorRoyalty: number } {
   const { totalAmount, affiliateId } = data;
   
-  const platformFee = totalAmount * (platformFeePercent / 100);
+  // 1. Calculate Base Platform Fee
+  let platformFee = totalAmount * (platformFeePercent / 100);
+  
+  // 2. Extract Creator Royalty (Carved out of platform's share)
+  const creatorRoyalty = totalAmount * (creatorRoyaltyPercent / 100);
+  platformFee = Math.max(0, platformFee - creatorRoyalty);
   
   let merchantShare: number;
   let affiliateShare: number;
@@ -39,6 +49,7 @@ export function calculateSplits(data: CommissionSplit, platformFeePercent: numbe
     merchantShare: parseFloat(merchantShare.toFixed(2)),
     affiliateShare: parseFloat(affiliateShare.toFixed(2)),
     platformFee: parseFloat(platformFee.toFixed(2)),
+    creatorRoyalty: parseFloat(creatorRoyalty.toFixed(2))
   };
 }
 
@@ -48,14 +59,22 @@ import { getDynamicPlatformFee } from "./reputation";
  * PERSISTENCE_PROTOCOL: Commission Record Ingestion
  * Records the financial split in the Supabase commissions table.
  */
-export async function recordCommission(orderId: string, splitData: CommissionSplit) {
+export async function recordCommission(
+  orderId: string, 
+  splitData: CommissionSplit, 
+  isSecondary: boolean = false
+) {
   if (!supabaseAdmin) {
     throw new Error("DATABASE_UNAVAILABLE");
   }
 
   // 1. [REPUTATION_PROTOCOL] Fetch dynamic fee
   const feePercent = await getDynamicPlatformFee(splitData.merchantId);
-  const splits = calculateSplits(splitData, feePercent);
+  
+  // 2. [ROYALTY_PROTOCOL] Check for secondary transaction
+  const royaltyPercent = isSecondary ? 5 : 0;
+  
+  const splits = calculateSplits(splitData, feePercent, royaltyPercent);
 
   const { error } = await supabaseAdmin
     .from("commissions")
@@ -67,6 +86,7 @@ export async function recordCommission(orderId: string, splitData: CommissionSpl
       merchant_share: splits.merchantShare,
       affiliate_share: splits.affiliateShare,
       platform_fee: splits.platformFee,
+      creator_royalty: splits.creatorRoyalty,
       status: "pending",
       created_at: new Date().toISOString(),
     });

@@ -261,12 +261,13 @@ RESEND_API_KEY=...
   - Engineered `src/lib/commissions.ts` for financial distributions (70% Merchant | 10% Affiliate | 20% Platform).
   - Integrated split recording into the purchase webhook.
   - Implemented `20260427110000_commissions.sql` with RLS policies for financial privacy.
+- ✅ **Ecosystem Expansion (Milestone 11)**:
+  - **Neural Search**: High-velocity discovery engine at `/search`.
+  - **Decentralized Royalties**: Secondary revenue protocol for original creators.
+  - **Search Logic**: Weighted fuzzy matching for protocol discovery.
 - ✅ **Reputation Economy (Milestone 10)**:
-  - **Dynamic Fees**: Platform cuts now scale from 20% down to 12% based on Trust Score.
-  - **Visual Ranks**: Tiered hierarchy (Initiate -> Operative -> Commander -> Legend).
-  - **Incentive UI**: Status tracking and benefit matrix at `/merchant/reputation`.
-- ✅ **Agent Autonomy (Milestone 9)**:
-  - **Command Node**: Natural language tasking at `/merchant/tasks`.
+  - **Dynamic Fees**: Platform cuts now scale based on Trust Score.
+  - **Visual Ranks**: Tiered hierarchy (Initiate -> Legend).
   - **Swarm Brain**: Goal decomposition using Gemini 1.5 Pro logic.
 
 
