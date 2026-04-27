@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Header } from "@/layout/Header";
-import { Footer } from "@/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Search, Cpu, Star, ArrowRight, Zap, Filter, Command } from "lucide-react";
 import { swarmSearch, SearchResult } from "@/lib/search";

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Header } from "@/layout/Header";
-import { Footer } from "@/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ShieldCheck, Lock, ChevronDown, CheckCircle2, AlertCircle, Database } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";

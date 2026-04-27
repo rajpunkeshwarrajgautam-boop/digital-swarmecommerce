@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Header } from "@/layout/Header";
-import { Footer } from "@/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Trophy, Star, TrendingUp, ShieldCheck, ChevronRight, Zap, Target } from "lucide-react";
 import { RANK_TIERS, RankConfig } from "@/lib/reputation";

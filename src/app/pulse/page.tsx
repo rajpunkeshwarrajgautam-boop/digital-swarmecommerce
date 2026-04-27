@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Header } from "@/layout/Header";
-import { Footer } from "@/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Activity, Zap, Shield, Database, Users, TrendingUp, Globe, Cpu } from "lucide-react";
 import { getGlobalPulse, SwarmPulse } from "@/app/actions/pulse";

@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Header } from "@/layout/Header";
-import { Footer } from "@/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ArrowLeft, Package, Sparkles, Code, Database, Globe } from "lucide-react";

@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Header } from "@/layout/Header";
-import { Footer } from "@/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { Wallet, ArrowUpRight, Clock, ShieldCheck, Download, History } from "lucide-react";

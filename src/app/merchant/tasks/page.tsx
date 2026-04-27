@@ -1,8 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Header } from "@/layout/Header";
-import { Footer } from "@/layout/Footer";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
 import { Terminal, Send, Cpu, Layers, CheckCircle2, AlertCircle, Loader2 } from "lucide-react";
 import { getOwnerTasks, assignTaskToAgent, AgentTask } from "@/app/actions/tasks";
