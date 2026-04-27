@@ -47,3 +47,27 @@ export async function swarmSearch(query: string): Promise<SearchResult[]> {
     .filter(res => res.matchScore > 0)
     .sort((a, b) => b.matchScore - a.matchScore);
 }
+
+/**
+ * ARCHITECTURAL_SEARCH: Centralized service for product discovery.
+ */
+export class SearchService {
+  static tagSearch(query: string, catalog: any[]) {
+    const q = query.toLowerCase();
+    return catalog.filter(p => 
+      p.name.toLowerCase().includes(q) || 
+      p.category.toLowerCase().includes(q) ||
+      (p.tags && p.tags.some((t: string) => t.toLowerCase().includes(q)))
+    );
+  }
+
+  static neuralSearch(query: string, catalog: any[]) {
+    // Simulated neural weighting - for now same as tag search but with relevance sorting
+    return this.tagSearch(query, catalog).sort((a, b) => {
+      // Priority to category match in "neural" mode
+      if (a.category.toLowerCase().includes(query.toLowerCase())) return -1;
+      return 0;
+    });
+  }
+}
+

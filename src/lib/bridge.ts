@@ -42,3 +42,42 @@ export interface BridgePayload {
   timestamp: number;
   params: any;
 }
+
+/**
+ * ARCHITECTURAL_BRIDGE: Centralized service for cross-swarm asset transfer.
+ */
+export class SwarmBridgeService {
+  /**
+   * EXPORT: Generates a signed manifest for an asset to be moved to another swarm.
+   */
+  static async exportAsset(tokenId: string) {
+    // In a real scenario, this would fetch from Supabase.
+    // For now, we generate a signed manifest for the digital forge.
+    const manifest = {
+      tokenId,
+      origin: "DIGITAL_SWARM_IN",
+      timestamp: Date.now(),
+      status: "STAGED_FOR_TRANSFER"
+    };
+
+    const signature = signBridgeRequest(manifest);
+    return { ...manifest, signature };
+  }
+
+  /**
+   * IMPORT: Verifies and registers an asset coming from another swarm.
+   */
+  static async importAsset(manifest: any) {
+    const { signature, ...payload } = manifest;
+    
+    const isValid = verifyBridgeRequest(payload, signature);
+    if (!isValid) {
+      return { success: false, error: "INVALID_SIGNATURE" };
+    }
+
+    // Register asset in local registry (Simulated)
+    console.log(`[BRIDGE] Asset ${payload.tokenId} imported successfully.`);
+    return { success: true };
+  }
+}
+

@@ -98,3 +98,32 @@ export async function recordCommission(
 
   return { success: true, splits };
 }
+
+/**
+ * ARCHITECTURAL_PROTOCOL: High-level financial services.
+ */
+export class CommissionService {
+  /**
+   * CALCULATE_SPLIT: Fetches order details and triggers commission recording.
+   */
+  static async calculateSplit(internalOrderId: string) {
+    if (!supabaseAdmin) return;
+
+    // 1. Fetch order details
+    const { data: order } = await supabaseAdmin
+      .from('orders')
+      .select('*, merchant_id, affiliate_ref, total_amount')
+      .eq('id', internalOrderId)
+      .single();
+
+    if (!order) return;
+
+    // 2. Record commission
+    return await recordCommission(order.id, {
+      totalAmount: order.total_amount,
+      merchantId: order.merchant_id || "DIGITAL_SWARM_GENESIS",
+      affiliateId: order.affiliate_ref
+    });
+  }
+}
+

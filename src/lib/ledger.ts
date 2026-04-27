@@ -82,3 +82,31 @@ export async function verifyLedgerIntegrity() {
 
   return { valid: true, totalBlocks: entries.length };
 }
+
+/**
+ * ARCHITECTURAL_PROTOCOL: High-level ledger interactions.
+ */
+export class LedgerService {
+  /**
+   * SIGN_PURCHASE: Generates a verifiable signature for a purchase event.
+   */
+  static signPurchase(orderId: string, amount: number, customer: string) {
+    const secret = process.env.SWARM_BRIDGE_SECRET || "default_swarm_secret_7721";
+    const timestamp = Date.now();
+    const payload = `${orderId}:${amount}:${customer}:${timestamp}`;
+    
+    const signature = crypto
+      .createHmac("sha256", secret)
+      .update(payload)
+      .digest("hex");
+
+    return {
+      orderId,
+      amount,
+      customer,
+      timestamp,
+      signature
+    };
+  }
+}
+
