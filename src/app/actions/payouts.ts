@@ -55,7 +55,9 @@ export async function requestSettlement() {
 
   // LOGIC: For MVP, we just flag the merchant's pending commissions.
   // Future: Trigger Stripe Connect / Razorpay Payouts.
-  
+  return { success: true, timestamp: Date.now() };
+}
+
 /**
  * PROTOCOL_AFFILIATE_FETCH: Retrieves all referral commissions for the current node.
  */
