@@ -2,7 +2,8 @@
 
 ## Current milestone
 
-**Milestone 11 — Ecosystem Expansion** (Neural Search & Royalties ✅)
+**Milestone 12 — Autonomous Evolution** (Swarm Pulse & Interop ✅)
+
 
 
 

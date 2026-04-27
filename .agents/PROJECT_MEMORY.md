@@ -261,11 +261,12 @@ RESEND_API_KEY=...
   - Engineered `src/lib/commissions.ts` for financial distributions (70% Merchant | 10% Affiliate | 20% Platform).
   - Integrated split recording into the purchase webhook.
   - Implemented `20260427110000_commissions.sql` with RLS policies for financial privacy.
+- ✅ **Autonomous Evolution (Milestone 12)**:
+  - **Swarm Pulse**: Global network observability at `/pulse`.
+  - **HMAC Bridging**: Secure inter-node communication protocol.
+  - **Atmospheric UI**: High-fidelity data visualization for network health.
 - ✅ **Ecosystem Expansion (Milestone 11)**:
   - **Neural Search**: High-velocity discovery engine at `/search`.
-  - **Decentralized Royalties**: Secondary revenue protocol for original creators.
-  - **Search Logic**: Weighted fuzzy matching for protocol discovery.
-- ✅ **Reputation Economy (Milestone 10)**:
   - **Dynamic Fees**: Platform cuts now scale based on Trust Score.
   - **Visual Ranks**: Tiered hierarchy (Initiate -> Legend).
   - **Swarm Brain**: Goal decomposition using Gemini 1.5 Pro logic.
