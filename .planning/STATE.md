@@ -2,7 +2,9 @@
 
 ## Current milestone
 
-**Milestone 8 — Global Scaling** (Swarm Registry & Ledger ✅)
+**Milestone 10 — Reputation Economy** (Dynamic Fees ✅)
+
+
 
 
 

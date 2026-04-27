@@ -15,25 +15,24 @@ export interface SplitResult {
 /**
  * ARCHITECTURAL_PROTOCOL: Financial Distribution Logic
  * Calculates the split between the Merchant, the Affiliate (if applicable), and the Digital Swarm Platform.
- * Default Logic: 70% Merchant | 10% Affiliate | 20% Platform
+ * Default Logic: 70/10/20 (Adjustable)
  */
-export function calculateSplits(data: CommissionSplit): SplitResult {
+export function calculateSplits(data: CommissionSplit, platformFeePercent: number = 20): SplitResult {
   const { totalAmount, affiliateId } = data;
+  
+  const platformFee = totalAmount * (platformFeePercent / 100);
   
   let merchantShare: number;
   let affiliateShare: number;
-  let platformFee: number;
 
   if (affiliateId) {
-    // 3-Way Split: 70/10/20
+    // 3-Way Split: 70/10/X
     merchantShare = totalAmount * 0.7;
     affiliateShare = totalAmount * 0.1;
-    platformFee = totalAmount * 0.2;
   } else {
-    // 2-Way Split: 80/20 (Merchant gets the affiliate's share if no referral)
+    // 2-Way Split: 80/X (Merchant gets the affiliate's share if no referral)
     merchantShare = totalAmount * 0.8;
     affiliateShare = 0;
-    platformFee = totalAmount * 0.2;
   }
 
   return {
@@ -42,6 +41,8 @@ export function calculateSplits(data: CommissionSplit): SplitResult {
     platformFee: parseFloat(platformFee.toFixed(2)),
   };
 }
+
+import { getDynamicPlatformFee } from "./reputation";
 
 /**
  * PERSISTENCE_PROTOCOL: Commission Record Ingestion
@@ -52,7 +53,9 @@ export async function recordCommission(orderId: string, splitData: CommissionSpl
     throw new Error("DATABASE_UNAVAILABLE");
   }
 
-  const splits = calculateSplits(splitData);
+  // 1. [REPUTATION_PROTOCOL] Fetch dynamic fee
+  const feePercent = await getDynamicPlatformFee(splitData.merchantId);
+  const splits = calculateSplits(splitData, feePercent);
 
   const { error } = await supabaseAdmin
     .from("commissions")
