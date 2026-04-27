@@ -157,6 +157,8 @@ src/
 | `reviews` | Product reviews | Public read |
 | `customer_licenses` | License keys post-purchase | Service role only |
 | `affiliates` | Affiliate applications + stats | Public insert only |
+| `commissions` | Financial splits (Merchant/Affiliate) | RLS: Own ID only |
+
 
 ### Key ENV Variables (in Vercel)
 
@@ -193,7 +195,13 @@ RESEND_API_KEY=...
 - [x] Google Analytics + Meta Pixel tracking
 - [x] Dark theme cart drawer (fixed yellow block bug)
 - [x] Content-visibility + will-change CSS performance optimizations
+- [x] Merchant Node Dashboard with live Supabase telemetry
+- [x] Protocol Genesis (Add Product) flow for merchants
+- [x] Automated Commission Engine (70/10/20 split on payment)
+- [x] The Vault (Merchant Payout Ledger)
+- [x] Referral Pulse (Affiliate Earnings Dashboard)
 - [x] Mobile-responsive header + all pages
+
 
 ---
 
@@ -236,7 +244,28 @@ RESEND_API_KEY=...
   - **Global Authority**: Implemented root canonical tags to prevent duplicate content penalties from subdomains or alternate URLs.
   - **Dynamic Catalog SEO**: Engineered a server-side layout for the product detail route (`/product/[slug]`) to dynamically generate SEO metadata, canonical links, and high-fidelity OpenGraph/Twitter cards.
   - **List Page Integrity**: Hardened the `/products` list page metadata with explicit canonical references.
-- 🚧 **Next Steps**: Mobile performance audit (Lighthouse: 90+ target) and full site performance crawl.
+- ✅ **China E-Commerce Hardening (Phase 1)**:
+  - **Listing Hardening**: Injected technical metadata (`aura`, `matchDensity`, `swarmScore`) into `data.ts`.
+  - **Global Broadcaster**: Deployed brutalist `PromoBanner` globally in `layout.tsx` with "Industrial Liquidation" campaign.
+  - **PDP Diagnostics**: Integrated "System Intelligence" panel into the product detail route for technical validation.
+  - **Review System Refactor**: Hardened `ReviewSystem.tsx` to eliminate soft corners and adopt "Protocol Report" terminology.
+- ✅ **Ad Creative Strategy & Deployment**:
+  - **RSA Architecture**: Created 15-headline set with Headline 1 Pin and Dynamic Keyword Insertion (DKI).
+  - **Meta A/B Test**: Deployed Angle A (Technical Diagnostic) vs. Angle B (Industrial Liquidation) ad sets.
+  - **Visual Assets**: Generated high-fidelity brutalist industrial ad mockups for Angle A and B.
+- 🚧 **Next Steps**: Monitor ad performance (ROAS target > 4.5x) and implement automated performance reporting.
+
+### 2026-04-27 (Milestone 8: Global Scaling)
+
+- ✅ **Automated Commission Logic**:
+  - Engineered `src/lib/commissions.ts` for financial distributions (70% Merchant | 10% Affiliate | 20% Platform).
+  - Integrated split recording into the purchase webhook.
+  - Implemented `20260427110000_commissions.sql` with RLS policies for financial privacy.
+- ✅ **Financial Dashboards (Planet ONO)**:
+  - **The Vault**: Merchant payout ledger at `/merchant/payouts`.
+  - **Referral Pulse**: Affiliate earnings and conversion tracking at `/affiliate/earnings`.
+- ✅ **Infrastructure**: Auth-gated all financial telemetry and payout actions.
+
 
 ---
 

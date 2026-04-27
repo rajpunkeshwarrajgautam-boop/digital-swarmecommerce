@@ -18,7 +18,13 @@ export interface AssetManifest {
 }
 
 export class SwarmBridgeService {
-  private static SECRET = env.SWARM_SECRET || 'SWARM_ALPHA_SYNC_v1';
+  private static SECRET = env.SWARM_SECRET;
+  
+  static {
+    if (!this.SECRET || this.SECRET === 'SWARM_ALPHA_SYNC_v1') {
+      console.warn('⚠️ [BRIDGE_SECURITY] SWARM_SECRET is missing or using insecure default. Cross-swarm bridging is disabled.');
+    }
+  }
   private static PROTOCOL_VERSION = '2.0';
 
   /**

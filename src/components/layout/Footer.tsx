@@ -23,7 +23,7 @@ export function Footer() {
               <div className="flex items-center gap-4">
                 <Logo className="text-white" />
                 <div className="px-2 py-1 bg-primary/10 border border-primary/20 text-[8px] font-mono text-primary font-black uppercase tracking-widest italic">
-                  STORE_V1.0
+                  GENESIS_V1 // MAINNET
                 </div>
               </div>
             </Link>

@@ -1,67 +1,84 @@
-/**
- * 🔒 Digital Swarm | Distributed Ledger Protocol (DLP)
- * Foundational service for Milestone 8: Global Scaling & Verifiable Fulfillment.
- * 
- * Provides hashing and verification for "Proof-of-Purchase" logs, 
- * simulating decentralized ledger integrity.
- */
-
-import { createHash } from "crypto";
+import { supabaseAdmin } from "./supabase";
+import crypto from "crypto";
 
 export interface LedgerEntry {
-  orderId: string;
-  customerIp: string;
-  assetId: string;
-  timestamp: number;
-  signature: string;
+  transactionId: string;
+  payload: any;
 }
 
-export class LedgerService {
-  private static SECRET = process.env.LEDGER_SECRET || "swarm-protocol-v1";
+/**
+ * ARCHITECTURAL_PROTOCOL: Cryptographic Sealing Engine
+ * Ensures that every transaction is chained to the previous entry using SHA-256 hashes.
+ */
+export async function sealTransaction(data: LedgerEntry) {
+  if (!supabaseAdmin) {
+    throw new Error("DATABASE_UNAVAILABLE");
+  }
 
-  /**
-   * Generates a unique cryptographic signature for a purchase event.
-   */
-  static signPurchase(orderId: string, amount: number, customer: string) {
-    const timestamp = Date.now();
-    const data = `${orderId}:${amount}:${customer}:${timestamp}`;
-    const signature = createHash("sha256")
-      .update(data + this.SECRET)
+  // 1. Fetch the hash of the latest entry to maintain the chain
+  const { data: latestEntry, error: fetchError } = await supabaseAdmin
+    .from("protocol_ledger")
+    .select("hash")
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+
+  if (fetchError) {
+    console.error("[LEDGER_FETCH_ERROR]:", fetchError);
+  }
+
+  const previousHash = latestEntry?.hash || "GENESIS_BLOCK_00000000000000000000000000000000";
+
+  // 2. Generate SHA-256 Hash of (Current Payload + Previous Hash)
+  const hashSource = JSON.stringify(data.payload) + previousHash;
+  const hash = crypto.createHash("sha256").update(hashSource).digest("hex");
+
+  // 3. Persist to Immutable Ledger
+  const { error: insertError } = await supabaseAdmin
+    .from("protocol_ledger")
+    .insert({
+      transaction_id: data.transactionId,
+      payload: data.payload,
+      previous_hash: previousHash,
+      hash: hash,
+      created_at: new Date().toISOString()
+    });
+
+  if (insertError) {
+    console.error("[LEDGER_SEAL_ERROR]:", insertError);
+    throw new Error("LEDGER_INTEGRITY_COMPROMISED");
+  }
+
+  return { success: true, hash, previousHash };
+}
+
+/**
+ * SECURITY_PROTOCOL: Ledger Audit
+ * Iterates through the entire chain to verify cryptographic integrity.
+ */
+export async function verifyLedgerIntegrity() {
+  if (!supabaseAdmin) return { valid: false, error: "DB_OFFLINE" };
+
+  const { data: entries, error } = await supabaseAdmin
+    .from("protocol_ledger")
+    .select("*")
+    .order("created_at", { ascending: true });
+
+  if (error || !entries) return { valid: false, error: "AUDIT_FETCH_FAILED" };
+
+  let lastHash = "GENESIS_BLOCK_00000000000000000000000000000000";
+
+  for (const entry of entries) {
+    const calculatedHash = crypto
+      .createHash("sha256")
+      .update(JSON.stringify(entry.payload) + entry.previous_hash)
       .digest("hex");
 
-    return {
-      orderId,
-      amount,
-      customer,
-      timestamp,
-      signature
-    };
+    if (calculatedHash !== entry.hash || entry.previous_hash !== lastHash) {
+      return { valid: false, error: "TAMPER_DETECTED", blockId: entry.id };
+    }
+    lastHash = entry.hash;
   }
 
-  /**
-   * Verifies the integrity of a ledger signature.
-   */
-  static verifySignature(entry: LedgerEntry): boolean {
-    const data = `${entry.orderId}:${entry.customerIp}:${entry.assetId}:${Math.floor(entry.timestamp / 1000)}`;
-    const expected = createHash("sha256")
-      .update(data + this.SECRET)
-      .digest("hex");
-    return entry.signature === expected;
-  }
-
-  /**
-   * Records a purchase to the "Proof-of-Purchase" phantom ledger.
-   * In Milestone 8, this will sync to a distributed node network.
-   */
-  static async commitToLedger(entry: LedgerEntry): Promise<{ success: boolean; txHash: string }> {
-    console.log(`[LEDGER_SYNC] Committing transaction for Order: ${entry.orderId}`);
-    
-    // Logic for distributed scaling will be implemented in Milestone 8.2
-    const txHash = createHash("sha256").update(JSON.stringify(entry)).digest("hex");
-    
-    return {
-      success: true,
-      txHash,
-    };
-  }
+  return { valid: true, totalBlocks: entries.length };
 }

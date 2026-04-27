@@ -17,18 +17,30 @@ interface MerchantProduct {
   category: string;
   image: string;
   price: number;
-  sales: number;
-  merchantId: string;
+  sales?: number;
+  merchant_id: string;
+  is_verified: boolean;
+}
+
+interface MerchantStats {
+  revenue: number;
+  salesCount: number;
+  syncVelocity: number;
+  trustScore: number;
+  activeProtocols: number;
 }
 
 export default function MerchantDashboard() {
   const { user, isLoaded } = useUser();
-  const { data: products, isLoading } = useSwarmSWR<MerchantProduct[]>("/api/products");
+  const { data: products, isLoading: productsLoading } = useSwarmSWR<MerchantProduct[]>("/api/products");
+  const { data: stats, isLoading: statsLoading } = useSwarmSWR<MerchantStats>("/api/merchant/stats");
 
   const merchantProducts =
-    user?.id && products ? products.filter((p) => p.merchantId === user.id) : [];
+    user?.id && products ? products.filter((p) => p.merchant_id === user.id) : [];
 
-  if (!isLoaded || (isLoading && !products)) {
+  const isLoading = !isLoaded || productsLoading || statsLoading;
+
+  if (isLoading && !products) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -84,7 +96,7 @@ export default function MerchantDashboard() {
                 Manage your architectural distributions and monitor the sync velocity of your distributed protocols.
               </p>
             </div>
-            <Link href="/dashboard/add-product">
+            <Link href="/merchant/add">
               <ForgeButton variant="primary" className="h-14 px-8">
                 <Plus className="w-4 h-4 mr-2" /> Add_New_Product
               </ForgeButton>
@@ -92,10 +104,30 @@ export default function MerchantDashboard() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard icon={<TrendingUp className="text-[#CCFF00]" />} label="Sync Velocity" value="84%" sub="LIFT_+12%" />
-            <StatsCard icon={<Package className="text-cyan-400" />} label="Active Protocols" value={merchantProducts.length.toString()} sub="NODE_ALPHA" />
-            <StatsCard icon={<BarChart3 className="text-purple-400" />} label="Avg. Merchant Share" value="70%" sub="DYNAMIC_TIERING_ACTIVE" />
-            <StatsCard icon={<CheckCircle2 className="text-blue-400" />} label="Trust Integrity" value="99.2" sub="REPUTATION_SCORE" />
+            <StatsCard 
+              icon={<TrendingUp className="text-[#CCFF00]" />} 
+              label="Sync Velocity" 
+              value={stats ? `${stats.syncVelocity}%` : "0%"} 
+              sub="LIFT_REALTIME" 
+            />
+            <StatsCard 
+              icon={<Package className="text-cyan-400" />} 
+              label="Active Protocols" 
+              value={stats ? stats.activeProtocols.toString() : merchantProducts.length.toString()} 
+              sub="NODE_ALPHA" 
+            />
+            <StatsCard 
+              icon={<BarChart3 className="text-purple-400" />} 
+              label="Total Revenue" 
+              value={stats ? `₹${stats.revenue}` : "₹0"} 
+              sub="DYNAMIC_AGGREGATION" 
+            />
+            <StatsCard 
+              icon={<CheckCircle2 className="text-blue-400" />} 
+              label="Trust Integrity" 
+              value={stats ? `${stats.trustScore}%` : "0%"} 
+              sub="REPUTATION_SCORE" 
+            />
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -113,7 +145,7 @@ export default function MerchantDashboard() {
                       the partner program.
                     </p>
                     <div className="flex flex-wrap gap-3 justify-center">
-                      <Link href="/dashboard/add-product">
+                      <Link href="/merchant/add">
                         <ForgeButton variant="primary" className="h-12 px-6">
                           <Plus className="w-4 h-4 mr-2" /> Add product
                         </ForgeButton>
@@ -141,8 +173,12 @@ export default function MerchantDashboard() {
                         <h4 className="text-xl font-black italic uppercase text-white leading-tight">{product.name}</h4>
                         <div className="flex items-center gap-4 mt-1">
                           <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{product.category}</span>
-                          <div className="flex items-center gap-1.5 text-[9px] font-black text-[#CCFF00] uppercase tracking-widest">
-                            <CheckCircle2 className="w-3 h-3" /> Status: Live
+                          <div className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest ${product.is_verified ? 'text-[#CCFF00]' : 'text-gray-500'}`}>
+                            {product.is_verified ? (
+                              <><CheckCircle2 className="w-3 h-3" /> Status: Live</>
+                            ) : (
+                              <><Package className="w-3 h-3" /> Status: Pending Verification</>
+                            )}
                           </div>
                         </div>
                       </div>
@@ -154,18 +190,19 @@ export default function MerchantDashboard() {
                         <span className="font-mono text-sm text-[#CCFF00]">₹{(product.price * 0.7).toFixed(0)}</span>
                       </div>
                       <div className="flex flex-col">
-                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Syncs</span>
+                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Sales</span>
                         <span className="font-mono text-sm text-white">{product.sales || 0}</span>
                       </div>
                       <div className="flex flex-col">
                         <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Health</span>
                         <div className="flex gap-0.5 mt-1">
-                          {[1, 2, 3, 4, 5].map(i => <div key={i} className="w-1 h-3 bg-[#CCFF00]" />)}
+                          {[1, 2, 3, 4, 5].map(i => <div key={i} className={`w-1 h-3 ${product.is_verified ? 'bg-[#CCFF00]' : 'bg-white/10'}`} />)}
                         </div>
                       </div>
                     </div>
                   </GlassCard>
                 ))}
+
               </div>
             </div>
 

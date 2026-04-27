@@ -1,121 +1,77 @@
-/**
- * 💰 DIGITAL SWARM | Commission Engine
- * -----------------------------------
- * Manages the financial split between the Platform and Merchants.
- */
+import { supabaseAdmin } from "./supabase";
 
-import { supabaseAdmin } from './supabase';
-
-export interface CommissionEntry {
-  order_id: string;
-  merchant_id: string;
-  total_amount: number;
-  platform_fee: number;
-  merchant_share: number;
-  status: 'pending' | 'paid';
-  tier_applied: string;
+export interface CommissionSplit {
+  totalAmount: number;
+  merchantId: string;
+  affiliateId?: string | null;
 }
 
-export type CommissionTier = 'INITIATE' | 'CORE' | 'PRIME';
+export interface SplitResult {
+  merchantShare: number;
+  affiliateShare: number;
+  platformFee: number;
+}
 
-export class CommissionService {
-  /**
-   * 🏗️ REPUTATION PROTOCOL
-   * -----------------------
-   * Retrieves the current commission rate for a merchant.
-   */
-  static async getCommissionRate(merchantId: string): Promise<{ rate: number; tier: CommissionTier }> {
-    // SYSTEM merchants always use CORE (30%)
-    if (merchantId === 'SYSTEM' || merchantId === 'PLATFORM_DIRECT') {
-      return { rate: 0.30, tier: 'CORE' };
-    }
+/**
+ * ARCHITECTURAL_PROTOCOL: Financial Distribution Logic
+ * Calculates the split between the Merchant, the Affiliate (if applicable), and the Digital Swarm Platform.
+ * Default Logic: 70% Merchant | 10% Affiliate | 20% Platform
+ */
+export function calculateSplits(data: CommissionSplit): SplitResult {
+  const { totalAmount, affiliateId } = data;
+  
+  let merchantShare: number;
+  let affiliateShare: number;
+  let platformFee: number;
 
-    try {
-      // In a full implementation, we'd fetch the merchant's reputation from Supabase.
-      // Mocking high-performance for elite merchants for now.
-      const isPrime = ['ZERO_PRIME_NODE', 'ALGO_MASTER'].includes(merchantId);
-      
-      if (isPrime) return { rate: 0.20, tier: 'PRIME' };
-      return { rate: 0.40, tier: 'INITIATE' }; // New/Unverified
-
-    } catch (err) {
-      console.error('[REPUTATION_FAULT] Falling back to standard tier:', err);
-      return { rate: 0.30, tier: 'CORE' };
-    }
+  if (affiliateId) {
+    // 3-Way Split: 70/10/20
+    merchantShare = totalAmount * 0.7;
+    affiliateShare = totalAmount * 0.1;
+    platformFee = totalAmount * 0.2;
+  } else {
+    // 2-Way Split: 80/20 (Merchant gets the affiliate's share if no referral)
+    merchantShare = totalAmount * 0.8;
+    affiliateShare = 0;
+    platformFee = totalAmount * 0.2;
   }
 
-  /**
-   * Calculates and records the dynamic revenue split for an order.
-   * Identifies the merchant for each item and logs the delta based on their tier.
-   */
-  static async calculateSplit(orderId: string): Promise<{ success: boolean; message: string }> {
-    if (!supabaseAdmin) return { success: false, message: "Database unavailable" };
+  return {
+    merchantShare: parseFloat(merchantShare.toFixed(2)),
+    affiliateShare: parseFloat(affiliateShare.toFixed(2)),
+    platformFee: parseFloat(platformFee.toFixed(2)),
+  };
+}
 
-    try {
-      // 1. Check if commission is already processed (Idempotency)
-      const { data: existing } = await supabaseAdmin
-        .from('commissions_log')
-        .select('id')
-        .eq('order_id', orderId)
-        .single();
-
-      if (existing) return { success: true, message: "Commission already processed" };
-
-      // 2. Fetch order items with their merchant details
-      const { data: items, error: itemsError } = await supabaseAdmin
-        .from('order_items')
-        .select(`
-          price,
-          quantity,
-          product_id,
-          products (
-            merchant_id
-          )
-        `)
-        .eq('order_id', orderId);
-
-      if (itemsError || !items) throw new Error("Failed to fetch order items");
-
-      // 3. Process splits per merchant
-      const entries: CommissionEntry[] = [];
-      const merchantGroups: Record<string, number> = {};
-
-      // Group totals by merchant
-      for (const item of items) {
-        const merchantId = (item.products as any)?.merchant_id || "SYSTEM";
-        const lineTotal = item.price * item.quantity;
-        merchantGroups[merchantId] = (merchantGroups[merchantId] || 0) + lineTotal;
-      }
-
-      // 4. Calculate tiered splits
-      for (const [merchantId, total] of Object.entries(merchantGroups)) {
-        const { rate, tier } = await this.getCommissionRate(merchantId);
-        const platformFee = total * rate;
-        const merchantShare = total - platformFee;
-
-        entries.push({
-          order_id: orderId,
-          merchant_id: merchantId,
-          total_amount: total,
-          platform_fee: platformFee,
-          merchant_share: merchantShare,
-          status: 'pending',
-          tier_applied: tier
-        });
-      }
-
-      const { error: insertError } = await supabaseAdmin
-        .from('commissions_log')
-        .insert(entries);
-
-      if (insertError) throw insertError;
-
-      console.log(`[FINANCE] Tiered split completed for Order: ${orderId}`);
-      return { success: true, message: "Commission split recorded" };
-
-    } catch (err) {
-      console.error('[FINANCE_ERROR] Commission calculation failed:', err);
-      return { success: false, message: "Calculation fault" };
-    }
+/**
+ * PERSISTENCE_PROTOCOL: Commission Record Ingestion
+ * Records the financial split in the Supabase commissions table.
+ */
+export async function recordCommission(orderId: string, splitData: CommissionSplit) {
+  if (!supabaseAdmin) {
+    throw new Error("DATABASE_UNAVAILABLE");
   }
+
+  const splits = calculateSplits(splitData);
+
+  const { error } = await supabaseAdmin
+    .from("commissions")
+    .insert({
+      order_id: orderId,
+      merchant_id: splitData.merchantId,
+      affiliate_id: splitData.affiliateId || null,
+      total_amount: splitData.totalAmount,
+      merchant_share: splits.merchantShare,
+      affiliate_share: splits.affiliateShare,
+      platform_fee: splits.platformFee,
+      status: "pending",
+      created_at: new Date().toISOString(),
+    });
+
+  if (error) {
+    console.error("[COMMISSION_RECORD_ERROR]:", error);
+    throw new Error("FINANCIAL_INGESTION_FAILED");
+  }
+
+  return { success: true, splits };
 }

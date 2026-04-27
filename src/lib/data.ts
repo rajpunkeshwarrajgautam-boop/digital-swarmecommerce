@@ -16,7 +16,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/notion-crm-protocol.html",
     installGuide: "### Step 1 — Log In to Notion\nGo to notion.so and log in (or create a free account).\n\n### Step 2 — Open Your Delivery Page\nClick the download button to access your personalized delivery page with your private Notion template link.\n\n### Step 3 — Duplicate the Template\nClick the access link, then hit **Duplicate** (top-right corner of Notion) to copy the entire CRM into your workspace.\n\n### Step 4 — Configure Your Hub\nOpen the **⚙️ Settings** page inside your new CRM. Set your hourly rate, currency, and add your first client.\n\n### Step 5 — Start Tracking\nAdd your first project in the Projects board. The revenue dashboard auto-calculates based on your entries.\n\n📧 **Support**: support@digitalswarm.in | Subject: [NOTION CRM]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "OPERATIONAL_STABILITY",
+    matchDensity: 94,
+    swarmScore: 8.9
   },
   {
     id: "ai-social-automation",
@@ -33,7 +36,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/ai-social-protocol.html",
     installGuide: "### Fulfillment (matches /downloads/ai-social-protocol.html)\n1. Open **`/downloads/ai-social-protocol.html`** after purchase — it is the canonical walkthrough.\n2. Build the Make.com scenario there (accounts, OpenAI key, RSS/social modules). Treat any blueprint import as **your** graph — Digital Swarm does not ship a hidden proprietary `.zip`.\n3. Add **`/downloads/swarm-paid-prompt-core.md`** if you want extra caption / campaign prompts beyond the page.\n\n📧 **Support**: support@digitalswarm.in | Subject: [SOCIAL BLUEPRINT]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "NEURAL_EFFICIENCY",
+    matchDensity: 88,
+    swarmScore: 9.2
   },
   {
     id: "cyberpunk-ui-kit",
@@ -50,7 +56,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/cyberpunk-ui-protocol.html",
     installGuide: "### Fulfillment (matches /downloads/cyberpunk-ui-protocol.html)\n1. Open **`/downloads/cyberpunk-ui-protocol.html`** after purchase.\n2. Use the **Figma Community** control on that page to **duplicate** the kit into your Figma workspace (hosted on Figma, not a private `.fig` attachment from Digital Swarm). Logged-in browsers may be required to confirm the file is public; automated HEAD checks often return **403** for Community URLs.\n3. Install **Outfit**, **Space Grotesk**, and **JetBrains Mono** from Google Fonts.\n4. Insert components via the **Assets** panel (Shift+I); tune variables under **Edit → Variables**.\n\n📧 **Support**: support@digitalswarm.in | Subject: [CYBERPUNK UI KIT]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "VISUAL_PRECISION",
+    matchDensity: 97,
+    swarmScore: 9.5
   },
   {
     id: "ai-executive-playbook",
@@ -67,7 +76,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/ai-executive-playbook.html",
     installGuide: "### Fulfillment (matches /downloads/ai-executive-playbook.html)\n1. After checkout, open your **delivery page** (`/downloads/ai-executive-playbook.html`) — it lists the real download buttons.\n2. Use **`/downloads/swarm-paid-prompt-core.md`** → **Section 14 — Executive & leadership** for board cadence, memos, and stakeholder narratives.\n3. Pair with **`saas-launch-checklist.txt`** and **`saas-tech-stack-audit.txt`** from `/downloads/` when you are sequencing launches.\n4. Run prompts in **ChatGPT / Claude** with your actual metrics and decisions — there is no separate encrypted PDF.\n\n📧 **Support**: support@digitalswarm.in | Subject: [EXECUTIVE PLAYBOOK]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "STRATEGIC_COMMAND",
+    matchDensity: 91,
+    swarmScore: 8.7
   },
   {
     id: "ai-for-lawyers",
@@ -84,7 +96,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/swarm-legal-optimized.html",
     installGuide: "### Fulfillment (matches /downloads/swarm-legal-optimized.html)\n1. After checkout, open **`/downloads/swarm-legal-optimized.html`** — follow that page (it matches what customers see post-purchase).\n2. Download **`/downloads/swarm-paid-prompt-core.md`** → **Section 2 — Legal workflows** for clause passes, intake summaries, and memo outlines.\n3. Optionally pull **`saas-tech-stack-audit.txt`**, **`saas-launch-checklist.txt`**, **`design-system-tokens.css`** from `/downloads/` for ops hygiene.\n4. **Draft only** — have licensed counsel review anything client-facing.\n\n📧 **Priority Support**: support@digitalswarm.in | Subject: [LEGAL PROTOCOL]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "LEGAL_CLARITY",
+    matchDensity: 99,
+    swarmScore: 9.8
   },
   {
     id: "ai-for-real-estate",
@@ -101,7 +116,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/swarm-property-optimized.html",
     installGuide: "### Fulfillment (matches /downloads/swarm-property-optimized.html)\n1. Open **`/downloads/swarm-property-optimized.html`** after checkout — that page is the source of truth.\n2. Use **`/downloads/swarm-paid-prompt-core.md`** → **Section 3 — Real estate** for listings, CMA narratives, and objection scripts.\n3. Add the bundled `/downloads/` text + CSS assets linked on the delivery page when you want checklists and token scaffolding.\n4. Wire **Make.com** yourself if you automate follow-ups — no hidden blueprint archive is bundled.\n\n📧 **Priority Support**: support@digitalswarm.in | Subject: [REAL ESTATE PROTOCOL]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "ASSET_VALUATION",
+    matchDensity: 93,
+    swarmScore: 9.1
   },
   {
     id: "ai-for-finance",
@@ -118,7 +136,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/swarm-capital-optimized.html",
     installGuide: "### Fulfillment (matches /downloads/swarm-capital-optimized.html)\n1. Open **`/downloads/swarm-capital-optimized.html`** after checkout.\n2. Use **`/downloads/swarm-paid-prompt-core.md`** → **Section 4 — Finance & capital** for research snapshots, risk narratives, and board skeletons.\n3. Paste **your** data into ChatGPT / Claude — no bundled Python repo ships with this SKU.\n4. Optional scripts or sheets are **yours to build** on top of the prompt outputs.\n\n📧 **Priority Support**: support@digitalswarm.in | Subject: [FINANCE PROTOCOL]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "CAPITAL_ORACLE",
+    matchDensity: 96,
+    swarmScore: 9.6
   },
   {
     id: "ai-for-healthcare",
@@ -135,7 +156,10 @@ export const products: Product[] = [
     downloadUrl: "/downloads/swarm-voice.html",
     installGuide: "### Fulfillment (matches /downloads/swarm-voice.html)\n1. Open **`/downloads/swarm-voice.html`** after checkout.\n2. Use **`/downloads/swarm-paid-prompt-core.md`** → **Section 5 — Healthcare documentation** for SOAP drafts, patient comms, and AI-usage checklist prompts.\n3. Read the **clinical notice** on the delivery page — outputs require licensed practitioner review.\n4. Scheduling automation is **Bring Your Own** Make.com/Zapier if you want it.\n\n📧 **Priority Support**: support@digitalswarm.in | Subject: [HEALTHCARE PROTOCOL]",
     merchantId: "SYSTEM",
-    isVerified: true
+    isVerified: true,
+    aura: "CLINICAL_PRECISION",
+    matchDensity: 95,
+    swarmScore: 9.4
   },
   {
     id: "ai-for-marketing",

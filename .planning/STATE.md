@@ -2,7 +2,8 @@
 
 ## Current milestone
 
-**Milestone 7 — Multi-vendor & growth** (core infra shipped; iterate on adoption and measurement)
+**Milestone 8 — Global Scaling** (Automated Commission Logic ✅)
+
 
 Phase summaries in `.planning/phases/` mark **M4.1–M4.3**, **M5**, and **M7 schema/merchant** work as complete. This file tracks **what to do next**, not historical phase labels.
 
@@ -19,7 +20,7 @@ All console URLs, the SQL Editor shortcut, and analytics doc entry points live i
 | **1. Ship** | Done | **[GitHub `main`](https://github.com/rajpunkeshwarrajgautam-boop/digital-swarmecommerce)** · **[Vercel](https://vercel.com/rajpunkeshwarrajgautam-boops-projects/antigravity-ecommerce)** · **[Production](https://digitalswarm.in)**. Hub: [`.planning/DASHBOARDS.md`](DASHBOARDS.md). |
 | **2. `webhook_logs` in Supabase** | Done | Migration SQL executed in **Supabase SQL Editor** (Success); `public.webhook_logs` verified with `select … from pg_tables`. Source file: [`supabase/migrations/20260417120000_webhook_logs.sql`](../supabase/migrations/20260417120000_webhook_logs.sql). **[Supabase project](https://supabase.com/dashboard/project/uhswcljouelyprsinchj)** · [`.planning/DASHBOARDS.md`](DASHBOARDS.md). |
 | **3. GA4 / GTM + reports** | Wizard to finish in IDE browser, then Admin + playbook | In the **Analytics** tab: complete **objectives** → **web stream** → **Vercel `NEXT_PUBLIC_GA_MEASUREMENT_ID`**. Then custom dimensions / explorations: **[`.planning/analytics/GA4-hero-ab-playbook.md`](analytics/GA4-hero-ab-playbook.md)**. **[GA4](https://analytics.google.com/)** · **[GTM](https://tagmanager.google.com/)** · [`.planning/DASHBOARDS.md`](DASHBOARDS.md). |
-| **4. M7 UAT** | Pending | **[`phases/07-multi-vendor/07-UAT.md`](phases/07-multi-vendor/07-UAT.md)** — `/merchant`, admin queue, filing gaps. Smoke the live site from [`.planning/DASHBOARDS.md`](DASHBOARDS.md). |
+| **4. M7 Gaps** | Done | **[`phases/07-multi-vendor/07-VERIFICATION.md`](phases/07-multi-vendor/07-VERIFICATION.md)** — Dashboard connected to live stats, Add Product flow implemented. |
 
 ### Planning doc index (this milestone)
 
@@ -45,7 +46,8 @@ All console URLs, the SQL Editor shortcut, and analytics doc entry points live i
 
 1. In the **Cursor Analytics** tab, on **Choose your business objectives**, click **one or two** objective cards, then **Create** / continue to **Data collection**, add the **digitalswarm.in** web stream, copy **`G-…`** to **Vercel Production** `NEXT_PUBLIC_GA_MEASUREMENT_ID`, redeploy if needed.
 2. In **GA4 Admin**, create the four **event-scoped** custom dimensions and explorations per **[`.planning/analytics/GA4-hero-ab-playbook.md`](analytics/GA4-hero-ab-playbook.md)**.
-3. Execute **M7 UAT** when ready.
+3. M7 Gap Closure complete.
+4. Execute next scaling phase when ready.
 
 ## Completed reminders
 

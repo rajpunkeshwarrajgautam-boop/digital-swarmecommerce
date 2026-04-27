@@ -306,6 +306,33 @@ export default function ProductPage() {
                 </div>
               </div>
 
+              {/* Swarm Intelligence Markers */}
+              {(product.swarmScore || product.matchDensity || product.aura) && (
+                <div className="mt-8 mb-12 grid grid-cols-1 md:grid-cols-3 gap-4 border-l-2 border-primary/20 bg-primary/2 p-6 backdrop-blur-sm">
+                   {product.swarmScore && (
+                      <div className="flex flex-col">
+                        <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Swarm_Score</span>
+                        <span className="text-2xl font-outfit font-black italic text-primary">{product.swarmScore.toFixed(1)}/10</span>
+                      </div>
+                   )}
+                   {product.matchDensity && (
+                      <div className="flex flex-col">
+                        <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">Match_Density</span>
+                        <span className="text-2xl font-outfit font-black italic text-white">{product.matchDensity}%</span>
+                      </div>
+                   )}
+                   {product.aura && (
+                      <div className="flex flex-col">
+                        <span className="text-[8px] font-mono text-white/20 uppercase tracking-widest mb-1">System_Aura</span>
+                        <div className="flex items-center gap-2">
+                           <Sparkles className="w-4 h-4 text-accent animate-pulse" />
+                           <span className="text-xs font-mono font-black text-accent uppercase tracking-widest italic truncate">{product.aura.replace(/_/g, ' ')}</span>
+                        </div>
+                      </div>
+                   )}
+                </div>
+              )}
+
               <div className="flex flex-wrap gap-4 mt-8">
                 {product.demoUrl && (
                   <a href={product.demoUrl} target="_blank" rel="noopener noreferrer">

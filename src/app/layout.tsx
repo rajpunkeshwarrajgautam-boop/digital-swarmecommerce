@@ -14,6 +14,7 @@ import { AdTracking } from "@/components/layout/AdTracking";
 import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
 import { JsonLd } from "@/components/layout/JsonLd";
 import { metadata as siteMetadata } from "./metadata";
+import { PromoBanner } from "@/components/home/PromoBanner";
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -66,6 +67,7 @@ export default function RootLayout({
 
             <RootClientWidgets />
             <div className="relative min-h-screen flex flex-col">
+              <PromoBanner />
               <Header />
               <main className="grow">
                 {children}
