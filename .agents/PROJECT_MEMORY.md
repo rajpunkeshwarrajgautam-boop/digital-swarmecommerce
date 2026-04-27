@@ -264,7 +264,9 @@ RESEND_API_KEY=...
 - ✅ **Financial Dashboards (Planet ONO)**:
   - **The Vault**: Merchant payout ledger at `/merchant/payouts`.
   - **Referral Pulse**: Affiliate earnings and conversion tracking at `/affiliate/earnings`.
+  - **Swarm Registry**: Public directory of verified nodes at `/registry`.
 - ✅ **Infrastructure**: Auth-gated all financial telemetry and payout actions.
+
 
 
 ---

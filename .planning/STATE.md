@@ -2,7 +2,8 @@
 
 ## Current milestone
 
-**Milestone 8 — Global Scaling** (Automated Commission Logic ✅)
+**Milestone 8 — Global Scaling** (Swarm Registry & Ledger ✅)
+
 
 
 Phase summaries in `.planning/phases/` mark **M4.1–M4.3**, **M5**, and **M7 schema/merchant** work as complete. This file tracks **what to do next**, not historical phase labels.
