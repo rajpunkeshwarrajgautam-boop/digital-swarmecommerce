@@ -39,14 +39,14 @@ export async function runProtocolAudit(): Promise<AuditResult> {
   // 4. [CERTIFICATION] Generate Audit Proof
   const timestamp = new Date().toISOString();
   const certificateHash = signBridgeRequest({
-    ledgerIntegrity: ledgerStatus.isValid,
-    totalBlocks: ledgerStatus.scannedBlocks,
+    ledgerIntegrity: ledgerStatus.valid,
+    totalBlocks: ledgerStatus.totalBlocks || 0,
     timestamp
   });
 
   return {
-    ledgerIntegrity: ledgerStatus.isValid,
-    totalBlocks: ledgerStatus.scannedBlocks,
+    ledgerIntegrity: ledgerStatus.valid,
+    totalBlocks: ledgerStatus.totalBlocks || 0,
     anomalies,
     nodeVerification: (unverifiedCount || 0) === 0,
     timestamp,
