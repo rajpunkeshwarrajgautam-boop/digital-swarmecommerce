@@ -31,7 +31,6 @@ async function migrateAssets() {
     console.log(`Bucket ${BUCKET_NAME} not found. Creating private bucket...`);
     const { error: createError } = await supabase.storage.createBucket(BUCKET_NAME, {
       public: false, // CRITICAL: Must be false for professional grade security
-      fileSizeLimit: 524288000, // 500MB
     });
 
     if (createError) {

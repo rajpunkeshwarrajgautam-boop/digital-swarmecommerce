@@ -1,6 +1,7 @@
 import { createClient } from '@supabase/supabase-js';
 import dotenv from 'dotenv';
-import { products } from '../src/lib/data';
+// Use relative path with .ts extension for ESM resolution compatibility if needed
+import { products } from '../src/lib/data.ts';
 
 dotenv.config({ path: '.env.local' });
 
