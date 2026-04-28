@@ -48,7 +48,7 @@ export function ParallaxHero() {
         <motion.h1 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.1 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} // Removed 0.1s delay for faster LCP
           className="text-6xl md:text-9xl font-black text-secondary italic tracking-tighter uppercase leading-[0.85] mb-10"
         >
           LAUNCH YOUR <br />
@@ -61,7 +61,7 @@ export function ParallaxHero() {
         <motion.p
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
+          transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }} // Unified timing for FCP/LCP
           className="text-secondary/60 font-bold text-lg md:text-xl uppercase tracking-tight max-w-2xl mb-16 leading-tight"
         >
           Premium Code Templates & UI Kits for Elite Developers. 
