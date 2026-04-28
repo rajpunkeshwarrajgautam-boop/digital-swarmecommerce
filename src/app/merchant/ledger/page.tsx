@@ -4,42 +4,45 @@ import { useEffect, useState } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { ShieldCheck, Lock, ChevronDown, CheckCircle2, AlertCircle, Database } from "lucide-react";
+import { ShieldCheck, Lock, ChevronDown, CheckCircle2, AlertCircle, Database, ArrowUpRight } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { getMerchantPayouts, requestSettlement, CommissionRecord } from "@/app/actions/payouts";
+import { ForgeButton } from "@/components/ui/ForgeButton";
 
 export default function ProtocolLedgerPage() {
-  const [entries, setEntries] = useState<any[]>([]);
+  const [entries, setEntries] = useState<CommissionRecord[]>([]);
   const [loading, setLoading] = useState(true);
   const [auditStatus, setAuditStatus] = useState<"pass" | "fail" | "checking">("checking");
+  const [requesting, setRequesting] = useState(false);
 
   useEffect(() => {
-    // Mocking the ledger fetch for the UI demonstration
-    // Real implementation would use getLedger() server action
-    const mockLedger = [
-      {
-        id: "1",
-        transaction_id: "ORD_7721",
-        hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        previous_hash: "GENESIS_BLOCK_00000000000000000000000000000000",
-        created_at: new Date().toISOString(),
-        payload: { amount: 3499, merchant: "M_772", splits: "70/10/20" }
-      },
-      {
-        id: "2",
-        transaction_id: "ORD_7722",
-        hash: "f82b7c4d5e6f7a8b9c0d1e2f3a4b5c6d7e8f9a0b1c2d3e4f5a6b7c8d9e0f1a2b",
-        previous_hash: "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
-        created_at: new Date().toISOString(),
-        payload: { amount: 1999, merchant: "M_772", splits: "80/20" }
+    async function fetchLedger() {
+      try {
+        const data = await getMerchantPayouts();
+        setEntries(data);
+        setAuditStatus("pass");
+      } catch (error) {
+        console.error("LEDGER_SYNC_ERROR:", error);
+        setAuditStatus("fail");
+      } finally {
+        setLoading(false);
       }
-    ];
+    }
     
-    setTimeout(() => {
-      setEntries(mockLedger);
-      setAuditStatus("pass");
-      setLoading(false);
-    }, 1500);
+    fetchLedger();
   }, []);
+
+  const handleSettlement = async () => {
+    setRequesting(true);
+    try {
+      await requestSettlement();
+      // Logic for success toast/notification
+    } catch (error) {
+      console.error("SETTLEMENT_ERROR:", error);
+    } finally {
+      setRequesting(false);
+    }
+  };
 
   return (
     <>
@@ -47,23 +50,34 @@ export default function ProtocolLedgerPage() {
       <main className="min-h-screen bg-black pt-32 pb-24 px-6">
         <div className="max-w-5xl mx-auto space-y-12">
           
-          <div className="space-y-4">
-            <h1 className="text-6xl font-black italic uppercase tracking-tighter text-white leading-none">Swarm Ledger</h1>
-            <div className="flex items-center gap-4">
-              <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Node_Integrity:</span>
-              <div className={`flex items-center gap-2 px-3 py-1 border ${
-                auditStatus === "pass" ? "border-[#CCFF00] text-[#CCFF00] bg-[#CCFF00]/5" : "border-red-500 text-red-500 bg-red-500/5"
-              }`}>
-                {auditStatus === "checking" ? (
-                  <span className="animate-pulse">RUNNING_CHECKS...</span>
-                ) : (
-                  <>
-                    <ShieldCheck className="w-3 h-3" />
-                    <span className="text-[9px] font-black uppercase tracking-widest">CRYPTO_CHAIN_VALIDATED</span>
-                  </>
-                )}
+          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="space-y-4">
+              <h1 className="text-6xl font-black italic uppercase tracking-tighter text-white leading-none">Swarm Ledger</h1>
+              <div className="flex items-center gap-4">
+                <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-500">Node_Integrity:</span>
+                <div className={`flex items-center gap-2 px-3 py-1 border ${
+                  auditStatus === "pass" ? "border-[#CCFF00] text-[#CCFF00] bg-[#CCFF00]/5" : "border-red-500 text-red-500 bg-red-500/5"
+                }`}>
+                  {auditStatus === "checking" ? (
+                    <span className="animate-pulse">RUNNING_CHECKS...</span>
+                  ) : (
+                    <>
+                      <ShieldCheck className="w-3 h-3" />
+                      <span className="text-[9px] font-black uppercase tracking-widest">CRYPTO_CHAIN_VALIDATED</span>
+                    </>
+                  )}
+                </div>
               </div>
             </div>
+            <ForgeButton 
+              variant="primary" 
+              className="h-14 px-8" 
+              onClick={handleSettlement}
+              disabled={requesting || entries.length === 0}
+            >
+              <ArrowUpRight className="w-4 h-4 mr-2" /> 
+              {requesting ? "AUDITING_PAYROLL..." : "REQUEST_SETTLEMENT"}
+            </ForgeButton>
           </div>
 
           <div className="relative border-l-2 border-white/10 ml-4 pl-12 space-y-12 pb-12">
@@ -111,13 +125,13 @@ function LedgerBlock({ entry, isLatest }: { entry: any, isLatest: boolean }) {
               </span>
               <span className="text-[9px] font-mono text-gray-600 uppercase tracking-widest">{new Date(entry.created_at).toLocaleString()}</span>
             </div>
-            <h3 className="text-2xl font-black italic uppercase text-white tracking-tight">TX_SEALED: {entry.transaction_id}</h3>
+            <h3 className="text-2xl font-black italic uppercase text-white tracking-tight">TX_SEALED: {entry.order_id || entry.transaction_id}</h3>
           </div>
           <div className="text-right">
-            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">Entry_Hash:</div>
-            <code className="text-[10px] font-mono text-white/40 break-all max-w-[300px] block bg-white/5 p-2 border border-white/5">
-              {entry.hash.slice(0, 32)}...
-            </code>
+            <div className="text-[9px] font-black uppercase tracking-[0.2em] text-gray-500 mb-1">Settlement_Share:</div>
+            <div className="text-2xl font-mono text-[#CCFF00] font-black italic">
+              ₹{entry.merchant_share || entry.payload?.amount * 0.7 || 0}
+            </div>
           </div>
         </div>
 

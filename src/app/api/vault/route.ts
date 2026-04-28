@@ -37,18 +37,37 @@ export async function GET() {
       return NextResponse.json({ tokens: [] });
     }
 
-    // 2. Hydrate with Product Data
-    const hydratedTokens = tokens.map(token => {
+    // 2. Hydrate with Product Data & Generate Secure Signed URLs
+    const hydratedTokens = await Promise.all(tokens.map(async (token) => {
       const product = products.find(p => p.id === token.product_id);
+      let secureUrl = product?.downloadUrl || null;
+      
+      // Upgrade static downloadUrl to dynamic cryptographic signed URL (1-hour TTL)
+      if (product && product.downloadUrl && product.downloadUrl.includes('.')) {
+        const filename = product.downloadUrl.split('/').pop();
+        if (filename) {
+          const { data: signedData } = await supabaseAdmin.storage
+            .from('digital_assets')
+            .createSignedUrl(filename, 3600); // 1 hour access
+            
+          if (signedData?.signedUrl) {
+            secureUrl = signedData.signedUrl;
+          }
+        }
+      }
+
       return {
         ...token,
-        product: product || {
+        product: product ? {
+          ...product,
+          downloadUrl: secureUrl // Inject secured URL
+        } : {
           name: 'Unknown Artifact',
           category: 'Legacy Data',
           image: '/images/placeholders/token-fallback.png'
         }
       };
-    });
+    }));
 
     return NextResponse.json({ 
       tokens: hydratedTokens,

@@ -10,6 +10,8 @@ import { GlassCard } from "@/components/ui/GlassCard";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { motion } from "framer-motion";
+import { AgentTaskTracker } from "@/components/merchant/AgentTaskTracker";
+import { getMerchantPayouts } from "@/app/actions/payouts";
 
 interface MerchantProduct {
   id: string;
@@ -202,6 +204,77 @@ export default function MerchantDashboard() {
                     </div>
                   </GlassCard>
                 ))}
+              </div>
+
+              {/* Agent Task Section */}
+              <div className="mt-16">
+                <AgentTaskTracker />
+              </div>
+            </div>
+                {merchantProducts.length === 0 && (
+                  <GlassCard className="p-10 text-center space-y-4 border-dashed border-white/20">
+                    <p className="text-white/60 font-inter text-sm">
+                      No live listings for your account yet. Publish a product with your merchant ID, or apply to join
+                      the partner program.
+                    </p>
+                    <div className="flex flex-wrap gap-3 justify-center">
+                      <Link href="/merchant/add">
+                        <ForgeButton variant="primary" className="h-12 px-6">
+                          <Plus className="w-4 h-4 mr-2" /> Add product
+                        </ForgeButton>
+                      </Link>
+                      <Link href="/merchant/apply">
+                        <ForgeButton variant="ghost" className="h-12 px-6 border border-white/10">
+                          Partner application
+                        </ForgeButton>
+                      </Link>
+                    </div>
+                  </GlassCard>
+                )}
+                {merchantProducts.map((product) => (
+                  <GlassCard key={product.id} className="p-4 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[#CCFF00]/30 transition-all group">
+                    <div className="flex items-center gap-6">
+                      <div className="w-16 h-16 bg-white/5 border border-white/10 relative overflow-hidden rounded-lg">
+                        <Image 
+                          src={product.image} 
+                          fill
+                          className="object-cover grayscale group-hover:grayscale-0 transition-all" 
+                          alt={product.name} 
+                        />
+                      </div>
+                      <div>
+                        <h4 className="text-xl font-black italic uppercase text-white leading-tight">{product.name}</h4>
+                        <div className="flex items-center gap-4 mt-1">
+                          <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{product.category}</span>
+                          <div className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest ${product.is_verified ? 'text-[#CCFF00]' : 'text-gray-500'}`}>
+                            {product.is_verified ? (
+                              <><CheckCircle2 className="w-3 h-3" /> Status: Live</>
+                            ) : (
+                              <><Package className="w-3 h-3" /> Status: Pending Verification</>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div className="flex items-center gap-8 px-6 border-l border-white/5 md:h-12 w-full md:w-auto">
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Share (70%)</span>
+                        <span className="font-mono text-sm text-[#CCFF00]">₹{(product.price * 0.7).toFixed(0)}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Sales</span>
+                        <span className="font-mono text-sm text-white">{product.sales || 0}</span>
+                      </div>
+                      <div className="flex flex-col">
+                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Health</span>
+                        <div className="flex gap-0.5 mt-1">
+                          {[1, 2, 3, 4, 5].map(i => <div key={i} className={`w-1 h-3 ${product.is_verified ? 'bg-[#CCFF00]' : 'bg-white/10'}`} />)}
+                        </div>
+                      </div>
+                    </div>
+                  </GlassCard>
+                ))}
 
               </div>
             </div>
@@ -237,6 +310,20 @@ export default function MerchantDashboard() {
                 <ForgeButton variant="ghost" className="w-full text-[10px] h-10 border-white/5 hover:bg-white/5">
                   View_Fee_Schedule
                 </ForgeButton>
+              </GlassCard>
+
+              {/* The Vault Quick Link */}
+              <GlassCard className="p-6 space-y-4 border-accent/20">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-black uppercase tracking-widest text-xs text-white">The_Vault</h3>
+                  <Database className="w-4 h-4 text-accent" />
+                </div>
+                <p className="text-[10px] text-gray-500 font-inter">Access your cryptographically sealed commission ledger and request settlements.</p>
+                <Link href="/merchant/ledger" className="block">
+                  <ForgeButton variant="ghost" className="w-full text-[10px] h-10 border-accent/20 hover:bg-accent/5 text-accent">
+                    Open_Ledger_Vault
+                  </ForgeButton>
+                </Link>
               </GlassCard>
 
               {/* Network Pulse Widget */}

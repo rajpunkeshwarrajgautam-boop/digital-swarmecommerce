@@ -49,10 +49,30 @@ export async function POST(request: Request) {
 
     // 2. Locate Product Details
     const product = products.find(p => p.id === payload.productId);
-    const downloadUrl = product ? product.downloadUrl : "/dashboard";
+    let downloadUrl = product ? product.downloadUrl : "/dashboard";
     const installGuide = product ? product.installGuide : "Please check your dashboard for further instructions.";
     const merchantId = product?.merchantId || "SYSTEM"; // Fallback to SYSTEM node
     const price = product?.price || payload.amount || 0;
+
+    // Generate Secure Signed URL for the asset
+    let secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`;
+    if (product && product.downloadUrl) {
+      const filename = product.downloadUrl.split('/').pop();
+      if (filename && filename.includes('.')) {
+        const { data: signedData, error: signError } = await supabase.storage
+          .from('digital_assets')
+          .createSignedUrl(filename, 86400 * 3); // 3-day access for initial email
+        
+        if (signedData?.signedUrl) {
+           secureDownloadUrl = signedData.signedUrl;
+        } else {
+           console.error("[STORAGE_SIGN_ERROR]", signError);
+           secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${downloadUrl}`; // Fallback
+        }
+      } else {
+         secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${downloadUrl}`;
+      }
+    }
 
     // 3. Generate secure JWT License Key
     const jwtHeader = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString('base64url');
@@ -150,7 +170,7 @@ export async function POST(request: Request) {
                 <h4 style="color: #CCFF00; margin-top: 30px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">/// QUICK_START_PROTOCOL ///</h4>
                 <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-left: 4px solid #CCFF00; white-space: pre-wrap; font-family: monospace; font-size: 10px; color: #ccc; margin-bottom: 30px;">${installGuide}</pre>
 
-                <a href="${process.env.NEXT_PUBLIC_SITE_URL}${downloadUrl}" style="display: block; background-color: #CCFF00; color: #000; text-decoration: none; padding: 20px; text-align: center; font-weight: 900; text-transform: uppercase; font-size: 18px; border: 4px solid #000; box-shadow: 6px 6px 0 #000; font-style: italic;">
+                <a href="${secureDownloadUrl}" style="display: block; background-color: #CCFF00; color: #000; text-decoration: none; padding: 20px; text-align: center; font-weight: 900; text-transform: uppercase; font-size: 18px; border: 4px solid #000; box-shadow: 6px 6px 0 #000; font-style: italic;">
                   SECURE_UPLINK_DASHBOARD ->
                 </a>
               </div>

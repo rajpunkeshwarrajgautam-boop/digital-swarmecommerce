@@ -4,6 +4,7 @@ import { useSwarmSWR } from "@/hooks/useSwarmSWR";
 import { Activity, DollarSign, Users, Target, ArrowUpRight, TrendingUp } from "lucide-react";
 import { motion } from "framer-motion";
 import { AdminStats, RecentCart, RecentPending } from "@/app/actions/admin";
+import { SEOTracker } from "@/components/admin/SEOTracker";
 
 export default function AdminDashboard() {
   const { data: stats, isLoading } = useSwarmSWR<AdminStats>('/api/admin/stats', { dedupingInterval: 30000 });
@@ -155,6 +156,8 @@ export default function AdminDashboard() {
             <span>Sun</span>
          </div>
       </div>
+
+      <SEOTracker />
     </div>
   );
 }

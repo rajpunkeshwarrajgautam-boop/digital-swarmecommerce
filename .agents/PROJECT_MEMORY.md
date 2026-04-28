@@ -2,7 +2,7 @@
 
 > **IMPORTANT**: This file is the single source of truth for all AI agents working on this project.
 > Read this FIRST before making any changes. Update this file at the END of every session.
-> Last Updated: 2026-03-31
+> Last Updated: 2026-04-27
 
 ---
 
@@ -59,55 +59,44 @@
 ```bash
 src/
 ├── app/
-│   ├── page.tsx              # Homepage (ParallaxHero + sections)
-│   ├── freebies/page.tsx     # Freebies page (5 items with downloads)
-│   ├── products/page.tsx     # Product catalog
-│   ├── checkout/             # Cashfree checkout flow
-│   ├── portal/               # Customer license portal (JWT)
-│   ├── affiliate/            # Affiliate application + dashboard
-│   ├── blog/                 # Blog section
-│   ├── contact/              # Contact page
-│   ├── globals.css           # Global styles + CSS variables
-│   └── layout.tsx            # Root layout (Clerk, SmoothScroll, Header, Footer)
+│   ├── actions/              # Server Actions (payouts, tasks, audit, etc.)
+│   ├── admin/                # Admin Control Panel
+│   ├── affiliate/            # Affiliate Ecosystem
+│   ├── blog/                 # Content Engine
+│   ├── checkout/             # Cashfree Flow
+│   ├── health/               # Protocol Health Check
+│   ├── merchant/             # Merchant Node Dashboard
+│   ├── products/             # Product Catalog
+│   ├── pulse/                # System Telemetry
+│   ├── search/               # Neural Discovery
+│   ├── vault/                # Financial Ledger
+│   ├── globals.css           # Global Styles
+│   ├── layout.tsx            # Root Layout
+│   └── page.tsx              # Protocol Nexus (Home)
 │
 ├── components/
 │   ├── layout/
-│   │   ├── Header.tsx        # Nav with mobile menu + cart count
-│   │   ├── Footer.tsx        # Site footer
-│   │   ├── MainWrapper.tsx   # Conditional top padding by route
-│   │   ├── VisualQuality.tsx # CRT scanlines + grain effect
-│   │   └── SmoothScroll.tsx  # Lenis smooth scroll
-│   ├── home/
-│   │   ├── ParallaxHero.tsx  # Above-fold hero section
-│   │   ├── FeaturedSection.tsx
-│   │   ├── HowItWorks.tsx
-│   │   ├── SocialProof.tsx
-│   │   ├── Testimonials.tsx
-│   │   ├── ProblemSolution.tsx
-│   │   ├── LeadMagnet.tsx    # Free audit capture (URL + email)
-│   │   ├── EmailCapture.tsx
-│   │   └── HomeFAQ.tsx
-│   ├── cart/
-│   │   └── CartDrawer.tsx    # Shopping cart sidebar (dark theme, NO yellow)
-│   ├── ui/
-│   │   ├── CustomCursor.tsx  # Mouse cursor (disabled on touch)
-│   │   └── Button.tsx        # Shared button component
-│   └── chat/
-│       └── AiChat.tsx        # Floating AI chat widget
+│   │   ├── Header.tsx        # Nav + Identity
+│   │   ├── NavbarMenu.tsx    # Desktop Navigation
+│   │   ├── CommandMenu.tsx   # System Interface (⌘K)
+│   │   ├── Footer.tsx        # Terminal Footer
+│   │   ├── VisualQuality.tsx # CRT Effects
+│   │   └── SmoothScroll.tsx  # Lenis Integration
+│   ├── home/                 # Homepage Components
+│   ├── cart/                 # Cart Ecosystem
+│   ├── ui/                   # Atomic UI Components
+│   └── chat/                 # AI Chat Widget
 │
 ├── lib/
-│   ├── data.ts               # LOCAL product catalog (source of truth)
-│   ├── store.ts              # Zustand cart store
-│   ├── supabase.ts           # Supabase client (anon + admin)
-│   ├── email-service.ts      # Resend email integration
-│   └── types.ts              # TypeScript interfaces
+│   ├── data.ts               # Product Source of Truth
+│   ├── store.ts              # Zustand State
+│   ├── supabase.ts           # DB Integration
+│   ├── commissions.ts        # Financial Split Logic
+│   └── types.ts              # Global Types
 │
-├── db/
-│   ├── schema.sql            # Full DB schema (run in Supabase SQL editor)
-│   └── migration_cashfree.sql
-│
-└── setup/
-    └── migrate.ts            # DB migration helper
+└── db/
+    ├── schema.sql            # Master Schema
+    └── migrations/           # Financial Migrations
 ```
 
 ---
@@ -199,8 +188,11 @@ RESEND_API_KEY=...
 - [x] Protocol Genesis (Add Product) flow for merchants
 - [x] Automated Commission Engine (70/10/20 split on payment)
 - [x] The Vault (Merchant Payout Ledger)
+- [x] Command Menu (⌘K) Interface
+- [x] Autonomous Agent Task System (agent_tasks)
 - [x] Referral Pulse (Affiliate Earnings Dashboard)
 - [x] Mobile-responsive header + all pages
+- [x] System Health Monitoring (/health)
 
 
 ---
@@ -261,11 +253,19 @@ RESEND_API_KEY=...
   - Engineered `src/lib/commissions.ts` for financial distributions (70% Merchant | 10% Affiliate | 20% Platform).
   - Integrated split recording into the purchase webhook.
   - Implemented `20260427110000_commissions.sql` with RLS policies for financial privacy.
+- ✅ **Autonomous Evolution (Milestone 12) Hardening**:
+  - Implemented `src/app/actions/tasks.ts` for dynamic agent goal assignment and tracking via Supabase `agent_tasks`.
+  - Added global `CommandMenu.tsx` (⌘K) for high-velocity navigation and system directives.
+  - **NEW**: Deployed `AgentTaskTracker.tsx` for real-time monitoring of merchant agent activities.
+- ✅ **Merchant Financial Node & Health**:
+  - Engineered `src/app/actions/payouts.ts` to provide live commission ledgers and settlement request hooks.
+  - Created `/health` page for automated system status heartbeats.
+  - **NEW**: Integrated real financial data and settlement logic into the **Swarm Ledger** (The Vault) with elite-dev-omega UX.
 - ✅ **Production Harvest (Milestone 13) [FINAL]**:
   - **Audit Node**: Recursive cryptographic verification at `/admin/audit`.
   - **Genesis Certification**: HMAC-signed proof of protocol integrity.
   - **Mainnet Readiness**: Edge performance and security hardening complete.
-- ✅ **Autonomous Evolution (Milestone 12)**:
+- ✅ **Autonomous Evolution (Milestone 12) [Legacy]**:
   - **Swarm Pulse**: Global observability.
   - **HMAC Bridging**: Secure inter-node comms.
   - **Neural Search**: High-velocity discovery engine at `/search`.
