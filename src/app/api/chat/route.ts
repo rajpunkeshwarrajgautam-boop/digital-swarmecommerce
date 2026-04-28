@@ -88,7 +88,108 @@ export async function POST(request: Request) {
     }
 
     // --- LIVE DATA FETCHING ---
-    // ... (rest of the data fetching logic remains same)
+    let dbProducts: Partial<Product>[] = [];
+    try {
+      const { data, error: dbError } = await supabase
+        .from("products")
+        .select("id, name, description, price, category, features, specs")
+        .eq("in_stock", true);
+      
+      if (!dbError && data) dbProducts = data;
+    } catch (e) {
+      console.error("AI Hive-Mind DB Uplink Error:", e);
+    }
+
+    const fallbackByName = new Map(staticProducts.map((p) => [normalizeName(p.name), p]));
+    const mergedSource = dbProducts.length > 0 ? [...dbProducts, ...staticProducts] : staticProducts;
+    const seenIds = new Set<string>();
+    const finalProducts = mergedSource.map((p) => {
+      const incomingName = normalizeName(String(p.name ?? ""));
+      const directFallback = fallbackByName.get(incomingName);
+      const fuzzyFallback =
+        directFallback ??
+        staticProducts.find((sp) => {
+          const staticName = normalizeName(sp.name);
+          return incomingName.includes(staticName) || staticName.includes(incomingName);
+        });
+      const fallback = fuzzyFallback;
+      return {
+        id: String(fallback?.id ?? p.id ?? "unknown"),
+        name: String(p.name ?? fallback?.name ?? "Unknown Asset"),
+        price: Number(p.price ?? fallback?.price ?? 0),
+        category: String(p.category ?? fallback?.category ?? "General"),
+        description: String(p.description ?? fallback?.description ?? ""),
+        features: Array.isArray(p.features) ? p.features : (fallback?.features ?? []),
+        specs: p.specs ?? fallback?.specs ?? {},
+      };
+    }).filter((p) => {
+      if (!p.id || p.id === "unknown" || seenIds.has(p.id)) return false;
+      seenIds.add(p.id);
+      return true;
+    });
+
+    const knowledgeBase = finalProducts
+      .map((p) => (
+        `[ASSET_ID: ${p.id}]
+- NAME: ${p.name}
+- PRICE: ₹${p.price}
+- CATEGORY: ${p.category}
+- INTEL: ${p.description.replace(/\n/g, " ")}
+- CORE_FEATURES: ${Array.isArray(p.features) ? p.features.join(" | ") : "N/A"}
+- TECH_SPECS: ${JSON.stringify(p.specs)}`
+      ))
+      .join("\n\n");
+
+    const purchaseMatch = detectPurchaseIntent(
+      String(message ?? ""),
+      finalProducts.map((p) => ({ id: p.id, name: p.name }))
+    );
+    if (purchaseMatch) {
+      return NextResponse.json({
+        message:
+          `Confirmed. ${purchaseMatch.name} is queued for checkout.\n` +
+          `COMMAND_TRIGGER: {"action":"INITIATE_ORDER","productId":"${purchaseMatch.id}"}\n` +
+          `Zero // Digital Swarm Systems.`,
+      });
+    }
+
+    const systemPrompt = `SYSTEM_PROTOCOL: ZERO_ARCHITECT_V3.0
+ROLE: Elite AI Solutions Architect & Swarm Guardian for Digital Swarm (digitalswarm.in).
+TONE: Confident, highly technical, results-oriented. You are "Zero," the lead software architect.
+
+CORE_CONTEXT:
+- Digital Swarm (digitalswarm.in) is a premium boutique for high-performance digital code bundles and AI protocols.
+- Tech Stack: Next.js 15, React 19, TypeScript, Tailwind CSS, Supabase.
+- Guarantees: Instant Asset Access | 5-Minute Deployment | 30-Day Money-Back Protocol.
+
+ELITE_AGENT_INTEL (GOD TIER):
+1. **Sales Infiltrator (v1.0.0)**:
+   - Function: Automated lead gen & cold-outreach.
+   - Stack: Node.js + Playwright + Gemini Pro 1.5.
+   - Capability: Scrapes LinkedIn/Crunchbase, crafts personalized sequences, bypasses spam filters using dynamic proxy rotation.
+2. **Finance Oracle (v1.0.0)**:
+   - Function: Predictive market modeling & alpha discovery.
+   - Stack: Python + xAI Oracle Integration + Quantitative Ledger Analysis.
+   - Capability: Real-time sentiment analysis across 50+ financial news nodes, pattern recognition for volatile assets.
+3. **Cinema Infiltrator (v1.0.0)**:
+   - Function: God-Tier Storytelling & Media Production logic.
+   - Stack: Next.js + Stable Diffusion XL + ElevenLabs.
+   - Capability: Generates scripts, storyboards, and fully narrated voiceovers for marketing/social media campaigns.
+4. **Research Infiltrator (v1.0.0)**:
+   - Function: Deep-Web Data Scraping & OSINT Analysis.
+   - Stack: Rust-Backend + Headless Chromium Bundles.
+   - Capability: Aggregates competitive intelligence, hidden market gaps, and deep technical documentation from multi-source endpoints.
+
+COMMAND_HIERARCHY:
+1. If the user expresses intent to buy or "get" an asset, terminate with:
+   COMMAND_TRIGGER: {"action": "INITIATE_ORDER", "productId": "ASSET_ID"}
+2. Replace "ASSET_ID" with the ID from the catalog.
+3. Signal Termination: "Zero // Digital Swarm Systems."
+
+AVAILABLE_ASSET_CATALOG:
+${knowledgeBase}
+
+SIGNAL_TERMINATION: "Zero // Digital Swarm Systems."`;
 
     // Map history for OpenAI/NVIDIA format
     const messages = [
