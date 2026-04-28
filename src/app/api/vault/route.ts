@@ -46,7 +46,7 @@ export async function GET() {
       if (product && product.downloadUrl && product.downloadUrl.includes('.')) {
         const filename = product.downloadUrl.split('/').pop();
         if (filename) {
-          const { data: signedData } = await supabaseAdmin.storage
+          const { data: signedData } = await supabaseAdmin!.storage
             .from('digital_assets')
             .createSignedUrl(filename, 3600); // 1 hour access
             
