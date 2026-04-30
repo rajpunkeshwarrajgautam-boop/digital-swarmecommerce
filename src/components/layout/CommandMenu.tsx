@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Command } from "cmdk";
-import { Search, ShoppingCart, Cpu, Code2, LayoutDashboard, BrainCircuit, Rocket, ArrowRight, X } from "lucide-react";
+import { Search, ShoppingCart, Cpu, Code2, LayoutDashboard, BrainCircuit, Rocket, ArrowRight, X, Activity, ShieldCheck } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { products } from "@/lib/data";
 import { motion, AnimatePresence } from "framer-motion";
