@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Star, User, ShieldCheck, Image as ImageIcon, Send, X, Loader2 } from "lucide-react";
+import { Star, User, ShieldCheck, Image as ImageIcon, Send, X, Loader2, Terminal } from "lucide-react";
 import { Button } from "../ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
 import NextImage from "next/image";
