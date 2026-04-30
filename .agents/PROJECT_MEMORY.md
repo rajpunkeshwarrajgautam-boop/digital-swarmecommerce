@@ -271,11 +271,14 @@ RESEND_API_KEY=...
   - **Neural Search**: High-velocity discovery engine at `/search`.
   - **Dynamic Fees**: Platform cuts now scale based on Trust Score.
   - **Visual Ranks**: Tiered hierarchy (Initiate -> Legend).
-  - **Swarm Brain**: Goal decomposition using Gemini 1.5 Pro logic.
+  - ✅ **Swarm Brain**: Goal decomposition using Gemini 1.5 Pro logic.
 
+### 2026-04-30 (Optimization)
 
-
-
+- ✅ **Boot Animation Optimization**:
+  - Replaced repetitive, multi-loop scrolling "boot sequence" ticker with a clean, high-performance 800ms fade-in.
+  - Reduced DOM complexity and CSS overhead by removing legacy marquee animations.
+  - Ensured non-blocking LCP for the homepage branding.
 
 ---
 

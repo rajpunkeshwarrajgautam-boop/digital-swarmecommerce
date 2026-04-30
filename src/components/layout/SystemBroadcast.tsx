@@ -1,42 +1,36 @@
 "use client";
 
-import { Terminal, Shield, Zap, Activity } from "lucide-react";
+import { motion } from "framer-motion";
 
-const MESSAGES = [
-  "INITIALIZING ARMORED PRODUCTION SYNC...",
-  "ESTABLISHING ELITE LEGAL PROTOCOL NODE...",
-  "QUANTUM SECURITY HANDSHAKE: SUCCESS",
-  "SECTOR HUB REGISTRY REFRESHED: 14+ ASSETS DETECTED",
-  "AI CONCIERGE INTEGRITY: 100%",
-  "DEEP BLACK PROTOCOL ENFORCED",
-  "INDUSTRIAL GREEN SPECTRUM OPTIMIZED",
-  "FORGE POWER BANK: ON-LINE",
-  "SENTINEL RESEARCH INFILTRATOR: MONITORING",
-  "SWARM SALES INFILTRATOR: NEOTIC REVENUE SYNC...",
-  "READY FOR PROTOCOL EXECUTION."
-];
-
+/**
+ * Optimized System Broadcast: 
+ * Replaces the repetitive "boot sequence" ticker with a clean, high-performance brand fade-in.
+ * Completes in 800ms as per UX optimization requirements.
+ */
 export function SystemBroadcast() {
   return (
-    <div className="w-full bg-primary/10 border-b border-primary/20 overflow-hidden py-1.5 relative group">
-      <div className="absolute left-0 top-0 bottom-0 w-20 bg-linear-to-r from-black/80 to-transparent z-10" />
-      <div className="absolute right-0 top-0 bottom-0 w-20 bg-linear-to-l from-black/80 to-transparent z-10" />
-      
-      <div className="system-broadcast-track flex items-center gap-12 whitespace-nowrap px-8">
-        {[...MESSAGES, ...MESSAGES].map((msg, i) => (
-          <div key={i} className="flex items-center gap-2 text-[10px] font-mono font-bold tracking-[0.2em] text-primary/80 uppercase">
-            {i % 4 === 0 && <Shield className="w-3 h-3" />}
-            {i % 4 === 1 && <Zap className="w-3 h-3" />}
-            {i % 4 === 2 && <Terminal className="w-3 h-3" />}
-            {i % 4 === 3 && <Activity className="w-3 h-3" />}
-            <span>{msg}</span>
-          </div>
-        ))}
+    <div className="w-full bg-primary/10 border-b border-white/5 overflow-hidden py-1 relative group">
+      <div className="container mx-auto px-6">
+        <motion.div
+          initial={{ opacity: 0, y: -5 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ 
+            duration: 0.8, 
+            ease: [0.22, 1, 0.36, 1] 
+          }}
+          className="flex items-center justify-center gap-4 text-[10px] font-mono uppercase tracking-[0.3em] text-primary/80"
+        >
+          <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <span className="font-black italic">DIGITAL SWARM // SYSTEM_READY</span>
+          <span className="hidden md:inline text-white/10">|</span>
+          <span className="hidden md:inline text-white/30 tracking-widest">Neural_Uplink_Established</span>
+        </motion.div>
       </div>
 
-      <div className="absolute top-0 right-4 h-full flex items-center gap-1.5 z-20">
+      {/* Sync Status Badge */}
+      <div className="absolute top-0 right-4 h-full flex items-center gap-1.5 z-20 pointer-events-none">
         <span className="w-1 h-1 rounded-full bg-primary animate-pulse" />
-        <span className="text-[8px] font-bold text-primary font-mono tracking-widest opacity-50">SYNC: LIVE</span>
+        <span className="text-[8px] font-bold text-primary font-mono tracking-widest opacity-40">SYNC: LIVE</span>
       </div>
     </div>
   );

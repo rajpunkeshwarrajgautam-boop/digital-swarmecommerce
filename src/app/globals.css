@@ -332,25 +332,4 @@ main > section {
   border: 1px solid #d1d5db !important;
 }
 
-/* System broadcast ticker — one composited CSS animation instead of Framer Motion per frame */
-@keyframes system-broadcast-marquee {
-  from {
-    transform: translateX(0);
-  }
-  to {
-    transform: translateX(-50%);
-  }
-}
-
-.system-broadcast-track {
-  width: max-content;
-  animation: system-broadcast-marquee 40s linear infinite;
-  will-change: transform;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .system-broadcast-track {
-    animation: none;
-    transform: none;
-  }
-}
+/* System broadcast ticker removed in favor of clean fade-in */

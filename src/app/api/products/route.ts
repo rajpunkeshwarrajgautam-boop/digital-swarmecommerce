@@ -36,8 +36,8 @@ export async function GET(request: Request) {
 
     const { data, error } = await query;
 
-    if (error) {
-      // Fallback to static products if database unavailable
+    if (error || !data || data.length === 0) {
+      // Fallback to static products if database unavailable or empty
       let result = staticProducts;
       if (id) result = result.filter((p) => p.id === id);
       if (category) result = result.filter((p) => p.category === category);
