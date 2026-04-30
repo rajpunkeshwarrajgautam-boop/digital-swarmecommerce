@@ -201,13 +201,19 @@ export function Header() {
             className="fixed inset-0 z-60 glass-panel lg:hidden flex flex-col p-8 pt-24"
           >
             <nav className="flex flex-col gap-6 mb-12">
-              {['Shop', 'Analytics', 'Community', 'Guide'].map((item) => (
+              {[
+                { label: 'Products', href: '/products' },
+                { label: 'Search',   href: '/search' },
+                { label: 'Pulse',    href: '/pulse' },
+                { label: 'About',    href: '/about' },
+                { label: 'Blog',     href: '/blog' },
+              ].map(({ label, href }) => (
                 <MobileNavLink 
-                  key={item} 
-                  href={`/${item.toLowerCase().replace(' ', '-')}`} 
+                  key={label} 
+                  href={href} 
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item}
+                  {label}
                 </MobileNavLink>
               ))}
             </nav>

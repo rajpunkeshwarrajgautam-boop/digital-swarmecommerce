@@ -13,7 +13,7 @@ export function NavbarMenu({ scrolled = false }: { scrolled?: boolean }) {
       <NavigationMenu.List className="flex items-center gap-2 list-none m-0 p-0">
         
         <NavigationMenu.Item>
-          <Link href="/products" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Inventory</Link>
+          <Link href="/products" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Products</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
           <Link href="/search" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Search</Link>
@@ -22,10 +22,10 @@ export function NavbarMenu({ scrolled = false }: { scrolled?: boolean }) {
           <Link href="/pulse" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight text-primary shadow-[0_0_15px_rgba(204,255,0,0.3)]", scrolled ? "text-[#CCFF00]" : "text-primary")}>Pulse</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/about" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Forge</Link>
+          <Link href="/about" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>About</Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <Link href="/blog" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Logs</Link>
+          <Link href="/blog" className={cn("px-4 py-2 text-sm font-black transition-colors uppercase tracking-tight", textColor)}>Blog</Link>
         </NavigationMenu.Item>
 
         <NavigationMenu.Indicator className="fixed top-full z-1 flex h-[10px] items-end justify-center overflow-hidden transition-[width,transform_250ms_ease]">
