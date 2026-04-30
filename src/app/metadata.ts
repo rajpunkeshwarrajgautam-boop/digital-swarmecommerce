@@ -1,21 +1,24 @@
 import { Metadata } from "next";
 
+const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in";
+
 export const metadata: Metadata = {
-  metadataBase: new URL("https://digitalswarm.in"),
+  metadataBase: new URL(baseUrl),
   title: {
-    default: "DIGITAL SWARM | The Elite Digital Forge",
+    default: "DIGITAL SWARM | Elite AI Agent Store & SaaS Boilerplates",
     template: "%s | DIGITAL SWARM"
   },
   description:
-    "Buy digital products with instant delivery: AI prompt libraries, elite vertical playbooks, starter ZIPs, and Notion templates. Secure checkout on digitalswarm.in — India and global cards where enabled.",
+    "Industrial-grade digital assets for engineers: AI agent protocols, Next.js SaaS kits, elite vertical playbooks, and production-ready Notion systems. Instant delivery on digitalswarm.in.",
   keywords: [
-    "AI prompts India",
-    "digital products instant download",
-    "Notion CRM template",
-    "AI agent prompts",
-    "SaaS checklist",
-    "Digital Swarm",
+    "AI agents for sale",
+    "Next.js SaaS boilerplate",
+    "AI prompt engineering India",
+    "Notion CRM for freelancers",
+    "Digital Swarm ecommerce",
     "elite AI protocols",
+    "autonomous agent templates",
+    "SaaS launch kits",
   ],
   authors: [{ name: "Swarm Architects" }],
   creator: "DIGITAL SWARM",
@@ -26,18 +29,28 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "DIGITAL SWARM | Digital products & AI protocols",
+    title: "DIGITAL SWARM | Elite AI Agent Store & SaaS Boilerplates",
     description:
-      "Instant-download digital goods: prompts, playbooks, kits, and templates. Honest listings, secure checkout, refund policy on-site.",
-    url: "https://digitalswarm.in",
+      "Instant-download digital goods for high-performance builds: AI protocols, SaaS kits, and industrial playbooks. Secure checkout and verified delivery.",
+    url: baseUrl,
     siteName: "DIGITAL SWARM",
+    images: [
+      {
+        url: "/og-image.png", // Ensure this exists or fallback to a default
+        width: 1200,
+        height: 630,
+        alt: "Digital Swarm - Elite Digital Forge",
+      },
+    ],
     locale: "en_IN",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
     title: "DIGITAL SWARM | The Elite Forge",
-    description: "Premium Next.js & AI templates for elite engineers.",
+    description: "Premium Next.js templates and AI agent protocols for elite engineers.",
+    images: ["/og-image.png"],
+    creator: "@DigitalSwarm",
   },
   robots: {
     index: true,
@@ -58,3 +71,4 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
+

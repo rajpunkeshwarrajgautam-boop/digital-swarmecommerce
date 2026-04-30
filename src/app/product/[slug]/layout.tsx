@@ -13,26 +13,39 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!product) {
     return {
       title: "Product Not Found",
+      description: "The requested digital protocol was not found in our registry.",
     };
   }
 
-  const baseUrl = "https://digitalswarm.in";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in";
   const url = `${baseUrl}/product/${product.id}`;
+  const ogImage = product.image; 
+
+  // Clean description for meta tags
+  const cleanDescription = product.description
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 160);
 
   return {
     title: product.name,
-    description: product.description,
+    description: cleanDescription,
     alternates: {
       canonical: url,
     },
     openGraph: {
-      title: product.name,
-      description: product.description,
+      title: `${product.name} | Digital Swarm`,
+      description: cleanDescription,
       url: url,
+      siteName: "Digital Swarm",
       images: [
         {
-          url: product.image,
-          alt: product.name,
+          url: ogImage,
+          width: 1200,
+          height: 630,
+          alt: `${product.name} - Elite Digital Asset`,
         },
       ],
       type: "article",
@@ -40,8 +53,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     twitter: {
       card: "summary_large_image",
       title: product.name,
-      description: product.description,
-      images: [product.image],
+      description: cleanDescription,
+      images: [ogImage],
+      creator: "@DigitalSwarm",
+    },
+    other: {
+      "product:price:amount": product.price.toString(),
+      "product:price:currency": "INR",
+      "product:availability": product.inStock ? "instock" : "oos",
+      "product:category": product.category,
     },
   };
 }
