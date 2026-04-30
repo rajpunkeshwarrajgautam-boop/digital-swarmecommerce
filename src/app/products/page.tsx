@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { Product } from "@/lib/types";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { FilterSidebar } from "@/components/products/FilterSidebar";
@@ -10,11 +10,19 @@ import Link from "next/link";
 import { Newsletter } from "@/components/home/Newsletter";
 
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
+import { useSearchParams } from "next/navigation";
 
-export default function ProductsPage() {
+function ProductsContent() {
+  const searchParams = useSearchParams();
+  const categoryFromUrl = searchParams.get("category") || "All";
+
   const { data: productsData, isLoading } = useSwarmSWR<Product[]>('/api/products');
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+
+  useEffect(() => {
+    setActiveCategory(categoryFromUrl);
+  }, [categoryFromUrl]);
   const [sortBy, setSortBy] = useState("featured");
   const [isNeural, setIsNeural] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
@@ -228,5 +236,13 @@ export default function ProductsPage() {
       </div>
       <Newsletter />
     </div>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Loading products...</div>}>
+      <ProductsContent />
+    </Suspense>
   );
 }

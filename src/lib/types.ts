@@ -20,7 +20,7 @@ export interface Product {
   merchantId?: string;
   isVerified?: boolean;
   swarmScore?: number;
-  aura?: 'RADIATING_ALPHA' | 'VOID_STATIC' | 'NEURAL_LINK_ACTIVE' | 'INDUSTRIAL_GLOW' | 'STABILITY_CORE';
+  aura?: 'RADIATING_ALPHA' | 'VOID_STATIC' | 'NEURAL_LINK_ACTIVE' | 'INDUSTRIAL_GLOW' | 'STABILITY_CORE' | 'OPERATIONAL_STABILITY';
   matchDensity?: number;
 }
 

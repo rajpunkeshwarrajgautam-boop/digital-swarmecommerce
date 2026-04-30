@@ -48,7 +48,7 @@ export async function decomposeGoal(goal: string, agentType: string): Promise<Ta
     const textResult = data.candidates?.[0]?.content?.parts?.[0]?.text || "[]";
     
     // Extract JSON from the markdown-wrapped response if necessary
-    const jsonMatch = textResult.match(/\[.*\]/s);
+    const jsonMatch = textResult.match(/\[[\s\S]*\]/);
     const steps = jsonMatch ? JSON.parse(jsonMatch[0]) : [];
 
     return steps.map((s: any) => ({ ...s, status: 'pending' }));
