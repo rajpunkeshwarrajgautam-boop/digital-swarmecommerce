@@ -58,7 +58,7 @@ function ProductsContent() {
   // 🛰️ NEURAL DISCOVERY ENGINE
   useEffect(() => {
     const searchSequence = async () => {
-      if (!searchQuery && !isNeural && activeCategory === "All") {
+      if (!searchQuery && !isNeural && activeCategory.toLowerCase() === "all") {
         setFilteredProducts(rawProducts);
         return;
       }
@@ -74,8 +74,8 @@ function ProductsContent() {
         let results = data.results || [];
 
         // Apply Local Category & Sort filters
-        if (activeCategory !== "All") {
-          results = results.filter((p: Product) => p.category === activeCategory);
+        if (activeCategory.toLowerCase() !== "all") {
+          results = results.filter((p: Product) => p.category.toLowerCase() === activeCategory.toLowerCase());
         }
 
         if (sortBy === "price-asc") results.sort((a: Product, b: Product) => a.price - b.price);

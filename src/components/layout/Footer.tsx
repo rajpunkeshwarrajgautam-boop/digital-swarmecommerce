@@ -121,7 +121,7 @@ export function Footer() {
           <div className="flex items-center gap-12">
              <div className="flex flex-col items-end gap-1">
                 <span className="text-[8px] font-mono text-white/10 uppercase tracking-widest italic">System_Time</span>
-                <span className="text-[11px] font-mono text-white/30 font-black">{new Date().toLocaleTimeString()}</span>
+                <span className="text-[11px] font-mono text-white/30 font-black">System Status: Online</span>
              </div>
              <div className="w-12 h-12 border border-white/5 bg-white/2 flex items-center justify-center group cursor-help">
                 <ExternalLink className="w-4 h-4 text-white/10 group-hover:text-primary transition-colors" />
