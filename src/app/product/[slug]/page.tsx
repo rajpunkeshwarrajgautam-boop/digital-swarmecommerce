@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Shield, RotateCcw, Truck, AlertCircle, ExternalLink, Eye, BookOpen, Terminal, ArrowRight } from "lucide-react";
+import { Shield, RotateCcw, Truck, AlertCircle, ExternalLink, Eye, BookOpen, Terminal, ArrowRight, Sparkles } from "lucide-react";
 import AddToCartButton from "./AddToCartButton";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
 import { Product } from "@/lib/types";
