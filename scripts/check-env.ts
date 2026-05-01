@@ -1,5 +1,5 @@
 
-import { env } from './src/lib/env';
+import { env } from '../src/lib/env';
 
 console.log('--- CASHFREE ENV CHECK ---');
 console.log('APP_ID:', env.CASHFREE_APP_ID ? 'PRESENT' : 'MISSING');
