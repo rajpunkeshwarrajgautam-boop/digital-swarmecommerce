@@ -10,22 +10,10 @@ import type { Product } from '@/lib/types';
  */
 export async function POST(req: Request) {
   try {
-    const { query, isNeural } = await req.json();
-
-    const { origin } = new URL(req.url);
-    let catalog: Product[] = staticProducts;
-    try {
-      const r = await fetch(`${origin}/api/products`, {
-        cache: 'no-store',
-        headers: { Accept: 'application/json' },
-      });
-      if (r.ok) {
-        const data = (await r.json()) as Product[];
-        if (Array.isArray(data) && data.length > 0) catalog = data;
-      }
-    } catch {
-      /* keep static catalog */
-    }
+    const { query, isNeural, catalog: providedCatalog } = await req.json();
+    let catalog: Product[] = providedCatalog || staticProducts;
+    // We no longer fetch /api/products internally to prevent potential deadlocks.
+    // Instead, the client passes the raw products if needed, or we rely on static data as fallback.
 
     if (!query) {
       return NextResponse.json({ results: catalog });

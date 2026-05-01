@@ -55,21 +55,26 @@ function ProductsContent() {
     [filteredProducts]
   );
 
-  // 🛰️ NEURAL DISCOVERY ENGINE
+  // 🛰️ NEURAL DISCOVERY ENGINE (Optimized)
   useEffect(() => {
-    const searchSequence = async () => {
-      if (!searchQuery && !isNeural && activeCategory.toLowerCase() === "all") {
-        setFilteredProducts(rawProducts);
-        return;
-      }
+    // Skip API search if no query/filters are active to prevent initial lag
+    if (!searchQuery && !isNeural && activeCategory.toLowerCase() === "all" && sortBy === "featured") {
+      setFilteredProducts(rawProducts);
+      setIsSearching(false);
+      return;
+    }
 
+    const searchSequence = async () => {
       setIsSearching(true);
       try {
         const res = await fetch('/api/marketplace/search', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: searchQuery, isNeural })
+          body: JSON.stringify({ query: searchQuery, isNeural, catalog: rawProducts })
         });
+        
+        if (!res.ok) throw new Error('Search Uplink Failed');
+        
         const data = await res.json();
         let results = data.results || [];
 
@@ -84,6 +89,12 @@ function ProductsContent() {
         setFilteredProducts(results);
       } catch (err) {
         console.error('[SEARCH_FAULT] Uplink failure:', err);
+        // Fallback to local filtering on error
+        const localResults = rawProducts.filter(p => 
+          p.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
+          p.category.toLowerCase().includes(searchQuery.toLowerCase())
+        );
+        setFilteredProducts(localResults);
       } finally {
         setIsSearching(false);
       }
@@ -241,7 +252,7 @@ function ProductsContent() {
 
 export default function ProductsPage() {
   return (
-    <Suspense fallback={<div>Loading products...</div>}>
+    <Suspense fallback={null}>
       <ProductsContent />
     </Suspense>
   );
