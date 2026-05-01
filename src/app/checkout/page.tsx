@@ -98,10 +98,14 @@ function CheckoutContent() {
         quantity: item.quantity,
       }))
     );
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 20000); // 20s timeout for gateway sync
+
     try {
       const res = await fetch('/api/cashfree/create-order', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
         body: JSON.stringify({ 
           total: total, 
           items, 
@@ -109,6 +113,7 @@ function CheckoutContent() {
           currency: currency
         }),
       });
+      clearTimeout(timeoutId);
       
       interface CheckoutResponse {
         success?: boolean;
@@ -147,7 +152,17 @@ function CheckoutContent() {
       });
 
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "SYSTEM_EXCEPTION: Unhandled transport fault.";
+      clearTimeout(timeoutId);
+      let message = "SYSTEM_EXCEPTION: Unhandled transport fault.";
+      
+      if (err instanceof Error) {
+        if (err.name === 'AbortError') {
+          message = "GATEWAY_TIMEOUT: Remote server took too long to respond. Please retry.";
+        } else {
+          message = err.message;
+        }
+      }
+      
       addToast("ERROR", "UPLINK_CRITICAL_FAULT", message);
     } finally {
       setIsProcessing(false);
@@ -339,8 +354,12 @@ function CheckoutContent() {
                       disabled={isProcessing}
                     >
                       {isProcessing ? (
-                        <span className="flex items-center gap-4">
-                          <Activity className="w-6 h-6 animate-spin" /> SYNCHRONIZING...
+                        <span className="flex flex-col items-center">
+                          <div className="flex items-center gap-4">
+                            <Activity className="w-6 h-6 animate-spin text-primary" /> 
+                            <span className="animate-pulse">SYNCHRONIZING_UPLINK</span>
+                          </div>
+                          <span className="text-[8px] font-mono text-white/20 mt-1">ESTABLISHING ENCRYPTED GATEWAY...</span>
                         </span>
                       ) : (
                         <span className="flex items-center gap-4">

@@ -282,19 +282,21 @@ RESEND_API_KEY=...
 
 ---
 
-### 2026-05-01 (QA & Hardening Pass)
+### 2026-05-01 (Payment & UX Hardening)
 
-- ✅ **Mobile UI Optimization**:
-  - Compacted the `PromoBanner` by reducing font sizes and padding on mobile viewports.
-  - Hidden the `SystemBroadcast` in `Header.tsx` on mobile to reduce vertical clutter and prevent logo overlap.
-  - Increased root content padding (`pt-36` on mobile) to ensure no content is obscured by the fixed header.
-- ✅ **Navigation Integrity**:
-  - Added missing **Pricing** and **Affiliate Program** links to the site footer.
-  - Integrated the **Affiliate** link into the mobile hamburger menu for better accessibility.
-- ✅ **Blog System Hardening**:
-  - Implemented an API-level image verification layer in `src/app/api/blog/route.ts` to automatically detect and replace known broken Unsplash IDs with high-fidelity fallbacks.
-  - Verified cross-page navigation integrity and product rendering reliability.
-- 🚧 **Deployment Notice**: These local hardening changes require a push to `main` for Vercel production synchronization.
+- ✅ **Payment Flow Hardening**:
+  - Implemented 20s fetch timeout using `AbortController` in `checkout/page.tsx`.
+  - Updated `create-order` API with strict `Number` typing for amounts to prevent gateway rejection.
+  - Added granular error feedback (code, type, details) to payment failure toasts.
+- ✅ **UX Consistency**:
+  - Renamed product page action to **"ADD TO CART"** for terminal-wide alignment.
+  - Improved checkout loading state with `SYNCHRONIZING_UPLINK` visual feedback.
+- ✅ **Asset Delivery Infrastructure**:
+  - Deployed `public/downloads/` with themed delivery landing pages for Notion CRM, AI Social Poster, and Cyberpunk UI Kit.
+  - These pages act as secure gateways for digital duplication/extraction.
+- ✅ **Service Resilience**:
+  - Patched `api/reviews` with an automated retry fallback to handle missing `images` column in the database.
+- 🚧 **Action Required**: Run `ALTER TABLE public.reviews ADD COLUMN IF NOT EXISTS images text[];` in Supabase to permanently resolve schema drift.
 
 ---
 

@@ -122,7 +122,14 @@ export async function POST(request: Request) {
     };
 
     const rate = EXCHANGE_RATES[currency as string] || 1;
-    const convertedTotal = (parseFloat(total) * rate).toFixed(2);
+    const orderAmountNumber = Number((parseFloat(total) * rate).toFixed(2));
+
+    console.log("[cashfree] Initializing order:", {
+      total,
+      currency,
+      convertedAmount: orderAmountNumber,
+      mode: process.env.CASHFREE_SECRET_KEY?.startsWith('cfsk_ma_prod_') ? "production" : "sandbox"
+    });
 
     const CLIENT_ID = env.CASHFREE_APP_ID!;
     const CLIENT_SECRET = env.CASHFREE_SECRET_KEY!;
@@ -295,8 +302,8 @@ export async function POST(request: Request) {
     // 4. Create Cashfree Order
     const cfPayload = {
       order_id: orderId,
-      order_amount: convertedTotal,
-      order_currency: currency,
+      order_amount: orderAmountNumber,
+      order_currency: "INR", // Cashfree primarily handles INR for domestic PG
       customer_details: {
         customer_id: customer.email.replace(/[^a-zA-Z0-9]/g, '_').slice(0, 45),
         customer_email: customer.email,
@@ -353,7 +360,7 @@ export async function POST(request: Request) {
         error: cfData.message || 'Payment Gateway Authentication Failed',
         code: cfData.code,
         type: cfData.type
-      }, { status: 500 });
+      }, { status: cfRes.status });
     }
 
     // Order created successfully

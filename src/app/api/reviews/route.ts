@@ -54,6 +54,17 @@ export async function GET(request: Request) {
 
   if (error) {
     console.error("[reviews] GET:", error.message);
+    // Graceful fallback for missing table/column
+    if (error.message.includes('column "images" does not exist')) {
+       const { data: fallbackData, error: fallbackError } = await supabaseAdmin
+        .from("reviews")
+        .select("id, product_id, user_name, rating, comment, verified, created_at")
+        .eq("product_id", resolved)
+        .order("created_at", { ascending: false });
+       
+       if (fallbackError) return NextResponse.json({ error: fallbackError.message }, { status: 500 });
+       return NextResponse.json(fallbackData ?? []);
+    }
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
@@ -103,6 +114,17 @@ export async function POST(request: Request) {
       .single();
 
     if (error) {
+      if (error.message.includes('column "images" does not exist')) {
+        console.warn("[reviews] 'images' column missing. Retrying insert without images.");
+        delete row.images;
+        const { data: retryData, error: retryError } = await supabaseAdmin
+          .from("reviews")
+          .insert([row])
+          .select()
+          .single();
+        if (retryError) return NextResponse.json({ error: retryError.message }, { status: 500 });
+        return NextResponse.json(retryData);
+      }
       return NextResponse.json({ error: error.message }, { status: 500 });
     }
 

@@ -124,7 +124,7 @@ export default function AddToCartButton({ product }: { product: Product }) {
              </span>
           ) : (
             <span className="flex items-center gap-3">
-               DEPLOY {isWhitelabel ? 'WHITELABEL' : 'PROTOCOL'} <ArrowRight className="w-5 h-5 ml-4" />
+               ADD TO CART <ArrowRight className="w-5 h-5 ml-4" />
             </span>
           )}
         </ForgeButton>
