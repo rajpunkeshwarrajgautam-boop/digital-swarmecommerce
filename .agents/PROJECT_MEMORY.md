@@ -282,11 +282,29 @@ RESEND_API_KEY=...
 
 ---
 
+### 2026-05-01 (QA & Hardening Pass)
+
+- ✅ **Mobile UI Optimization**:
+  - Compacted the `PromoBanner` by reducing font sizes and padding on mobile viewports.
+  - Hidden the `SystemBroadcast` in `Header.tsx` on mobile to reduce vertical clutter and prevent logo overlap.
+  - Increased root content padding (`pt-36` on mobile) to ensure no content is obscured by the fixed header.
+- ✅ **Navigation Integrity**:
+  - Added missing **Pricing** and **Affiliate Program** links to the site footer.
+  - Integrated the **Affiliate** link into the mobile hamburger menu for better accessibility.
+- ✅ **Blog System Hardening**:
+  - Implemented an API-level image verification layer in `src/app/api/blog/route.ts` to automatically detect and replace known broken Unsplash IDs with high-fidelity fallbacks.
+  - Verified cross-page navigation integrity and product rendering reliability.
+- 🚧 **Deployment Notice**: These local hardening changes require a push to `main` for Vercel production synchronization.
+
+---
+
 ## 🎯 Next Steps / Backlog
 
 - [x] Finalize Milestone 6.3 (Trust Ecosystem)
 - [x] SEO & Performance Hardening (Sitemap/Robots/LCP)
 - [x] Automated Inventory Sync from `data.ts` to Supabase
 - [x] SEO Phase 2: Canonical Tags & Metadata Optimization
+- [x] Mobile UI Hardening & Navigation Audit
 - [ ] Mobile performance audit (Lighthouse score target: >90)
 - [ ] Implement global SEO audit tracking component
+

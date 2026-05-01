@@ -14,7 +14,6 @@ import { AdTracking } from "@/components/layout/AdTracking";
 import { AffiliateTracker } from "@/components/analytics/AffiliateTracker";
 import { JsonLd } from "@/components/layout/JsonLd";
 import { metadata as siteMetadata } from "./metadata";
-import { PromoBanner } from "@/components/home/PromoBanner";
 
 const inter = Inter({ 
   subsets: ["latin"], 
@@ -56,20 +55,17 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-[#0a0a0b] text-white selection:bg-primary selection:text-black">
         <ForgeErrorBoundary>
           <ClientProviders>
-            {/* FB Pixel SPA route tracking — fires PageView on every navigation */}
             <Suspense fallback={null}>
               <FBPixelPageView />
               <AdTracking />
             </Suspense>
 
-            {/* Affiliate click tracker — fires once per session when ?ref= cookie is set */}
             <AffiliateTracker />
 
             <RootClientWidgets />
             <div className="relative min-h-screen flex flex-col">
-              <PromoBanner />
               <Header />
-              <main className="grow">
+              <main className="grow pt-36 md:pt-40 lg:pt-32">
                 {children}
               </main>
               <ExitIntentABRouter />
@@ -77,7 +73,6 @@ export default function RootLayout({
             </div>
             <JsonLd />
 
-            {/* FB Pixel base init script — loads once, sets up fbq() */}
             <Script
               id="fb-pixel"
               strategy="afterInteractive"

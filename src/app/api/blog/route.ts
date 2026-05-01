@@ -28,7 +28,9 @@ export async function GET() {
       category: post.tags && post.tags.length > 0 ? post.tags[0] : "Engineering",
       date: new Date(post.published_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }).toUpperCase(),
       readTime: `${post.reading_time_minutes || 5} MIN READ`,
-      image: post.image_url,
+      image: post.image_url?.includes('photo-1620712943543-bcc4628c6827') || post.image_url?.includes('photo-1620825937374-87fc1d6aaffa')
+        ? 'https://images.unsplash.com/photo-1620712943543-bcc4688e7485?w=800&auto=format&fit=crop&q=60'
+        : post.image_url,
       slug: post.slug,
     }));
 

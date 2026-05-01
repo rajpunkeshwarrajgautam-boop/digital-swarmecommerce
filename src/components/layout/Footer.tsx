@@ -67,8 +67,9 @@ export function Footer() {
             <div className="flex flex-col gap-5">
               <FooterLink href="/help" label="Help Center" />
               <FooterLink href="/contact" label="Contact Us" />
-              <FooterLink href="/refund" label="Refund Policy" />
+              <FooterLink href="/pricing" label="Pricing" />
               <FooterLink href="/about" label="About Us" />
+              <FooterLink href="/refund" label="Refund Policy" />
             </div>
           </div>
 
@@ -76,6 +77,7 @@ export function Footer() {
           <div className="flex flex-col gap-10">
             <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-primary italic">PARTNER_NETWORK</h4>
             <div className="flex flex-col gap-5">
+              <FooterLink href="/affiliate" label="Affiliate Program" />
               <FooterLink href="/merchant/apply" label="Become a Merchant" />
               <FooterLink href="/merchant" label="Merchant Portal" />
               <FooterLink href="/help" label="Vendor Guidelines" />
