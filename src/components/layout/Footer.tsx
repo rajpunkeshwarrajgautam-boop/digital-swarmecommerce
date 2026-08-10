@@ -38,7 +38,7 @@ export function Footer() {
               <FooterLink href="/products?category=SaaS" label="SaaS" />
               <FooterLink href="/products?category=AI%20Agent" label="AI Agents" />
               <FooterLink href="/products?category=Playbooks" label="Playbooks" />
-              <FooterLink href="/products?category=Design%20Assets" label="Design Assets" />
+              <FooterLink href="/products?category=Finance" label="Finance" />
               <FooterLink href="/products?category=Source%20Code" label="Source Code" />
             </div>
           </div>
@@ -110,7 +110,6 @@ function FooterLink({ href, label }: { href: string; label: string }) {
       className="flex items-center gap-2 text-sm font-bold text-white/40 transition-colors hover:text-white"
     >
       {label}
-      <span className="h-px w-0 bg-primary transition-all group-hover:w-4" />
     </Link>
   );
 }
