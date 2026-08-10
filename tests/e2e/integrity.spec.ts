@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, type APIRequestContext } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import { products } from '../../src/lib/data';
 import { isSellableProductId, NON_SELLABLE_PRODUCT_IDS } from '../../src/lib/catalog-integrity';
@@ -20,7 +20,7 @@ function normalizeInternalHref(href: string): string | null {
   }
 }
 
-async function expectReachable(request: Parameters<Parameters<typeof test>[1]>[0]['request'], path: string) {
+async function expectReachable(request: APIRequestContext, path: string) {
   const response = await request.get(path, { maxRedirects: 0, timeout: 20_000 });
   expect(response.status(), `${path} returned ${response.status()}`).toBeLessThan(400);
   return response;
