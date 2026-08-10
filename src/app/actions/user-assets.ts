@@ -17,8 +17,9 @@ export async function getUserAssets() {
       .toLowerCase();
 
     if (!supabaseAdmin) throw new Error("Database not available");
+    const admin = supabaseAdmin;
 
-    const { data: licenses, error } = await supabaseAdmin
+    const { data: licenses, error } = await admin
       .from("customer_licenses")
       .select("id,created_at,license_key,license_tier,product_id")
       .eq("user_email", email)
@@ -31,7 +32,7 @@ export async function getUserAssets() {
 
     const productIds = [...new Set((licenses || []).map((license) => license.product_id).filter(Boolean))];
     const { data: dbProducts, error: productsError } = productIds.length
-      ? await supabaseAdmin
+      ? await admin
           .from("products")
           .select("id,name,image,version,in_stock")
           .in("id", productIds)
@@ -54,7 +55,7 @@ export async function getUserAssets() {
         if (catalogProduct && catalogProduct.inStock && isSellableProductId(catalogProduct.id)) {
           const filename = getPrivateDeliveryAssetName(catalogProduct);
           if (filename) {
-            const { data: signed } = await supabaseAdmin.storage
+            const { data: signed } = await admin.storage
               .from("digital_assets")
               .createSignedUrl(filename, 60 * 60, { download: filename });
             signedUrl = signed?.signedUrl || "";
@@ -98,8 +99,9 @@ export async function getUserOrders() {
       .toLowerCase();
 
     if (!supabaseAdmin) throw new Error("Database not available");
+    const admin = supabaseAdmin;
 
-    const { data: orders, error } = await supabaseAdmin
+    const { data: orders, error } = await admin
       .from("orders")
       .select(`
         id,
