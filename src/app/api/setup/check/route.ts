@@ -1,76 +1,45 @@
-
 import { NextResponse } from 'next/server';
 import { supabase } from '@/lib/supabase';
 
 /**
- * GET /api/setup/check
- * Returns database connection status and product count.
- * Provides actionable message if Supabase project is paused.
+ * Backward-compatible, read-only connection probe used by CI and old clients.
+ * It deliberately exposes no reset/seed/sync instructions or environment
+ * details. `/api/health` is the fuller production-readiness endpoint.
  */
 export async function GET() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
-
   try {
-    if (!supabase) throw new Error("Supabase client is not initialized. Missing environment variables.");
-
     const { count, error } = await supabase
       .from('products')
       .select('*', { count: 'exact', head: true });
 
     if (error) {
-      // Detect Supabase project paused or DNS failure
-      const isPaused =
-        error.message?.includes('ENOTFOUND') ||
-        error.message?.includes('fetch failed') ||
-        error.message?.includes('getaddrinfo') ||
-        error.code === 'PGRST301';
-
-      return NextResponse.json({
-        connected: false,
-        product_count: 0,
-        status: isPaused ? 'paused' : 'error',
-        message: isPaused
-          ? 'Supabase project appears to be paused. Visit app.supabase.com and resume the project, then try again.'
-          : `Database error: ${error.message}`,
-        action: isPaused
-          ? 'Go to https://app.supabase.com → Your Project → Click "Resume Project", then run POST /api/products/sync'
-          : 'Check your NEXT_PUBLIC_SUPABASE_URL and NEXT_PUBLIC_SUPABASE_ANON_KEY in .env',
-        supabase_url: supabaseUrl.replace(/^(https?:\/\/[^.]+).*/, '$1.***'), // Masked for security
-      });
+      return NextResponse.json(
+        {
+          connected: false,
+          product_count: 0,
+          status: 'error',
+          message: 'Database connectivity check failed.',
+        },
+        { status: 503 },
+      );
     }
 
-    // Success — DB is reachable
-    const productCount = count ?? 0;
     return NextResponse.json({
       connected: true,
-      product_count: productCount,
+      product_count: count ?? 0,
       status: 'ok',
-      message: productCount === 0
-        ? 'Connected but database is empty. Run POST /api/products/seed to populate.'
-        : `Connected. ${productCount} products in database.`,
-      action: productCount === 0
-        ? 'POST /api/products/seed'
-        : productCount < 11
-          ? 'POST /api/products/sync — some products may be missing'
-          : 'All good! ✓',
+      message: 'Database connection is available.',
     });
-
-  } catch (err: unknown) {
-    const message = err instanceof Error ? err.message : String(err);
-    const isPaused =
-      message.includes('ENOTFOUND') ||
-      message.includes('fetch failed') ||
-      message.includes('getaddrinfo');
-
-    return NextResponse.json({
-      connected: false,
-      product_count: 0,
-      status: isPaused ? 'paused' : 'error',
-      message: isPaused
-        ? 'Supabase project appears to be paused or unreachable.'
-        : `Unexpected error: ${message}`,
-      action: 'Go to https://app.supabase.com and resume your project.',
-      supabase_url: supabaseUrl.replace(/^(https?:\/\/[^.]+).*/, '$1.***'),
-    }, { status: 200 }); // Return 200 so frontend can handle gracefully
+  } catch (error) {
+    console.error('[setup-check] Connectivity probe failed', error);
+    return NextResponse.json(
+      {
+        connected: false,
+        product_count: 0,
+        status: 'error',
+        message: 'Database connectivity check failed.',
+      },
+      { status: 503 },
+    );
   }
 }
