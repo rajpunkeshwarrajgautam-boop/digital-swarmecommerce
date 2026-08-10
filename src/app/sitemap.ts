@@ -1,4 +1,5 @@
 import { products } from "@/lib/data";
+import { isSellableProductId } from "@/lib/catalog-integrity";
 import { MetadataRoute } from "next";
 
 /** Regenerate periodically so crawlers always get a fresh XML without cold errors. */
@@ -7,12 +8,14 @@ export const revalidate = 3600;
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in";
 
-  const productUrls = products.map((product) => ({
-    url: `${baseUrl}/product/${product.id}`,
-    lastModified: new Date(),
-    changeFrequency: "weekly" as const,
-    priority: 0.8,
-  }));
+  const productUrls = products
+    .filter((product) => product.inStock && isSellableProductId(product.id))
+    .map((product) => ({
+      url: `${baseUrl}/product/${product.id}`,
+      lastModified: new Date(),
+      changeFrequency: "weekly" as const,
+      priority: 0.8,
+    }));
 
   const staticUrls = [
     { url: baseUrl, lastModified: new Date(), changeFrequency: "daily" as const, priority: 1.0 },
