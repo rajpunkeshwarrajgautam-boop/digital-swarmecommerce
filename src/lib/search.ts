@@ -1,4 +1,5 @@
 import { products } from "./data";
+import { isSellableProductId } from "./catalog-integrity";
 
 export interface SearchResult {
   id: string;
@@ -15,7 +16,7 @@ export async function swarmSearch(query: string): Promise<SearchResult[]> {
   const q = query.trim().toLowerCase();
 
   return products
-    .filter((product) => product.inStock)
+    .filter((product) => product.inStock && isSellableProductId(product.id))
     .map((product) => {
       let score = 0;
       const name = product.name.toLowerCase();
