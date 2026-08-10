@@ -1,7 +1,11 @@
 import { test, expect, type APIRequestContext } from '@playwright/test';
 import { createClient } from '@supabase/supabase-js';
 import { products } from '../../src/lib/data';
-import { isSellableProductId, NON_SELLABLE_PRODUCT_IDS } from '../../src/lib/catalog-integrity';
+import {
+  getPrivateDeliveryAssetName,
+  isSellableProductId,
+  NON_SELLABLE_PRODUCT_IDS,
+} from '../../src/lib/catalog-integrity';
 
 const sellableProducts = products.filter((product) => product.inStock && isSellableProductId(product.id));
 
@@ -75,14 +79,23 @@ test.describe('Storefront integrity', () => {
     }
   });
 
-  test('public catalog and direct product API reject quarantined dummy SKUs', async ({ request }) => {
+  test('public catalog rejects dummy SKUs and never exposes a public paid-asset URL', async ({ request }) => {
     const catalogResponse = await request.get('/api/products');
     expect(catalogResponse.ok()).toBeTruthy();
-    const catalog = await catalogResponse.json() as Array<{ id: string }>;
+    const catalog = await catalogResponse.json() as Array<{ id: string; downloadUrl?: string }>;
     const ids = new Set(catalog.map((product) => product.id));
 
     expect(ids.size).toBe(sellableProducts.length);
     for (const product of sellableProducts) expect(ids.has(product.id)).toBeTruthy();
+
+    for (const publicProduct of catalog) {
+      expect(
+        publicProduct.downloadUrl?.startsWith('private:'),
+        `${publicProduct.id} must expose only a non-routable private delivery marker`,
+      ).toBeTruthy();
+      expect(publicProduct.downloadUrl).not.toMatch(/^https?:\/\//i);
+      expect(publicProduct.downloadUrl).not.toMatch(/^\/downloads\//i);
+    }
 
     for (const blockedId of NON_SELLABLE_PRODUCT_IDS) {
       expect(ids.has(blockedId)).toBeFalsy();
@@ -91,7 +104,7 @@ test.describe('Storefront integrity', () => {
     }
   });
 
-  test('every sellable SKU has exactly one live DB row and a private fulfillment asset', async ({ browserName }) => {
+  test('every sellable SKU has exactly one live DB row and a private self-contained ZIP', async ({ browserName }) => {
     test.skip(browserName !== 'chromium', 'Backend catalog/storage integrity only needs one browser project.');
 
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -124,10 +137,9 @@ test.describe('Storefront integrity', () => {
     const filenames = new Set((storageObjects || []).map((entry) => entry.name));
 
     for (const product of sellableProducts) {
-      expect(product.downloadUrl, `${product.id} must define a delivery asset`).toBeTruthy();
-      const pathname = new URL(product.downloadUrl!, 'https://digitalswarm.in').pathname;
-      const filename = decodeURIComponent(pathname.split('/').filter(Boolean).pop() || '');
-      expect(filename, `${product.id} must resolve to a filename`).toBeTruthy();
+      const filename = getPrivateDeliveryAssetName(product);
+      expect(filename, `${product.id} must define a private delivery asset`).toBeTruthy();
+      expect(filename.endsWith('.zip'), `${product.id} delivery must be a self-contained ZIP`).toBeTruthy();
       expect(filenames.has(filename), `${product.id} is missing private storage object ${filename}`).toBeTruthy();
     }
   });
