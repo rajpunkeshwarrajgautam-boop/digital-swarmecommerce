@@ -9,11 +9,10 @@ export function JsonLd() {
         name: "Digital Swarm",
         url: "https://digitalswarm.in",
         logo: "https://digitalswarm.in/favicon.svg",
-        description: "Premium source code, UI kits, and digital templates for developers and creators.",
+        description: "Digital products, AI workflow assets, prompt systems, playbooks, and software kits.",
         contactPoint: {
           "@type": "ContactPoint",
-          telephone: "+91 88107 77573",
-          contactType: "customer service",
+          contactType: "customer support",
           email: "support@digitalswarm.in",
         },
       },
