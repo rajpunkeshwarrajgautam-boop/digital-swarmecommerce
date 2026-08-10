@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 import { products } from '@/lib/data';
-import { isSellableProductId } from '@/lib/catalog-integrity';
+import { isSellableProductId, sanitizeCatalogText } from '@/lib/catalog-integrity';
 import { recordCommission } from '@/lib/commissions';
 import { sealTransaction } from '@/lib/ledger';
 import crypto from 'crypto';
@@ -170,7 +170,7 @@ export async function POST(request: Request) {
 
     try {
       const safeProduct = escapeHtml(product.name);
-      const safeGuide = escapeHtml(product.installGuide || 'Open the supplied asset and follow its included instructions.');
+      const safeGuide = escapeHtml(sanitizeCatalogText(product.installGuide || 'Open the supplied asset and follow its included instructions.'));
       const { error: emailError } = await resend.emails.send({
         from: 'Digital Swarm <no-reply@digitalswarm.in>',
         to: customerEmail,
