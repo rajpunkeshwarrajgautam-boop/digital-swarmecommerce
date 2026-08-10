@@ -1,38 +1,60 @@
 "use client";
 
 import { useCartStore } from "@/lib/store";
-import { X, Minus, Plus, Trash2, ShoppingBag, ArrowRight, ShieldCheck, Zap } from "lucide-react";
-import { motion, AnimatePresence, Variants } from "framer-motion";
+import { ArrowRight, Minus, Plus, ShoppingBag, Trash2, X } from "lucide-react";
+import { motion, AnimatePresence, type Variants } from "framer-motion";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { ForgeButton } from "@/components/ui/ForgeButton";
-import { GlassCard } from "@/components/ui/GlassCard";
-import { useCurrency } from "@/components/providers/CurrencyProvider";
-import { formatCurrency } from "@/lib/utils";
+import type { Product } from "@/lib/types";
+
+const inr = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
 
 export function CartDrawer() {
-  const { items, addItem, removeItem, updateQuantity, isOpen, toggleCart, getCartTotal } = useCartStore();
-  const { currency } = useCurrency();
+  const {
+    items,
+    removeItem,
+    updateQuantity,
+    syncWithCatalog,
+    isOpen,
+    toggleCart,
+    getCartTotal,
+  } = useCartStore();
   const total = getCartTotal();
   const [isClient, setIsClient] = useState(false);
 
   const drawerVariants: Variants = {
     closed: { x: "100%", opacity: 0 },
-    open: { 
-      x: 0, 
+    open: {
+      x: 0,
       opacity: 1,
-      transition: { 
-        type: "spring", 
-        stiffness: 400, 
-        damping: 40
-      } 
-    }
+      transition: { type: "spring", stiffness: 400, damping: 40 },
+    },
   };
 
+  useEffect(() => setIsClient(true), []);
+
   useEffect(() => {
-    setIsClient(true);
-  }, []);
+    if (!isClient || !isOpen) return;
+    let active = true;
+    fetch("/api/products", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Catalog HTTP ${response.status}`);
+        return response.json() as Promise<Product[]>;
+      })
+      .then((catalog) => {
+        if (active && Array.isArray(catalog)) syncWithCatalog(catalog);
+      })
+      .catch((error) => console.error("[cart-drawer] Catalog refresh failed", error));
+    return () => {
+      active = false;
+    };
+  }, [isClient, isOpen, syncWithCatalog]);
 
   if (!isClient) return null;
 
@@ -40,173 +62,132 @@ export function CartDrawer() {
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Backdrop */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={toggleCart}
-            className="fixed inset-0 bg-black/40 z-50 backdrop-blur-xl"
+            className="fixed inset-0 z-50 bg-black/55 backdrop-blur-lg"
           />
-          
-          <motion.div
+
+          <motion.aside
             variants={drawerVariants}
             initial="closed"
             animate="open"
             exit="closed"
-            className="fixed top-0 right-0 h-full w-full max-w-md bg-[#0a0a0f] border-l border-white/5 z-100 shadow-[-40px_0_80px_rgba(0,0,0,0.9)] flex flex-col"
+            aria-label="Shopping cart"
+            className="fixed right-0 top-0 z-100 flex h-full w-full max-w-md flex-col border-l border-white/10 bg-[#09090e] shadow-[-40px_0_80px_rgba(0,0,0,.75)]"
           >
-            {/* Decorative Tech Noise Backdrop */}
-            <div className="absolute inset-0 opacity-[0.02] pointer-events-none" 
-              style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
-            />
-
-            {/* Header */}
-            <div className="relative z-10 flex items-center justify-between p-8 border-b border-white/5 bg-white/1">
-              <div className="flex flex-col">
-                <h2 className="text-2xl font-outfit font-black text-white uppercase italic tracking-tighter flex items-center gap-3">
-                  Your <span className="text-primary italic">Cart</span>
-                </h2>
-                <div className="flex items-center gap-2 mt-1">
-                  <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">{items.reduce((a, b) => a + b.quantity, 0)} Items Selected</span>
-                </div>
+            <div className="flex items-center justify-between border-b border-white/8 p-7">
+              <div>
+                <h2 className="font-outfit text-2xl font-black uppercase italic tracking-tighter text-white">Your Cart</h2>
+                <p className="mt-1 font-mono text-[9px] uppercase tracking-[.18em] text-white/30">
+                  {items.reduce((sum, item) => sum + item.quantity, 0)} selected · INR
+                </p>
               </div>
-              <button onClick={toggleCart} className="p-3 border border-white/5 bg-white/5 text-white/40 hover:text-white hover:border-primary/40 transition-all">
-                <X className="w-5 h-5" />
+              <button
+                type="button"
+                aria-label="Close cart"
+                onClick={toggleCart}
+                className="rounded-xl border border-white/8 bg-white/5 p-3 text-white/45 transition hover:text-white"
+              >
+                <X className="h-5 w-5" />
               </button>
             </div>
 
-            {/* Items */}
-            <div className="relative z-10 flex-1 overflow-y-auto p-8 space-y-6 bg-transparent custom-scrollbar">
+            <div className="flex-1 space-y-6 overflow-y-auto p-7">
               {items.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full gap-6 text-center">
-                  <div className="w-24 h-24 rounded-full border border-white/5 flex items-center justify-center relative">
-                    <ShoppingBag className="w-10 h-10 text-white/10" />
-                    <div className="absolute inset-0 border border-primary/20 rounded-full animate-ping" />
+                <div className="flex h-full flex-col items-center justify-center gap-6 text-center">
+                  <div className="flex h-20 w-20 items-center justify-center rounded-full border border-white/8 bg-white/[0.025]">
+                    <ShoppingBag className="h-9 w-9 text-white/15" />
                   </div>
-                  <div className="space-y-2">
-                    <h3 className="text-xl font-outfit font-black text-white/60 uppercase tracking-tight italic">Your Cart is Empty</h3>
-                    <p className="text-[10px] font-mono text-white/20 uppercase tracking-widest max-w-[200px] leading-relaxed">Start adding premium assets to your collection.</p>
+                  <div>
+                    <h3 className="font-outfit text-xl font-black uppercase text-white/65">Your cart is empty</h3>
+                    <p className="mt-2 max-w-[230px] text-xs leading-5 text-white/30">Browse the currently approved catalog and add the products you want.</p>
                   </div>
-                  <ForgeButton onClick={toggleCart} className="w-full max-w-[200px]">
-                     Shop Now
-                  </ForgeButton>
+                  <Link href="/products" onClick={toggleCart} className="w-full max-w-[220px]">
+                    <ForgeButton className="w-full">Browse Products</ForgeButton>
+                  </Link>
                 </div>
               ) : (
                 items.map((item) => (
-                  <div 
-                    key={item.productId} 
-                    className="group relative flex gap-6"
-                  >
-                    <div className="h-24 w-24 overflow-hidden bg-black shrink-0 relative border border-white/10 group-hover:border-primary/40 transition-colors">
-                      <Image src={item.image} alt={item.name} fill sizes="96px" className="object-cover opacity-60 group-hover:opacity-100 transition-all group-hover:scale-110" />
-                      <div className="absolute inset-0 bg-linear-to-t from-black/80 to-transparent" />
-                    </div>
-                    
-                    <div className="flex-1 flex flex-col justify-between py-1">
+                  <article key={item.productId} className="flex gap-5">
+                    <Link
+                      href={`/product/${item.productId}`}
+                      onClick={toggleCart}
+                      className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-white/8 bg-white/5"
+                    >
+                      <Image src={item.image} alt={item.name} fill sizes="80px" className="object-cover" />
+                    </Link>
+
+                    <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
                       <div>
-                        <div className="flex justify-between items-start gap-2 mb-1">
-                          <h3 className="font-outfit font-bold text-white uppercase tracking-tight text-sm group-hover:text-primary transition-colors leading-tight truncate">
+                        <div className="flex items-start justify-between gap-3">
+                          <Link href={`/product/${item.productId}`} onClick={toggleCart} className="line-clamp-2 text-sm font-bold leading-5 text-white/80 hover:text-primary">
                             {item.name}
-                          </h3>
-                          <button 
-                            className="text-white/10 hover:text-[#FF2A2A] transition-colors shrink-0"
+                          </Link>
+                          <button
+                            type="button"
+                            aria-label={`Remove ${item.name}`}
                             onClick={() => removeItem(item.productId)}
+                            className="shrink-0 text-white/20 transition hover:text-red-300"
                           >
-                            <Trash2 className="w-3.5 h-3.5" />
+                            <Trash2 className="h-4 w-4" />
                           </button>
                         </div>
-                        <p className="text-xs font-mono text-primary font-black italic">
-                          {formatCurrency(item.price * item.quantity, currency)}
-                        </p>
+                        <p className="mt-1 text-xs font-bold text-primary">{inr.format(item.price * item.quantity)}</p>
                       </div>
-                      
-                      <div className="flex justify-between items-center mt-4">
-                        <div className="flex items-center bg-white/5 border border-white/10 rounded-sm overflow-hidden">
-                          <button 
-                            className="h-8 w-8 hover:bg-white/5 text-white/40 hover:text-primary flex items-center justify-center transition-all bg-transparent"
-                            onClick={() => updateQuantity(item.productId, Math.max(0, item.quantity - 1))}
-                          >
-                            <Minus className="w-3 h-3" />
-                          </button>
-                          <span className="w-8 text-center text-xs font-mono font-black text-white">{item.quantity}</span>
-                          <button 
-                            className="h-8 w-8 hover:bg-white/5 text-white/40 hover:text-primary flex items-center justify-center transition-all bg-transparent"
-                            onClick={() => updateQuantity(item.productId, item.quantity + 1)}
-                          >
-                            <Plus className="w-3 h-3" />
-                          </button>
-                        </div>
+
+                      <div className="mt-3 flex w-fit items-center overflow-hidden rounded-lg border border-white/8 bg-white/[0.025]">
+                        <button
+                          type="button"
+                          aria-label={`Decrease ${item.name} quantity`}
+                          className="flex h-8 w-8 items-center justify-center text-white/40 transition hover:text-white"
+                          onClick={() => updateQuantity(item.productId, item.quantity - 1)}
+                        >
+                          <Minus className="h-3 w-3" />
+                        </button>
+                        <span className="w-8 text-center text-xs font-black text-white">{item.quantity}</span>
+                        <button
+                          type="button"
+                          aria-label={`Increase ${item.name} quantity`}
+                          disabled={item.quantity >= 10}
+                          className="flex h-8 w-8 items-center justify-center text-white/40 transition hover:text-white disabled:opacity-20"
+                          onClick={() => updateQuantity(item.productId, item.quantity + 1)}
+                        >
+                          <Plus className="h-3 w-3" />
+                        </button>
                       </div>
                     </div>
-                  </div>
+                  </article>
                 ))
               )}
             </div>
 
-            {/* Sub-AOV Maximization Component */}
-            {items.length > 0 && !items.some(i => i.productId === "ai-executive-playbook") && (
-              <div className="relative z-10 px-8 py-6 mb-2">
-                <GlassCard className="p-4 border-primary/20 bg-primary/5 hover:bg-primary/10 transition-all group overflow-hidden">
-                  <div className="absolute top-0 right-0 w-12 h-12 bg-primary/10 -mr-6 -mt-6 rotate-45 group-hover:scale-150 transition-transform" />
-                  <div className="flex items-center gap-4 relative z-10">
-                    <div className="w-10 h-10 bg-black border border-primary/40 flex items-center justify-center shrink-0">
-                      <Zap className="w-5 h-5 text-primary" />
-                    </div>
-                    <div className="flex-1">
-                      <h4 className="text-[10px] font-mono font-black text-white uppercase tracking-tight leading-none mb-1">Recommended for you</h4>
-                      <p className="text-[9px] font-mono text-white/40 uppercase tracking-widest">AI Executive Playbook // Add for {formatCurrency(299, currency)}</p>
-                    </div>
-                    <button 
-                      onClick={() => {
-                          import("@/lib/data").then(module => {
-                              const upsell = module.products.find(p => p.id === "ai-executive-playbook");
-                              if (upsell) addItem(upsell);
-                          });
-                      }}
-                      className="text-[10px] font-mono font-black text-primary border-b border-primary/30 hover:border-primary transition-all pb-0.5"
-                    >
-                      + ADD TO CART
-                    </button>
-                  </div>
-                </GlassCard>
-              </div>
-            )}
-
-            {/* Footer */}
             {items.length > 0 && (
-              <div className="relative z-10 p-8 pt-0 border-t border-white/5 bg-transparent">
-                <div className="py-6 flex flex-col gap-4">
-                  <div className="flex justify-between items-center">
-                    <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/20">Aggregate Total</span>
-                    <span className="text-sm font-mono text-white/40">{formatCurrency(total, currency)}</span>
+              <div className="border-t border-white/8 p-7">
+                <div className="mb-6 flex items-end justify-between gap-5">
+                  <div>
+                    <p className="font-mono text-[9px] uppercase tracking-[.18em] text-white/30">Catalog subtotal</p>
+                    <p className="mt-1 text-xs text-white/25">Server rechecked at checkout</p>
                   </div>
-                  <div className="flex justify-between items-end">
-                    <span className="text-xs font-outfit font-black text-white uppercase italic tracking-tight">Final Settlement</span>
-                    <span className="text-3xl font-outfit font-black text-primary drop-shadow-[0_0_15px_rgba(255,107,53,0.3)] italic">
-                      {formatCurrency(total, currency)}
-                    </span>
-                  </div>
+                  <span className="font-outfit text-3xl font-black text-primary">{inr.format(total)}</span>
                 </div>
 
-                <Link href="/checkout" onClick={toggleCart} className="w-full block">
-                  <ForgeButton className="w-full py-5 text-lg shadow-[0_10px_40px_rgba(255,107,53,0.2)]">
-                    Secure Checkout <ArrowRight className="w-5 h-5 ml-4 inline-block"/>
+                <Link href="/checkout" onClick={toggleCart} className="block w-full">
+                  <ForgeButton className="w-full py-5 text-base">
+                    Continue to Checkout <ArrowRight className="ml-3 inline-block h-4 w-4" />
                   </ForgeButton>
                 </Link>
-
-                <div className="mt-8 flex items-center justify-center gap-4 text-white/10">
-                   <div className="h-px flex-1 bg-white/5" />
-                   <ShieldCheck className="w-4 h-4" />
-                   <div className="h-px flex-1 bg-white/5" />
-                </div>
-                <p className="text-center text-[9px] font-mono uppercase tracking-[0.4em] text-white/10 mt-6">
-                  Forge-Level Encryption Active // v3.12
+                <Link href="/cart" onClick={toggleCart} className="mt-4 block text-center text-[10px] font-black uppercase tracking-widest text-white/30 hover:text-white">
+                  Review full cart
+                </Link>
+                <p className="mt-5 text-center text-[10px] leading-5 text-white/25">
+                  Cashfree payment · private digital delivery after payment verification
                 </p>
               </div>
             )}
-          </motion.div>
+          </motion.aside>
         </>
       )}
     </AnimatePresence>
