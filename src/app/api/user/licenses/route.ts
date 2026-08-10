@@ -13,12 +13,13 @@ export async function GET() {
     if (!supabaseAdmin) {
       return NextResponse.json({ error: "Database service unavailable" }, { status: 503 });
     }
+    const admin = supabaseAdmin;
 
     const email = (user.primaryEmailAddress?.emailAddress || user.emailAddresses[0]!.emailAddress)
       .trim()
       .toLowerCase();
 
-    const { data: dbLicenses, error } = await supabaseAdmin
+    const { data: dbLicenses, error } = await admin
       .from('customer_licenses')
       .select('id,created_at,license_key,license_tier,product_id')
       .eq('user_email', email)
@@ -31,7 +32,7 @@ export async function GET() {
 
     const productIds = [...new Set((dbLicenses || []).map((license) => license.product_id).filter(Boolean))];
     const { data: dbProducts, error: productError } = productIds.length
-      ? await supabaseAdmin.from('products').select('id,name').in('id', productIds)
+      ? await admin.from('products').select('id,name').in('id', productIds)
       : { data: [], error: null };
 
     if (productError) {
@@ -51,7 +52,7 @@ export async function GET() {
         if (matchedProduct && matchedProduct.inStock && isSellableProductId(matchedProduct.id)) {
           const filename = getPrivateDeliveryAssetName(matchedProduct);
           if (filename) {
-            const { data: signed } = await supabaseAdmin.storage
+            const { data: signed } = await admin.storage
               .from('digital_assets')
               .createSignedUrl(filename, 60 * 60, { download: filename });
             downloadUrl = signed?.signedUrl || "";
