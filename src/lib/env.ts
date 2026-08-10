@@ -1,11 +1,26 @@
 import { z } from 'zod';
 
+const optionalString = z.preprocess(
+  (value) => typeof value === 'string' && value.trim() === '' ? undefined : value,
+  z.string().optional(),
+);
+
+const optionalEmail = z.preprocess(
+  (value) => typeof value === 'string' && value.trim() === '' ? undefined : value,
+  z.string().email().optional(),
+);
+
+const optionalStrongSecret = z.preprocess(
+  (value) => typeof value === 'string' && value.trim().length < 32 ? undefined : value,
+  z.string().min(32).optional(),
+);
+
 const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   NEXT_PUBLIC_SITE_URL: z.string().url().default('http://localhost:3000'),
-  NEXT_PUBLIC_FB_PIXEL_ID: z.string().optional(),
-  NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().optional(),
+  NEXT_PUBLIC_FB_PIXEL_ID: optionalString,
+  NEXT_PUBLIC_GA_MEASUREMENT_ID: optionalString,
 
   ADMIN_WHITELIST: z
     .string()
@@ -13,18 +28,21 @@ const envSchema = z.object({
     .transform((val) => val.split(',').map(s => s.trim().toLowerCase()).filter(Boolean)),
 
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
-  SUPABASE_URL: z.string().url().optional(),
+  SUPABASE_URL: z.preprocess(
+    (value) => typeof value === 'string' && value.trim() === '' ? undefined : value,
+    z.string().url().optional(),
+  ),
   RESEND_API_KEY: z.string().min(1),
   CASHFREE_APP_ID: z.string().min(1),
   CASHFREE_SECRET_KEY: z.string().min(1),
-  STRIPE_SECRET_KEY: z.string().optional(),
-  ADMIN_EMAIL: z.string().email().optional(),
-  SWARM_BRIDGE_SECRET: z.string().min(32).optional(),
-  INTERNAL_FULFILLMENT_SECRET: z.string().min(32).optional(),
-  LICENSE_SIGNING_SECRET: z.string().min(32).optional(),
+  STRIPE_SECRET_KEY: optionalString,
+  ADMIN_EMAIL: optionalEmail,
+  SWARM_BRIDGE_SECRET: optionalStrongSecret,
+  INTERNAL_FULFILLMENT_SECRET: optionalStrongSecret,
+  LICENSE_SIGNING_SECRET: optionalStrongSecret,
 
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
-  GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
+  GOOGLE_GENERATIVE_AI_API_KEY: optionalString,
 });
 
 const isServer = typeof window === 'undefined';
