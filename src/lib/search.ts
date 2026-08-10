@@ -20,7 +20,7 @@ export async function swarmSearch(query: string): Promise<SearchResult[]> {
       let score = 0;
       const name = product.name.toLowerCase();
       const category = product.category.toLowerCase();
-      const featureText = product.features.join(' ').toLowerCase();
+      const featureText = (product.features || []).join(' ').toLowerCase();
 
       if (name === q) score += 100;
       if (name.includes(q)) score += 50;
