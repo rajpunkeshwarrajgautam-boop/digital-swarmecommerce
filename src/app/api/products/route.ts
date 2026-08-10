@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { products } from '@/lib/data';
+import { isSellableProductId } from '@/lib/catalog-integrity';
 
 export const dynamic = 'force-dynamic';
 
@@ -8,7 +9,7 @@ export async function GET(request: Request) {
   const category = searchParams.get('category')?.trim();
   const id = searchParams.get('id')?.trim();
 
-  let result = products.filter((product) => product.inStock);
+  let result = products.filter((product) => product.inStock && isSellableProductId(product.id));
 
   if (id) {
     result = result.filter((product) => product.id === id);
