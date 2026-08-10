@@ -34,8 +34,8 @@ const tiers = [
       "ZIP fulfillment with manifest",
       "Email support"
     ],
-    buttonText: "View Professional",
-    link: "/product/nextjs-saas-kit",
+    buttonText: "Browse Available Products",
+    link: "/products",
     highlight: true
   },
   {
@@ -84,9 +84,7 @@ export default function PricingPage() {
                   <span className={`text-[9px] font-black uppercase tracking-widest ${tier.highlight ? "text-black/40" : "text-white/35"}`}>{tier.suffix}</span>
                 </div>
               </div>
-
               <p className={`text-sm font-sans mb-8 leading-6 ${tier.highlight ? "text-black/60" : "text-white/50"}`}>{tier.desc}</p>
-
               <div className="space-y-4 mb-10 flex-1">
                 {tier.features.map((feature) => (
                   <div key={feature} className="flex items-start gap-3">
@@ -95,7 +93,6 @@ export default function PricingPage() {
                   </div>
                 ))}
               </div>
-
               <Link href={tier.link}>
                 <Button className={`w-full py-6 text-sm font-black uppercase tracking-widest ${tier.highlight ? "bg-black text-white hover:bg-primary hover:text-black" : "bg-primary text-black hover:bg-white"}`}>
                   {tier.buttonText}
