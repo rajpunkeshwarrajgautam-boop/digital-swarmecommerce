@@ -59,7 +59,14 @@ test.describe("Hardware Sanity Protocol", () => {
     await page.locator("#contact-callsign").fill("Test User");
     await page.locator("#contact-email").fill("test@example.com");
     await page.locator("#contact-message").fill("Smoke test message");
-    await page.getByRole("button", { name: /execute transmission/i }).click();
+
+    // Use the form semantic instead of marketing copy so wording changes do not
+    // turn a healthy contact flow into a false-negative CI failure.
+    const submit = page.locator("form button[type='submit']");
+    await expect(submit).toBeVisible();
+    await expect(submit).toBeEnabled();
+    await submit.click();
+
     await expect
       .poll(
         async () =>
