@@ -44,11 +44,7 @@ export default async function AffiliateDashboard() {
           </p>
         </div>
 
-        <AffiliateDashboardClient
-          initialData={affiliate}
-          userId={user.id}
-          userEmail={user.primaryEmailAddress?.emailAddress || user.emailAddresses[0]?.emailAddress || 'Partner'}
-        />
+        <AffiliateDashboardClient initialData={affiliate} />
       </div>
     </main>
   );
