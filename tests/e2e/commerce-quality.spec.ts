@@ -26,4 +26,39 @@ test.describe("Commerce quality guardrails", () => {
     expect(await faq.text()).toContain('application/ld+json');
   });
 
+  test("standard cart flows into a digital-only INR checkout", async ({ page }) => {
+    await page.goto("/product/ai-executive-playbook");
+    await page.getByRole("button", { name: /add standard to cart/i }).click();
+
+    const reviewCart = page.getByRole("link", { name: /review full cart/i });
+    await expect(reviewCart).toBeVisible();
+    await reviewCart.click();
+
+    await expect(page).toHaveURL(/\/cart$/);
+    await expect(page.getByText(/Cashfree/i)).toBeVisible();
+    await expect(page.getByText(/Razorpay/i)).toHaveCount(0);
+    await expect(page.getByText(/Guaranteed Instant Digital Delivery/i)).toHaveCount(0);
+
+    await page.getByRole("link", { name: /continue to checkout/i }).click();
+    await expect(page).toHaveURL(/\/checkout$/);
+    await expect(page.getByText(/no shipping address is required/i)).toBeVisible();
+    await expect(page.locator('input[name="firstName"]')).toBeVisible();
+    await expect(page.locator('input[name="email"]')).toBeVisible();
+    await expect(page.locator('input[name="phone"]')).toBeVisible();
+    await expect(page.locator('input[name="address"]')).toHaveCount(0);
+    await expect(page.getByRole("button", { name: /pay ₹/i })).toBeVisible();
+  });
+
+  test("agency-whitelabel cart keeps a routable base product link", async ({ page }) => {
+    await page.goto("/product/ai-executive-playbook");
+    await page.getByRole("button", { name: /agency whitelabel/i }).click();
+    await page.getByRole("button", { name: /add agency whitelabel to cart/i }).click();
+
+    const reviewCart = page.getByRole("link", { name: /review full cart/i });
+    await expect(reviewCart).toBeVisible();
+    await reviewCart.click();
+
+    const productLink = page.getByRole("link", { name: /AI Executive Playbook \[Agency Whitelabel License\]/i });
+    await expect(productLink).toHaveAttribute("href", "/product/ai-executive-playbook");
+  });
 });
