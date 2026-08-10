@@ -1,0 +1,47 @@
+name: Temporary header link cleanup
+
+on:
+  push:
+    branches:
+      - fix/truthful-commerce-integrity
+
+permissions:
+  contents: write
+
+jobs:
+  patch:
+    if: ${{ github.actor != 'github-actions[bot]' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: fix/truthful-commerce-integrity
+          fetch-depth: 0
+      - name: Patch legacy and inert header actions
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('src/components/layout/Header.tsx')
+          s = p.read_text()
+          s = s.replace('href="/vault"', 'href="/dashboard/assets"')
+          s = s.replace('title="Digital Vault"', 'title="Licensed Assets"')
+          s = s.replace('href="/profile"', 'href="/dashboard"')
+          old = '''<ForgeButton data-action="search" className="w-full" onClick={() => setIsMenuOpen(false)}>
+                Search Products
+              </ForgeButton>'''
+          new = '''<Link href="/search" onClick={() => setIsMenuOpen(false)}>
+                <ForgeButton className="w-full">Search Products</ForgeButton>
+              </Link>'''
+          if old not in s:
+              raise SystemExit('expected mobile search control not found')
+          s = s.replace(old, new)
+          p.write_text(s)
+          PY
+      - name: Commit patch
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add src/components/layout/Header.tsx
+          git commit -m "fix: route header actions to real account and search pages"
+          git push origin HEAD:fix/truthful-commerce-integrity
