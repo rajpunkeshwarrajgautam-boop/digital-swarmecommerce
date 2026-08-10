@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { products } from '@/lib/data';
-import { isSellableProductId } from '@/lib/catalog-integrity';
+import { isSellableProductId, sanitizePublicProduct } from '@/lib/catalog-integrity';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
     result = result.filter((product) => product.category.toLowerCase() === category.toLowerCase());
   }
 
-  return NextResponse.json(result, {
+  return NextResponse.json(result.map(sanitizePublicProduct), {
     headers: {
       'Cache-Control': 'public, max-age=0, s-maxage=300, stale-while-revalidate=600',
     },
