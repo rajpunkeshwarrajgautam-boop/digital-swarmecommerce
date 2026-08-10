@@ -108,8 +108,8 @@ export function Header() {
 
             <div className="flex items-center gap-1 md:gap-2">
               <SignedIn>
-                <Link href="/vault">
-                  <button className="relative p-2 text-white/60 hover:glow-text transition-all group" title="Digital Vault">
+                <Link href="/dashboard/assets">
+                  <button className="relative p-2 text-white/60 hover:glow-text transition-all group" title="Licensed Assets">
                     <ShieldCheck className="w-5 h-5 group-hover:text-primary transition-colors" />
                   </button>
                 </Link>
@@ -229,7 +229,7 @@ export function Header() {
                         <span className="text-xs font-black uppercase text-primary">Identity_Verified</span>
                       </div>
                     </div>
-                    <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
                       <button className="px-4 py-2 bg-white/10 rounded-lg text-[9px] font-mono uppercase tracking-widest hover:bg-primary hover:text-black transition-all">
                         Profile
                       </button>
@@ -238,9 +238,7 @@ export function Header() {
                 </SignedIn>
               </div>
 
-              <ForgeButton data-action="search" className="w-full" onClick={() => setIsMenuOpen(false)}>
-                Search Products
-              </ForgeButton>
+              <Link href="/search" onClick={() => setIsMenuOpen(false)}><ForgeButton className="w-full">Search Products</ForgeButton></Link>
               
               <div className="flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">
                 <span>Private paid delivery</span>
