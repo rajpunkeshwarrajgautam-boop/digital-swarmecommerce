@@ -14,7 +14,7 @@ const limiter = rateLimit({ interval: 60 * 60 * 1000, uniqueTokenPerInterval: 10
 
 export async function GET(
   request: Request,
-  props: { params: Promise<{ id: string }> | { id: string> },
+  props: { params: Promise<{ id: string }> | { id: string } },
 ) {
   try {
     const { id } = await props.params;
