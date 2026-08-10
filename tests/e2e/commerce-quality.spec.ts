@@ -35,7 +35,7 @@ test.describe("Commerce quality guardrails", () => {
     await reviewCart.click();
 
     await expect(page).toHaveURL(/\/cart$/);
-    await expect(page.getByText(/Cashfree/i)).toBeVisible();
+    await expect(page.getByText(/Checkout uses Cashfree\./i)).toBeVisible();
     await expect(page.getByText(/Razorpay/i)).toHaveCount(0);
     await expect(page.getByText(/Guaranteed Instant Digital Delivery/i)).toHaveCount(0);
 
@@ -49,7 +49,7 @@ test.describe("Commerce quality guardrails", () => {
     await expect(page.getByRole("button", { name: /pay ₹/i })).toBeVisible();
   });
 
-  test("agency-whitelabel cart keeps a routable base product link", async ({ page }) => {
+  test("agency-whitelabel cart keeps routable base product links", async ({ page }) => {
     await page.goto("/product/ai-executive-playbook");
     await page.getByRole("button", { name: /agency whitelabel/i }).click();
     await page.getByRole("button", { name: /add agency whitelabel to cart/i }).click();
@@ -58,7 +58,9 @@ test.describe("Commerce quality guardrails", () => {
     await expect(reviewCart).toBeVisible();
     await reviewCart.click();
 
-    const productLink = page.getByRole("link", { name: /AI Executive Playbook \[Agency Whitelabel License\]/i });
-    await expect(productLink).toHaveAttribute("href", "/product/ai-executive-playbook");
+    const productLinks = page.getByRole("link", { name: /AI Executive Playbook \[Agency Whitelabel License\]/i });
+    await expect(productLinks).toHaveCount(2);
+    await expect(productLinks.first()).toHaveAttribute("href", "/product/ai-executive-playbook");
+    await expect(productLinks.nth(1)).toHaveAttribute("href", "/product/ai-executive-playbook");
   });
 });
