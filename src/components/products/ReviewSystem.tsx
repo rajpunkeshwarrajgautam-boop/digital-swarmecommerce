@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { Star, User, ShieldCheck, Image as ImageIcon, Send, X, Loader2, Terminal } from "lucide-react";
-import { Button } from "../ui/Button";
-import { motion, AnimatePresence } from "framer-motion";
+import { useEffect, useMemo, useRef, useState } from "react";
+import { Star, ShieldCheck, Image as ImageIcon, Send, X, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
 import NextImage from "next/image";
+import Link from "next/link";
 import { useUser } from "@clerk/nextjs";
 
 interface Review {
@@ -24,287 +24,167 @@ export function ReviewSystem({ productId }: { productId: string }) {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [previews, setPreviews] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { user, isSignedIn } = useUser();
+  const { isSignedIn } = useUser();
+
+  const average = useMemo(() => {
+    if (!reviews.length) return 0;
+    return reviews.reduce((sum, review) => sum + Number(review.rating || 0), 0) / reviews.length;
+  }, [reviews]);
 
   useEffect(() => {
-    async function loadReviews() {
-      try {
-        const res = await fetch(`/api/reviews?productId=${productId}`);
+    let cancelled = false;
+    fetch(`/api/reviews?productId=${encodeURIComponent(productId)}`)
+      .then(async (res) => {
         const data = await res.json();
-        if (Array.isArray(data)) {
-          setReviews(data);
-        }
-      } catch (err) {
-        console.error("Failed to load reviews:", err);
-      }
-    }
-    loadReviews();
+        if (!cancelled && res.ok && Array.isArray(data)) setReviews(data);
+      })
+      .catch(() => {});
+    return () => { cancelled = true; };
   }, [productId]);
 
+  useEffect(() => () => previews.forEach((url) => URL.revokeObjectURL(url)), [previews]);
+
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    if (e.target.files) {
-      const files = Array.from(e.target.files);
-      setSelectedFiles(prev => [...prev, ...files]);
-      
-      const newPreviews = files.map(file => URL.createObjectURL(file));
-      setPreviews(prev => [...prev, ...newPreviews]);
-    }
+    const files = Array.from(e.target.files || []).slice(0, Math.max(0, 4 - selectedFiles.length));
+    const accepted = files.filter((file) => ["image/jpeg", "image/png", "image/webp"].includes(file.type) && file.size <= 5 * 1024 * 1024);
+    setSelectedFiles((prev) => [...prev, ...accepted].slice(0, 4));
+    setPreviews((prev) => [...prev, ...accepted.map((file) => URL.createObjectURL(file))].slice(0, 4));
   };
 
   const removeFile = (index: number) => {
-    setSelectedFiles(prev => prev.filter((_, i) => i !== index));
-    setPreviews(prev => {
-      URL.revokeObjectURL(prev[index]);
+    setSelectedFiles((prev) => prev.filter((_, i) => i !== index));
+    setPreviews((prev) => {
+      if (prev[index]) URL.revokeObjectURL(prev[index]);
       return prev.filter((_, i) => i !== index);
     });
   };
 
-  /**
-   * Uploads review images through the server-side API route.
-   * Using a server route ensures the service role key is used for storage,
-   * bypassing RLS policies that would block client-side direct uploads.
-   */
   const uploadImages = async (): Promise<string[]> => {
-    if (selectedFiles.length === 0) return [];
-
-    const uploadPromises = selectedFiles.map(async (file) => {
+    const urls: string[] = [];
+    for (const file of selectedFiles) {
       const formData = new FormData();
       formData.append("file", file);
-
-      const res = await fetch("/api/reviews/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!res.ok) {
-        const err = await res.json();
-        throw new Error(err.error || "Upload failed");
-      }
-
-      const { url } = await res.json();
-      return url as string;
-    });
-
-    return Promise.all(uploadPromises);
+      formData.append("product_id", productId);
+      const res = await fetch("/api/reviews/upload", { method: "POST", body: formData });
+      const data = await res.json();
+      if (!res.ok || !data.url) throw new Error(data.error || "Review image upload failed");
+      urls.push(data.url);
+    }
+    return urls;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isSignedIn) return;
     setLoading(true);
-    
+    setError("");
+
     try {
-      const imageUrls = await uploadImages();
-      
+      const images = await uploadImages();
       const res = await fetch("/api/reviews", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          product_id: productId,
-          user_name: user?.fullName || user?.username || "Anonymous Developer",
-          rating: newReview.rating,
-          comment: newReview.comment,
-          verified: isSignedIn || false,
-          images: imageUrls
-        })
+        body: JSON.stringify({ product_id: productId, rating: newReview.rating, comment: newReview.comment, images }),
       });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Review could not be saved");
 
-      if (res.ok) {
-        const addedReview = await res.json();
-        setReviews([addedReview, ...reviews]);
-        setShowForm(false);
-        setNewReview({ rating: 5, comment: "" });
-        setSelectedFiles([]);
-        setPreviews([]);
-      }
+      setReviews((prev) => [data, ...prev.filter((review) => review.id !== data.id)]);
+      setShowForm(false);
+      setNewReview({ rating: 5, comment: "" });
+      previews.forEach((url) => URL.revokeObjectURL(url));
+      setSelectedFiles([]);
+      setPreviews([]);
     } catch (err) {
-      console.error("Failed to submit review:", err);
+      setError(err instanceof Error ? err.message : "Review could not be saved");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="mt-16 border-t-4 border-white pt-16">
-      <div className="flex flex-col md:flex-row items-center justify-between mb-12 gap-8">
+    <section className="mt-16 border-t border-white/10 pt-16">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-8 mb-12">
         <div>
-          <h2 className="text-5xl font-outfit font-black italic tracking-tighter uppercase mb-4">
-            Protocol <span className="text-primary italic">Reports</span>
-          </h2>
-          <div className="flex items-center gap-4 text-xs font-mono uppercase tracking-widest text-white/40">
-            <div className="flex gap-1">
-              {[1,2,3,4,5].map(i => <div key={i} className="w-2 h-4 bg-primary" />)}
-            </div>
-            <span>Based on {reviews.length} deployment activations</span>
-          </div>
+          <p className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-primary mb-3">Verified purchase reviews</p>
+          <h2 className="text-4xl md:text-5xl font-outfit font-black tracking-tighter text-white mb-3">Customer feedback</h2>
+          {reviews.length ? (
+            <p className="text-sm text-white/45">{average.toFixed(1)} / 5 from {reviews.length} verified purchase{reviews.length === 1 ? "" : "s"}.</p>
+          ) : (
+            <p className="text-sm text-white/45">No verified-purchase reviews have been published for this product yet.</p>
+          )}
         </div>
-        {!showForm && (
-          <button 
-            onClick={() => setShowForm(true)} 
-            className="bg-primary text-black font-outfit font-black uppercase italic px-8 py-3 border-4 border-white hover:bg-white transition-all shadow-[8px_8px_0px_rgba(255,255,255,0.1)] active:translate-x-[4px] active:translate-y-[4px] active:shadow-none"
-          >
-            Submit Report
-          </button>
+
+        {isSignedIn ? (
+          !showForm && <button onClick={() => setShowForm(true)} className="px-6 py-3 rounded-full bg-primary text-black font-black text-sm">Write a review</button>
+        ) : (
+          <Link href={`/sign-in?redirect_url=${encodeURIComponent(`/product/${productId}`)}`} className="px-6 py-3 rounded-full border border-white/10 text-white text-sm hover:border-primary/40">Sign in to review</Link>
         )}
       </div>
 
-      <AnimatePresence>
-        {showForm && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            className="overflow-hidden mb-20"
-          >
-            <form onSubmit={handleSubmit} className="bg-white/5 p-10 border-4 border-white/10 space-y-8 relative">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                 <Terminal className="w-16 h-16" />
-              </div>
-
-              <div className="space-y-4">
-                <label className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-white/30">System_Rating</label>
-                <div className="flex gap-3">
-                  {[1,2,3,4,5].map(i => (
-                    <button
-                      key={i}
-                      type="button"
-                      onClick={() => setNewReview({ ...newReview, rating: i })}
-                      className={`w-12 h-12 border-2 transition-all flex items-center justify-center ${newReview.rating >= i ? "border-primary bg-primary/10 text-primary" : "border-white/10 bg-white/5 text-white/20"}`}
-                    >
-                      <Star className={`w-6 h-6 ${newReview.rating >= i ? "fill-current" : ""}`} />
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-4">
-                <label className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-white/30">Technical_Observation</label>
-                <textarea
-                  required
-                  rows={4}
-                  value={newReview.comment}
-                  onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
-                  placeholder="Input technical experience log..."
-                  className="w-full bg-black border-2 border-white/10 rounded-none p-6 focus:outline-none focus:border-primary transition-all text-white font-mono text-sm placeholder:text-white/10"
-                />
-              </div>
-
-              <div className="space-y-6">
-                <label className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-white/30">Visual_Proof_Capture</label>
-                <div className="flex flex-wrap gap-4">
-                  {previews.map((url, i) => (
-                    <div key={url} className="relative w-32 h-32 border-4 border-primary/40 rounded-none overflow-hidden group">
-                      {/* eslint-disable-next-line @next/next/no-img-element -- blob: URLs are not supported by next/image */}
-                      <img src={url} alt="Preview" className="w-full h-full object-cover grayscale" />
-                      <button
-                        type="button"
-                        onClick={() => removeFile(i)}
-                        className="absolute inset-0 bg-red-600/80 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="w-8 h-8 text-white" />
-                      </button>
-                    </div>
-                  ))}
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="w-32 h-32 border-4 border-dashed border-white/10 rounded-none flex flex-col items-center justify-center gap-3 hover:border-primary/40 hover:bg-primary/5 transition-all group"
-                  >
-                    <ImageIcon className="w-8 h-8 text-white/20 group-hover:text-primary transition-colors" />
-                    <span className="text-[9px] uppercase font-mono font-black text-white/20 group-hover:text-primary transition-colors">Add_Capture</span>
-                  </button>
-                </div>
-                <input
-                  type="file"
-                  multiple
-                  accept="image/*"
-                  ref={fileInputRef}
-                  onChange={handleFileChange}
-                  className="hidden"
-                />
-              </div>
-
-              <div className="flex gap-6 pt-6">
-                <button 
-                  type="submit" 
-                  disabled={loading}
-                  className="bg-white text-black font-outfit font-black uppercase italic px-10 py-4 border-4 border-primary hover:bg-primary transition-all flex items-center gap-3"
-                >
-                  {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                  Finalize_Report
+      {showForm && (
+        <motion.form initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleSubmit} className="mb-14 border border-white/10 bg-white/[0.03] rounded-3xl p-6 md:p-8 space-y-7">
+          <div>
+            <label className="text-xs font-bold text-white/50 block mb-3">Rating</label>
+            <div className="flex gap-2">
+              {[1, 2, 3, 4, 5].map((value) => (
+                <button key={value} type="button" aria-label={`${value} star rating`} onClick={() => setNewReview((prev) => ({ ...prev, rating: value }))} className={`w-11 h-11 rounded-xl border flex items-center justify-center ${newReview.rating >= value ? "border-primary/50 bg-primary/10 text-primary" : "border-white/10 text-white/20"}`}>
+                  <Star className={`w-5 h-5 ${newReview.rating >= value ? "fill-current" : ""}`} />
                 </button>
-                <button 
-                  type="button" 
-                  onClick={() => setShowForm(false)}
-                  className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-white/20 hover:text-white transition-colors"
-                >
-                  Cancel_Sequence
-                </button>
-              </div>
-            </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      <div className="space-y-12">
-        {reviews.length === 0 ? (
-          <div className="py-20 text-center border-4 border-dashed border-white/5">
-             <p className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-white/10">No protocol reports archived for this node</p>
+              ))}
+            </div>
           </div>
-        ) : (
-          reviews.map((review) => (
-            <div key={review.id} className="bg-white/2 border-l-8 border-primary p-10 rounded-none group hover:bg-white/5 transition-all">
-              <div className="flex flex-col md:flex-row justify-between items-start mb-8 gap-6">
-                <div className="flex items-center gap-6">
-                  <div className="w-16 h-16 bg-black flex items-center justify-center border-2 border-white/10 group-hover:border-primary/40 transition-colors">
-                    <User className="w-8 h-8 text-white/20" />
-                  </div>
-                  <div>
-                    <h4 className="font-outfit font-black text-2xl italic uppercase text-white flex flex-wrap items-center gap-4 tracking-tighter">
-                      {review.user_name}
-                      {review.verified && (
-                        <span className="text-[9px] bg-primary text-black px-3 py-0.5 font-mono font-black uppercase tracking-widest flex items-center gap-2 italic">
-                          <ShieldCheck className="w-3.5 h-3.5" /> VERIFIED_NODE
-                        </span>
-                      )}
-                    </h4>
-                    <div className="flex gap-1 mt-3">
-                      {[...Array(5)].map((_, i) => (
-                        <div key={i} className={`w-3 h-5 ${i < review.rating ? "bg-primary" : "bg-white/5"}`} />
-                      ))}
-                    </div>
-                  </div>
+
+          <div>
+            <label htmlFor="review-comment" className="text-xs font-bold text-white/50 block mb-3">Your experience</label>
+            <textarea id="review-comment" required minLength={2} maxLength={5000} rows={5} value={newReview.comment} onChange={(e) => setNewReview((prev) => ({ ...prev, comment: e.target.value }))} className="w-full bg-black/30 border border-white/10 rounded-2xl p-5 focus:outline-none focus:border-primary/50 text-white text-sm" placeholder="Describe what you bought and how it worked for you." />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between gap-4 mb-3"><span className="text-xs font-bold text-white/50">Optional screenshots</span><span className="text-[10px] text-white/25">JPEG, PNG, WebP · max 4 · 5 MB each</span></div>
+            <div className="flex flex-wrap gap-3">
+              {previews.map((url, index) => (
+                <div key={url} className="relative w-24 h-24 border border-white/10 rounded-xl overflow-hidden">
+                  {/* blob URLs cannot be optimized by next/image */}
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={url} alt="Review upload preview" className="w-full h-full object-cover" />
+                  <button type="button" aria-label="Remove image" onClick={() => removeFile(index)} className="absolute top-1 right-1 w-7 h-7 rounded-full bg-black/80 text-white flex items-center justify-center"><X className="w-4 h-4" /></button>
                 </div>
-                <span className="text-[10px] text-white/20 font-mono uppercase tracking-widest">{new Date(review.created_at).toLocaleDateString()}</span>
-              </div>
-              <p className="text-white/60 leading-relaxed text-xl font-inter italic mb-8 border-l-2 border-white/5 pl-8">
-                &ldquo;{review.comment}&rdquo;
-              </p>
-              {review.images && review.images.length > 0 && (
-                <div className="flex flex-wrap gap-4 mt-10">
-                  {review.images.map((img, i) => (
-                    <motion.div 
-                      key={i} 
-                      whileHover={{ scale: 1.05, rotate: 1 }}
-                      className="w-32 h-32 bg-black border-2 border-white/10 overflow-hidden cursor-zoom-in"
-                    >
-                      <NextImage
-                        src={img}
-                        alt={`Review screenshot ${i + 1}`}
-                        width={128}
-                        height={128}
-                        unoptimized
-                        className="w-full h-full object-cover grayscale opacity-50 hover:grayscale-0 hover:opacity-100 transition-all duration-500"
-                      />
-                    </motion.div>
-                  ))}
-                </div>
+              ))}
+              {selectedFiles.length < 4 && (
+                <button type="button" onClick={() => fileInputRef.current?.click()} className="w-24 h-24 border border-dashed border-white/15 rounded-xl flex flex-col items-center justify-center gap-2 text-white/30 hover:text-primary hover:border-primary/30"><ImageIcon className="w-5 h-5" /><span className="text-[9px]">Add</span></button>
               )}
             </div>
-          ))
-        )}
-      </div>
-    </div>
+            <input ref={fileInputRef} type="file" multiple accept="image/jpeg,image/png,image/webp" onChange={handleFileChange} className="hidden" />
+          </div>
 
+          {error && <p className="text-sm text-red-300 border border-red-500/20 bg-red-500/10 rounded-xl p-4">{error}</p>}
+          <p className="text-xs text-white/30 flex items-start gap-2"><ShieldCheck className="w-4 h-4 text-primary shrink-0" />The server accepts a review only when your signed-in email has a license record for this product.</p>
+
+          <div className="flex flex-wrap gap-3">
+            <button type="submit" disabled={loading} className="px-6 py-3 rounded-full bg-primary text-black font-black text-sm flex items-center gap-2 disabled:opacity-50">{loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />} Save review</button>
+            <button type="button" onClick={() => { setShowForm(false); setError(""); }} className="px-6 py-3 rounded-full border border-white/10 text-white/50 text-sm">Cancel</button>
+          </div>
+        </motion.form>
+      )}
+
+      <div className="space-y-6">
+        {reviews.map((review) => (
+          <article key={review.id} className="border border-white/10 bg-white/[0.02] rounded-3xl p-6 md:p-8">
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 mb-5">
+              <div>
+                <div className="flex flex-wrap items-center gap-3"><h3 className="font-bold text-white">{review.user_name}</h3><span className="inline-flex items-center gap-1 px-2 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-[9px] font-black uppercase"><ShieldCheck className="w-3 h-3" /> Verified purchase</span></div>
+                <div className="flex gap-1 mt-3" aria-label={`${review.rating} out of 5 stars`}>{[1, 2, 3, 4, 5].map((value) => <Star key={value} className={`w-4 h-4 ${value <= review.rating ? "text-primary fill-current" : "text-white/10"}`} />)}</div>
+              </div>
+              <time className="text-xs text-white/25">{new Date(review.created_at).toLocaleDateString()}</time>
+            </div>
+            <p className="text-white/55 leading-relaxed">{review.comment}</p>
+            {!!review.images?.length && <div className="flex flex-wrap gap-3 mt-6">{review.images.map((image, index) => <NextImage key={image} src={image} alt={`Customer review image ${index + 1}`} width={120} height={120} unoptimized className="w-28 h-28 rounded-xl object-cover border border-white/10" />)}</div>}
+          </article>
+        ))}
+      </div>
+    </section>
   );
 }
