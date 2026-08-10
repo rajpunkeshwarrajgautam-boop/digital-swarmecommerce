@@ -1,83 +1,70 @@
 import crypto from "crypto";
 
-/**
- * ARCHITECTURAL_BRIDGE: HMAC Signing Protocol
- * Allows external systems to securely communicate with the Digital Swarm.
- */
+function getBridgeSecret(): string {
+  const secret = process.env.SWARM_BRIDGE_SECRET?.trim();
+  if (!secret || secret.length < 32) {
+    throw new Error("SWARM_BRIDGE_SECRET must be configured with at least 32 characters");
+  }
+  return secret;
+}
 
-const BRIDGE_SECRET = process.env.SWARM_BRIDGE_SECRET || "default_swarm_secret_7721";
+function safeEqualHex(actual: string, expected: string): boolean {
+  if (!/^[a-f0-9]+$/i.test(actual) || actual.length !== expected.length) return false;
+  try {
+    return crypto.timingSafeEqual(Buffer.from(actual, "hex"), Buffer.from(expected, "hex"));
+  } catch {
+    return false;
+  }
+}
 
-/**
- * SECURITY_SIGNER: Generates an HMAC signature for a given payload.
- */
-export function signBridgeRequest(payload: any): string {
+/** Generate an HMAC-SHA256 signature for a bridge payload. */
+export function signBridgeRequest(payload: unknown): string {
   const data = typeof payload === "string" ? payload : JSON.stringify(payload);
-  return crypto
-    .createHmac("sha256", BRIDGE_SECRET)
-    .update(data)
-    .digest("hex");
+  return crypto.createHmac("sha256", getBridgeSecret()).update(data).digest("hex");
 }
 
-/**
- * SECURITY_VERIFIER: Verifies an incoming HMAC signature.
- */
-export function verifyBridgeRequest(payload: any, signature: string): boolean {
+/** Verify a bridge payload signature with a constant-time comparison. */
+export function verifyBridgeRequest(payload: unknown, signature: string): boolean {
   if (!signature) return false;
-  
   const expectedSignature = signBridgeRequest(payload);
-  
-  // Use constant-time comparison to prevent timing attacks
-  return crypto.timingSafeEqual(
-    Buffer.from(signature, "hex"),
-    Buffer.from(expectedSignature, "hex")
-  );
+  return safeEqualHex(signature, expectedSignature);
 }
 
-/**
- * INTEROP_PROTOCOL: Standard payload for cross-swarm communication.
- */
+/** Verify the authorization header used by bridge control endpoints. */
+export function verifyBridgeAuthorization(authorization: string | null): boolean {
+  if (!authorization?.startsWith("Bearer ")) return false;
+  const candidate = authorization.slice(7).trim();
+  const expected = getBridgeSecret();
+  if (candidate.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(candidate), Buffer.from(expected));
+}
+
 export interface BridgePayload {
   nodeId: string;
-  action: 'QUERY_LEDGER' | 'VERIFY_IDENTITY' | 'EXECUTE_TASK';
+  action: "QUERY_LEDGER" | "VERIFY_IDENTITY" | "EXECUTE_TASK";
   timestamp: number;
-  params: any;
+  params: unknown;
 }
 
-/**
- * ARCHITECTURAL_BRIDGE: Centralized service for cross-swarm asset transfer.
- */
 export class SwarmBridgeService {
-  /**
-   * EXPORT: Generates a signed manifest for an asset to be moved to another swarm.
-   */
   static async exportAsset(tokenId: string) {
-    // In a real scenario, this would fetch from Supabase.
-    // For now, we generate a signed manifest for the digital forge.
     const manifest = {
       tokenId,
       origin: "DIGITAL_SWARM_IN",
       timestamp: Date.now(),
-      status: "STAGED_FOR_TRANSFER"
+      status: "STAGED_FOR_TRANSFER",
     };
 
     const signature = signBridgeRequest(manifest);
     return { ...manifest, signature };
   }
 
-  /**
-   * IMPORT: Verifies and registers an asset coming from another swarm.
-   */
-  static async importAsset(manifest: any) {
+  static async importAsset(manifest: Record<string, unknown>) {
     const { signature, ...payload } = manifest;
-    
-    const isValid = verifyBridgeRequest(payload, signature);
-    if (!isValid) {
+    if (typeof signature !== "string" || !verifyBridgeRequest(payload, signature)) {
       return { success: false, error: "INVALID_SIGNATURE" };
     }
 
-    // Register asset in local registry (Simulated)
-    console.log(`[BRIDGE] Asset ${payload.tokenId} imported successfully.`);
     return { success: true };
   }
 }
-
