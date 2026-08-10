@@ -95,7 +95,7 @@ export const ForgeHero = () => {
               variant="outline"
               size="lg"
               onClick={() => {
-                trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "secondary_product_finder", "Product finder");
+                trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "secondary_concierge", "Product finder");
                 toggleConcierge();
               }}
             >
