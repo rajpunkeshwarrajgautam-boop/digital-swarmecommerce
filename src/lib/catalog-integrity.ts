@@ -16,6 +16,7 @@ export function sanitizeCatalogText(value: string): string {
   return value
     .replace(/24\s*\/\s*7\s*(priority\s*)?support/gi, 'Email support')
     .replace(/24\s*\/\s*7\s*priority/gi, 'Email')
+    .replace(/priority\s+support/gi, 'Email support')
     .replace(/\s*\(HIPAA\s*Mode\)/gi, '')
     .replace(/HIPAA[- ]compliant/gi, 'healthcare-oriented')
     .trim();
