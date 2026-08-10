@@ -14,7 +14,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useForgeStore } from "@/lib/forge-store";
 import { CurrencySwitcher } from "./CurrencySwitcher";
-import { SystemBroadcast } from "./SystemBroadcast";
 import { useAudio } from "@/hooks/useAudio";
 import { PromoBanner } from "@/components/home/PromoBanner";
 
@@ -28,7 +27,6 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   
   const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
-  const systemStatus = useForgeStore((state) => state.systemStatus);
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalWishlist = wishlistItems.length;
@@ -72,11 +70,7 @@ export function Header() {
         }`}
       >
         <PromoBanner />
-        <div className="hidden md:block">
-          <SystemBroadcast />
-        </div>
-        
-        <div className={`container mx-auto px-4 md:px-6 flex items-center justify-between gap-4 md:gap-8 transition-all duration-500 ${scrolled ? 'h-14' : 'h-16 md:h-20'}`}>
+<div className={`container mx-auto px-4 md:px-6 flex items-center justify-between gap-4 md:gap-8 transition-all duration-500 ${scrolled ? 'h-14' : 'h-16 md:h-20'}`}>
           
           {/* 1. LEFT: Logo & System Status */}
           <div className="flex items-center gap-4 md:gap-6 shrink-0">
@@ -88,14 +82,7 @@ export function Header() {
             
             <div className="hidden xl:flex items-center gap-6">
               <CurrencySwitcher />
-              
-              <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-                <span className={`w-1.5 h-1.5 rounded-full ${systemStatus === 'idle' ? 'bg-accent' : 'bg-primary'} animate-pulse shadow-[0_0_8px_currentColor]`} />
-                <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
-                  Status: {systemStatus === 'idle' ? 'Online' : 'Active'}
-                </span>
-              </div>
-            </div>
+</div>
           </div>
 
           {/* 2. CENTER: Main Navigation */}
@@ -256,7 +243,7 @@ export function Header() {
               </ForgeButton>
               
               <div className="flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">
-                <span>Status: Optimal</span>
+                <span>Private paid delivery</span>
                 <span>© DIGITAL SWARM 2026</span>
               </div>
             </div>

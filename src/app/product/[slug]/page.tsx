@@ -159,7 +159,7 @@ export default function ProductPage() {
 
   const downloadPath = product.downloadUrl ?? "";
   const deliveryLabel = downloadPath.endsWith(".zip")
-    ? "Source code package (.zip)"
+    ? "Private delivery bundle (.zip)"
     : downloadPath.endsWith(".html")
       ? "Interactive playbook (.html)"
       : downloadPath.endsWith(".pdf")
@@ -168,7 +168,7 @@ export default function ProductPage() {
   /** Short PDP chip — must not imply a shipped proprietary .json blueprint. */
   const deliveryChip =
     downloadPath.endsWith(".zip")
-      ? "ZIP archive (post-purchase)"
+      ? "Private ZIP bundle (post-purchase)"
       : downloadPath.endsWith(".html")
         ? "HTML delivery page"
         : downloadPath.endsWith(".pdf")
@@ -249,10 +249,10 @@ export default function ProductPage() {
                 {product.inStock ? (
                    <div className="px-3 py-1 border border-primary/20 bg-primary/5 text-primary text-[9px] font-mono font-black uppercase tracking-widest flex items-center gap-2 italic">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full animate-pulse" />
-                    In Stock
+                    Available
                    </div>
                 ) : (
-                  <div className="px-3 py-1 border border-red-500/20 bg-red-500/5 text-red-500 text-[9px] font-mono font-black uppercase tracking-widest italic">Inventory Depleted</div>
+                  <div className="px-3 py-1 border border-red-500/20 bg-red-500/5 text-red-500 text-[9px] font-mono font-black uppercase tracking-widest italic">Unavailable</div>
                 )}
               </div>
 
@@ -262,7 +262,7 @@ export default function ProductPage() {
               
               <div className="flex flex-wrap items-end gap-10 mb-12">
                 <div className="flex flex-col">
-                  <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Price Tracking</p>
+                  <p className="text-[9px] font-mono text-white/20 uppercase tracking-widest mb-1">Price</p>
                   <div className="flex items-baseline gap-4">
                     <span className="text-5xl font-outfit font-black italic tracking-tighter text-primary">₹{product.price.toLocaleString("en-IN")}</span>
                     {product.originalPrice && (
@@ -437,7 +437,7 @@ export default function ProductPage() {
                      window.location.href = `/checkout?product=${product.id}`;
                    }}
                 >
-                  Link Protocols <ArrowRight className="w-5 h-5 ml-4 inline-block" />
+                  Buy Now <ArrowRight className="w-5 h-5 ml-4 inline-block" />
                 </ForgeButton>
               </div>
 
@@ -445,20 +445,20 @@ export default function ProductPage() {
               <div className="grid grid-cols-3 gap-8 py-10 border-y border-white/5">
                 <div className="flex flex-col items-center gap-4 group">
                   <Truck className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20 text-center">Instant Delivery</span>
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20 text-center">Private Delivery</span>
                 </div>
                 <div className="flex flex-col items-center gap-4 group text-center">
                   <Shield className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Secure Payments</span>
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Cashfree Checkout</span>
                 </div>
                 <div className="flex flex-col items-center gap-4 group text-center">
                   <RotateCcw className="w-5 h-5 text-primary group-hover:scale-110 transition-transform" />
-                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Satisfaction Guaranteed</span>
+                  <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/20">Refund Policy</span>
                 </div>
               </div>
 
               <div className="grid gap-4 md:grid-cols-3 text-center text-[10px] font-mono uppercase tracking-[0.25em] text-white/50">
-                <Link href="/refund" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">30-day refund policy</Link>
+                <Link href="/refund" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">30-day refund review window</Link>
                 <Link href="/terms" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">commercial licensing terms</Link>
                 <Link href="/privacy" className="border border-white/10 py-4 hover:border-primary/40 hover:text-primary transition-all">privacy + compliance</Link>
               </div>
