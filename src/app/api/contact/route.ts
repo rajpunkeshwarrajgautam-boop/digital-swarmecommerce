@@ -3,16 +3,15 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { rateLimit } from '@/lib/rate-limit';
 
 const limiter = rateLimit({
-  interval: 10 * 60 * 1000, // 10 minutes
-  uniqueTokenPerInterval: 500, // Max IPs to track
+  interval: 10 * 60 * 1000,
+  uniqueTokenPerInterval: 500,
 });
 
 export async function POST(request: Request) {
   try {
-    // Rate Limit Check
     const ip = request.headers.get('x-forwarded-for') || 'anonymous';
     try {
-      await limiter.check(3, ip); // 3 requests per interval
+      await limiter.check(3, ip);
     } catch {
       return NextResponse.json({ error: 'Too many messages. Please try again later.' }, { status: 429 });
     }
@@ -20,9 +19,8 @@ export async function POST(request: Request) {
     const body = await request.json();
     const { firstName, lastName, email, message } = body;
 
-    // Basic server-side validation
     if (!firstName?.trim() || !email?.trim() || !message?.trim()) {
-      return NextResponse.json({ error: 'First name, email, and message are required.' }, { status: 400 });
+      return NextResponse.json({ error: 'Name, email, and message are required.' }, { status: 400 });
     }
 
     const emailRegex = /\S+@\S+\.\S+/;
@@ -30,28 +28,24 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'Invalid email address.' }, { status: 400 });
     }
 
-    // Save to Supabase
     if (!supabaseAdmin) {
-      return NextResponse.json({ error: 'Database configuration missing' }, { status: 500 });
+      return NextResponse.json({ error: 'Support database is temporarily unavailable.' }, { status: 503 });
     }
 
     const { error } = await supabaseAdmin
       .from('contact_messages')
       .insert({
-        first_name: firstName.trim(),
-        last_name: lastName?.trim() || '',
-        email: email.trim().toLowerCase(),
-        message: message.trim(),
+        first_name: firstName.trim().slice(0, 120),
+        last_name: lastName?.trim().slice(0, 120) || '',
+        email: email.trim().toLowerCase().slice(0, 254),
+        message: message.trim().slice(0, 10_000),
       });
 
     if (error) {
       console.error('[contact] Supabase insert failed:', error.message);
       return NextResponse.json(
-        {
-          error:
-            'We could not store your message right now. Please email ops@digitalswarm.in or try again shortly.',
-        },
-        { status: 503 }
+        { error: 'We could not store your message right now. Please email support@digitalswarm.in or try again shortly.' },
+        { status: 503 },
       );
     }
 
