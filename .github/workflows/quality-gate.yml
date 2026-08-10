@@ -9,7 +9,6 @@ jobs:
   quality:
     runs-on: ubuntu-latest
     timeout-minutes: 30
-    # Shared by build, `next start` (Lighthouse), and any step that needs app config.
     env:
       FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
@@ -42,17 +41,11 @@ jobs:
       - name: Build app
         run: npm run build
 
-      - name: E2E chromium
+      - name: E2E chromium against branch build
         run: npm run test:e2e:chromium
-        env:
-          PLAYWRIGHT_NO_WEBSERVER: "1"
-          PLAYWRIGHT_PRODUCTION_URL: https://digitalswarm.in
 
-      - name: E2E webkit
+      - name: E2E webkit against branch build
         run: npm run test:e2e:webkit
-        env:
-          PLAYWRIGHT_NO_WEBSERVER: "1"
-          PLAYWRIGHT_PRODUCTION_URL: https://digitalswarm.in
 
       - name: Lighthouse CI
         run: npm run perf:lighthouse
