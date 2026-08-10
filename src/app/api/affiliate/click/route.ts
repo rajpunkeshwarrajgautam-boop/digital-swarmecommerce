@@ -1,49 +1,58 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { rateLimit } from "@/lib/rate-limit";
 
-/**
- * POST /api/affiliate/click
- * Increments the click counter for a given ref code.
- * Called whenever someone visits the site via a referral link.
- *
- * Body: { refCode: string }
- */
+const limiter = rateLimit({ interval: 60 * 60 * 1000, uniqueTokenPerInterval: 1000 });
+const REF_CODE = /^[a-z0-9_-]{3,64}$/i;
+
+/** Record one referral visit. The browser deduplicates per session and this
+ * endpoint validates/rate-limits the code before incrementing the DB counter. */
 export async function POST(req: NextRequest) {
   try {
-    const { refCode } = (await req.json()) as { refCode: string };
+    const ip = req.headers.get("x-forwarded-for") || "anonymous";
+    try {
+      await limiter.check(30, ip);
+    } catch {
+      return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
+    }
 
-    if (!refCode || typeof refCode !== "string") {
-      return NextResponse.json({ error: "refCode required" }, { status: 400 });
+    const { refCode } = (await req.json()) as { refCode?: string };
+    const normalized = typeof refCode === "string" ? refCode.trim() : "";
+    if (!REF_CODE.test(normalized)) {
+      return NextResponse.json({ error: "Invalid referral code" }, { status: 400 });
     }
 
     if (!supabaseAdmin) {
       return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
     }
 
-    // Increment click count atomically via Supabase RPC
+    const { data: affiliate, error: lookupError } = await supabaseAdmin
+      .from("affiliates")
+      .select("id")
+      .eq("referral_code", normalized)
+      .eq("status", "active")
+      .maybeSingle();
+
+    if (lookupError) {
+      console.error("[affiliate click] lookup failed", lookupError.message);
+      return NextResponse.json({ error: "Tracking unavailable" }, { status: 503 });
+    }
+    if (!affiliate) {
+      return NextResponse.json({ error: "Unknown referral code" }, { status: 404 });
+    }
+
     const { error } = await supabaseAdmin.rpc("increment_affiliate_clicks", {
-      p_ref_code: refCode,
+      p_ref_code: normalized,
     });
 
     if (error) {
-      // Fallback: direct increment if RPC doesn't exist
-      const { data: affiliate } = await supabaseAdmin
-        .from("affiliates")
-        .select("clicks")
-        .eq("ref_code", refCode)
-        .single();
-
-      if (affiliate) {
-        await supabaseAdmin
-          .from("affiliates")
-          .update({ clicks: (affiliate.clicks || 0) + 1 })
-          .eq("ref_code", refCode);
-      }
+      console.error("[affiliate click] increment failed", error.message);
+      return NextResponse.json({ error: "Tracking unavailable" }, { status: 503 });
     }
 
     return NextResponse.json({ success: true });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    console.error("[affiliate click] unexpected error", err);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
