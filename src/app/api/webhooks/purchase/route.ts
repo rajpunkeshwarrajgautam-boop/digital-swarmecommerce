@@ -6,197 +6,163 @@ import { recordCommission } from "@/lib/commissions";
 import { sealTransaction } from "@/lib/ledger";
 import crypto from "crypto";
 
-
 const supabase = createClient(
   process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
+  process.env.SUPABASE_SERVICE_ROLE_KEY!,
 );
 
 const resendApiKey = process.env.RESEND_API_KEY?.trim() || "";
 const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-/**
- * ARCHITECTURAL_HARDENING: Webhook Integrity Protocol
- * Verifies that the payload truly originated from the payment gateway.
- */
-function verifySignature(payload: any, signature: string) {
-  const secret = process.env.CASHFREE_SECRET_KEY || "";
-  if (!secret) return true; // Fail-safe for dev, MUST be enforced in prod
-  
-  // Implementation of gateway-specific signature verification logic would go here
-  // For MVP: We ensure the orderId exists as a minimum barrier
-  return !!payload.orderId;
+function safeSecretEqual(candidate: string, expected: string): boolean {
+  if (!candidate || candidate.length !== expected.length) return false;
+  return crypto.timingSafeEqual(Buffer.from(candidate), Buffer.from(expected));
 }
 
-/**
- * POST-PURCHASE WEBHOOK PROCESSOR
- */
+function authorizeInternalFulfillment(request: Request): boolean {
+  const expected = process.env.INTERNAL_FULFILLMENT_SECRET?.trim();
+  if (!expected || expected.length < 32) return false;
+  const candidate = request.headers.get("x-internal-fulfillment-secret")?.trim() || "";
+  return safeSecretEqual(candidate, expected);
+}
+
+function createLicenseKey(orderId: string, email: string, productId: string): string {
+  const secret = process.env.LICENSE_SIGNING_SECRET?.trim();
+  if (!secret || secret.length < 32) {
+    throw new Error("LICENSE_SIGNING_SECRET is not configured");
+  }
+
+  const header = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString("base64url");
+  const payload = Buffer.from(JSON.stringify({
+    orderId,
+    email,
+    productId,
+    iat: Math.floor(Date.now() / 1000),
+  })).toString("base64url");
+  const signature = crypto.createHmac("sha256", secret).update(`${header}.${payload}`).digest("base64url");
+  return `${header}.${payload}.${signature}`;
+}
+
+function escapeHtml(value: string): string {
+  return value.replace(/[&<>'"]/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "'": "&#39;",
+    '"': "&quot;",
+  })[char] || char);
+}
+
 export async function POST(request: Request) {
+  if (!authorizeInternalFulfillment(request)) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
   try {
-    const rawBody = await request.text();
-    const payload = JSON.parse(rawBody);
-    const signature = request.headers.get("x-cf-signature") || "";
+    const payload = await request.json();
+    const orderId = typeof payload?.orderId === "string" ? payload.orderId.trim() : "";
+    const customerEmail = typeof payload?.customerEmail === "string" ? payload.customerEmail.trim().toLowerCase() : "";
+    const productId = typeof payload?.productId === "string" ? payload.productId.trim() : "";
 
-    // 1. [SECURITY] Signature Verification
-    if (!verifySignature(payload, signature)) {
-      console.error("[SECURITY_BREACH]: Invalid webhook signature detected.");
-      return NextResponse.json({ error: "UNAUTHORIZED_PAYLOAD" }, { status: 401 });
-    }
-    
-    if (!payload.orderId || !payload.customerEmail) {
-      return NextResponse.json({ error: "Missing payload data" }, { status: 400 });
+    if (!orderId || !customerEmail || !productId || orderId.length > 180 || productId.length > 180) {
+      return NextResponse.json({ error: "Invalid fulfillment payload" }, { status: 400 });
     }
 
-    // 2. Locate Product Details
-    const product = products.find(p => p.id === payload.productId);
-    let downloadUrl = product ? product.downloadUrl : "/dashboard";
-    const installGuide = product ? product.installGuide : "Please check your dashboard for further instructions.";
-    const merchantId = product?.merchantId || "SYSTEM"; // Fallback to SYSTEM node
-    const price = product?.price || payload.amount || 0;
+    const product = products.find((item) => item.id === productId);
+    const downloadUrl = product?.downloadUrl || "/dashboard";
+    const installGuide = product?.installGuide || "Open your Digital Swarm dashboard for setup instructions.";
+    const merchantId = product?.merchantId || "SYSTEM";
+    const price = product?.price || 0;
 
-    // Generate Secure Signed URL for the asset
-    let secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/dashboard`;
-    if (product && product.downloadUrl) {
-      const filename = product.downloadUrl.split('/').pop();
-      if (filename && filename.includes('.')) {
-        const { data: signedData, error: signError } = await supabase.storage
-          .from('digital_assets')
-          .createSignedUrl(filename, 86400 * 3); // 3-day access for initial email
-        
-        if (signedData?.signedUrl) {
-           secureDownloadUrl = signedData.signedUrl;
-        } else {
-           console.error("[STORAGE_SIGN_ERROR]", signError);
-           secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${downloadUrl}`; // Fallback
-        }
-      } else {
-         secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL}${downloadUrl}`;
-      }
-    }
-
-    // 3. Generate secure JWT License Key
-    const jwtHeader = Buffer.from(JSON.stringify({ alg: "HS256", typ: "JWT" })).toString('base64url');
-    const jwtPayload = Buffer.from(JSON.stringify({ 
-      orderId: payload.orderId, 
-      email: payload.customerEmail, 
-      exp: Math.floor(Date.now() / 1000) + (100 * 365 * 24 * 60 * 60) // 100 years
-    })).toString('base64url');
-    const secureSignature = Buffer.from(process.env.SUPABASE_SERVICE_ROLE_KEY || "default_secret").toString('base64url').slice(0, 16);
-    const licenseKey = `${jwtHeader}.${jwtPayload}.${secureSignature}`;
-    const licenseKeyFinal = `${jwtHeader}.${jwtPayload}.${secureSignature}`;
-
-    // 3. Idempotency Check: Prevent duplicate licenses
     const { data: existingLicense } = await supabase
-      .from('customer_licenses')
-      .select('id')
-      .eq('order_id', payload.orderId)
+      .from("customer_licenses")
+      .select("id")
+      .eq("order_id", orderId)
       .maybeSingle();
 
     if (existingLicense) {
-      return NextResponse.json({ success: true, message: "License already fulfilled" });
+      return NextResponse.json({ success: true, message: "Already fulfilled" });
     }
 
-    // 4. Save to Supabase (Production)
-    const { error: dbError } = await supabase.from('customer_licenses').insert({
-      user_email: payload.customerEmail,
-      order_id: payload.orderId,
-      license_key: licenseKeyFinal,
-      license_tier: payload.isWhitelabel ? 'whitelabel' : 'standard',
-      product_id: payload.productId || "unknown"
+    const licenseKey = createLicenseKey(orderId, customerEmail, productId);
+    let secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in"}/dashboard`;
+
+    if (product?.downloadUrl) {
+      const filename = product.downloadUrl.split("/").pop();
+      if (filename?.includes(".")) {
+        const { data: signedData, error: signError } = await supabase.storage
+          .from("digital_assets")
+          .createSignedUrl(filename, 60 * 60 * 24 * 3);
+        if (signedData?.signedUrl) secureDownloadUrl = signedData.signedUrl;
+        else console.error("[STORAGE_SIGN_ERROR]", signError);
+      } else {
+        secureDownloadUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in"}${downloadUrl}`;
+      }
+    }
+
+    const { error: dbError } = await supabase.from("customer_licenses").insert({
+      user_email: customerEmail,
+      order_id: orderId,
+      license_key: licenseKey,
+      license_tier: payload.isWhitelabel ? "whitelabel" : "standard",
+      product_id: productId,
     });
 
     if (dbError) {
-      console.error("[SUPABASE ERROR] Failed to save license:", dbError);
+      console.error("[SUPABASE_ERROR] Failed to save license:", dbError);
+      return NextResponse.json({ error: "Fulfillment persistence failed" }, { status: 500 });
     }
 
-    // 6. [IDEMPOTENCY] Financial Split Check
-    const { data: existingComm } = await supabase
-      .from('commissions')
-      .select('id')
-      .eq('order_id', payload.orderId)
+    const { data: existingCommission } = await supabase
+      .from("commissions")
+      .select("id")
+      .eq("order_id", orderId)
       .maybeSingle();
 
-    if (!existingComm) {
+    if (!existingCommission) {
       try {
-        const { splits } = await recordCommission(payload.orderId, {
+        const { splits } = await recordCommission(orderId, {
           totalAmount: price,
-          merchantId: merchantId,
-          affiliateId: payload.affiliateId || null
+          merchantId,
+          affiliateId: payload.affiliateId || null,
         });
-
-        // 7. [IMMUTABILITY] Seal to Distributed Ledger
         await sealTransaction({
-          transactionId: payload.orderId,
-          payload: {
-            orderId: payload.orderId,
-            customer: payload.customerEmail,
-            productId: payload.productId,
-            splits: splits,
-            timestamp: new Date().toISOString()
-          }
+          transactionId: orderId,
+          payload: { orderId, productId, splits, timestamp: new Date().toISOString() },
         });
-      } catch (commError) {
-        console.error("[FINANCIAL_SYNC_ERROR]:", commError);
+      } catch (commissionError) {
+        console.error("[FINANCIAL_SYNC_ERROR]", commissionError);
       }
     }
 
-
-
-    // 4. Trigger Email Sequence using Resend (Live)
     if (resend) {
       try {
+        const safeProduct = escapeHtml(product?.name || productId);
+        const safeGuide = escapeHtml(installGuide);
         await resend.emails.send({
-          from: 'Digital Swarm <onboarding@resend.dev>', 
-          to: payload.customerEmail,
-          subject: '[Payload_Uplink] Access granted for Digital Swarm Assets',
+          from: "Digital Swarm <onboarding@resend.dev>",
+          to: customerEmail,
+          subject: `Your Digital Swarm access: ${safeProduct}`,
           html: `
-            <div style="font-family: monospace; background-color: #050505; color: #ffffff; padding: 40px; border: 8px solid #000;">
-              <h1 style="color: #CCFF00; font-style: italic; text-transform: uppercase; border-bottom: 4px solid #CCFF00; padding-bottom: 10px; margin-bottom: 20px;">UPLINK_ESTABLISHED</h1>
-              
-              <div style="border-left: 4px solid #CCFF00; padding-left: 20px; margin-bottom: 30px;">
-                <p style="font-size: 16px; margin: 0;">
-                  Greetings, Operator.<br/><br/>
-                  Your transaction for <strong>${payload.productId || "Digital Swarm Assets"}</strong> has been successfully verified in our core ledger. 
-                  The tactical data packets are ready for deployment.
-                </p>
+            <div style="font-family:Arial,sans-serif;background:#07070b;color:#f6f1e8;padding:40px">
+              <div style="max-width:640px;margin:auto;border:1px solid #302b22;border-radius:20px;padding:32px;background:#0c0c12">
+                <p style="letter-spacing:3px;font-size:11px;color:#d9bd7c">DIGITAL SWARM / ACCESS GRANTED</p>
+                <h1 style="font-size:30px;margin:18px 0">${safeProduct}</h1>
+                <p style="color:#b7b3aa;line-height:1.7">Your payment is verified and your digital asset is ready.</p>
+                <div style="margin:24px 0;padding:16px;border-radius:12px;background:#050509;color:#d9bd7c;font-family:monospace;font-size:11px;word-break:break-all">${licenseKey}</div>
+                <pre style="white-space:pre-wrap;color:#aaa6a0;font-size:12px;line-height:1.6">${safeGuide}</pre>
+                <a href="${secureDownloadUrl}" style="display:block;margin-top:24px;padding:16px;border-radius:12px;background:#d9bd7c;color:#09090d;text-decoration:none;text-align:center;font-weight:800">OPEN SECURE DOWNLOAD</a>
               </div>
-              
-              <div style="background-color: #ffffff; color: #000; padding: 30px; border: 4px solid #000; margin-top: 30px; box-shadow: 12px 12px 0 #CCFF00;">
-                <p style="font-size: 10px; font-weight: bold; text-transform: uppercase; letter-spacing: 2px; margin-top: 0; opacity: 0.6;">SYSTEM_ACCESS_KEY</p>
-                <div style="background: #000; color: #CCFF00; padding: 20px; border: 2px solid #000; font-family: monospace; font-size: 11px; word-break: break-all; margin-bottom: 20px;">
-                  ${licenseKey}
-                </div>
-                
-                <h4 style="color: #CCFF00; margin-top: 30px; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">/// QUICK_START_PROTOCOL ///</h4>
-                <pre style="background: rgba(0,0,0,0.3); padding: 15px; border-left: 4px solid #CCFF00; white-space: pre-wrap; font-family: monospace; font-size: 10px; color: #ccc; margin-bottom: 30px;">${installGuide}</pre>
-
-                <a href="${secureDownloadUrl}" style="display: block; background-color: #CCFF00; color: #000; text-decoration: none; padding: 20px; text-align: center; font-weight: 900; text-transform: uppercase; font-size: 18px; border: 4px solid #000; box-shadow: 6px 6px 0 #000; font-style: italic;">
-                  SECURE_UPLINK_DASHBOARD ->
-                </a>
-              </div>
-
-              <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #333;">
-                <p style="font-size: 10px; color: #666; text-transform: uppercase; letter-spacing: 1px;">
-                  [SECURE_ID: ${Math.random().toString(36).substr(2, 9).toUpperCase()}]<br/>
-                  This is an automated system response from the Digital Swarm Engine. Do not reply.
-                </p>
-              </div>
-            </div>
-          `
+            </div>`,
         });
       } catch (resendError) {
-        console.error("[RESEND ERROR]", resendError);
+        console.error("[RESEND_ERROR]", resendError);
       }
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: "Order processed, license generated, email sequence active.",
-      licenseKey
-    });
-
-  } catch (err: unknown) {
-    console.error("Webhook processing error:", err);
+    return NextResponse.json({ success: true, message: "Fulfillment completed" });
+  } catch (err) {
+    console.error("[FULFILLMENT_ERROR]", err);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }

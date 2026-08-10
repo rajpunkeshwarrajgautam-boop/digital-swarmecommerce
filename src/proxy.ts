@@ -1,13 +1,21 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
-// Protect all routes under /dashboard or /profile or /affiliate
 const isProtectedRoute = createRouteMatcher([
-  '/dashboard(.*)', 
-  '/profile(.*)', 
-  '/affiliate(.*)',
-  '/checkout/success(.*)'
+  "/dashboard(.*)",
+  "/profile(.*)",
+  "/affiliate(.*)",
+  "/checkout/success(.*)",
+  "/admin(.*)",
 ]);
+
+const SAFE_ATTRIBUTION = /^[a-zA-Z0-9._~:@/+\- ]{1,120}$/;
+
+function cleanAttribution(value: string | null): string | null {
+  if (!value) return null;
+  const normalized = value.trim().slice(0, 120);
+  return SAFE_ATTRIBUTION.test(normalized) ? normalized : null;
+}
 
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect();
@@ -20,54 +28,54 @@ export default clerkMiddleware(async (auth, req) => {
     secure: isHttps,
   };
 
-  // 1. Edge Geolocation (Market Detection)
-  const country = req.headers.get('x-vercel-ip-country') || 'IN';
-  if (!req.cookies.has('market_hint')) {
-    response.cookies.set('market_hint', country, {
+  const countryHeader = req.headers.get("x-vercel-ip-country");
+  const country = /^[A-Z]{2}$/.test(countryHeader || "") ? countryHeader! : "IN";
+  if (!req.cookies.has("market_hint")) {
+    response.cookies.set("market_hint", country, {
       ...cookieBase,
       maxAge: 60 * 60 * 24 * 7,
     });
   }
 
-  // 2. Referral & Intent Personalization
-  const ref = req.nextUrl.searchParams.get('ref');
+  const ref = cleanAttribution(req.nextUrl.searchParams.get("ref"));
   if (ref) {
-    // 30-day tracking cookie
-    response.cookies.set('affiliate_id', ref, {
+    response.cookies.set("affiliate_id", ref, {
       ...cookieBase,
+      httpOnly: true,
       maxAge: 60 * 60 * 24 * 30,
     });
-    response.cookies.set('intent_ref', ref, {
+    response.cookies.set("intent_ref", ref, {
       ...cookieBase,
-      maxAge: 60 * 60 * 24 * 1,
-    }); // 24h immediate personalized welcome
+      maxAge: 60 * 60 * 24,
+    });
   }
 
-  // 3. Marketing attribution persistence
   const attributionKeys = [
-    'utm_source',
-    'utm_medium',
-    'utm_campaign',
-    'utm_content',
-    'utm_term',
+    "utm_source",
+    "utm_medium",
+    "utm_campaign",
+    "utm_content",
+    "utm_term",
   ] as const;
 
+  let hasValidAttribution = false;
   for (const key of attributionKeys) {
-    const value = req.nextUrl.searchParams.get(key);
+    const value = cleanAttribution(req.nextUrl.searchParams.get(key));
     if (value) {
+      hasValidAttribution = true;
       response.cookies.set(key, value, {
         ...cookieBase,
+        httpOnly: true,
         maxAge: 60 * 60 * 24 * 30,
       });
     }
   }
 
-  if (
-    attributionKeys.some((key) => req.nextUrl.searchParams.has(key)) &&
-    !req.cookies.has('landing_path')
-  ) {
-    response.cookies.set('landing_path', req.nextUrl.pathname, {
+  if (hasValidAttribution && !req.cookies.has("landing_path")) {
+    const path = req.nextUrl.pathname.slice(0, 256);
+    response.cookies.set("landing_path", path, {
       ...cookieBase,
+      httpOnly: true,
       maxAge: 60 * 60 * 24 * 30,
     });
   }
@@ -77,9 +85,7 @@ export default clerkMiddleware(async (auth, req) => {
 
 export const config = {
   matcher: [
-    // Skip Next.js internals and all static files, unless found in search params
-    '/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)',
-    // Always run for API routes
-    '/(api|trpc)(.*)',
+    "/((?!_next|[^?]*\\.(?:html?|css|js(?!on)|jpe?g|webp|png|gif|svg|ttf|woff2?|ico|csv|docx?|xlsx?|zip|webmanifest)).*)",
+    "/(api|trpc)(.*)",
   ],
 };

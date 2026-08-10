@@ -1,124 +1,107 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Product } from "@/lib/types";
+import Image from "next/image";
 import Link from "next/link";
-import { ArrowRight, ShoppingBag, Tag } from "lucide-react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
+import { ArrowRight, ShieldCheck, ShoppingBag, Star } from "lucide-react";
+import { Product } from "@/lib/types";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 
-// ─── Skeleton card shown while loading ───────────────────────────────────────
 function FeaturedCardSkeleton() {
   return (
-    <div className="flex flex-col bg-white/3 border border-white/5 animate-pulse">
-      <div className="h-48 bg-white/5" />
-      <div className="p-6 flex flex-col gap-3">
-        <div className="h-3 w-1/3 bg-white/10 rounded" />
-        <div className="h-6 w-3/4 bg-white/10 rounded" />
-        <div className="h-4 w-full bg-white/5 rounded" />
-        <div className="h-4 w-2/3 bg-white/5 rounded" />
-        <div className="mt-4 h-10 w-full bg-white/10 rounded" />
+    <div className="overflow-hidden rounded-2xl border border-white/7 bg-white/[0.025]">
+      <div className="aspect-[16/10] animate-pulse bg-white/5" />
+      <div className="space-y-4 p-6">
+        <div className="h-3 w-1/3 animate-pulse rounded bg-white/10" />
+        <div className="h-7 w-4/5 animate-pulse rounded bg-white/10" />
+        <div className="h-4 w-full animate-pulse rounded bg-white/5" />
+        <div className="h-11 w-full animate-pulse rounded-xl bg-white/8" />
       </div>
     </div>
   );
 }
 
-// ─── Individual featured product card ────────────────────────────────────────
 function FeaturedCard({ product, index }: { product: Product; index: number }) {
+  const reduceMotion = useReducedMotion();
   const displayPrice = new Intl.NumberFormat("en-IN", {
     style: "currency",
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(product.price);
-
   const originalPrice = product.originalPrice
-    ? new Intl.NumberFormat("en-IN", {
-        style: "currency",
-        currency: "INR",
-        maximumFractionDigits: 0,
-      }).format(product.originalPrice)
+    ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(product.originalPrice)
     : null;
-
-  const discountPct =
-    product.originalPrice && product.originalPrice > product.price
-      ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-      : null;
-
-  // Truncate description to ~120 chars for the card
-  const shortDesc =
-    product.description.replace(/\*\*/g, "").replace(/#{1,3} /g, "").slice(0, 120) +
-    (product.description.length > 120 ? "…" : "");
+  const discountPct = product.originalPrice && product.originalPrice > product.price
+    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
+    : null;
+  const shortDesc = product.description.replace(/\*\*/g, "").replace(/#{1,3} /g, "").slice(0, 118) +
+    (product.description.length > 118 ? "…" : "");
 
   return (
     <motion.article
-      variants={{
-        hidden: { opacity: 0, y: 24 },
-        show:  { opacity: 1, y: 0 },
-      }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-      className="group flex flex-col bg-[#0d0d12] border border-white/8 hover:border-primary/30 transition-colors duration-300 relative overflow-hidden"
+      initial={reduceMotion ? false : { opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-70px" }}
+      transition={{ duration: 0.55, delay: Math.min(index * 0.07, 0.28), ease: [0.16, 1, 0.3, 1] }}
+      whileHover={reduceMotion ? undefined : { y: -8, rotateX: 1.5, rotateY: index % 2 ? -1.2 : 1.2 }}
+      className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/8 bg-[#0a0a10] shadow-[0_30px_90px_rgba(0,0,0,.25)] [transform-style:preserve-3d]"
       aria-label={product.name}
     >
-      {/* Gold accent line on hover */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
-
-      {/* Discount badge */}
-      {discountPct && (
-        <div className="absolute top-4 right-4 z-10 bg-primary text-black text-[9px] font-outfit font-black px-2 py-1 uppercase tracking-widest">
-          -{discountPct}%
-        </div>
-      )}
-
-      {/* Category tag */}
-      <div className="px-6 pt-6 pb-0">
-        <span className="inline-flex items-center gap-1.5 text-[9px] font-mono font-black uppercase tracking-[0.3em] text-primary/80">
-          <Tag className="w-2.5 h-2.5" />
+      <div className="relative aspect-[16/10] overflow-hidden bg-[#111118]">
+        <Image
+          src={product.image}
+          alt={product.name}
+          fill
+          className="object-cover opacity-78 transition duration-700 group-hover:scale-[1.045] group-hover:opacity-95"
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+        />
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,transparent_30%,rgba(5,5,9,.22)_62%,#0a0a10_100%)]" />
+        <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[.18em] text-white/65 backdrop-blur-xl">
           {product.category}
-        </span>
+        </div>
+        {discountPct ? (
+          <div className="absolute right-4 top-4 rounded-full border border-primary/25 bg-primary/90 px-3 py-1.5 font-mono text-[9px] font-black text-black">
+            SAVE {discountPct}%
+          </div>
+        ) : null}
       </div>
 
-      {/* Body */}
-      <div className="p-6 flex flex-col flex-1 gap-4">
-        <h3 className="text-xl font-outfit font-black italic uppercase tracking-tighter text-white leading-tight group-hover:text-primary transition-colors duration-200 line-clamp-2">
+      <div className="flex flex-1 flex-col p-6">
+        <div className="mb-3 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-1.5 text-primary">
+            <Star className="h-3.5 w-3.5 fill-current" />
+            <span className="font-mono text-[10px] font-bold">{product.rating.toFixed(1)}</span>
+          </div>
+          <span className="font-mono text-[9px] uppercase tracking-[.16em] text-white/25">Digital delivery</span>
+        </div>
+
+        <h3 className="text-xl font-black uppercase italic leading-tight tracking-[-.035em] text-[#f6f1e8] transition-colors group-hover:text-primary md:text-2xl">
           {product.name}
         </h3>
+        <p className="mt-3 line-clamp-3 text-[13px] leading-6 text-white/42">{shortDesc}</p>
 
-        <p className="text-[12px] font-inter text-white/35 leading-relaxed line-clamp-3">
-          {shortDesc}
-        </p>
-
-        {/* Price row */}
-        <div className="flex items-end gap-3 mt-auto pt-4 border-t border-white/5">
-          <span className="text-2xl font-outfit font-black italic text-white tracking-tighter">
-            {displayPrice}
-          </span>
-          {originalPrice && (
-            <span className="text-sm font-mono text-white/20 line-through pb-0.5">
-              {originalPrice}
-            </span>
-          )}
+        <div className="mt-6 flex items-end gap-3 border-t border-white/7 pt-5">
+          <span className="text-2xl font-black tracking-[-.03em] text-white">{displayPrice}</span>
+          {originalPrice ? <span className="pb-1 text-xs text-white/25 line-through">{originalPrice}</span> : null}
         </div>
 
-        {/* CTA */}
+        <div className="mt-5 flex items-center gap-2 text-[10px] uppercase tracking-[.12em] text-white/35">
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Clear scope &amp; license details on product page
+        </div>
+
         <Link
           href={`/product/${product.id}`}
-          className="mt-2 w-full flex items-center justify-center gap-2 bg-primary text-black font-outfit font-black text-sm uppercase tracking-widest italic px-6 py-3 hover:bg-primary/90 active:scale-[0.98] transition-all duration-150"
-          aria-label={`Buy ${product.name}`}
+          className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl border border-primary/25 bg-primary/[0.08] px-5 py-3.5 font-outfit text-xs font-black uppercase tracking-[.12em] text-primary transition hover:bg-primary hover:text-black"
+          aria-label={`View ${product.name}`}
         >
-          <ShoppingBag className="w-4 h-4" />
-          Buy Now
+          <ShoppingBag className="h-4 w-4" /> View product
         </Link>
-      </div>
-
-      {/* Card index watermark */}
-      <div className="absolute bottom-4 right-5 text-[60px] font-outfit font-black italic text-white/[0.02] leading-none select-none pointer-events-none">
-        {String(index + 1).padStart(2, "0")}
       </div>
     </motion.article>
   );
 }
 
-// ─── Main exported section ────────────────────────────────────────────────────
 export function FeaturedSection() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -127,17 +110,13 @@ export function FeaturedSection() {
   useEffect(() => {
     async function fetchFeatured() {
       try {
-        const res = await fetch("/api/products");
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const data: Product[] = await res.json();
-        if (!Array.isArray(data)) throw new Error("Invalid response shape");
-        // Sort: highest-rated first, then by price desc as tiebreaker
-        const sorted = [...data].sort(
-          (a, b) => b.rating - a.rating || b.price - a.price
-        );
-        setProducts(sorted.slice(0, 6));
-      } catch (err) {
-        console.error("[FeaturedSection] Failed to fetch products:", err);
+        const response = await fetch("/api/products", { cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data: Product[] = await response.json();
+        if (!Array.isArray(data)) throw new Error("Invalid product response");
+        setProducts([...data].sort((a, b) => b.rating - a.rating || b.price - a.price).slice(0, 6));
+      } catch (fetchError) {
+        console.error("[FeaturedSection] Failed to fetch products:", fetchError);
         setError(true);
       } finally {
         setLoading(false);
@@ -146,73 +125,28 @@ export function FeaturedSection() {
     fetchFeatured();
   }, []);
 
-  // ── Loading state ────────────────────────────────────────────────────────
   if (loading) {
-    return (
-      <section id="catalog" className="py-12 container mx-auto px-6 max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <FeaturedCardSkeleton key={i} />
-          ))}
-        </div>
-      </section>
-    );
+    return <section id="catalog" className="container mx-auto max-w-7xl px-6 py-8"><div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">{[1,2,3,4,5,6].map((i) => <FeaturedCardSkeleton key={i} />)}</div></section>;
   }
 
-  // ── Error state ──────────────────────────────────────────────────────────
   if (error || products.length === 0) {
     return (
-      <section id="catalog" className="py-12 container mx-auto px-6 max-w-7xl text-center">
-        <p className="text-white/20 font-mono text-xs uppercase tracking-widest">
-          {error ? "Failed to load products. Please try again." : "No products available."}
-        </p>
-        <Link href="/products" className="inline-block mt-6">
-          <ForgeButton variant="outline">View All Products</ForgeButton>
-        </Link>
+      <section id="catalog" className="container mx-auto max-w-7xl px-6 py-12 text-center">
+        <p className="font-mono text-xs uppercase tracking-widest text-white/35">{error ? "Catalog is temporarily unavailable." : "No products available."}</p>
+        <Link href="/products" className="mt-6 inline-block"><ForgeButton variant="outline">Open catalog</ForgeButton></Link>
       </section>
     );
   }
 
-  // ── Populated state ──────────────────────────────────────────────────────
   return (
-    <section id="catalog" className="bg-transparent py-12">
-      <div className="container mx-auto px-6 w-full max-w-7xl">
-        <motion.div
-          variants={{
-            hidden: { opacity: 0 },
-            show: {
-              opacity: 1,
-              transition: { staggerChildren: 0.1 },
-            },
-          }}
-          initial="hidden"
-          whileInView="show"
-          viewport={{ once: true, margin: "-80px" }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        >
-          {products.map((product, index) => (
-            <FeaturedCard key={product.id} product={product} index={index} />
-          ))}
-        </motion.div>
-
-        {/* Browse all CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ delay: 0.5 }}
-          className="mt-20 flex flex-col items-center gap-6"
-        >
-          <Link href="/products">
-            <ForgeButton variant="outline" size="lg">
-              Browse Full Catalog
-              <ArrowRight className="w-5 h-5 ml-4 group-hover:translate-x-2 transition-transform" />
-            </ForgeButton>
-          </Link>
-          <p className="text-[10px] font-mono text-white/20 uppercase tracking-[0.4em] italic text-center max-w-md">
-            {products.length} products shown — full catalog at /products
-          </p>
-        </motion.div>
+    <section id="catalog" className="bg-transparent py-8">
+      <div className="container mx-auto w-full max-w-7xl px-6">
+        <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
+          {products.map((product, index) => <FeaturedCard key={product.id} product={product} index={index} />)}
+        </div>
+        <div className="mt-14 flex justify-center">
+          <Link href="/products"><ForgeButton variant="outline" size="lg">Browse full catalog <ArrowRight className="h-4 w-4" /></ForgeButton></Link>
+        </div>
       </div>
     </section>
   );
