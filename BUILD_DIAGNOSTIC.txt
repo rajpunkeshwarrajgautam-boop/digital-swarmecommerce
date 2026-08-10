@@ -1,0 +1,51 @@
+BUILD_FAILED
+
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 11.8s
+  Running TypeScript ...
+Failed to type check.
+
+./src/app/dashboard/page.tsx:69:31
+Type error: Conversion of type '{ id: any; created_at: any; license_key: any; license_tier: any; product_id: any; products: { name: string; image: string; version: any; download_url: string; } | undefined; }[]' to type 'Asset[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property 'status' is missing in type '{ id: any; created_at: any; license_key: any; license_tier: any; product_id: any; products: { name: string; image: string; version: any; download_url: string; } | undefined; }' but required in type 'Asset'.
+
+  [90m67 |[0m         
+  [90m68 |[0m         [36mif[0m (assetRes.success && assetRes.assets) {
+[31m[1m>[0m [90m69 |[0m           setActiveProtocols((assetRes.assets [36mas[0m [33mAsset[0m[]).slice([35m0[0m, [35m4[0m)); [90m// Only show top 4...[0m
+  [90m   |[0m                               [31m[1m^[0m
+  [90m70 |[0m         }
+  [90m71 |[0m         
+  [90m72 |[0m         [36mif[0m (orderRes.success && orderRes.orders && orderRes.orders.length > [35m0[0m) {
+Next.js build worker exited with code: 1 and signal: null
+
+---TAIL---
+
+> digital-swarm-ecommerce@0.1.0 build
+> next build
+
+⚠ No build cache found. Please configure build caching for faster rebuilds. Read more: https://nextjs.org/docs/messages/no-cache
+Attention: Next.js now collects completely anonymous telemetry regarding usage.
+This information is used to shape Next.js' roadmap and prioritize features.
+You can learn more, including how to opt-out if you'd not like to participate in this anonymous program, by visiting the following URL:
+https://nextjs.org/telemetry
+
+▲ Next.js 16.2.12 (Turbopack)
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 11.8s
+  Running TypeScript ...
+Failed to type check.
+
+./src/app/dashboard/page.tsx:69:31
+Type error: Conversion of type '{ id: any; created_at: any; license_key: any; license_tier: any; product_id: any; products: { name: string; image: string; version: any; download_url: string; } | undefined; }[]' to type 'Asset[]' may be a mistake because neither type sufficiently overlaps with the other. If this was intentional, convert the expression to 'unknown' first.
+  Property 'status' is missing in type '{ id: any; created_at: any; license_key: any; license_tier: any; product_id: any; products: { name: string; image: string; version: any; download_url: string; } | undefined; }' but required in type 'Asset'.
+
+  [90m67 |[0m         
+  [90m68 |[0m         [36mif[0m (assetRes.success && assetRes.assets) {
+[31m[1m>[0m [90m69 |[0m           setActiveProtocols((assetRes.assets [36mas[0m [33mAsset[0m[]).slice([35m0[0m, [35m4[0m)); [90m// Only show top 4...[0m
+  [90m   |[0m                               [31m[1m^[0m
+  [90m70 |[0m         }
+  [90m71 |[0m         
+  [90m72 |[0m         [36mif[0m (orderRes.success && orderRes.orders && orderRes.orders.length > [35m0[0m) {
+Next.js build worker exited with code: 1 and signal: null
