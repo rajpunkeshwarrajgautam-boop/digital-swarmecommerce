@@ -1,41 +1,8 @@
 "use client";
 
-import React, {
-  createContext,
-  useCallback,
-  useContext,
-  useSyncExternalStore,
-} from "react";
+import React, { createContext, useContext } from "react";
 
-type Currency = "INR" | "USD" | "EUR" | "GBP";
-
-const STORAGE_KEY = "selected_currency";
-const ALLOWED = new Set<string>(["INR", "USD", "EUR", "GBP"]);
-
-let currencyListeners: Array<() => void> = [];
-
-function subscribeCurrency(listener: () => void) {
-  currencyListeners = [...currencyListeners, listener];
-  return () => {
-    currencyListeners = currencyListeners.filter((l) => l !== listener);
-  };
-}
-
-function emitCurrency() {
-  for (const l of currencyListeners) l();
-}
-
-function readCurrencyFromStorage(): Currency {
-  if (typeof window === "undefined") return "INR";
-  const s = localStorage.getItem(STORAGE_KEY);
-  if (s && ALLOWED.has(s)) return s as Currency;
-  return "INR";
-}
-
-function writeCurrency(c: Currency) {
-  localStorage.setItem(STORAGE_KEY, c);
-  emitCurrency();
-}
+type Currency = "INR";
 
 interface CurrencyContextType {
   currency: Currency;
@@ -45,19 +12,15 @@ interface CurrencyContextType {
 
 const CurrencyContext = createContext<CurrencyContextType | undefined>(undefined);
 
+/**
+ * Cashfree orders are created and charged in INR. Until the storefront has a
+ * live FX source and multi-currency settlement, customer-facing prices stay in
+ * the same authoritative currency instead of presenting fixed-rate estimates
+ * as if they were checkout amounts.
+ */
 export function CurrencyProvider({ children }: { children: React.ReactNode }) {
-  const currency = useSyncExternalStore(
-    subscribeCurrency,
-    readCurrencyFromStorage,
-    (): Currency => "INR"
-  );
-
-  const setCurrency = useCallback((newCurrency: Currency) => {
-    writeCurrency(newCurrency);
-  }, []);
-
   return (
-    <CurrencyContext.Provider value={{ currency, setCurrency, isLoading: false }}>
+    <CurrencyContext.Provider value={{ currency: "INR", setCurrency: () => undefined, isLoading: false }}>
       {children}
     </CurrencyContext.Provider>
   );
