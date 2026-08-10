@@ -1,78 +1,61 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import { currentUser } from "@clerk/nextjs/server";
+import { randomBytes } from "crypto";
 import { supabaseAdmin } from "@/lib/supabase";
 
-/**
- * POST /api/affiliate/generate
- * Generates or retrieves an affiliate ref code for a given userId.
- * Creates a record in the `affiliates` Supabase table if one doesn't exist.
- *
- * Body: { userId: string, userEmail: string }
- * Returns: { refCode: string, referralUrl: string, affiliate: object }
- */
-export async function POST(req: NextRequest) {
+export async function POST() {
   try {
-    const { userId, userEmail } = (await req.json()) as {
-      userId: string;
-      userEmail: string;
-    };
-
-    if (!userId) {
-      return NextResponse.json({ error: "userId is required" }, { status: 400 });
+    const user = await currentUser();
+    if (!user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
-
     if (!supabaseAdmin) {
       return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
     }
 
-    // Check if affiliate record already exists for this user
-    const { data: existing, error: fetchError } = await supabaseAdmin
+    const { data: existing, error: existingError } = await supabaseAdmin
       .from("affiliates")
       .select("*")
-      .eq("user_id", userId)
-      .single();
+      .eq("user_id", user.id)
+      .maybeSingle();
 
-    if (fetchError && fetchError.code !== "PGRST116") {
-      // PGRST116 = no rows found, which is fine
-      throw fetchError;
+    if (existingError) {
+      console.error("[affiliate generate] lookup failed", existingError.message);
+      return NextResponse.json({ error: "Affiliate service unavailable" }, { status: 503 });
     }
 
-    if (existing?.ref_code) {
-      // Return existing affiliate data
-      const referralUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in"}?ref=${existing.ref_code}`;
-      return NextResponse.json({
-        refCode: existing.ref_code,
-        referralUrl,
-        affiliate: existing,
-      });
+    if (existing?.referral_code) {
+      const referralUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in"}?ref=${existing.referral_code}`;
+      return NextResponse.json({ refCode: existing.referral_code, referralUrl, affiliate: existing });
     }
 
-    // Generate a new unique ref code: swarm_ + 8 random alphanumeric chars
-    const refCode = `swarm_${Math.random().toString(36).substring(2, 10)}`;
-    const referralUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in"}?ref=${refCode}`;
+    const base = (user.firstName || "partner").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 20) || "partner";
+    const referralCode = `${base}_${randomBytes(4).toString("hex")}`;
+    const email = user.primaryEmailAddress?.emailAddress || user.emailAddresses[0]?.emailAddress || null;
 
-    const { data: newAffiliate, error: insertError } = await supabaseAdmin
+    const { data: affiliate, error: insertError } = await supabaseAdmin
       .from("affiliates")
       .insert({
-        user_id: userId,
-        user_email: userEmail || null,
-        ref_code: refCode,
-        clicks: 0,
-        conversions: 0,
-        earnings: 0,
+        user_id: user.id,
+        name: [user.firstName, user.lastName].filter(Boolean).join(" ") || null,
+        email,
         status: "active",
+        referral_code: referralCode,
+        total_clicks: 0,
+        total_earnings: 0,
       })
-      .select()
+      .select("*")
       .single();
 
-    if (insertError) throw insertError;
+    if (insertError || !affiliate) {
+      console.error("[affiliate generate] insert failed", insertError?.message);
+      return NextResponse.json({ error: "Could not create affiliate profile" }, { status: 503 });
+    }
 
-    return NextResponse.json({
-      refCode,
-      referralUrl,
-      affiliate: newAffiliate,
-    });
-  } catch (err) {
-    const message = err instanceof Error ? err.message : "Unknown error";
-    return NextResponse.json({ error: message }, { status: 500 });
+    const referralUrl = `${process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in"}?ref=${referralCode}`;
+    return NextResponse.json({ refCode: referralCode, referralUrl, affiliate });
+  } catch (error) {
+    console.error("[affiliate generate] unexpected error", error);
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
