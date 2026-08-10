@@ -15,6 +15,7 @@ import { useSearchParams } from "next/navigation";
 function ProductsContent() {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get("category") || "All";
+  const queryFromUrl = searchParams.get("query") || "";
 
   const { data: productsData, isLoading } = useSwarmSWR<Product[]>('/api/products');
   const [searchQuery, setSearchQuery] = useState("");
@@ -22,7 +23,8 @@ function ProductsContent() {
 
   useEffect(() => {
     setActiveCategory(categoryFromUrl);
-  }, [categoryFromUrl]);
+    setSearchQuery(queryFromUrl);
+  }, [categoryFromUrl, queryFromUrl]);
   const [sortBy, setSortBy] = useState("featured");
   const [isNeural, setIsNeural] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
