@@ -113,7 +113,7 @@ export function CartDrawer() {
                 items.map((item) => (
                   <article key={item.productId} className="flex gap-5">
                     <Link
-                      href={`/product/${item.productId}`}
+                      href={`/product/${item.productId.replace(/-whitelabel$/, "")}`}
                       onClick={toggleCart}
                       className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border border-white/8 bg-white/5"
                     >
@@ -123,7 +123,7 @@ export function CartDrawer() {
                     <div className="flex min-w-0 flex-1 flex-col justify-between py-0.5">
                       <div>
                         <div className="flex items-start justify-between gap-3">
-                          <Link href={`/product/${item.productId}`} onClick={toggleCart} className="line-clamp-2 text-sm font-bold leading-5 text-white/80 hover:text-primary">
+                          <Link href={`/product/${item.productId.replace(/-whitelabel$/, "")}`} onClick={toggleCart} className="line-clamp-2 text-sm font-bold leading-5 text-white/80 hover:text-primary">
                             {item.name}
                           </Link>
                           <button

@@ -101,7 +101,7 @@ export default function CartPage() {
                   </div>
 
                   <div className="flex-1 min-w-0 w-full">
-                    <Link href={`/product/${item.productId}`} className="text-xl font-black uppercase italic tracking-tight text-white hover:text-primary transition-colors block mb-1">
+                    <Link href={`/product/${item.productId.replace(/-whitelabel$/, "")}`} className="text-xl font-black uppercase italic tracking-tight text-white hover:text-primary transition-colors block mb-1">
                       {item.name}
                     </Link>
                     <p className="text-[10px] font-black uppercase tracking-widest text-white/30">{item.category}</p>
