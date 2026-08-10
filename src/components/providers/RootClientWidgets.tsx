@@ -11,10 +11,6 @@ const AIConcierge = dynamic(
   () => import("@/components/forge/AIConcierge").then((m) => ({ default: m.AIConcierge })),
   { ssr: false },
 );
-const HiveMindChat = dynamic(
-  () => import("@/components/chat/HiveMindChat").then((m) => ({ default: m.HiveMindChat })),
-  { ssr: false },
-);
 
 export function RootClientWidgets() {
   return (
@@ -22,7 +18,6 @@ export function RootClientWidgets() {
       <VisualQuality />
       <ForgeToast />
       <AIConcierge />
-      <HiveMindChat />
     </>
   );
 }
