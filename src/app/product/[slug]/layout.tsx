@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { products } from "@/lib/data";
+import { isSellableProductId, sanitizeCatalogText } from "@/lib/catalog-integrity";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -8,21 +9,19 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const product = products.find((p) => p.id === slug);
+  const product = products.find((entry) => entry.id === slug && entry.inStock && isSellableProductId(entry.id));
 
   if (!product) {
     return {
-      title: "Product Not Found",
-      description: "The requested digital protocol was not found in our registry.",
+      title: "Product Unavailable",
+      description: "This product is not currently available for purchase on Digital Swarm.",
+      robots: { index: false, follow: false },
     };
   }
 
   const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in";
   const url = `${baseUrl}/product/${product.id}`;
-  const ogImage = product.image; 
-
-  // Clean description for meta tags
-  const cleanDescription = product.description
+  const cleanDescription = sanitizeCatalogText(product.description)
     .replace(/\*\*([^*]+)\*\*/g, "$1")
     .replace(/`([^`]+)`/g, "$1")
     .replace(/\s+/g, " ")
@@ -32,35 +31,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return {
     title: product.name,
     description: cleanDescription,
-    alternates: {
-      canonical: url,
-    },
+    alternates: { canonical: url },
     openGraph: {
       title: `${product.name} | Digital Swarm`,
       description: cleanDescription,
-      url: url,
+      url,
       siteName: "Digital Swarm",
-      images: [
-        {
-          url: ogImage,
-          width: 1200,
-          height: 630,
-          alt: `${product.name} - Elite Digital Asset`,
-        },
-      ],
-      type: "article",
+      images: [{ url: product.image, width: 1200, height: 630, alt: `${product.name} catalog artwork` }],
+      type: "website",
     },
     twitter: {
       card: "summary_large_image",
       title: product.name,
       description: cleanDescription,
-      images: [ogImage],
-      creator: "@DigitalSwarm",
+      images: [product.image],
     },
     other: {
       "product:price:amount": product.price.toString(),
       "product:price:currency": "INR",
-      "product:availability": product.inStock ? "instock" : "oos",
+      "product:availability": "instock",
       "product:category": product.category,
     },
   };
