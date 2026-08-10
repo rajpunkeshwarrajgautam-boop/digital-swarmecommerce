@@ -39,7 +39,12 @@ test.describe("Commerce quality guardrails", () => {
     await expect(page.getByText(/Razorpay/i)).toHaveCount(0);
     await expect(page.getByText(/Guaranteed Instant Digital Delivery/i)).toHaveCount(0);
 
-    await page.getByRole("link", { name: /continue to checkout/i }).click();
+    const checkoutLinks = page.getByRole("link", { name: /continue to checkout/i });
+    await expect(checkoutLinks).toHaveCount(2);
+    await expect(checkoutLinks.first()).toHaveAttribute("href", "/checkout");
+    await expect(checkoutLinks.nth(1)).toHaveAttribute("href", "/checkout");
+    await checkoutLinks.nth(1).click();
+
     await expect(page).toHaveURL(/\/checkout$/);
     await expect(page.getByText(/no shipping address is required/i)).toBeVisible();
     await expect(page.locator('input[name="firstName"]')).toBeVisible();
