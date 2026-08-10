@@ -3,32 +3,45 @@ import { redirect } from 'next/navigation';
 import { supabaseAdmin } from '@/lib/supabase';
 import AffiliateDashboardClient from '@/components/affiliates/AffiliateDashboardClient';
 
+type AffiliateData = {
+  id: string;
+  user_id: string;
+  referral_code?: string;
+  total_clicks?: number;
+  conversions?: number;
+  earnings?: number | string;
+  total_earnings?: number | string;
+  status?: string;
+  created_at?: string;
+};
+
 export default async function AffiliateDashboard() {
   const user = await currentUser();
   if (!user) redirect('/sign-in?redirect_url=/affiliate');
 
-  let affiliate: Record<string, unknown> | null = null;
+  let affiliate: AffiliateData | null = null;
   if (supabaseAdmin) {
     const { data } = await supabaseAdmin
       .from('affiliates')
-      .select('*')
+      .select('id,user_id,referral_code,total_clicks,total_earnings,status,created_at')
       .eq('user_id', user.id)
       .maybeSingle();
-    affiliate = data as Record<string, unknown> | null;
 
-    const referralCode = typeof data?.referral_code === 'string' ? data.referral_code : '';
-    if (affiliate && referralCode) {
-      const { data: commissions } = await supabaseAdmin
-        .from('commissions')
-        .select('affiliate_share,status')
-        .eq('affiliate_id', referralCode);
-
-      const rows = commissions || [];
-      affiliate = {
-        ...affiliate,
-        conversions: rows.length,
-        earnings: rows.reduce((sum, row) => sum + Number(row.affiliate_share || 0), 0),
-      };
+    if (data) {
+      affiliate = data as AffiliateData;
+      const referralCode = data.referral_code || '';
+      if (referralCode) {
+        const { data: commissions } = await supabaseAdmin
+          .from('commissions')
+          .select('affiliate_share,status')
+          .eq('affiliate_id', referralCode);
+        const rows = commissions || [];
+        affiliate = {
+          ...affiliate,
+          conversions: rows.length,
+          earnings: rows.reduce((sum, row) => sum + Number(row.affiliate_share || 0), 0),
+        };
+      }
     }
   }
 
@@ -43,7 +56,6 @@ export default async function AffiliateDashboard() {
             Generate a referral link and view recorded clicks, paid-order conversions, and commissions.
           </p>
         </div>
-
         <AffiliateDashboardClient initialData={affiliate} />
       </div>
     </main>
