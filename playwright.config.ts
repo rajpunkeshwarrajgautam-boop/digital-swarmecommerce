@@ -1,14 +1,13 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const productionUrl = process.env.PLAYWRIGHT_PRODUCTION_URL?.replace(/\/$/, '');
-const baseURL = productionUrl || 'http://localhost:3000';
-const useWebServer = !productionUrl && !process.env.PLAYWRIGHT_NO_WEBSERVER;
+const externalUrl = process.env.PLAYWRIGHT_PRODUCTION_URL?.replace(/\/$/, '');
+const baseURL = externalUrl || 'http://127.0.0.1:3000';
+const useWebServer = !externalUrl && !process.env.PLAYWRIGHT_NO_WEBSERVER;
 
 /**
- * Playwright E2E Configuration
- * 
- * Target: Critical User Flows (Add to Cart → Checkout → Success)
- * Desktop focused by default.
+ * E2E must exercise the code being reviewed. In CI we build first and then
+ * serve that exact production bundle with `next start`; local development can
+ * still use `next dev`.
  */
 export default defineConfig({
   testDir: './tests/e2e',
@@ -33,9 +32,10 @@ export default defineConfig({
   ],
   webServer: useWebServer
     ? {
-        command: 'npm run dev',
-        url: 'http://localhost:3000',
+        command: process.env.CI ? 'npm run start -- --hostname 127.0.0.1 --port 3000' : 'npm run dev -- --hostname 127.0.0.1 --port 3000',
+        url: 'http://127.0.0.1:3000',
         reuseExistingServer: !process.env.CI,
+        timeout: 120_000,
       }
     : undefined,
 });
