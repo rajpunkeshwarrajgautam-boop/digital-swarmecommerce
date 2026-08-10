@@ -1,117 +1,65 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Code2, Cpu, Rocket, Users, ShieldCheck, Zap } from "lucide-react";
-import Image from "next/image";
+import { Code2, Download, ShieldCheck, Mail, Database } from "lucide-react";
 
-const stats = [
-  { label: "Developed Protocols", value: "30+", icon: Cpu },
-  { label: "Community Builders", value: "2,000+", icon: Users },
-  { label: "Average Setup Time", value: "45m", icon: Rocket },
-  { label: "Uptime Protocol", value: "99.9%", icon: ShieldCheck }
+const facts = [
+  { label: "Catalog", value: "Digital products", icon: Code2 },
+  { label: "Paid delivery", value: "Private links", icon: Download },
+  { label: "Checkout", value: "Cashfree", icon: ShieldCheck },
+  { label: "Support", value: "Email", icon: Mail },
 ];
 
 export default function AboutPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0f] text-white pt-32 pb-20 font-mono">
       <div className="container mx-auto px-6 max-w-7xl">
-        
-        {/* Hero Section */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-32">
-          <motion.div 
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="space-y-8"
-          >
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center mb-28">
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="space-y-8">
             <div className="inline-flex items-center gap-2.5 px-5 py-2 rounded-full bg-primary/10 border border-primary/20 w-fit">
-              <span className="text-[10px] font-black tracking-[0.2em] text-primary uppercase italic">Protocol Alpha</span>
+              <span className="text-[10px] font-black tracking-[0.2em] text-primary uppercase">About Digital Swarm</span>
             </div>
-            <h1 className="text-6xl md:text-8xl font-black italic tracking-tighter uppercase leading-[0.85]">
-              Built by <span className="text-primary italic">Engineers</span>. <br />
-              Driven by <span className="text-primary italic">Efficiency</span>.
+            <h1 className="text-6xl md:text-8xl font-black tracking-tighter uppercase leading-[0.85]">
+              Practical digital <span className="text-primary">building blocks</span>.
             </h1>
-            <p className="text-white/60 text-xl font-medium uppercase tracking-tight leading-relaxed max-w-2xl">
-              Digital Swarm was forged in the heat of rapid deployment cycles. We identified a recurring failure point in software engineering: the &quot;Blank Screen&quot; latency. We solve it by providing the hardened architecture you normally build in month three, on day zero.
+            <p className="text-white/60 text-lg leading-relaxed max-w-2xl font-sans">
+              Digital Swarm sells downloadable AI workflows, playbooks, source-code kits and implementation assets. Each paid listing is intended to state exactly what is included, what tools it requires and how the file is delivered.
             </p>
           </motion.div>
 
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="relative"
-          >
-             <div className="aspect-square bg-white/5 border-8 border-white/5 rounded-[4rem] overflow-hidden rotate-3 hover:rotate-0 transition-transform duration-700 shadow-2xl">
-                <img 
-                  src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=1000" 
-                  alt="Industrial Engineering" 
-                  className="w-full h-full object-cover grayscale hover:grayscale-0 transition-all duration-700"
-                />
-             </div>
-             {/* Glowing Orbs */}
-             <div className="absolute -top-10 -right-10 w-40 h-40 bg-primary/20 blur-[100px] rounded-full" />
-             <div className="absolute -bottom-10 -left-10 w-40 h-40 bg-blue-500/20 blur-[100px] rounded-full" />
+          <motion.div initial={{ opacity: 0, scale: 0.94 }} animate={{ opacity: 1, scale: 1 }} className="relative rounded-[2.5rem] border border-white/10 bg-white/[0.035] p-10 md:p-14 overflow-hidden">
+            <Database className="h-12 w-12 text-primary mb-8" />
+            <h2 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-6">Store architecture</h2>
+            <p className="text-white/50 font-sans leading-7">
+              Product records and orders are backed by Supabase, paid assets are kept in private storage, checkout is handled through Cashfree, and customer access is issued only after a verified payment event.
+            </p>
+            <div className="absolute -right-20 -bottom-20 h-60 w-60 rounded-full bg-primary/10 blur-[90px]" />
           </motion.div>
         </div>
 
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 mb-32">
-          {stats.map((stat, i) => (
-            <motion.div 
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.1 }}
-              className="p-8 bg-white/5 border-2 border-white/5 rounded-3xl hover:border-primary/20 transition-all group"
-            >
-              <stat.icon className="w-8 h-8 text-primary mb-6 group-hover:scale-110 transition-transform" />
-              <div className="text-4xl font-black italic text-white mb-2">{stat.value}</div>
-              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">{stat.label}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-28">
+          {facts.map((fact, i) => (
+            <motion.div key={fact.label} initial={{ opacity: 0, y: 18 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: i * 0.08 }} className="p-7 bg-white/[0.035] border border-white/8 rounded-2xl">
+              <fact.icon className="w-7 h-7 text-primary mb-6" />
+              <div className="text-xl font-black text-white mb-2">{fact.value}</div>
+              <div className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30">{fact.label}</div>
             </motion.div>
           ))}
         </div>
 
-        {/* Vision Statement */}
-        <motion.div 
-          initial={{ opacity: 0, y: 30 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="bg-white border-8 border-black p-12 lg:p-24 text-black shadow-[24px_24px_0_#ff6b35] relative mb-32"
-        >
-          <div className="max-w-4xl mx-auto space-y-12">
-            <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter leading-none">
-              The <span className="underline decoration-black/10">Architecture</span> of the Future isn&apos;t just code. It&apos;s a Standard.
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-12 pt-12 border-t-4 border-black/5">
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Zap className="w-6 h-6 text-primary fill-primary" />
-                  <span className="text-lg font-black uppercase tracking-tighter italic">Hardened Stacks</span>
-                </div>
-                <p className="text-black/60 font-medium leading-relaxed uppercase text-sm">We don&apos;t ship &quot;Boilerplates&quot;. We ship production environments. Every line is optimized for 100/100 Lighthouse scores and maximum developer joy.</p>
-              </div>
-              <div className="space-y-4">
-                <div className="flex items-center gap-3">
-                  <Code2 className="w-6 h-6 text-primary fill-primary" />
-                  <span className="text-lg font-black uppercase tracking-tighter italic">Developer Experience</span>
-                </div>
-                <p className="text-black/60 font-medium leading-relaxed uppercase text-sm">Clean code isn&apos;t an option, it&apos;s our baseline. We use atomic design, strictly typed interfaces, and modular logic for infinite scalability.</p>
-              </div>
+        <section className="rounded-[2rem] border border-white/8 bg-white/[0.025] p-10 md:p-16">
+          <h2 className="text-4xl md:text-6xl font-black uppercase tracking-tight mb-10">What we commit to</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+            <div>
+              <h3 className="text-lg font-black uppercase text-primary mb-3">No invented social proof</h3>
+              <p className="text-white/50 font-sans leading-7">We do not need fabricated user counts, uptime percentages, customer totals or locations to sell a useful product. Product value should come from the deliverable itself.</p>
+            </div>
+            <div>
+              <h3 className="text-lg font-black uppercase text-primary mb-3">Exact scope over hype</h3>
+              <p className="text-white/50 font-sans leading-7">A listing should identify the files, format, dependencies and license that a buyer receives. If an item cannot be fulfilled as described, it should not be sold.</p>
             </div>
           </div>
-        </motion.div>
-
-        {/* Global Network Section */}
-        <section className="text-center py-20">
-          <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-primary mb-8">Swarm Global Presence</h3>
-          <div className="flex flex-wrap justify-center gap-12 opacity-30 grayscale hover:grayscale-0 transition-all">
-             <span className="text-2xl font-black uppercase italic tracking-tighter">New York</span>
-             <span className="text-2xl font-black uppercase italic tracking-tighter">Bangalore</span>
-             <span className="text-2xl font-black uppercase italic tracking-tighter">London</span>
-             <span className="text-2xl font-black uppercase italic tracking-tighter">Tokyo</span>
-             <span className="text-2xl font-black uppercase italic tracking-tighter">Berlin</span>
-          </div>
         </section>
-
       </div>
     </div>
   );
