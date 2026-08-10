@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { Resend } from 'resend';
 import { createClient } from '@supabase/supabase-js';
 import { products } from '@/lib/data';
-import { isSellableProductId, sanitizeCatalogText } from '@/lib/catalog-integrity';
+import { getPrivateDeliveryAssetName, isSellableProductId, sanitizeCatalogText } from '@/lib/catalog-integrity';
 import { recordCommission } from '@/lib/commissions';
 import { sealTransaction } from '@/lib/ledger';
 import crypto from 'crypto';
@@ -94,11 +94,11 @@ export async function POST(request: Request) {
     }
 
     const product = products.find((entry) => entry.name === dbProduct.name);
-    if (!product || !product.inStock || !product.downloadUrl || !isSellableProductId(product.id)) {
+    if (!product || !product.inStock || !isSellableProductId(product.id)) {
       return NextResponse.json({ error: 'Product is not approved for fulfillment' }, { status: 409 });
     }
 
-    const filename = decodeURIComponent(product.downloadUrl.split('/').pop() || '');
+    const filename = getPrivateDeliveryAssetName(product);
     if (!filename || !filename.includes('.')) {
       return NextResponse.json({ error: 'Product delivery asset is not configured' }, { status: 503 });
     }
