@@ -21,6 +21,7 @@ const envSchema = z.object({
   ADMIN_EMAIL: z.string().email().optional(),
   SWARM_BRIDGE_SECRET: z.string().min(32).optional(),
   INTERNAL_FULFILLMENT_SECRET: z.string().min(32).optional(),
+  LICENSE_SIGNING_SECRET: z.string().min(32).optional(),
 
   NODE_ENV: z.enum(['development', 'test', 'production']).default('development'),
   GOOGLE_GENERATIVE_AI_API_KEY: z.string().optional(),
