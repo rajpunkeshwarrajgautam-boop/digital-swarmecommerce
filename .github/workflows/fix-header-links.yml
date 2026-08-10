@@ -22,20 +22,21 @@ jobs:
         run: |
           python - <<'PY'
           from pathlib import Path
+          import re
           p = Path('src/components/layout/Header.tsx')
           s = p.read_text()
           s = s.replace('href="/vault"', 'href="/dashboard/assets"')
           s = s.replace('title="Digital Vault"', 'title="Licensed Assets"')
           s = s.replace('href="/profile"', 'href="/dashboard"')
-          old = '''<ForgeButton data-action="search" className="w-full" onClick={() => setIsMenuOpen(false)}>
-                Search Products
-              </ForgeButton>'''
-          new = '''<Link href="/search" onClick={() => setIsMenuOpen(false)}>
-                <ForgeButton className="w-full">Search Products</ForgeButton>
-              </Link>'''
-          if old not in s:
+          s, count = re.subn(
+              r'<ForgeButton\s+data-action="search"\s+className="w-full"\s+onClick=\{\(\) => setIsMenuOpen\(false\)\}>\s*Search Products\s*</ForgeButton>',
+              '<Link href="/search" onClick={() => setIsMenuOpen(false)}><ForgeButton className="w-full">Search Products</ForgeButton></Link>',
+              s,
+              count=1,
+              flags=re.S,
+          )
+          if count != 1:
               raise SystemExit('expected mobile search control not found')
-          s = s.replace(old, new)
           p.write_text(s)
           PY
       - name: Commit patch
