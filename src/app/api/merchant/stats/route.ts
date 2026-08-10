@@ -7,65 +7,48 @@ export const dynamic = "force-dynamic";
 export async function GET() {
   try {
     const user = await currentUser();
-    
-    if (!user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    if (!supabaseAdmin) return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
 
-    if (!supabaseAdmin) {
-      return NextResponse.json({ error: "Database unavailable" }, { status: 503 });
-    }
+    const [{ data: products, error: productError }, { data: commissions, error: commissionError }] = await Promise.all([
+      supabaseAdmin
+        .from("products")
+        .select("id,is_verified,is_visible,in_stock")
+        .eq("merchant_id", user.id),
+      supabaseAdmin
+        .from("commissions")
+        .select("id,merchant_share,status,created_at")
+        .eq("merchant_id", user.id),
+    ]);
 
-    // ── AGGREGATE_TELEMETRY ─────────────────────────────────────────────
-    
-    // 1. Fetch merchant's products
-    const { data: products, error: prodError } = await supabaseAdmin
-      .from("products")
-      .select("id, is_verified")
-      .eq("merchant_id", user.id);
+    if (productError) throw productError;
+    if (commissionError) throw commissionError;
 
-    if (prodError) throw prodError;
+    const productRows = products || [];
+    const commissionRows = commissions || [];
+    const sevenDaysAgo = Date.now() - 7 * 24 * 60 * 60 * 1000;
 
-    const productIds = products.map(p => p.id);
-    const verifiedCount = products.filter(p => p.is_verified).length;
-    const trustScore = products.length > 0 ? (verifiedCount / products.length) * 100 : 0;
-
-    // 2. Fetch sales from order_items
-    let totalRevenue = 0;
-    let salesCount = 0;
-    let syncVelocity = 0;
-
-    if (productIds.length > 0) {
-      const { data: orderItems, error: salesError } = await supabaseAdmin
-        .from("order_items")
-        .select("price, quantity, created_at")
-        .in("product_id", productIds);
-
-      if (salesError) throw salesError;
-
-      if (orderItems) {
-        totalRevenue = orderItems.reduce((acc, item) => acc + (item.price * (item.quantity || 1)), 0);
-        salesCount = orderItems.length;
-
-        // Calculate Velocity (Sales in last 7 days)
-        const sevenDaysAgo = new Date();
-        sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
-        
-        const recentSales = orderItems.filter(item => new Date(item.created_at) >= sevenDaysAgo);
-        syncVelocity = (recentSales.length / (salesCount || 1)) * 100;
-      }
-    }
+    const recordedCommission = commissionRows.reduce((sum, row) => sum + Number(row.merchant_share || 0), 0);
+    const pendingCommission = commissionRows
+      .filter((row) => row.status === "pending")
+      .reduce((sum, row) => sum + Number(row.merchant_share || 0), 0);
+    const settledCommission = commissionRows
+      .filter((row) => row.status === "settled")
+      .reduce((sum, row) => sum + Number(row.merchant_share || 0), 0);
+    const paidConversions7d = commissionRows.filter((row) => new Date(row.created_at).getTime() >= sevenDaysAgo).length;
 
     return NextResponse.json({
-      revenue: totalRevenue,
-      salesCount: salesCount,
-      syncVelocity: Math.round(syncVelocity),
-      trustScore: Math.round(trustScore),
-      activeProtocols: products.length,
+      listings: productRows.length,
+      verifiedListings: productRows.filter((row) => row.is_verified).length,
+      publishedListings: productRows.filter((row) => row.is_verified && row.is_visible && row.in_stock).length,
+      recordedCommission,
+      pendingCommission,
+      settledCommission,
+      paidConversions: commissionRows.length,
+      paidConversions7d,
     });
-
   } catch (error) {
-    console.error("[MERCHANT_STATS_ERROR]:", error);
+    console.error("[merchant stats] unexpected error:", error);
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
