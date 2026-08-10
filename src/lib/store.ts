@@ -3,6 +3,7 @@ import { persist } from 'zustand/middleware';
 import { Product, CartItem } from './types';
 
 const MAX_QUANTITY = 10;
+const WHITELABEL_SUFFIX = '-whitelabel';
 
 interface CartState {
   items: CartItem[];
@@ -30,6 +31,12 @@ function fromProduct(product: Product, quantity = 1, price = product.price): Car
   };
 }
 
+function parseCartProductId(productId: string) {
+  const isWhitelabel = productId.toLowerCase().endsWith(WHITELABEL_SUFFIX);
+  const baseId = isWhitelabel ? productId.slice(0, -WHITELABEL_SUFFIX.length) : productId;
+  return { baseId, isWhitelabel };
+}
+
 export const useCartStore = create<CartState>()(
   persist(
     (set, get) => ({
@@ -44,7 +51,7 @@ export const useCartStore = create<CartState>()(
           set({
             items: currentItems.map((item) =>
               item.productId === product.id
-                ? { ...item, ...fromProduct(product, Math.min(MAX_QUANTITY, item.quantity + 1)) }
+                ? fromProduct(product, Math.min(MAX_QUANTITY, item.quantity + 1))
                 : item,
             ),
             isOpen: true,
@@ -95,12 +102,24 @@ export const useCartStore = create<CartState>()(
 
       // Persisted carts can outlive catalog changes. Refresh names, images and
       // authoritative display prices while removing SKUs no longer offered.
+      // Agency-whitelabel cart IDs retain their suffix because the checkout
+      // server uses it to calculate the documented 5x licence price.
       syncWithCatalog: (products) => {
         const catalog = new Map(products.map((product) => [product.id, product]));
         const synced = get().items.flatMap((item) => {
-          const product = catalog.get(item.productId);
+          const { baseId, isWhitelabel } = parseCartProductId(item.productId);
+          const product = catalog.get(baseId);
           if (!product) return [];
-          return [fromProduct(product, item.quantity)];
+
+          const cartProduct: Product = isWhitelabel
+            ? {
+                ...product,
+                id: `${product.id}${WHITELABEL_SUFFIX}`,
+                name: `${product.name} [Agency Whitelabel License]`,
+                price: product.price * 5,
+              }
+            : product;
+          return [fromProduct(cartProduct, item.quantity)];
         });
         set({ items: synced });
       },
