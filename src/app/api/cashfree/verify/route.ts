@@ -1,178 +1,131 @@
 import { NextResponse } from 'next/server';
-
-const CASHFREE_APP_ID = process.env.CASHFREE_APP_ID!;
-const CASHFREE_SECRET_KEY = process.env.CASHFREE_SECRET_KEY!;
-const isProdKey = CASHFREE_SECRET_KEY.startsWith('cfsk_ma_prod_');
-const BASE_URL = isProdKey 
-  ? 'https://api.cashfree.com/pg' 
-  : 'https://sandbox.cashfree.com/pg';
-
 import { supabaseAdmin } from '@/lib/supabase';
-import { LedgerService } from '@/lib/ledger';
-import { getNodeIdentity } from '@/lib/nodes';
-import { CommissionService } from '@/lib/commissions';
-import { TokenService } from '@/lib/token-minting';
 import { fetchWithRetry } from '@/lib/http';
+
+function safeOrderId(value: unknown): string {
+  const id = typeof value === 'string' ? value.trim() : '';
+  return /^DS_[A-Za-z0-9_-]{6,180}$/.test(id) ? id : '';
+}
 
 export async function POST(request: Request) {
   try {
-    const { orderId } = await request.json();
+    const body = await request.json();
+    const orderId = safeOrderId(body?.orderId);
+    if (!orderId) return NextResponse.json({ error: 'Valid order ID required' }, { status: 400 });
 
-    if (!orderId) {
-      return NextResponse.json({ error: 'Order ID required' }, { status: 400 });
-    }
+    const appId = process.env.CASHFREE_APP_ID?.trim();
+    const secret = process.env.CASHFREE_SECRET_KEY?.trim();
+    if (!appId || !secret) return NextResponse.json({ error: 'Payment verification unavailable' }, { status: 503 });
+    if (!supabaseAdmin) return NextResponse.json({ error: 'Order database unavailable' }, { status: 503 });
 
-    const response = await fetchWithRetry(`${BASE_URL}/orders/${orderId}`, {
+    const isProduction = secret.startsWith('cfsk_ma_prod_');
+    const baseUrl = isProduction ? 'https://api.cashfree.com/pg' : 'https://sandbox.cashfree.com/pg';
+
+    const response = await fetchWithRetry(`${baseUrl}/orders/${encodeURIComponent(orderId)}`, {
       method: 'GET',
       headers: {
         'x-api-version': '2023-08-01',
-        'x-client-id': CASHFREE_APP_ID,
-        'x-client-secret': CASHFREE_SECRET_KEY,
+        'x-client-id': appId,
+        'x-client-secret': secret,
+        Accept: 'application/json',
       },
       timeoutMs: 8000,
       retries: 2,
       retryDelayMs: 500,
     });
 
-    const data = await response.json();
+    const gatewayOrder = await response.json() as {
+      order_id?: string;
+      order_status?: string;
+      order_amount?: number;
+    };
 
-    if (!response.ok) {
-      return NextResponse.json({ error: 'Could not verify payment' }, { status: 500 });
+    if (!response.ok || gatewayOrder.order_id !== orderId) {
+      return NextResponse.json({ error: 'Could not verify payment' }, { status: response.ok ? 409 : 502 });
     }
 
-    const isPaid = data.order_status === 'PAID';
-    const newStatus = isPaid ? 'paid' : data.order_status.toLowerCase();
-    let transitionedToPaid = false;
-    let internalOrderId: string | null = null;
+    const isPaid = gatewayOrder.order_status === 'PAID';
+    const { data: order, error: orderError } = await supabaseAdmin
+      .from('orders')
+      .select('id,status,customer_email,total,total_amount')
+      .eq('cashfree_order_id', orderId)
+      .maybeSingle();
 
-    // ── Update Supabase order status ─────────────────────────────────────────
-    if (orderId.startsWith('DS_') && supabaseAdmin) {
-      const { data: existingOrder } = await supabaseAdmin
+    if (orderError || !order) return NextResponse.json({ error: 'Local order not found' }, { status: 404 });
+
+    if (!isPaid) {
+      return NextResponse.json({
+        success: true,
+        isPaid: false,
+        status: gatewayOrder.order_status || 'UNKNOWN',
+        orderId,
+      });
+    }
+
+    if (order.status !== 'paid') {
+      const { error: updateError } = await supabaseAdmin
         .from('orders')
-        .select('id, status')
-        .eq('cashfree_order_id', orderId)
-        .maybeSingle();
-
-      internalOrderId = existingOrder?.id || null;
-      transitionedToPaid = Boolean(isPaid && existingOrder && existingOrder.status !== 'paid');
-
-      const { data: orderData, error: updateError } = await supabaseAdmin
-        .from('orders')
-        .update({
-          status: newStatus,
-          payment_id: data.cf_order_id, // Link to Cashfree order ID
-          updated_at: new Date().toISOString(),
-        })
-        .eq('cashfree_order_id', orderId)
-        .select('id, customer_email, status')
-        .single();
-
+        .update({ status: 'paid', updated_at: new Date().toISOString() })
+        .eq('id', order.id);
       if (updateError) {
-        console.error('[Cashfree Verify] Failed to update order status:', updateError.message);
+        console.error('[Cashfree verify] local paid transition failed:', updateError.message);
+        return NextResponse.json({ error: 'Payment verified but local order update failed' }, { status: 503 });
       }
+    }
 
-      // If just paid, trigger post-purchase logic (idempotent)
-      if (transitionedToPaid && orderData && supabaseAdmin) {
-        // 1. Check if license already exists
-        const { data: existingLicense } = await supabaseAdmin
-          .from('customer_licenses')
-          .select('id')
-          .eq('order_id', orderId)
-          .maybeSingle();
+    const { data: items, error: itemsError } = await supabaseAdmin
+      .from('order_items')
+      .select('product_id')
+      .eq('order_id', order.id);
+    if (itemsError || !items?.length) {
+      return NextResponse.json({ error: 'Payment verified but order items are unavailable' }, { status: 503 });
+    }
 
-        if (!existingLicense) {
-          // 2. Fetch order items
-          const { data: items } = await supabaseAdmin
-            .from('order_items')
-            .select('product_id')
-            .eq('order_id', orderData.id);
+    const internalSecret = process.env.INTERNAL_FULFILLMENT_SECRET?.trim();
+    const siteUrl = (process.env.NEXT_PUBLIC_SITE_URL || 'https://digitalswarm.in').replace(/\/$/, '');
+    let fulfilledItems = 0;
+    let fulfillmentPending = false;
 
-          // 3. Generate License Key
-          const licenseKey = `DS-${orderId.split('_').pop()}-${Math.random().toString(36).substring(2, 10).toUpperCase()}`;
-
-          // 4. Create licenses
-          if (items && items.length > 0) {
-            const licenseInserts = items.map((item: { product_id: string }) => ({
-              user_email: orderData.customer_email,
-              order_id: orderId,
-              license_key: `${licenseKey}-${item.product_id.substring(0, 4)}`,
-              product_id: item.product_id,
-              license_tier: 'standard',
-            }));
-
-            await supabaseAdmin.from('customer_licenses').insert(licenseInserts);
-          }
-
-          // 5. Trigger Webhook
-          fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/webhooks/purchase`, {
+    if (!internalSecret || internalSecret.length < 32) {
+      console.error('[Cashfree verify] INTERNAL_FULFILLMENT_SECRET missing');
+      fulfillmentPending = true;
+    } else {
+      for (const item of items) {
+        try {
+          const fulfillment = await fetch(`${siteUrl}/api/webhooks/purchase`, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              orderId: orderId,
-              customerEmail: orderData.customer_email,
-              productId: items?.[0]?.product_id || "bundle"
-            })
-          }).catch(e => console.error("Internal webhook trigger failed", e));
+            headers: {
+              'Content-Type': 'application/json',
+              'x-internal-fulfillment-secret': internalSecret,
+            },
+            body: JSON.stringify({ orderId, productId: item.product_id }),
+          });
+          if (fulfillment.ok) fulfilledItems += 1;
+          else fulfillmentPending = true;
+        } catch (error) {
+          console.error('[Cashfree verify] fulfillment fallback failed:', error);
+          fulfillmentPending = true;
         }
       }
     }
 
-    // 🛸 [LEDGER PROTOCOL] Generate verifiable proof of purchase
-    let ledgerEntry = null;
-    const node = getNodeIdentity(request.headers);
-
-    if (transitionedToPaid && internalOrderId) {
-      try {
-        const entry = LedgerService.signPurchase(
-          orderId,
-          data.order_amount,
-          data.customer_details?.customer_email || 'anonymous@swarm.in'
-        );
-        // Tag with signing node
-        ledgerEntry = { 
-          orderId: entry.orderId,
-          signature: entry.signature,
-          timestamp: entry.timestamp,
-          amount: entry.amount,
-          customer: entry.customer,
-          node_id: node.id, 
-          region: node.region 
-        };
-
-        // 💰 [FINANCE PROTOCOL] Process commission split
-        await CommissionService.calculateSplit(internalOrderId);
-
-        // 🏗️ [TOKEN PROTOCOL] Mint Digital Swarm Tokens (NFTs)
-        const mintResult = await TokenService.mintFromOrder(internalOrderId, entry.signature);
-        if (mintResult.success) {
-            console.log(`[VAULT] Tokens minted: ${mintResult.tokens.join(', ')}`);
-        }
-
-      } catch (ledgerErr) {
-        console.error('[Ledger Protocol] Signing failed:', ledgerErr);
-      }
-    }
+    const { count: licenseCount } = await supabaseAdmin
+      .from('customer_licenses')
+      .select('id', { count: 'exact', head: true })
+      .eq('order_id', orderId);
 
     return NextResponse.json({
       success: true,
-      isPaid,
-      status: data.order_status,
-      orderId: data.order_id,
-      amount: data.order_amount,
-      ledger_entry: ledgerEntry,
+      isPaid: true,
+      status: 'PAID',
+      orderId,
+      amount: Number(order.total_amount ?? order.total ?? gatewayOrder.order_amount ?? 0),
+      itemCount: items.length,
+      licensedItems: licenseCount || fulfilledItems,
+      fulfillment: fulfillmentPending ? 'processing' : 'complete',
     });
-  } catch (err) {
-    console.error('[Cashfree Verify] Error:', err);
-    const error = err as Error;
-    return NextResponse.json(
-      {
-        error:
-          error.name === 'AbortError'
-            ? 'Payment verification timed out. Please retry shortly.'
-            : 'Internal Server Error',
-      },
-      { status: 500 }
-    );
+  } catch (error) {
+    console.error('[Cashfree verify] unexpected error:', error);
+    return NextResponse.json({ error: 'Payment verification failed' }, { status: 500 });
   }
 }
-
