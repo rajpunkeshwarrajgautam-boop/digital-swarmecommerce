@@ -1,78 +1,73 @@
 import { NextResponse } from 'next/server';
+import { currentUser } from '@clerk/nextjs/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { rateLimit } from '@/lib/rate-limit';
 
-const limiter = rateLimit({
-  interval: 60 * 60 * 1000, // 1 hour
-  uniqueTokenPerInterval: 100,
-});
+const limiter = rateLimit({ interval: 60 * 60 * 1000, uniqueTokenPerInterval: 100 });
 
-/**
- * 🛰️ MERCHANT UPLINK
- * -------------------
- * Processes a proposal for a new merchant node.
- * Records the data in the 'merchant_applications' table.
- */
+function validHttpsUrl(value: string): boolean {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'https:' || url.protocol === 'http:';
+  } catch {
+    return false;
+  }
+}
+
 export async function POST(request: Request) {
   try {
+    const user = await currentUser();
+    if (!user) return NextResponse.json({ error: 'Sign in before submitting an application.' }, { status: 401 });
+
     const ip = request.headers.get('x-forwarded-for') || 'anonymous';
-    
-    // 1. Rate Limit: 3 applications per hour per IP
     try {
-      await limiter.check(3, ip);
+      await limiter.check(3, `${user.id}:${ip}`);
     } catch {
-      return NextResponse.json({ error: 'System busy. Node uplink already active for this IP.' }, { status: 429 });
+      return NextResponse.json({ error: 'Too many application attempts. Please try again later.' }, { status: 429 });
     }
 
-    const { nodeName, specialization, portfolioUrl, description, contactEmail } = await request.json();
+    const body = await request.json();
+    const nodeName = String(body?.nodeName || '').trim().slice(0, 120);
+    const specialization = String(body?.specialization || '').trim().slice(0, 160);
+    const portfolioUrl = String(body?.portfolioUrl || '').trim().slice(0, 500);
+    const description = String(body?.description || '').trim().slice(0, 5000);
+    const contactEmail = String(body?.contactEmail || '').trim().toLowerCase().slice(0, 254);
 
-    if (
-      !nodeName?.trim() ||
-      !specialization?.trim() ||
-      !portfolioUrl?.trim() ||
-      !contactEmail?.trim() ||
-      !description?.trim()
-    ) {
-      return NextResponse.json({ error: 'Incomplete node credentials.' }, { status: 400 });
+    if (!nodeName || !specialization || !portfolioUrl || !contactEmail || !description) {
+      return NextResponse.json({ error: 'All application fields are required.' }, { status: 400 });
     }
-
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(contactEmail)) {
+      return NextResponse.json({ error: 'Enter a valid contact email.' }, { status: 400 });
+    }
+    if (!validHttpsUrl(portfolioUrl)) {
+      return NextResponse.json({ error: 'Portfolio URL must be a valid http(s) URL.' }, { status: 400 });
+    }
     if (!supabaseAdmin) {
-      return NextResponse.json({ error: 'Database uplink offline.' }, { status: 500 });
+      return NextResponse.json({ error: 'Application database is temporarily unavailable.' }, { status: 503 });
     }
 
-    // 2. Record Application
-    const { error } = await supabaseAdmin
+    const { data, error } = await supabaseAdmin
       .from('merchant_applications')
-      .insert({
+      .upsert({
+        user_id: user.id,
         node_name: nodeName,
         specialization,
         portfolio_url: portfolioUrl,
         description,
         contact_email: contactEmail,
         status: 'pending',
-        created_at: new Date().toISOString()
-      });
+      }, { onConflict: 'user_id' })
+      .select('id,status,created_at')
+      .single();
 
-    // Note: If the table doesn't exist, this will error. 
-    // In a production environment, this migration would be part of Phase 8.4 setup.
-    if (error) {
-      console.error('[ONBOARDING_ERROR] Database failure:', error.message);
-      return NextResponse.json(
-        {
-          error:
-            'We could not save your application. Confirm the merchant_applications table exists, or email ops@digitalswarm.in.',
-        },
-        { status: 503 }
-      );
+    if (error || !data) {
+      console.error('[merchant apply] persistence failed:', error?.message);
+      return NextResponse.json({ error: 'We could not save your application. Please email support@digitalswarm.in.' }, { status: 503 });
     }
 
-    return NextResponse.json({ 
-      success: true, 
-      message: 'Node proposal broadcasted to the Swarm Council.' 
-    });
-
+    return NextResponse.json({ success: true, application: data, message: 'Application saved for manual review.' });
   } catch (err) {
-    console.error('Merchant apply logic failure:', err);
-    return NextResponse.json({ error: 'Internal Core Fault' }, { status: 500 });
+    console.error('[merchant apply] unexpected failure:', err);
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
