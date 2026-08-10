@@ -5,6 +5,7 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { env } from '@/lib/env';
 import { fetchWithRetry } from '@/lib/http';
 import { products as catalogProducts } from '@/lib/data';
+import { isSellableProductId } from '@/lib/catalog-integrity';
 
 type CheckoutItem = {
   id?: string;
@@ -73,7 +74,9 @@ export async function POST(request: Request) {
       }
 
       const { slug, isWhitelabel } = parseCartIdentity(rawId);
-      const catalogProduct = catalogProducts.find((product) => product.id === slug && product.inStock);
+      const catalogProduct = catalogProducts.find(
+        (product) => product.id === slug && product.inStock && isSellableProductId(product.id),
+      );
       if (!catalogProduct) {
         return NextResponse.json({ error: `Unknown or unavailable product: ${slug}` }, { status: 400 });
       }
