@@ -11,49 +11,44 @@ import { trackEcommerceEvent } from "@/lib/web-analytics";
 const freebies = [
   {
     id: "saas-checklist",
-    name: "Ultimate SaaS Launch Checklist",
-    description: "A comprehensive 150+ point checklist to go from idea to first revenue — structured for solo founders and small teams.",
+    name: "SaaS Launch Checklist",
+    description: "A downloadable text checklist for planning and reviewing a SaaS launch.",
     icon: <Target className="w-8 h-8 text-primary" />,
     stats: "Free · .txt",
-    type: "Guide",
-    downloadUrl: "/downloads/saas-launch-checklist.txt"
+    type: "Checklist",
   },
   {
     id: "ai-prompt-library",
-    name: "AI Agent Prompt Library",
-    description: "Expert-crafted prompts for Claude, GPT-4, and Midjourney to automate your development workflow.",
+    name: "AI Prompt Library",
+    description: "A downloadable text collection of reusable AI prompt patterns.",
     icon: <Sparkles className="w-8 h-8 text-accent" />,
     stats: "Free · .txt",
-    type: "Asset",
-    downloadUrl: "/downloads/ai-prompt-library.txt"
+    type: "Prompt asset",
   },
   {
     id: "mini-ui-kit",
     name: "Cyberpunk Mini UI Kit",
-    description: "A selection of premium React components from our main UI Kit. Buttons, cards, and inputs.",
+    description: "A downloadable TSX sample containing reusable interface components.",
     icon: <Zap className="w-8 h-8 text-primary" />,
     stats: "Free · .tsx",
-    type: "Code",
-    downloadUrl: "/downloads/cyberpunk-mini-ui-kit.tsx"
+    type: "Code sample",
   },
   {
     id: "tech-stack-audit",
-    name: "SaaS Tech Stack Audit 2025",
-    description: "A deep-dive research report on the most efficient tools for building high-scale startups in 2025.",
+    name: "SaaS Tech Stack Audit",
+    description: "A downloadable text reference for reviewing a SaaS technology stack.",
     icon: <Target className="w-8 h-8 text-blue-400" />,
     stats: "Free · .txt",
     type: "Guide",
-    downloadUrl: "/downloads/saas-tech-stack-audit.txt"
   },
   {
     id: "design-system-tokens",
-    name: "Digital Swarm Design System",
-    description: "Figma and CSS design tokens for the ultimate cyberpunk aesthetic. Includes neon palettes and UI elements.",
+    name: "Digital Swarm Design Tokens",
+    description: "A downloadable CSS token file for experimenting with Digital Swarm-style interface variables.",
     icon: <Sparkles className="w-8 h-8 text-amber-400" />,
     stats: "Free · .css",
-    type: "Asset",
-    downloadUrl: "/downloads/design-system-tokens.css"
-  }
+    type: "CSS asset",
+  },
 ];
 
 export default function FreebiesPage() {
@@ -75,7 +70,7 @@ export default function FreebiesPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         setListStatus("success");
-        setListMessage("Check your inbox to confirm.");
+        setListMessage("Subscription saved. Check your inbox if a welcome email is enabled.");
         trackLead("freebies_newsletter");
         trackEcommerceEvent("generate_lead", { source: "freebies", placement: "onsite" });
         setListEmail("");
@@ -92,72 +87,30 @@ export default function FreebiesPage() {
   return (
     <div className="min-h-screen bg-background py-24">
       <div className="container mx-auto px-4">
-        
-        {/* Hero */}
         <div className="max-w-4xl mx-auto text-center mb-20">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold mb-6"
-          >
-            <Gift className="w-4 h-4" /> 100% FREE RESOURCES
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary text-sm font-bold mb-6">
+            <Gift className="w-4 h-4" /> FREE DOWNLOADS
           </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-3xl sm:text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[1.1]"
-          >
-            Fuel Your Growth Without <span className="text-primary italic">Spending a Rupee.</span>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-3xl sm:text-5xl md:text-7xl font-black mb-8 tracking-tighter leading-[1.1]">
+            Useful files. <span className="text-primary italic">No fake gate.</span>
           </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-muted-foreground leading-relaxed"
-          >
-            We believe in building in public. Here are the tools, guides, and assets we use to scale our own projects — yours for free.
+          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.2 }} className="text-xl text-muted-foreground leading-relaxed">
+            Each button below maps to an asset that exists in Digital Swarm storage. The site generates a short-lived download link when you request it.
           </motion.p>
         </div>
 
-        {/* Grid */}
         <div className="grid md:grid-cols-3 gap-8">
           {freebies.map((freebie, idx) => (
-            <motion.div
-              key={freebie.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: 0.1 * idx }}
-              className="group relative p-8 rounded-3xl bg-secondary/20 border border-border/50 hover:border-primary/50 transition-all duration-500 overflow-hidden"
-            >
-              <div className="absolute top-0 right-0 p-4 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Gift className="w-24 h-24" />
-              </div>
-              
-              <div className="mb-6 inline-flex p-4 rounded-2xl bg-background border border-border group-hover:scale-110 transition-transform duration-500">
-                {freebie.icon}
-              </div>
-              
+            <motion.div key={freebie.id} initial={{ opacity: 0, scale: 0.95 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.1 * idx }} className="group relative p-8 rounded-3xl bg-secondary/20 border border-border/50 hover:border-primary/50 transition-all duration-500 overflow-hidden">
+              <div className="absolute top-0 right-0 p-4 opacity-10"><Gift className="w-24 h-24" /></div>
+              <div className="mb-6 inline-flex p-4 rounded-2xl bg-background border border-border group-hover:scale-105 transition-transform duration-300">{freebie.icon}</div>
               <div className="space-y-4 relative z-10">
-                <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold uppercase tracking-widest text-primary">{freebie.type}</span>
-                  <span className="text-xs text-muted-foreground">{freebie.stats}</span>
-                </div>
-                <h3 className="text-2xl font-bold tracking-tight group-hover:text-primary transition-colors">{freebie.name}</h3>
-                <p className="text-muted-foreground leading-relaxed text-sm">
-                  {freebie.description}
-                </p>
+                <div className="flex items-center justify-between gap-4"><span className="text-xs font-bold uppercase tracking-widest text-primary">{freebie.type}</span><span className="text-xs text-muted-foreground">{freebie.stats}</span></div>
+                <h3 className="text-2xl font-bold tracking-tight">{freebie.name}</h3>
+                <p className="text-muted-foreground leading-relaxed text-sm">{freebie.description}</p>
                 <div className="pt-4">
-                  <a 
-                    href={freebie.downloadUrl} 
-                    download={freebie.downloadUrl.split('/').pop()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block w-full"
-                  >
-                    <Button variant="outline" className="w-full group/btn gap-2">
-                      Download Free <Download className="w-4 h-4 group-hover/btn:translate-y-0.5 transition-transform" />
-                    </Button>
+                  <a href={`/api/freebies/${freebie.id}`} className="block w-full">
+                    <Button variant="outline" className="w-full group/btn gap-2">Download Free <Download className="w-4 h-4 group-hover/btn:translate-y-0.5 transition-transform" /></Button>
                   </a>
                 </div>
               </div>
@@ -165,60 +118,25 @@ export default function FreebiesPage() {
           ))}
         </div>
 
-        {/* Community Section */}
         <div className="mt-20 sm:mt-32 p-6 sm:p-12 rounded-[2rem] sm:rounded-[3rem] bg-secondary/10 border border-border/50 text-center relative overflow-hidden">
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-primary/20 blur-[120px] rounded-full" />
-          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-accent/20 blur-[120px] rounded-full" />
-
           <div className="relative z-10 max-w-2xl mx-auto space-y-6 sm:space-y-8">
-            <h2 className="text-2xl sm:text-4xl font-black tracking-tight italic">Join the Swarm</h2>
-            <p className="text-base sm:text-lg text-muted-foreground">
-              Get drops when we publish new freebies and paid protocols. One email field — powered by the same Resend pipeline as the rest of the site.
-            </p>
-            <form
-              onSubmit={handleNewsletter}
-              className="flex flex-col sm:flex-row gap-4 items-center justify-center"
-            >
-              <input
-                type="email"
-                name="email"
-                value={listEmail}
-                onChange={(e) => setListEmail(e.target.value)}
-                placeholder="Enter your email"
-                required
-                autoComplete="email"
-                className="w-full sm:w-80 h-12 sm:h-14 rounded-full bg-background border border-border px-6 focus:outline-hidden focus:ring-2 focus:ring-primary/50 transition-all text-sm"
-              />
-              <Button
-                type="submit"
-                disabled={listStatus === "loading"}
-                className="w-full sm:w-auto h-12 sm:h-14 px-8 rounded-full gap-2 text-sm"
-              >
-                {listStatus === "loading" ? "Sending…" : "Join the list"}
-                <ArrowRight className="w-4 h-4" />
+            <h2 className="text-2xl sm:text-4xl font-black tracking-tight italic">New-release email</h2>
+            <p className="text-base sm:text-lg text-muted-foreground">Subscribe through the same newsletter endpoint used elsewhere on the site.</p>
+            <form onSubmit={handleNewsletter} className="flex flex-col sm:flex-row gap-4 items-center justify-center">
+              <input type="email" name="email" value={listEmail} onChange={(e) => setListEmail(e.target.value)} placeholder="Enter your email" required autoComplete="email" className="w-full sm:w-80 h-12 sm:h-14 rounded-full bg-background border border-border px-6 focus:outline-hidden focus:ring-2 focus:ring-primary/50 transition-all text-sm" />
+              <Button type="submit" disabled={listStatus === "loading"} className="w-full sm:w-auto h-12 sm:h-14 px-8 rounded-full gap-2 text-sm">
+                {listStatus === "loading" ? "Sending…" : "Subscribe"}<ArrowRight className="w-4 h-4" />
               </Button>
             </form>
-            {listMessage ? (
-              <p
-                className={`text-sm ${listStatus === "error" ? "text-red-400" : "text-primary"}`}
-                role="status"
-              >
-                {listMessage}
-              </p>
-            ) : null}
-            <p className="text-[10px] sm:text-xs text-muted-foreground opacity-50 italic">
-              No spam. Unsubscribe anytime (link in the welcome email).
-            </p>
+            {listMessage ? <p className={`text-sm ${listStatus === "error" ? "text-red-400" : "text-primary"}`} role="status">{listMessage}</p> : null}
           </div>
         </div>
 
-        {/* Back to Products */}
         <div className="mt-20 text-center">
           <Link href="/products" className="text-muted-foreground hover:text-primary transition-colors text-sm font-medium flex items-center justify-center gap-2 group">
-            Want the full premium versions? Browse our catalog <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+            Browse verified paid products <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </Link>
         </div>
-
       </div>
     </div>
   );
