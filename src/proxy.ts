@@ -5,7 +5,12 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/profile(.*)",
   "/affiliate(.*)",
-  "/merchant(.*)",
+  "/merchant",
+  "/merchant/add(.*)",
+  "/merchant/ledger(.*)",
+  "/merchant/payouts(.*)",
+  "/merchant/reputation(.*)",
+  "/merchant/tasks(.*)",
   "/checkout/success(.*)",
   "/admin(.*)",
 ]);
