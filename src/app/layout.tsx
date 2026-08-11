@@ -65,7 +65,7 @@ export default function RootLayout({
             <RootClientWidgets />
             <div className="relative min-h-screen flex flex-col">
               <Header />
-              <main className="grow pt-36 md:pt-40 lg:pt-32">
+              <main className="grow pt-20">
                 {children}
               </main>
               <ExitIntentABRouter />
