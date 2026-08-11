@@ -7,7 +7,7 @@
  */
 export function CurrencySwitcher() {
   return (
-    <div className="border border-white/10 bg-white/[0.03] px-2.5 py-1 font-mono text-[10px] font-black uppercase tracking-wider text-white/45">
+    <div className="border border-black/15 bg-black/[0.025] px-2.5 py-1 font-mono text-[9px] font-black uppercase tracking-[.18em] text-black/55">
       ₹ INR
     </div>
   );
