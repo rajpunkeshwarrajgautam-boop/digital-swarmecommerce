@@ -1,0 +1,62 @@
+name: Visual Audit Capture
+
+on:
+  push:
+    branches: [redesign/editorial-swarm-story]
+    paths:
+      - '.github/workflows/visual-audit.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium
+        run: npx playwright install --with-deps chromium
+
+      - name: Capture desktop and mobile
+        env:
+          PREVIEW_URL: https://antigravity-ec-git-527d93-rajpunkeshwarrajgautam-boops-projects.vercel.app
+        run: |
+          node <<'NODE'
+          const { chromium } = require('@playwright/test');
+          (async () => {
+            const browser = await chromium.launch();
+            for (const cfg of [
+              { name: 'desktop', width: 1440, height: 1100 },
+              { name: 'mobile', width: 390, height: 844 },
+            ]) {
+              const context = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height }, deviceScaleFactor: 1 });
+              const page = await context.newPage();
+              await page.goto(process.env.PREVIEW_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
+              await page.waitForTimeout(5000);
+              await page.screenshot({ path: `${cfg.name}.png`, fullPage: true });
+              await context.close();
+            }
+            await browser.close();
+          })().catch((error) => { console.error(error); process.exit(1); });
+          NODE
+
+      - name: Upload screenshots
+        uses: actions/upload-artifact@v4
+        with:
+          name: editorial-home-screenshots
+          path: |
+            desktop.png
+            mobile.png
+          if-no-files-found: error
