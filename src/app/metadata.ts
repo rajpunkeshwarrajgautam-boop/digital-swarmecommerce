@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 
 const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in";
+// Production storefront metadata is intentionally claim-minimal and factual.
 
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
