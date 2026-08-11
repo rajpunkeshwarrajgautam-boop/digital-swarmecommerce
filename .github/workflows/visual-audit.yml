@@ -31,7 +31,7 @@ jobs:
 
       - name: Capture desktop and mobile
         env:
-          PREVIEW_URL: https://antigravity-ec-git-527d93-rajpunkeshwarrajgautam-boops-projects.vercel.app
+          PREVIEW_URL: https://antigravity-ecommerce-nyi0i0sez.vercel.app/?_vercel_share=SAAANSKeqJMQG3C7Fa8xd4b6DGaIMi5u
         run: |
           node <<'NODE'
           const { chromium } = require('@playwright/test');
@@ -43,8 +43,8 @@ jobs:
             ]) {
               const context = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height }, deviceScaleFactor: 1 });
               const page = await context.newPage();
-              await page.goto(process.env.PREVIEW_URL, { waitUntil: 'domcontentloaded', timeout: 60000 });
-              await page.waitForTimeout(5000);
+              await page.goto(process.env.PREVIEW_URL, { waitUntil: 'networkidle', timeout: 60000 });
+              await page.waitForTimeout(3500);
               await page.screenshot({ path: `${cfg.name}.png`, fullPage: true });
               await context.close();
             }
