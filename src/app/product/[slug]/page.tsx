@@ -13,7 +13,6 @@ import {
   LockKeyhole,
   RotateCcw,
   ShieldCheck,
-  Sparkles,
 } from "lucide-react";
 import AddToCartButton from "./AddToCartButton";
 import { RelatedProducts } from "@/components/products/RelatedProducts";
