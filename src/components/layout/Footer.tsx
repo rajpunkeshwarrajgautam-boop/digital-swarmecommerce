@@ -1,115 +1,88 @@
 "use client";
 
 import Link from "next/link";
-import { Mail, ShieldCheck } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
+import { ArrowUpRight, Mail } from "lucide-react";
 import { usePathname } from "next/navigation";
-import Image from "next/image";
+
+const columns = [
+  {
+    label: "Shop",
+    links: [
+      ["Catalog", "/products"],
+      ["Pricing", "/pricing"],
+      ["Free assets", "/freebies"],
+      ["Search", "/search"],
+    ],
+  },
+  {
+    label: "Support",
+    links: [
+      ["Help center", "/help"],
+      ["FAQ", "/faq"],
+      ["Contact", "/contact"],
+      ["Refund policy", "/refund"],
+    ],
+  },
+  {
+    label: "Company",
+    links: [
+      ["About", "/about"],
+      ["Blog", "/blog"],
+      ["Affiliate", "/affiliate"],
+      ["Merchant", "/merchant/apply"],
+    ],
+  },
+  {
+    label: "Legal",
+    links: [
+      ["Terms", "/terms"],
+      ["Privacy", "/privacy"],
+      ["Cookies", "/cookie"],
+    ],
+  },
+] as const;
 
 export function Footer() {
   const pathname = usePathname();
-  const isAuthPage = pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up');
-  const currentYear = new Date().getFullYear();
-
+  const isAuthPage = pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up");
   if (isAuthPage) return null;
 
   return (
-    <footer className="bg-secondary pt-24 pb-12 border-t border-white/5 relative overflow-hidden">
-      <div className="container mx-auto px-6 relative z-10 w-full max-w-7xl">
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-5 gap-12 mb-20">
-          <div className="flex flex-col gap-8">
-            <Link href="/" className="hover:opacity-80 transition-opacity">
-              <Logo className="text-white" />
-            </Link>
-            <p className="text-white/35 text-[11px] font-mono uppercase tracking-widest leading-loose max-w-xs">
-              Digital products with explicit deliverables, private paid downloads and gateway-backed checkout.
-            </p>
-            <a
-              href="mailto:support@digitalswarm.in"
-              className="flex w-fit items-center gap-2 text-xs font-bold text-white/55 transition-colors hover:text-primary"
-            >
+    <footer className="border-t border-black/15 bg-[#f1eee6] px-5 py-10 text-[#151515] md:px-8 md:py-14 lg:px-12">
+      <div className="mx-auto max-w-[1600px]">
+        <div className="grid gap-12 border-b border-black/20 pb-12 lg:grid-cols-[1.35fr_1.65fr]">
+          <div>
+            <p className="editorial-kicker">DIGITAL SWARM</p>
+            <h2 className="mt-5 max-w-2xl text-[clamp(3.4rem,6vw,7rem)] font-black uppercase leading-[.82] tracking-[-.07em]">
+              Digital assets
+              <span className="block text-[#725cff]">for people who ship.</span>
+            </h2>
+            <a href="mailto:support@digitalswarm.in" className="editorial-button editorial-button-dark mt-8">
               <Mail className="h-4 w-4" /> support@digitalswarm.in
             </a>
           </div>
 
-          <div className="flex flex-col gap-8">
-            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.35em] text-primary">Collections</h4>
-            <div className="flex flex-col gap-4">
-              <FooterLink href="/products?category=SaaS" label="SaaS" />
-              <FooterLink href="/products?category=AI%20Agent" label="AI Agents" />
-              <FooterLink href="/products?category=Playbooks" label="Playbooks" />
-              <FooterLink href="/products?category=Finance" label="Finance" />
-              <FooterLink href="/products?category=Source%20Code" label="Source Code" />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-8">
-            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.35em] text-primary">Customer care</h4>
-            <div className="flex flex-col gap-4">
-              <FooterLink href="/help" label="Help Center" />
-              <FooterLink href="/faq" label="FAQ" />
-              <FooterLink href="/contact" label="Contact" />
-              <FooterLink href="/pricing" label="Pricing" />
-              <FooterLink href="/refund" label="Refund Policy" />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-8">
-            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.35em] text-primary">Partners</h4>
-            <div className="flex flex-col gap-4">
-              <FooterLink href="/affiliate" label="Affiliate Program" />
-              <FooterLink href="/merchant/apply" label="Become a Merchant" />
-              <FooterLink href="/merchant" label="Merchant Portal" />
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-8">
-            <h4 className="text-[10px] font-mono font-black uppercase tracking-[0.35em] text-primary">Legal</h4>
-            <div className="flex flex-col gap-4">
-              <FooterLink href="/terms" label="Terms of Service" />
-              <FooterLink href="/privacy" label="Privacy Policy" />
-              <FooterLink href="/cookie" label="Cookie Policy" />
-            </div>
-
-            <div className="mt-3 border-t border-white/5 pt-7">
-              <div className="mb-4 flex items-center gap-3">
-                <ShieldCheck className="h-5 w-5 text-primary" />
-                <span className="text-[9px] font-mono font-black uppercase tracking-[0.2em] text-white/30">Payment gateway</span>
+          <div className="grid grid-cols-2 gap-x-8 gap-y-10 sm:grid-cols-4">
+            {columns.map((column) => (
+              <div key={column.label}>
+                <h3 className="font-mono text-[9px] font-black uppercase tracking-[.22em] text-[#725cff]">{column.label}</h3>
+                <div className="mt-5 flex flex-col gap-3">
+                  {column.links.map(([label, href]) => (
+                    <Link key={href} href={href} className="group flex items-center gap-1 text-sm font-bold text-black/55 transition hover:text-black">
+                      {label} <ArrowUpRight className="h-3 w-3 opacity-0 transition group-hover:opacity-100" />
+                    </Link>
+                  ))}
+                </div>
               </div>
-              <div className="relative h-6 w-32 grayscale brightness-200 contrast-200 opacity-35">
-                <Image
-                  src="https://www.cashfree.com/content/dam/cashfree/logo/cashfree-logo-black.svg"
-                  alt="Cashfree Payments"
-                  fill
-                  className="object-contain"
-                />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
-        <div className="flex flex-col gap-5 border-t border-white/5 pt-10 text-center md:flex-row md:items-center md:justify-between md:text-left">
-          <p className="text-[10px] font-mono font-bold uppercase tracking-[0.22em] text-white/20">
-            © {currentYear} Digital Swarm
-          </p>
-          <p className="text-[9px] font-mono uppercase tracking-[0.2em] text-white/20">
-            Cashfree checkout · private paid delivery · email support
-          </p>
+        <div className="flex flex-col gap-4 pt-7 text-[9px] font-black uppercase tracking-[.18em] text-black/45 md:flex-row md:items-center md:justify-between">
+          <p>© {new Date().getFullYear()} DIGITAL SWARM</p>
+          <p>INR catalog · Cashfree checkout · private paid delivery</p>
         </div>
       </div>
-
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-primary/5 blur-[150px] rounded-full translate-x-1/2 -translate-y-1/2 pointer-events-none" />
     </footer>
-  );
-}
-
-function FooterLink({ href, label }: { href: string; label: string }) {
-  return (
-    <Link
-      href={href}
-      className="flex items-center gap-2 text-sm font-bold text-white/40 transition-colors hover:text-white"
-    >
-      {label}
-    </Link>
   );
 }
