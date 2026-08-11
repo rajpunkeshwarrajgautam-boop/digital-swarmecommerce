@@ -1,272 +1,153 @@
 "use client";
 
 import { useSearchParams } from "next/navigation";
-import { Check, Download, BookOpen, ShieldCheck } from "lucide-react";
+import { CheckCircle2, Clock3, Mail, ShieldCheck, AlertTriangle } from "lucide-react";
 import Link from "next/link";
-import { motion } from "framer-motion";
-import { Suspense, useEffect, useState } from "react";
-import Image from "next/image";
-import { Product } from "@/lib/types";
-import { LedgerReceipt } from "@/components/ui/LedgerReceipt";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { trackPurchase } from "@/components/analytics/FBPixel";
-import { UpsellSection } from "@/components/marketing/UpsellSection";
 import { trackPurchaseEvent } from "@/lib/web-analytics";
 
-const NodeStatusPulse = () => (
-  <div className="flex items-center gap-2 px-3 py-1 bg-black/5 border border-black/10 rounded-full scale-90">
-    <div className="relative w-2 h-2">
-      <div className="absolute inset-0 bg-[#CCFF00] rounded-full animate-ping opacity-75" />
-      <div className="relative w-2 h-2 bg-[#CCFF00] rounded-full shadow-[0_0_8px_#CCFF00]" />
-    </div>
-    <span className="text-[8px] font-black uppercase tracking-widest text-black/60 italic">Swarm_Node_Ready</span>
-  </div>
-);
+interface VerificationResult {
+  success?: boolean;
+  isPaid?: boolean;
+  status?: string;
+  orderId?: string;
+  amount?: number;
+  itemCount?: number;
+  licensedItems?: number;
+  fulfillment?: "complete" | "processing";
+  error?: string;
+}
 
 function SuccessContent() {
   const searchParams = useSearchParams();
-  const orderId = searchParams.get("order_id");
-  const paymentId = searchParams.get("payment_id");
-  const sessionId = searchParams.get("session_id");
-  const status = searchParams.get("status");
-
-  const [isVerifying, setIsVerifying] = useState(true);
-  const [paymentStatus, setPaymentStatus] = useState<string | null>(null);
-  const [purchasedItems, setPurchasedItems] = useState<Product[]>([]);
-  const [ledgerData, setLedgerData] = useState<any>(null);
+  const orderId = searchParams.get("order_id")?.trim() || "";
+  const [result, setResult] = useState<VerificationResult | null>(null);
+  const [loading, setLoading] = useState(true);
+  const purchaseTracked = useRef(false);
 
   useEffect(() => {
-    const lastItems = typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('last_purchase') || '[]') : [];
-    setPurchasedItems(lastItems);
-
     async function verify() {
+      if (!orderId) {
+        setResult({ error: "Missing order ID." });
+        setLoading(false);
+        return;
+      }
+
       try {
-        if (status === "free") {
-          setPaymentStatus('paid');
-          setIsVerifying(false);
-          return;
-        }
-
-        let endpoint = "";
-        let body = {};
-
-        if (sessionId) {
-          endpoint = "/api/stripe/verify";
-          body = { sessionId };
-        } else if (paymentId && orderId) {
-          endpoint = "/api/razorpay/verify";
-          body = { orderId, paymentId };
-        } else if (orderId) {
-          endpoint = "/api/cashfree/verify";
-          body = { orderId };
-        } else {
-          setPaymentStatus('error');
-          setIsVerifying(false);
-          return;
-        }
-
-        const res = await fetch(endpoint, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(body),
+        const res = await fetch("/api/cashfree/verify", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ orderId }),
         });
-        const data = await res.json();
-        
-        if (data.isPaid || data.success) {
-          setPaymentStatus('paid');
-          // Fire FB Purchase event for ad campaign optimization
-          const purchaseValue = data.amount ?? Number(localStorage.getItem('last_purchase_value') ?? 0);
-          trackPurchase(purchaseValue, data.orderId ?? orderId ?? 'unknown');
-          trackPurchaseEvent(
-            purchaseValue,
-            data.orderId ?? orderId ?? "unknown",
-            lastItems.map((item: Product) => ({
-              id: item.id,
-              name: item.name,
-              price: item.price,
-              quantity: 1,
-            }))
-          );
-          if (data.ledger_entry) {
-            setLedgerData(data.ledger_entry);
-          }
-          // FETCH ORDER ITEMS FROM SERVER (NEW COMPLETION LOGIC)
-          if (data.orderId) {
-             const itemsRes = await fetch(`/api/orders/${data.orderId}/items`);
-             if (itemsRes.ok) {
-                const itemsData = await itemsRes.ok ? await itemsRes.json() : [];
-                setPurchasedItems(itemsData.items || []);
-             }
-          }
-        } else {
-          setPaymentStatus('failed');
+        const data = (await res.json()) as VerificationResult;
+        setResult(data);
+
+        if (res.ok && data.isPaid && !purchaseTracked.current) {
+          purchaseTracked.current = true;
+          const amount = Number(data.amount || 0);
+          trackPurchase(amount, data.orderId || orderId);
+          trackPurchaseEvent(amount, data.orderId || orderId, []);
+          try {
+            localStorage.removeItem("last_purchase");
+            localStorage.removeItem("last_purchase_value");
+          } catch {}
         }
-      } catch (error) {
-        console.error('[Verification Error]', error);
-        setPaymentStatus('error');
+      } catch {
+        setResult({ error: "We could not reach the payment verification service." });
       } finally {
-        setIsVerifying(false);
+        setLoading(false);
       }
     }
     verify();
-  }, [orderId, paymentId, sessionId, status]);
+  }, [orderId]);
 
-  if (isVerifying) {
+  if (loading) {
     return (
-      <div className="flex flex-col items-center gap-8 py-20">
-        <div className="w-20 h-20 border-8 border-black border-t-[#CCFF00] animate-spin shadow-[6px_6px_0_#000]" />
-        <p className="font-black italic uppercase tracking-[0.3em] text-black bg-white border-2 border-black px-4 py-2 shadow-[4px_4px_0_#000]">
-          Verifying_Transaction...
-        </p>
+      <div className="max-w-xl w-full text-center border border-white/10 bg-white/[0.03] rounded-3xl p-12">
+        <div className="w-14 h-14 border-4 border-white/10 border-t-primary rounded-full animate-spin mx-auto mb-6" />
+        <h1 className="text-3xl font-black text-white mb-2">Verifying payment</h1>
+        <p className="text-white/40 text-sm">Digital Swarm is checking the order directly with Cashfree.</p>
       </div>
     );
   }
 
-  if (paymentStatus !== 'paid') {
+  if (!result?.isPaid) {
     return (
-      <div className="bg-white border-4 border-black shadow-[16px_16px_0_#000] p-12 max-w-xl w-full text-center">
-        <div className="w-24 h-24 bg-red-500 border-4 border-black flex items-center justify-center mx-auto mb-8 shadow-[6px_6px_0_#000] rotate-3">
-          <Check className="w-12 h-12 text-white rotate-45" />
+      <div className="max-w-xl w-full text-center border border-red-500/20 bg-red-500/[0.05] rounded-3xl p-12">
+        <AlertTriangle className="w-14 h-14 text-red-400 mx-auto mb-6" />
+        <h1 className="text-3xl font-black text-white mb-3">Payment not confirmed</h1>
+        <p className="text-white/50 text-sm leading-relaxed mb-8">
+          {result?.error || `Cashfree currently reports ${result?.status || "an unconfirmed status"}. No paid download is exposed until the payment is verified.`}
+        </p>
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Link href="/products" className="px-6 py-3 rounded-full border border-white/10 text-white hover:border-primary/40">Return to products</Link>
+          <a href="mailto:support@digitalswarm.in" className="px-6 py-3 rounded-full bg-primary text-black font-bold">Contact support</a>
         </div>
-        <h1 className="text-4xl font-black italic uppercase tracking-tighter mb-4">Verification_Failed</h1>
-        <p className="font-black uppercase tracking-widest text-xs text-black/50 mb-10 leading-relaxed italic">
-          The transaction could not be verified. Please contact support.
-        </p>
-        <Link href="/checkout">
-            <button className="w-full h-16 border-4 border-black bg-black text-white font-black uppercase tracking-widest italic hover:bg-white hover:text-black transition-all shadow-[6px_6px_0_#000] active:translate-x-1 active:translate-y-1 active:shadow-none">Back_To_Checkout</button>
-        </Link>
       </div>
     );
   }
+
+  const complete = result.fulfillment === "complete" && Number(result.licensedItems || 0) >= Number(result.itemCount || 0);
 
   return (
-    <div className="w-full max-w-5xl space-y-12">
-      <motion.div 
-        initial={{ y: 20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        className="bg-white border-4 border-black shadow-[20px_20px_0_#000] p-12 relative overflow-hidden"
-      >
-        <div className="absolute top-0 right-12 -translate-y-1/2 bg-[#CCFF00] text-black border-4 border-black font-black uppercase px-6 py-2 italic tracking-widest shadow-[6px_6px_0_#000] -rotate-2 z-20">ORDER_READY</div>
-        
-        <div className="flex flex-col md:flex-row gap-12 items-center md:items-start text-center md:text-left">
-          <div className="w-32 h-32 bg-[#CCFF00] border-4 border-black flex items-center justify-center shrink-0 shadow-[8px_8px_0_#000] rotate-3">
-            <Check className="w-16 h-16 text-black" />
-          </div>
-          
-          <div className="flex-1">
-            <h1 className="text-6xl font-black italic uppercase tracking-tighter leading-none mb-4">Order_Confirmed</h1>
-            <p className="text-sm font-black uppercase tracking-widest text-black/60 mb-6 italic leading-relaxed">
-              Payment verified. Your premium digital assets have been authorized and are ready for download.
-            </p>
-            <div className="flex flex-wrap gap-4">
-               <div className="bg-black text-[#CCFF00] border-2 border-black px-4 py-2 font-black italic text-xs tracking-tighter shadow-[4px_4px_0_#000]">TXN://{orderId || sessionId || "DIRECT_RELAY"}</div>
-               <div className="bg-white border-2 border-black px-4 py-2 font-black italic text-xs tracking-tighter shadow-[4px_4px_0_#000]">STATUS: VERIFIED</div>
-            </div>
-          </div>
+    <div className="w-full max-w-3xl space-y-8">
+      <div className="border border-primary/25 bg-primary/[0.06] rounded-3xl p-8 sm:p-12 text-center">
+        <CheckCircle2 className="w-16 h-16 text-primary mx-auto mb-6" />
+        <p className="text-[10px] uppercase tracking-[0.35em] text-primary font-black mb-3">Cashfree verified</p>
+        <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tighter mb-5">Payment confirmed</h1>
+        <p className="text-white/50 leading-relaxed max-w-xl mx-auto">
+          Your order is paid. Paid assets are delivered through private, expiring storage links rather than public website URLs.
+        </p>
+      </div>
+
+      <div className="grid sm:grid-cols-3 gap-4">
+        <InfoCard label="Order" value={result.orderId || orderId} />
+        <InfoCard label="Amount" value={`₹${Number(result.amount || 0).toLocaleString("en-IN")}`} />
+        <InfoCard label="Items" value={String(result.itemCount || 0)} />
+      </div>
+
+      <div className="border border-white/10 bg-white/[0.03] rounded-3xl p-8 flex flex-col sm:flex-row gap-5 items-start">
+        {complete ? <Mail className="w-8 h-8 text-primary shrink-0" /> : <Clock3 className="w-8 h-8 text-amber-300 shrink-0" />}
+        <div>
+          <h2 className="text-xl font-black text-white mb-2">{complete ? "Private delivery prepared" : "Delivery is processing"}</h2>
+          <p className="text-sm text-white/45 leading-relaxed">
+            {complete
+              ? "A license record has been created for each paid item. The fulfillment service sends private download links to the checkout email when email delivery is configured."
+              : "Your payment is confirmed, but one or more fulfillment steps are still completing. Do not pay again. If the email does not arrive, contact support with the order ID above."}
+          </p>
         </div>
-      </motion.div>
-
-      {/* Ledger Receipt Section */}
-      {ledgerData && (
-        <motion.div 
-          initial={{ y: 20, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ delay: 0.2 }}
-          className="space-y-6"
-        >
-            <div className="flex items-center gap-4 text-black/40">
-               <div className="h-px flex-1 bg-black/10" />
-               <NodeStatusPulse />
-               <div className="h-px flex-1 bg-black/10" />
-            </div>
-            <LedgerReceipt 
-              orderId={ledgerData.orderId}
-              signature={ledgerData.signature}
-              timestamp={ledgerData.timestamp}
-              amount={ledgerData.amount}
-              nodeId={ledgerData.node_id}
-            />
-            <div className="mt-4 flex items-center justify-center gap-2 text-[10px] font-mono font-black text-primary uppercase tracking-[0.3em] animate-pulse italic">
-              <ShieldCheck className="w-3 h-3" /> Digital_Assets_Tokenized_Securely
-            </div>
-        </motion.div>
-      )}
-
-      {/* Assets Section */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {purchasedItems.map((product, idx) => (
-          <motion.div 
-            key={product.id}
-            initial={{ y: 20, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-            transition={{ delay: 0.1 * idx }}
-            className="group bg-[#ffc737] border-4 border-black p-8 shadow-[12px_12px_0_#000] hover:-translate-y-2 transition-all relative overflow-hidden"
-          >
-            <div className="absolute top-0 left-0 w-2 h-full bg-black" />
-             <div className="mb-6 flex justify-between items-start">
-                <div className="h-16 w-16 relative border-2 border-black bg-black">
-                   <Image src={product.image} alt={product.name} fill className="object-cover" />
-                </div>
-                <div className="font-black italic text-[10px] text-black border border-black px-2 py-1 rotate-[-10deg] bg-white">0x{product.id.substring(0,6)}</div>
-             </div>
-             
-             <h3 className="text-2xl font-black italic uppercase tracking-tighter mb-2">{product.name}</h3>
-             <p className="text-[10px] font-black uppercase text-black/40 mb-8 italic tracking-widest">Type: Digital_Asset_V1</p>
-             
-             <div className="flex flex-col gap-6">
-                 <div className="bg-black/5 p-4 border border-black italic">
-                   <h4 className="font-black text-xs uppercase mb-2 flex items-center gap-2"><BookOpen className="w-3 h-3" /> Quick Start Guide</h4>
-                   <div className="text-[10px] font-mono whitespace-pre-wrap leading-relaxed opacity-80">{product.installGuide}</div>
-                 </div>
-                 <div className="flex gap-4">
-                   <a 
-                     href={product.downloadUrl} 
-                     target="_blank"
-                     rel="noopener noreferrer"
-                     className="flex-1 h-16 flex items-center justify-center gap-3 bg-black text-[#CCFF00] border-2 border-black font-black uppercase italic tracking-widest text-sm hover:bg-white hover:text-black transition-all shadow-[6px_6px_0_#000] active:translate-x-1 active:translate-y-1"
-                   >
-                     <Download className="w-5 h-5" /> Access digital asset
-                   </a>
-                 </div>
-             </div>
-          </motion.div>
-        ))}
       </div>
 
-      <div className="bg-black text-white p-10 border-4 border-black shadow-[16px_16px_0_#ffc737] flex flex-col md:flex-row gap-8 items-center italic">
-         <ShieldCheck className="w-20 h-20 text-[#CCFF00] shrink-0" />
-         <div>
-            <h4 className="text-xl font-black uppercase tracking-widest mb-2 text-[#CCFF00]">Security_Log: Transaction_Secure</h4>
-            <p className="text-xs font-black uppercase tracking-widest text-white/40 leading-relaxed">
-              Your download links are now active. Please ensure you save your assets in a secure location. If you encounter any issues, contact our support center.
-            </p>
-         </div>
-         <Link href="/" className="ml-auto">
-            <button className="h-16 px-8 border-2 border-[#CCFF00] text-[#CCFF00] hover:bg-[#CCFF00] hover:text-black font-black uppercase italic tracking-widest text-xs transition-all">Back_To_Home</button>
-         </Link>
+      <div className="flex flex-col sm:flex-row gap-4 justify-center">
+        <Link href="/dashboard" className="px-7 py-4 rounded-full bg-primary text-black font-black text-center">Open customer dashboard</Link>
+        <a href="mailto:support@digitalswarm.in" className="px-7 py-4 rounded-full border border-white/10 text-white text-center hover:border-primary/40">Delivery support</a>
+        <Link href="/products" className="px-7 py-4 rounded-full border border-white/10 text-white text-center hover:border-primary/40">Continue shopping</Link>
       </div>
 
-      {/* Post-Purchase Upsell — drives additional revenue from high-intent buyers */}
-      <UpsellSection excludeIds={purchasedItems.map((p) => p.id)} />
+      <div className="flex items-start gap-3 text-xs text-white/30 max-w-2xl mx-auto">
+        <ShieldCheck className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+        <p>Digital Swarm does not expose paid asset URLs from local storage, query parameters, or public download folders on this page.</p>
+      </div>
+    </div>
+  );
+}
+
+function InfoCard({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border border-white/10 bg-white/[0.03] rounded-2xl p-5 min-w-0">
+      <div className="text-[9px] uppercase tracking-[0.25em] text-white/25 mb-2">{label}</div>
+      <div className="text-sm font-bold text-white break-all">{value}</div>
     </div>
   );
 }
 
 export default function SuccessPage() {
   return (
-    <div className="min-h-screen bg-[#ffc737] text-black flex flex-col items-center justify-center p-8 relative overflow-hidden font-inter">
-      <div className="absolute inset-0 bg-swarm-pattern opacity-[0.05] pointer-events-none" />
-      
-      {/* Background glitch elements */}
-      <div className="absolute top-10 left-10 w-40 h-1 bg-black/10 rotate-45" />
-      <div className="absolute bottom-20 right-20 w-60 h-2 bg-black/10 -rotate-12" />
-      
-      <Suspense fallback={<div className="font-black italic uppercase animate-pulse">Initializing_Order...</div>}>
-         <SuccessContent />
+    <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-6 py-32">
+      <Suspense fallback={<div className="text-white/40">Loading order…</div>}>
+        <SuccessContent />
       </Suspense>
-
-      <footer className="mt-20 font-black italic uppercase text-[10px] tracking-[0.5em] text-black/30 border-t-2 border-black/10 pt-8 w-full text-center">
-        Digital_Swarm_Systems // All_Assets_Secured
-      </footer>
-    </div>
+    </main>
   );
 }

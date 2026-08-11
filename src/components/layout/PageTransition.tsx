@@ -1,35 +1,23 @@
 "use client";
 
 import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { LayoutRouterContext } from "next/dist/shared/lib/app-router-context.shared-runtime";
-import { useContext, useRef } from "react";
-
-function FrozenRouter(props: { children: React.ReactNode }) {
-  const context = useContext(LayoutRouterContext);
-  const frozen = useRef(context).current;
-
-  return (
-    <LayoutRouterContext.Provider value={frozen}>
-      {props.children}
-    </LayoutRouterContext.Provider>
-  );
-}
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 
 export function PageTransition({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
+  const reduceMotion = useReducedMotion();
 
   return (
-    <AnimatePresence mode="wait">
+    <AnimatePresence mode="wait" initial={false}>
       <motion.div
         key={pathname}
-        initial={{ opacity: 0, y: 20 }}
+        initial={reduceMotion ? false : { opacity: 0, y: 12 }}
         animate={{ opacity: 1, y: 0 }}
-        exit={{ opacity: 0, y: -20 }}
-        transition={{ duration: 0.3 }}
-        className="w-full h-full"
+        exit={reduceMotion ? { opacity: 1 } : { opacity: 0, y: -10 }}
+        transition={{ duration: reduceMotion ? 0 : 0.22, ease: [0.22, 1, 0.36, 1] }}
+        className="h-full w-full"
       >
-        <FrozenRouter>{children}</FrozenRouter>
+        {children}
       </motion.div>
     </AnimatePresence>
   );

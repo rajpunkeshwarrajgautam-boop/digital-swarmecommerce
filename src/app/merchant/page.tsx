@@ -1,306 +1,136 @@
 "use client";
 
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
-import { Package, TrendingUp, CheckCircle2, Plus, BarChart3, ShieldCheck, Globe, Database } from "lucide-react";
+import { Package, Plus, CheckCircle2, Clock3, Wallet, FileSearch, ExternalLink } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { GlassCard } from "@/components/ui/GlassCard";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { motion } from "framer-motion";
-import { AgentTaskTracker } from "@/components/merchant/AgentTaskTracker";
-import { getMerchantPayouts } from "@/app/actions/payouts";
 
 interface MerchantProduct {
   id: string;
   name: string;
+  description?: string;
   category: string;
   image: string;
   price: number;
-  sales?: number;
-  merchant_id: string;
+  in_stock: boolean;
+  is_visible: boolean;
   is_verified: boolean;
+  created_at: string;
 }
 
 interface MerchantStats {
-  revenue: number;
-  salesCount: number;
-  syncVelocity: number;
-  trustScore: number;
-  activeProtocols: number;
+  listings: number;
+  verifiedListings: number;
+  publishedListings: number;
+  recordedCommission: number;
+  pendingCommission: number;
+  settledCommission: number;
+  paidConversions: number;
+  paidConversions7d: number;
 }
 
 export default function MerchantDashboard() {
-  const { user, isLoaded } = useUser();
-  const { data: products, isLoading: productsLoading } = useSwarmSWR<MerchantProduct[]>("/api/products");
-  const { data: stats, isLoading: statsLoading } = useSwarmSWR<MerchantStats>("/api/merchant/stats");
-
-  const merchantProducts =
-    user?.id && products ? products.filter((p) => p.merchant_id === user.id) : [];
-
-  const isLoading = !isLoaded || productsLoading || statsLoading;
-
-  if (isLoading && !products) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Package className="w-12 h-12 text-[#CCFF00] animate-pulse" />
-          <span className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-white/40 italic">
-            Initializing_Merchant_Node...
-          </span>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <>
-        <Header />
-        <main className="min-h-screen bg-black pt-32 pb-24 px-6 flex flex-col items-center justify-center text-center gap-8 max-w-lg mx-auto">
-          <h1 className="text-5xl font-black text-white uppercase italic tracking-tighter">Merchant Control</h1>
-          <p className="text-gray-400 font-inter text-sm leading-relaxed">
-            Sign in to see products where your Clerk user ID matches{" "}
-            <span className="text-[#CCFF00] font-mono text-xs">merchant_id</span> in the database. New listings ship
-            fastest from the dashboard.
-          </p>
-          <Link href="/sign-in?redirect_url=/merchant">
-            <ForgeButton variant="primary" className="h-14 px-10">
-              Sign in to continue
-            </ForgeButton>
-          </Link>
-        </main>
-        <Footer />
-      </>
-    );
-  }
+  const { data: products, isLoading: productsLoading, error: productError } = useSwarmSWR<MerchantProduct[]>("/api/merchant/products");
+  const { data: stats, isLoading: statsLoading, error: statsError } = useSwarmSWR<MerchantStats>("/api/merchant/stats");
+  const loading = productsLoading || statsLoading;
 
   return (
-    <>
-      <Header />
-      <main className="min-h-screen bg-black pt-32 pb-24 px-6">
-        <div className="max-w-7xl mx-auto space-y-12">
-          
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-            <div>
-              <div className="flex items-center gap-3 mb-2">
-                <div className="px-2 py-0.5 bg-accent/20 border border-accent/40 rounded text-[10px] font-mono font-black text-accent uppercase tracking-widest truncate max-w-[200px]">
-                  {user.username || user.primaryEmailAddress?.emailAddress?.split("@")[0] || "Merchant"}
-                </div>
-                <div className="flex items-center gap-1.5 px-2 py-0.5 bg-[#CCFF00]/10 border border-[#CCFF00]/30 rounded text-[10px] font-mono font-black text-[#CCFF00] uppercase tracking-widest">
-                  <ShieldCheck className="w-3 h-3" /> Verified_Partner
-                </div>
-              </div>
-              <h1 className="text-6xl font-black italic uppercase tracking-tighter text-white leading-none">Merchant Control</h1>
-              <p className="text-gray-500 mt-4 max-w-md text-sm font-inter">
-                Manage your architectural distributions and monitor the sync velocity of your distributed protocols.
-              </p>
+    <main className="min-h-screen bg-black pt-32 pb-24 px-6">
+      <div className="max-w-7xl mx-auto space-y-12">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+          <div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/20 text-[10px] font-black text-primary uppercase tracking-widest mb-4">
+              Merchant workspace
             </div>
-            <Link href="/merchant/add">
-              <ForgeButton variant="primary" className="h-14 px-8">
-                <Plus className="w-4 h-4 mr-2" /> Add_New_Product
-              </ForgeButton>
-            </Link>
+            <h1 className="text-6xl font-black italic uppercase tracking-tighter text-white leading-none">Your Products</h1>
+            <p className="text-gray-500 mt-4 max-w-xl text-sm leading-relaxed">
+              Create product drafts, see their review/publication status, and inspect commission records. A draft is not sold until its deliverable and fulfillment path are approved.
+            </p>
           </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-            <StatsCard 
-              icon={<TrendingUp className="text-[#CCFF00]" />} 
-              label="Sync Velocity" 
-              value={stats ? `${stats.syncVelocity}%` : "0%"} 
-              sub="LIFT_REALTIME" 
-            />
-            <StatsCard 
-              icon={<Package className="text-cyan-400" />} 
-              label="Active Protocols" 
-              value={stats ? stats.activeProtocols.toString() : merchantProducts.length.toString()} 
-              sub="NODE_ALPHA" 
-            />
-            <StatsCard 
-              icon={<BarChart3 className="text-purple-400" />} 
-              label="Total Revenue" 
-              value={stats ? `₹${stats.revenue}` : "₹0"} 
-              sub="DYNAMIC_AGGREGATION" 
-            />
-            <StatsCard 
-              icon={<CheckCircle2 className="text-blue-400" />} 
-              label="Trust Integrity" 
-              value={stats ? `${stats.trustScore}%` : "0%"} 
-              sub="REPUTATION_SCORE" 
-            />
+          <div className="flex flex-wrap gap-3">
+            <Link href="/merchant/apply"><ForgeButton variant="ghost" className="h-14 px-6 border border-white/10"><FileSearch className="w-4 h-4 mr-2" /> Application</ForgeButton></Link>
+            <Link href="/merchant/add"><ForgeButton variant="primary" className="h-14 px-8"><Plus className="w-4 h-4 mr-2" /> New draft</ForgeButton></Link>
           </div>
-
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {/* Main Content: Products */}
-            <div className="lg:col-span-2 space-y-6">
-              <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                <h3 className="font-black uppercase tracking-widest text-sm text-white/40 italic">{"/// YOUR_DISTRIBUTED_STRIKES ///"}</h3>
-              </div>
-              
-              <div className="grid grid-cols-1 gap-4">
-                {merchantProducts.length === 0 && (
-                  <GlassCard className="p-10 text-center space-y-4 border-dashed border-white/20">
-                    <p className="text-white/60 font-inter text-sm">
-                      No live listings for your account yet. Publish a product with your merchant ID, or apply to join
-                      the partner program.
-                    </p>
-                    <div className="flex flex-wrap gap-3 justify-center">
-                      <Link href="/merchant/add">
-                        <ForgeButton variant="primary" className="h-12 px-6">
-                          <Plus className="w-4 h-4 mr-2" /> Add product
-                        </ForgeButton>
-                      </Link>
-                      <Link href="/merchant/apply">
-                        <ForgeButton variant="ghost" className="h-12 px-6 border border-white/10">
-                          Partner application
-                        </ForgeButton>
-                      </Link>
-                    </div>
-                  </GlassCard>
-                )}
-                {merchantProducts.map((product) => (
-                  <GlassCard key={product.id} className="p-4 flex flex-col md:flex-row items-center justify-between gap-6 hover:border-[#CCFF00]/30 transition-all group">
-                    <div className="flex items-center gap-6">
-                      <div className="w-16 h-16 bg-white/5 border border-white/10 relative overflow-hidden rounded-lg">
-                        <Image 
-                          src={product.image} 
-                          fill
-                          className="object-cover grayscale group-hover:grayscale-0 transition-all" 
-                          alt={product.name} 
-                        />
-                      </div>
-                      <div>
-                        <h4 className="text-xl font-black italic uppercase text-white leading-tight">{product.name}</h4>
-                        <div className="flex items-center gap-4 mt-1">
-                          <span className="text-[10px] font-mono text-gray-500 uppercase tracking-widest">{product.category}</span>
-                          <div className={`flex items-center gap-1.5 text-[9px] font-black uppercase tracking-widest ${product.is_verified ? 'text-[#CCFF00]' : 'text-gray-500'}`}>
-                            {product.is_verified ? (
-                              <><CheckCircle2 className="w-3 h-3" /> Status: Live</>
-                            ) : (
-                              <><Package className="w-3 h-3" /> Status: Pending Verification</>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                    
-                    <div className="flex items-center gap-8 px-6 border-l border-white/5 md:h-12 w-full md:w-auto">
-                      <div className="flex flex-col">
-                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Share (70%)</span>
-                        <span className="font-mono text-sm text-[#CCFF00]">₹{(product.price * 0.7).toFixed(0)}</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Sales</span>
-                        <span className="font-mono text-sm text-white">{product.sales || 0}</span>
-                      </div>
-                      <div className="flex flex-col">
-                        <span className="text-[8px] text-gray-600 font-black uppercase tracking-widest">Health</span>
-                        <div className="flex gap-0.5 mt-1">
-                          {[1, 2, 3, 4, 5].map(i => <div key={i} className={`w-1 h-3 ${product.is_verified ? 'bg-[#CCFF00]' : 'bg-white/10'}`} />)}
-                        </div>
-                      </div>
-                    </div>
-                  </GlassCard>
-                ))}
-              </div>
-
-              {/* Agent Task Section */}
-              <div className="mt-16">
-                <AgentTaskTracker />
-              </div>
-            </div>
-
-            {/* Sidebar: Reputation & Tiers */}
-            <div className="space-y-6">
-              <div className="flex items-center justify-between border-b border-white/5 pb-4">
-                <h3 className="font-black uppercase tracking-widest text-sm text-white/40 italic">{"/// NODE_REPUTATION ///"}</h3>
-              </div>
-              
-              <GlassCard className="p-6 space-y-6">
-                <div className="space-y-2">
-                  <div className="flex items-center justify-between">
-                    <span className="text-[10px] font-black uppercase tracking-widest text-white/40">Current_Tier</span>
-                    <span className="text-[10px] font-mono font-black text-[#CCFF00] uppercase tracking-widest bg-[#CCFF00]/10 px-2 py-0.5 rounded">CORE_LEVEL</span>
-                  </div>
-                  <div className="h-2 bg-white/5 rounded-full overflow-hidden">
-                    <motion.div 
-                      initial={{ width: 0 }}
-                      animate={{ width: '70%' }}
-                      className="h-full bg-[#CCFF00] shadow-[0_0_10px_#CCFF00]"
-                    />
-                  </div>
-                  <p className="text-[9px] text-gray-500 italic font-inter text-pretty">Sync 10 more protocols to reach PRIME_LEVEL.</p>
-                </div>
-
-                <div className="space-y-4 pt-4 border-t border-white/5">
-                  <TierRow label="Initiate" rate="40% Fee" status="COMPLETED" active={false} />
-                  <TierRow label="Core" rate="30% Fee" status="ACTIVE" active={true} />
-                  <TierRow label="Prime" rate="20% Fee" status="LOCKED" active={false} />
-                </div>
-
-                <ForgeButton variant="ghost" className="w-full text-[10px] h-10 border-white/5 hover:bg-white/5">
-                  View_Fee_Schedule
-                </ForgeButton>
-              </GlassCard>
-
-              {/* The Vault Quick Link */}
-              <GlassCard className="p-6 space-y-4 border-accent/20">
-                <div className="flex items-center justify-between">
-                  <h3 className="font-black uppercase tracking-widest text-xs text-white">The_Vault</h3>
-                  <Database className="w-4 h-4 text-accent" />
-                </div>
-                <p className="text-[10px] text-gray-500 font-inter">Access your cryptographically sealed commission ledger and request settlements.</p>
-                <Link href="/merchant/ledger" className="block">
-                  <ForgeButton variant="ghost" className="w-full text-[10px] h-10 border-accent/20 hover:bg-accent/5 text-accent">
-                    Open_Ledger_Vault
-                  </ForgeButton>
-                </Link>
-              </GlassCard>
-
-              {/* Network Pulse Widget */}
-              <GlassCard className="p-4 flex items-center gap-4">
-                <div className="w-2 h-2 rounded-full bg-[#CCFF00] animate-ping" />
-                <div className="flex flex-col">
-                  <span className="text-[10px] font-black uppercase tracking-widest text-white/80">Network_Uplink</span>
-                  <span className="text-[8px] font-mono text-gray-500 uppercase tracking-tighter">Latency: 24ms | Status: Nominal</span>
-                </div>
-                <Globe className="w-4 h-4 text-white/10 ml-auto" />
-              </GlassCard>
-            </div>
-          </div>
-
         </div>
-      </main>
-      <Footer />
-    </>
+
+        {(productError || statsError) && (
+          <div className="border border-red-500/30 bg-red-500/10 p-4 text-sm text-red-200">
+            Some merchant data could not be loaded. Refresh or contact support@digitalswarm.in if this persists.
+          </div>
+        )}
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <StatsCard label="Product drafts" value={loading ? "—" : String(stats?.listings ?? 0)} sub="Owned database records" icon={<Package className="w-5 h-5" />} />
+          <StatsCard label="Published" value={loading ? "—" : String(stats?.publishedListings ?? 0)} sub={`${stats?.verifiedListings ?? 0} verified`} icon={<CheckCircle2 className="w-5 h-5" />} />
+          <StatsCard label="Paid conversions" value={loading ? "—" : String(stats?.paidConversions ?? 0)} sub={`${stats?.paidConversions7d ?? 0} recorded in last 7 days`} icon={<ExternalLink className="w-5 h-5" />} />
+          <StatsCard label="Recorded commission" value={loading ? "—" : `₹${Number(stats?.recordedCommission ?? 0).toLocaleString('en-IN')}`} sub={`₹${Number(stats?.pendingCommission ?? 0).toLocaleString('en-IN')} pending`} icon={<Wallet className="w-5 h-5" />} />
+        </div>
+
+        <section className="space-y-6">
+          <div className="flex items-center justify-between border-b border-white/5 pb-4">
+            <h2 className="font-black uppercase tracking-widest text-sm text-white/40">Product review queue</h2>
+            <Link href="/merchant/payouts" className="text-xs text-primary hover:underline">Commission ledger</Link>
+          </div>
+
+          {productsLoading ? (
+            <GlassCard className="p-12 text-center text-sm text-white/30">Loading your product records…</GlassCard>
+          ) : !products?.length ? (
+            <GlassCard className="p-10 text-center space-y-5 border-dashed border-white/20">
+              <Package className="w-10 h-10 text-white/20 mx-auto" />
+              <div>
+                <h3 className="text-xl font-black text-white mb-2">No product drafts yet</h3>
+                <p className="text-sm text-white/40 max-w-lg mx-auto">Create a draft after submitting your merchant application. It stays private until reviewed.</p>
+              </div>
+              <Link href="/merchant/add"><ForgeButton variant="primary">Create product draft</ForgeButton></Link>
+            </GlassCard>
+          ) : (
+            <div className="grid grid-cols-1 gap-4">
+              {products.map((product) => {
+                const published = product.is_verified && product.is_visible && product.in_stock;
+                return (
+                  <GlassCard key={product.id} className="p-5 flex flex-col md:flex-row md:items-center justify-between gap-6 border-white/10 bg-white/[0.02]">
+                    <div className="flex items-center gap-5 min-w-0">
+                      <div className="relative w-20 h-20 bg-white/5 border border-white/10 rounded-xl overflow-hidden shrink-0">
+                        <Image src={product.image} fill className="object-cover" alt={product.name} sizes="80px" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="text-xl font-black text-white truncate">{product.name}</h3>
+                        <p className="text-xs text-white/35 mt-1">{product.category} · ₹{Number(product.price).toLocaleString('en-IN')}</p>
+                        <p className="text-[10px] text-white/20 mt-2">Draft ID: {product.id}</p>
+                      </div>
+                    </div>
+                    <div className="flex flex-wrap items-center gap-3 md:justify-end">
+                      <StatusChip active={product.is_verified} activeText="Verified" inactiveText="Review pending" />
+                      <StatusChip active={published} activeText="Published" inactiveText="Not public" />
+                      {!product.is_verified && <span className="inline-flex items-center gap-1 text-[10px] text-amber-300/70"><Clock3 className="w-3 h-3" /> Manual review required</span>}
+                    </div>
+                  </GlassCard>
+                );
+              })}
+            </div>
+          )}
+        </section>
+
+        <div className="p-6 border border-white/10 bg-white/[0.03] text-sm text-white/45 leading-relaxed">
+          Merchant submissions are not part of the public storefront registry automatically. Digital Swarm must verify the actual asset, buyer-facing description, license and fulfillment path before publication.
+        </div>
+      </div>
+    </main>
   );
 }
 
-function StatsCard({ icon, label, value, sub }: { icon: React.ReactNode, label: string, value: string, sub: string }) {
+function StatsCard({ label, value, sub, icon }: { label: string; value: string; sub: string; icon: React.ReactNode }) {
   return (
-    <div className="bg-black/40 border border-white/5 p-6 rounded-2xl relative overflow-hidden group hover:border-white/20 transition-all">
-      <div className="flex items-center gap-3 mb-4 text-gray-400">
-        {icon}
-        <h3 className="font-bold text-[10px] uppercase tracking-[0.2em]">{label}</h3>
-      </div>
-      <div className="space-y-1">
-        <span className="text-4xl font-black text-white italic tracking-tighter">{value}</span>
-        <div className="text-[9px] font-black text-gray-600 uppercase tracking-widest italic">{sub}</div>
-      </div>
+    <div className="bg-black/40 border border-white/10 p-6 rounded-2xl">
+      <div className="flex items-center gap-3 mb-4 text-primary">{icon}<h3 className="font-bold text-[10px] uppercase tracking-[0.2em] text-white/40">{label}</h3></div>
+      <div className="text-3xl font-black text-white tracking-tighter">{value}</div>
+      <div className="text-[9px] text-gray-600 mt-2 uppercase tracking-widest">{sub}</div>
     </div>
   );
 }
 
-function TierRow({ label, rate, status, active }: { label: string, rate: string, status: string, active: boolean }) {
-  return (
-    <div className={`flex items-center justify-between p-3 rounded-xl border ${active ? 'bg-[#CCFF00]/5 border-[#CCFF00]/20' : 'bg-transparent border-white/5'}`}>
-      <div className="flex flex-col">
-        <span className={`text-[10px] font-black uppercase tracking-widest ${active ? 'text-white' : 'text-white/40'}`}>{label}</span>
-        <span className="text-[8px] font-mono text-gray-500 uppercase">{rate}</span>
-      </div>
-      <span className={`text-[8px] font-mono font-black italic uppercase ${active ? 'text-[#CCFF00]' : 'text-white/20'}`}>{status}</span>
-    </div>
-  );
+function StatusChip({ active, activeText, inactiveText }: { active: boolean; activeText: string; inactiveText: string }) {
+  return <span className={`px-3 py-1 rounded-full border text-[9px] font-black uppercase tracking-widest ${active ? 'border-green-500/30 bg-green-500/10 text-green-300' : 'border-white/10 bg-white/5 text-white/35'}`}>{active ? activeText : inactiveText}</span>;
 }

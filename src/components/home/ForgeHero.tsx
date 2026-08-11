@@ -4,7 +4,7 @@ import React, { useEffect, useLayoutEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowUpRight, Check, Sparkles } from "lucide-react";
+import { ArrowUpRight, Check, Search } from "lucide-react";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useForgeStore } from "@/lib/forge-store";
 import { useMemoryStore } from "@/lib/memory/MemoryStore";
@@ -46,8 +46,8 @@ export const ForgeHero = () => {
   const isB = heroVariant === "B";
   const headline = isB ? "Build faster. Launch sharper." : "Digital assets for people who ship.";
   const subcopy = isIndia
-    ? "Premium AI systems, SaaS foundations, automation blueprints and creator assets — built for fast deployment, clear licensing and secure checkout."
-    : "Premium AI systems, SaaS foundations, automation blueprints and creator assets — built for fast deployment, clear licensing and secure checkout.";
+    ? "AI workflow assets, playbooks and software kits with explicit deliverables, INR pricing, clear licensing and private post-payment delivery."
+    : "AI workflow assets, playbooks and software kits with explicit deliverables, INR pricing, clear licensing and private post-payment delivery.";
 
   return (
     <section className="hero-section relative isolate overflow-hidden border-b border-white/6 bg-[#050509] py-16 md:py-24 lg:py-28">
@@ -68,7 +68,7 @@ export const ForgeHero = () => {
               <span className="relative inline-flex h-2 w-2 rounded-full bg-primary" />
             </span>
             <span className="font-mono text-[10px] font-bold uppercase tracking-[0.25em] text-primary/90">
-              {personalization.intent ? `Curated for ${personalization.intent}` : "Digital Swarm / Premium Commerce"}
+              {personalization.intent ? `Curated for ${personalization.intent}` : "Digital Swarm / Verified Catalog"}
             </span>
           </div>
 
@@ -95,16 +95,16 @@ export const ForgeHero = () => {
               variant="outline"
               size="lg"
               onClick={() => {
-                trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "secondary_concierge", "Ask AI concierge");
+                trackHomepageHeroCta(HOMEPAGE_HERO_AB_KEY, heroVariant, "secondary_concierge", "Product finder");
                 toggleConcierge();
               }}
             >
-              <Sparkles className="h-4 w-4" /> Ask AI concierge
+              <Search className="h-4 w-4" /> Product finder
             </ForgeButton>
           </div>
 
           <div className="mt-8 flex flex-wrap gap-x-6 gap-y-3 text-[11px] font-semibold uppercase tracking-[0.12em] text-white/40">
-            {["Secure checkout", "Instant digital delivery", "Clear license terms"].map((item) => (
+            {["Cashfree checkout", "Private digital delivery", "Clear license terms"].map((item) => (
               <span key={item} className="flex items-center gap-2">
                 <Check className="h-3.5 w-3.5 text-primary" /> {item}
               </span>
@@ -126,7 +126,7 @@ export const ForgeHero = () => {
         >
           <SwarmCore3D />
           <div className="pointer-events-none absolute inset-x-[12%] bottom-[7%] flex justify-between font-mono text-[8px] uppercase tracking-[0.25em] text-white/20">
-            <span>AI systems</span><span>Commerce core</span><span>Secure delivery</span>
+            <span>AI workflows</span><span>Commerce core</span><span>Private delivery</span>
           </div>
         </motion.div>
       </div>

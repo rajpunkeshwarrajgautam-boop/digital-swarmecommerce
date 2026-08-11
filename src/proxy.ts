@@ -5,6 +5,12 @@ const isProtectedRoute = createRouteMatcher([
   "/dashboard(.*)",
   "/profile(.*)",
   "/affiliate(.*)",
+  "/merchant",
+  "/merchant/add(.*)",
+  "/merchant/ledger(.*)",
+  "/merchant/payouts(.*)",
+  "/merchant/reputation(.*)",
+  "/merchant/tasks(.*)",
   "/checkout/success(.*)",
   "/admin(.*)",
 ]);
@@ -50,13 +56,7 @@ export default clerkMiddleware(async (auth, req) => {
     });
   }
 
-  const attributionKeys = [
-    "utm_source",
-    "utm_medium",
-    "utm_campaign",
-    "utm_content",
-    "utm_term",
-  ] as const;
+  const attributionKeys = ["utm_source", "utm_medium", "utm_campaign", "utm_content", "utm_term"] as const;
 
   let hasValidAttribution = false;
   for (const key of attributionKeys) {

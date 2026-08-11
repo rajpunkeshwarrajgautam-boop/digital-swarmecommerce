@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const isDev = process.env.NODE_ENV === "development";
+const isVercelProduction = process.env.VERCEL_ENV === "production";
 
 const scriptSrc = [
   "script-src 'self'",
@@ -32,8 +33,18 @@ const contentSecurityPolicy = [
   "base-uri 'self'",
   "form-action 'self' https://*.cashfree.com https://*.stripe.com",
   "frame-ancestors 'none'",
-  ...(isDev ? [] : ["upgrade-insecure-requests"]),
+  ...(isVercelProduction ? ["upgrade-insecure-requests"] : []),
 ].join("; ");
+
+const baseSecurityHeaders = [
+  { key: "X-Content-Type-Options", value: "nosniff" },
+  { key: "X-Frame-Options", value: "DENY" },
+  { key: "X-XSS-Protection", value: "0" },
+  { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+  { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(self)" },
+  { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
+  { key: "Content-Security-Policy", value: contentSecurityPolicy },
+];
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
@@ -58,14 +69,10 @@ const nextConfig: NextConfig = {
       {
         source: "/(.*)",
         headers: [
-          { key: "X-Content-Type-Options", value: "nosniff" },
-          { key: "X-Frame-Options", value: "DENY" },
-          { key: "X-XSS-Protection", value: "0" },
-          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
-          { key: "Permissions-Policy", value: "camera=(), microphone=(), geolocation=(), payment=(self)" },
-          { key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" },
-          { key: "Cross-Origin-Opener-Policy", value: "same-origin-allow-popups" },
-          { key: "Content-Security-Policy", value: contentSecurityPolicy },
+          ...baseSecurityHeaders,
+          ...(isVercelProduction
+            ? [{ key: "Strict-Transport-Security", value: "max-age=31536000; includeSubDomains; preload" }]
+            : []),
         ],
       },
       {

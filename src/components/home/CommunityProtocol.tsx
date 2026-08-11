@@ -26,19 +26,19 @@ export function CommunityProtocol() {
       icon: Package,
       label: "Products Available",
       value: productCount !== null ? String(productCount) : "—",
-      sub: "Instant download after payment",
+      sub: "Each listing states its included files and licence",
     },
     {
       icon: CreditCard,
       label: "Payment Methods",
       value: "UPI · Cards · Net Banking",
-      sub: "Secured via Cashfree gateway",
+      sub: "Processed by the Cashfree gateway",
     },
     {
       icon: Download,
-      label: "Download Type",
-      value: "Instant",
-      sub: "Link delivered post-checkout",
+      label: "Digital Delivery",
+      value: "Post-payment",
+      sub: "Eligible paid orders receive private access links",
     },
     {
       icon: Mail,
@@ -50,7 +50,6 @@ export function CommunityProtocol() {
 
   return (
     <section className="border-t border-white/5 bg-[#07070a] py-24 relative overflow-hidden">
-      {/* Subtle grid backdrop */}
       <div
         className="absolute inset-0 opacity-[0.025] pointer-events-none"
         style={{
@@ -61,7 +60,6 @@ export function CommunityProtocol() {
       />
 
       <div className="container mx-auto px-6 max-w-7xl relative z-10">
-        {/* Section label */}
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -70,12 +68,11 @@ export function CommunityProtocol() {
         >
           <div className="h-px flex-1 bg-white/5" />
           <span className="text-[10px] font-mono font-black uppercase tracking-[0.5em] text-white/20 italic">
-            Honest_Store_Facts
+            Store_Facts
           </span>
           <div className="h-px flex-1 bg-white/5" />
         </motion.div>
 
-        {/* Stats grid */}
         <motion.div
           variants={{
             hidden: { opacity: 0 },
@@ -99,15 +96,12 @@ export function CommunityProtocol() {
               transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
               className="group bg-[#07070a] p-10 flex flex-col gap-6 relative overflow-hidden hover:bg-white/[0.02] transition-colors duration-300"
             >
-              {/* Gold reveal line on hover */}
               <div className="absolute top-0 left-0 right-0 h-px bg-primary scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left" />
 
-              {/* Icon */}
               <div className="w-10 h-10 border border-white/8 flex items-center justify-center bg-white/3 group-hover:border-primary/30 transition-colors duration-300">
                 <Icon className="w-4 h-4 text-primary" />
               </div>
 
-              {/* Label */}
               <div className="flex flex-col gap-2">
                 <span className="text-[9px] font-mono font-black uppercase tracking-[0.4em] text-white/25">
                   {label}
@@ -122,7 +116,6 @@ export function CommunityProtocol() {
                 )}
               </div>
 
-              {/* Corner accent */}
               <div className="absolute bottom-0 right-0 w-8 h-8 border-b border-r border-white/5 opacity-50" />
             </motion.div>
           ))}

@@ -1,39 +1,25 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { useUser } from "@clerk/nextjs";
-import { motion } from "framer-motion";
-import { 
-  Zap, 
-  ChevronRight, 
-  Download, 
-  ShieldCheck, 
-  Clock,
-  Box,
-  Activity,
-  CreditCard
-} from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { Download, History, KeyRound, Package, ShoppingBag } from "lucide-react";
 import { getUserAssets, getUserOrders } from "@/app/actions/user-assets";
-import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 
-// Define basic types for the returned data
 type Asset = {
   id: string;
-  status: string;
+  created_at?: string;
   license_key: string;
+  license_tier?: string;
+  product_id?: string;
   products?: {
     name: string;
     image: string;
     version: string;
     download_url?: string;
-  } | {
-    name: string;
-    image: string;
-    version: string;
-    download_url?: string;
-  }[];
+  };
 };
 
 type Order = {
@@ -46,166 +32,134 @@ type Order = {
 
 export default function DashboardPage() {
   const { user } = useUser();
-  const [activeProtocols, setActiveProtocols] = useState<Asset[]>([]);
-  const [recentOrderId, setRecentOrderId] = useState<string>("No recent orders");
-  const [isLoading, setIsLoading] = useState(true);
-
-  const [greeting] = useState(() => {
-    const hours = new Date().getHours();
-    if (hours < 12) return "Morning_Protocol Active";
-    if (hours < 18) return "Afternoon_Sync Operational";
-    return "Evening_Shutdown Approaching";
-  });
+  const [assets, setAssets] = useState<Asset[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    async function fetchData() {
+    let active = true;
+    async function load() {
       try {
-        const [assetRes, orderRes] = await Promise.all([
-          getUserAssets(),
-          getUserOrders(),
-        ]);
-        
-        if (assetRes.success && assetRes.assets) {
-          setActiveProtocols((assetRes.assets as Asset[]).slice(0, 4)); // Only show top 4 on dashboard
+        const [assetResult, orderResult] = await Promise.all([getUserAssets(), getUserOrders()]);
+        if (!active) return;
+        if (assetResult.success && assetResult.assets) setAssets(assetResult.assets.slice(0, 4));
+        if (orderResult.success && orderResult.orders) setOrders(orderResult.orders.slice(0, 4) as Order[]);
+        if (!assetResult.success || !orderResult.success) {
+          setError(assetResult.error || orderResult.error || "Some account data could not be loaded.");
         }
-        
-        if (orderRes.success && orderRes.orders && orderRes.orders.length > 0) {
-          const firstOrder = orderRes.orders[0] as Order;
-          setRecentOrderId(firstOrder.cashfree_order_id || firstOrder.id);
-        }
-      } catch (e) {
-        console.error("Dashboard fetch error:", e);
+      } catch (loadError) {
+        console.error("[dashboard] account load failed", loadError);
+        if (active) setError("Account data could not be loaded.");
       } finally {
-        setIsLoading(false);
+        if (active) setLoading(false);
       }
     }
-    fetchData();
+    void load();
+    return () => {
+      active = false;
+    };
   }, []);
 
   return (
     <div className="space-y-12">
-      
-      {/* Dashboard Hero */}
-      <header className="space-y-4">
-        <motion.div 
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 w-fit"
-        >
-          <Zap className="w-4 h-4 text-primary" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-primary italic">Status: System_Nominal</span>
-        </motion.div>
-        <h1 className="text-3xl md:text-5xl font-black italic uppercase tracking-tighter leading-none">
-          {greeting}, <br />
-          <span className="text-white/20 italic">{user?.firstName || "Agent"}</span>
+      <header>
+        <p className="font-mono text-[10px] font-black uppercase tracking-[.24em] text-primary">Customer account</p>
+        <h1 className="mt-3 text-4xl font-black uppercase italic tracking-tighter md:text-6xl">
+          Welcome{user?.firstName ? `, ${user.firstName}` : ""}
         </h1>
+        <p className="mt-4 max-w-2xl text-sm leading-6 text-white/40">
+          Review recorded orders, licence keys and private download links associated with your signed-in email address.
+        </p>
       </header>
 
-      {/* Primary Metrics - High Density */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-        {[
-          { label: "Active_Protocols", value: isLoading ? "--" : activeProtocols.length.toString().padStart(2, '0'), icon: Box, color: "text-primary" },
-          { label: "Total_Investment", value: isLoading ? "₹--" : `₹${activeProtocols.length * 2999}`, icon: CreditCard, color: "text-green-500" },
-          { label: "Security_Tier", value: "LEVEL_04", icon: ShieldCheck, color: "text-blue-500" },
-          { label: "Uptime_Status", value: "STABLE", icon: Activity, color: "text-primary animate-pulse" }
-        ].map((stat, i) => (
-          <motion.div 
-            key={i}
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: i * 0.1 }}
-            className="p-6 bg-white/5 border-2 border-white/5 hover:border-primary/20 transition-all relative group overflow-hidden"
-          >
-            <div className="absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 border-white/5 group-hover:border-primary/40 transition-colors" />
-            <stat.icon className={`w-5 h-5 ${stat.color} mb-4 group-hover:scale-110 transition-transform`} />
-            <p className="text-3xl font-black italic text-white mb-1 tracking-tighter uppercase">{stat.value}</p>
-            <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20">{stat.label}</p>
-          </motion.div>
-        ))}
-      </div>
+      {error ? <div className="border border-amber-500/20 bg-amber-500/5 p-4 text-sm text-amber-100">{error}</div> : null}
 
-      {/* Asset Repository Preview */}
-      <section className="space-y-6">
-        <div className="flex items-center justify-between border-b border-white/10 pb-4">
-          <div className="flex items-center gap-3">
-             <div className="w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
-             <h2 className="text-xl font-black italic uppercase tracking-tighter">Live_Asset_Feed</h2>
+      <section className="grid gap-4 md:grid-cols-3">
+        <AccountMetric icon={Package} label="Licensed assets" value={loading ? "—" : String(assets.length)} />
+        <AccountMetric icon={History} label="Recent orders loaded" value={loading ? "—" : String(orders.length)} />
+        <AccountMetric icon={KeyRound} label="Account delivery" value="Private links" />
+      </section>
+
+      <section className="space-y-5">
+        <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div>
+            <h2 className="text-xl font-black uppercase italic">Licensed assets</h2>
+            <p className="mt-1 text-xs text-white/35">Links are generated for this account and expire automatically.</p>
           </div>
-          <Link href="/dashboard/assets">
-            <Button variant="ghost" className="text-[9px] font-black uppercase tracking-widest text-white/30 hover:text-primary group">
-              Full Repository <ChevronRight className="w-3 h-3 ml-2 group-hover:translate-x-1 transition-transform" />
-            </Button>
-          </Link>
+          <Link href="/dashboard/assets"><Button variant="outline">View all assets</Button></Link>
         </div>
 
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-8">
-          {isLoading ? (
-            <div className="text-white/30 italic font-black uppercase text-sm">Querying database...</div>
-          ) : activeProtocols.length === 0 ? (
-            <div className="text-white/30 italic font-black uppercase text-sm">No active protocols found in your ledger.</div>
-          ) : (
-            activeProtocols.map((asset, i) => {
-              const product = Array.isArray(asset.products) ? asset.products[0] : asset.products;
+        {loading ? (
+          <p className="text-sm text-white/30">Loading account assets…</p>
+        ) : assets.length === 0 ? (
+          <div className="border border-white/8 bg-white/[0.02] p-8 text-center">
+            <p className="text-sm text-white/40">No licensed assets were found for this account.</p>
+            <Link href="/products" className="mt-5 inline-flex"><Button>Browse products</Button></Link>
+          </div>
+        ) : (
+          <div className="grid gap-5 md:grid-cols-2">
+            {assets.map((asset) => {
+              const product = asset.products;
               return (
-                <motion.div 
-                  key={asset.id}
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ delay: i * 0.1 }}
-                  className="p-8 bg-white/5 border-4 border-black flex flex-col md:flex-row gap-8 shadow-[12px_12px_0_#000] hover:shadow-[12px_12px_0_#ff6b35] transition-all"
-                >
-                  <div className="w-32 h-32 bg-black border-2 border-white/10 shrink-0 grayscale hover:grayscale-0 transition-all overflow-hidden relative">
-                    <Image 
-                      src={product?.image || "https://images.unsplash.com/photo-1677442136019-21780ecad995?auto=format&fit=crop&q=80&w=300"} 
-                      alt={product?.name || "Asset"} 
-                      fill 
-                      className="object-cover" 
-                    />
+                <article key={asset.id} className="flex gap-5 border border-white/8 bg-white/[0.025] p-5">
+                  <div className="relative h-20 w-20 shrink-0 overflow-hidden bg-white/5">
+                    <Image src={product?.image || "/icon.svg"} alt={product?.name || "Digital Swarm asset"} fill sizes="80px" className="object-cover" />
                   </div>
-                  
-                  <div className="flex-1 space-y-4">
-                    <div className="flex items-center justify-between">
-                      <span className={`text-[10px] font-black px-2 py-0.5 shadow-[2px_2px_0_#000] italic ${asset.status === 'active' ? 'bg-green-500 text-black' : 'bg-primary text-white'}`}>
-                        {asset.status || 'ACTIVE'}
-                      </span>
-                      <span className="text-[10px] font-black text-white/20 uppercase tracking-widest">VER_{product?.version || '1.0'}</span>
-                    </div>
-                    <h3 className="text-xl font-black italic uppercase tracking-tighter truncate">{product?.name || "Unknown Asset"}</h3>
-                    
-                    <div className="flex flex-wrap gap-4 pt-4 border-t border-white/5">
-                       <Link href={product?.download_url || "#"} target="_blank">
-                         <button className="flex items-center gap-2 text-[10px] font-black uppercase tracking-widest text-primary hover:text-white transition-all">
-                            <Download className="w-3.5 h-3.5" /> Access_Asset
-                         </button>
-                       </Link>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate font-bold text-white/85">{product?.name || "Legacy Digital Swarm asset"}</p>
+                    <p className="mt-1 text-[10px] uppercase tracking-widest text-white/30">{asset.license_tier === "whitelabel" ? "Agency Whitelabel" : "Standard"} licence</p>
+                    <div className="mt-4 flex flex-wrap gap-4">
+                      {product?.download_url ? (
+                        <a href={product.download_url} className="inline-flex items-center gap-2 text-xs font-bold text-primary hover:underline">
+                          <Download className="h-4 w-4" /> Download bundle
+                        </a>
+                      ) : (
+                        <a href="mailto:support@digitalswarm.in?subject=Restore%20Digital%20Swarm%20download" className="text-xs font-bold text-amber-200 hover:underline">Request restored link</a>
+                      )}
                     </div>
                   </div>
-                </motion.div>
-              )
-            })
-          )}
+                </article>
+              );
+            })}
+          </div>
+        )}
+      </section>
+
+      <section className="space-y-5">
+        <div className="flex items-center justify-between gap-4 border-b border-white/10 pb-4">
+          <div>
+            <h2 className="text-xl font-black uppercase italic">Recent orders</h2>
+            <p className="mt-1 text-xs text-white/35">Recorded payment/order status from the commerce database.</p>
+          </div>
+          <Link href="/dashboard/orders"><Button variant="outline">View order history</Button></Link>
         </div>
+        {!loading && orders.length > 0 ? (
+          <div className="space-y-3">
+            {orders.map((order) => (
+              <div key={order.id} className="flex flex-col gap-3 border border-white/8 bg-white/[0.02] p-4 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-widest text-white/30">{order.cashfree_order_id || order.id}</p>
+                  <p className="mt-1 text-sm text-white/60">{new Date(order.created_at).toLocaleDateString()} · ₹{Number(order.total_amount || 0).toLocaleString("en-IN")}</p>
+                </div>
+                <span className="w-fit border border-white/10 px-3 py-1 text-[10px] font-black uppercase tracking-widest text-white/60">{order.status || "unknown"}</span>
+              </div>
+            ))}
+          </div>
+        ) : !loading ? <p className="text-sm text-white/30">No recorded orders found.</p> : null}
       </section>
 
-      {/* Recent Activity */}
-      <section className="bg-white text-black p-8 border-8 border-black shadow-[24px_24px_0_#ff6b35] relative overflow-hidden">
-         <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-8">
-            <div className="space-y-2">
-               <div className="flex items-center gap-2">
-                  <Clock className="w-5 h-5" />
-                  <h3 className="text-2xl font-black italic uppercase tracking-tighter">Recent Logistics</h3>
-               </div>
-               <p className="text-black/40 text-[10px] font-black uppercase tracking-widest">Tracking last signature for order_#{recentOrderId.substring(0,8)}</p>
-            </div>
-            
-            <Link href="/dashboard/orders">
-              <Button className="bg-black text-white px-10 py-5 font-black uppercase tracking-widest hover:bg-[#ff6b35] transition-all">
-                 Review All Orders
-              </Button>
-            </Link>
-         </div>
-      </section>
+      <Link href="/products" className="inline-flex"><Button><ShoppingBag className="mr-2 h-4 w-4" /> Browse catalog</Button></Link>
+    </div>
+  );
+}
 
+function AccountMetric({ icon: Icon, label, value }: { icon: typeof Package; label: string; value: string }) {
+  return (
+    <div className="border border-white/8 bg-white/[0.025] p-5">
+      <Icon className="h-5 w-5 text-primary" />
+      <div className="mt-4 text-2xl font-black text-white">{value}</div>
+      <div className="mt-1 text-[10px] font-mono uppercase tracking-[.16em] text-white/30">{label}</div>
     </div>
   );
 }

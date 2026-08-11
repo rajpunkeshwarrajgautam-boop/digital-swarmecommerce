@@ -3,37 +3,34 @@
 import { useEffect, useRef } from "react";
 
 /**
- * AffiliateTracker — fires once per session when an affiliate cookie is present.
- * Reads the `affiliate_id` cookie set by middleware (from ?ref= param) and calls
- * /api/affiliate/click to increment the affiliate's click counter in Supabase.
- * Deduplicates via sessionStorage so it only fires once per browser session.
+ * Tracks a referral visit once per browser session. The attribution cookie used
+ * for checkout is HttpOnly; this component reads the visible `ref` query value
+ * (or the short-lived intent_ref mirror) only to report the click counter.
  */
 export function AffiliateTracker() {
   const hasFired = useRef(false);
 
   useEffect(() => {
-    if (hasFired.current) return;
-    if (sessionStorage.getItem("af_click_tracked")) return;
+    if (hasFired.current || sessionStorage.getItem("af_click_tracked")) return;
 
-    // Read affiliate_id cookie set by middleware
-    const afCookie = document.cookie
+    const queryRef = new URLSearchParams(window.location.search).get("ref")?.trim();
+    const intentRef = document.cookie
       .split("; ")
-      .find((row) => row.startsWith("affiliate_id="))
-      ?.split("=")[1];
-
-    if (!afCookie) return;
+      .find((row) => row.startsWith("intent_ref="))
+      ?.slice("intent_ref=".length);
+    const refCode = queryRef || (intentRef ? decodeURIComponent(intentRef) : "");
+    if (!refCode) return;
 
     hasFired.current = true;
     sessionStorage.setItem("af_click_tracked", "1");
 
-    // Non-blocking fire-and-forget click tracking
     fetch("/api/affiliate/click", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ refCode: afCookie }),
+      body: JSON.stringify({ refCode }),
       keepalive: true,
     }).catch(() => {
-      // Silently fail — tracking is non-critical
+      // Referral attribution still lives in the HttpOnly cookie even if metrics fail.
     });
   }, []);
 

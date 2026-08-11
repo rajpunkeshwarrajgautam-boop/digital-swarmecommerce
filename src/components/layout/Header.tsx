@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingBag, Heart, Sparkles, ShieldCheck } from "lucide-react";
+import { Menu, X, ShoppingBag, Heart, Search, ShieldCheck } from "lucide-react";
 import { Logo } from "@/components/ui/Logo";
 import { CartDrawer } from "@/components/cart/CartDrawer";
 import { NavbarMenu } from "./NavbarMenu";
@@ -14,7 +14,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useForgeStore } from "@/lib/forge-store";
 import { CurrencySwitcher } from "./CurrencySwitcher";
-import { SystemBroadcast } from "./SystemBroadcast";
 import { useAudio } from "@/hooks/useAudio";
 import { PromoBanner } from "@/components/home/PromoBanner";
 
@@ -28,7 +27,6 @@ export function Header() {
   const [mounted, setMounted] = useState(false);
   
   const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
-  const systemStatus = useForgeStore((state) => state.systemStatus);
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalWishlist = wishlistItems.length;
@@ -72,57 +70,40 @@ export function Header() {
         }`}
       >
         <PromoBanner />
-        <div className="hidden md:block">
-          <SystemBroadcast />
-        </div>
-        
         <div className={`container mx-auto px-4 md:px-6 flex items-center justify-between gap-4 md:gap-8 transition-all duration-500 ${scrolled ? 'h-14' : 'h-16 md:h-20'}`}>
-          
-          {/* 1. LEFT: Logo & System Status */}
           <div className="flex items-center gap-4 md:gap-6 shrink-0">
             <Link href="/" className="group" onClick={safePlayClick}>
               <Logo className="text-xl md:text-2xl tracking-tighter transition-all group-hover:glow-text uppercase">
                 DIGITAL SWARM
               </Logo>
             </Link>
-            
             <div className="hidden xl:flex items-center gap-6">
               <CurrencySwitcher />
-              
-              <div className="flex items-center gap-2 px-3 py-1 bg-white/5 border border-white/10 rounded-full">
-                <span className={`w-1.5 h-1.5 rounded-full ${systemStatus === 'idle' ? 'bg-accent' : 'bg-primary'} animate-pulse shadow-[0_0_8px_currentColor]`} />
-                <span className="text-[10px] font-mono uppercase tracking-widest text-white/40">
-                  Status: {systemStatus === 'idle' ? 'Online' : 'Active'}
-                </span>
-              </div>
             </div>
           </div>
 
-          {/* 2. CENTER: Main Navigation */}
           <div className="hidden lg:flex flex-1 justify-center">
             <NavbarMenu scrolled={scrolled} />
           </div>
 
-          {/* 3. RIGHT: Forge Actions & Concierge */}
           <div className="flex items-center gap-2 md:gap-4">
-            
             <button
               type="button"
               onClick={() => { safePlayClick(); toggleConcierge(); }}
-              aria-label="Toggle AI Assistant"
+              aria-label="Open product finder"
               className="hidden sm:flex items-center gap-2 px-3 md:px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-accent/40 transition-transform duration-150 hover:scale-105 active:scale-[0.98] cursor-pointer group"
             >
-              <Sparkles className="w-4 h-4 text-accent transition-transform group-hover:rotate-12" />
+              <Search className="w-4 h-4 text-accent transition-transform group-hover:rotate-12" />
               <span className="hidden lg:block text-xs font-mono uppercase tracking-tighter text-white/50 group-hover:text-white transition-colors">
-                AI Assistant
+                Product Finder
               </span>
               <kbd className="hidden xl:block ml-2 px-1.5 py-0.5 bg-white/10 rounded text-[9px] text-white/30">/</kbd>
             </button>
 
             <div className="flex items-center gap-1 md:gap-2">
               <SignedIn>
-                <Link href="/vault">
-                  <button className="relative p-2 text-white/60 hover:glow-text transition-all group" title="Digital Vault">
+                <Link href="/dashboard/assets">
+                  <button className="relative p-2 text-white/60 hover:glow-text transition-all group" title="Licensed Assets">
                     <ShieldCheck className="w-5 h-5 group-hover:text-primary transition-colors" />
                   </button>
                 </Link>
@@ -180,6 +161,7 @@ export function Header() {
               <button 
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="lg:hidden p-2 text-white/80 hover:text-primary transition-colors"
+                aria-label={isMenuOpen ? "Close navigation" : "Open navigation"}
               >
                 {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
               </button>
@@ -188,7 +170,6 @@ export function Header() {
         </div>
       </header>
 
-      {/* Mobile Menu Overlay */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
@@ -223,7 +204,7 @@ export function Header() {
                 <SignedOut>
                   <SignInButton mode="modal" fallbackRedirectUrl={pathname}>
                     <button className="w-full py-4 text-sm font-black uppercase italic tracking-widest text-white/40 hover:text-primary transition-all border border-white/10 rounded-xl bg-white/2">
-                      Portal Entrance // Sign In
+                      Sign In
                     </button>
                   </SignInButton>
                 </SignedOut>
@@ -238,25 +219,25 @@ export function Header() {
                         }}
                       />
                       <div className="flex flex-col">
-                        <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Active_Session</span>
-                        <span className="text-xs font-black uppercase text-primary">Identity_Verified</span>
+                        <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Signed in</span>
+                        <span className="text-xs font-black uppercase text-primary">Customer account</span>
                       </div>
                     </div>
-                    <Link href="/profile" onClick={() => setIsMenuOpen(false)}>
+                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
                       <button className="px-4 py-2 bg-white/10 rounded-lg text-[9px] font-mono uppercase tracking-widest hover:bg-primary hover:text-black transition-all">
-                        Profile
+                        Dashboard
                       </button>
                     </Link>
                   </div>
                 </SignedIn>
               </div>
 
-              <ForgeButton data-action="search" className="w-full" onClick={() => setIsMenuOpen(false)}>
-                Search Products
-              </ForgeButton>
+              <Link href="/search" onClick={() => setIsMenuOpen(false)}>
+                <ForgeButton className="w-full">Search Products</ForgeButton>
+              </Link>
               
               <div className="flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">
-                <span>Status: Optimal</span>
+                <span>Private paid delivery</span>
                 <span>© DIGITAL SWARM 2026</span>
               </div>
             </div>

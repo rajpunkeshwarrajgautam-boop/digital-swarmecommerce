@@ -8,23 +8,27 @@ import Link from "next/link";
 const faqs = [
   {
     question: "What exactly do I get after purchase?",
-    answer: "You receive the full source code (Next.js/Vite), a private GitHub repository invitation, comprehensive documentation, and lifetime access to future updates for that specific template."
+    answer: "Each product page states its exact deliverable. Paid items are fulfilled from private Digital Swarm storage with a signed, expiring download link and a license record after Cashfree confirms payment. We do not promise a private GitHub repository, source code, or future updates unless that specific product page says so."
   },
   {
-    question: "Are these templates production-ready?",
-    answer: "Yes. Every template is hardened with enterprise-grade security protocols, SEO optimization, and high-performance architectural patterns. Just plug in your API keys and deploy."
+    question: "Are all products source-code templates?",
+    answer: "No. The catalog can include ZIP packages, HTML playbooks, Markdown or text resources, and other digital assets. Check the delivery type, features, dependencies, and setup notes on the individual product page before buying."
   },
   {
-    question: "Can I use these for commercial projects?",
-    answer: "Absolutely. Our 'Commercial License' allows you to use the code for yourself or for clients. You cannot, however, resell the source code as a competing template."
+    question: "Can I use a product commercially?",
+    answer: "License scope varies by product and selected license tier. The product page and checkout tier describe the intended scope. You may not assume resale, redistribution, white-label, or unlimited-use rights unless those rights are explicitly included."
   },
   {
-    question: "Is there a refund policy?",
-    answer: "Given the digital nature of our products (source code access), we offer a 30-day money-back guarantee if the product doesn't meet its technical specifications. No questions asked."
+    question: "What is the refund policy?",
+    answer: "You may request review within 30 days for a materially defective, unavailable, duplicated-charge, or materially misdescribed purchase. Change-of-mind refunds are not automatic for delivered digital goods. The full policy is available on the Refund Policy page."
   },
   {
-    question: "Do you offer technical support?",
-    answer: "Yes, every purchase includes 6 months of priority email support and access to our developer community on Discord."
+    question: "How does support work?",
+    answer: "Support is handled by email at support@digitalswarm.in. We do not publish a 24/7 response guarantee, fixed response time, Discord entitlement, or six-month support promise unless a specific product or written agreement explicitly includes it."
+  },
+  {
+    question: "Why are some products unavailable?",
+    answer: "Digital Swarm hides or quarantines a SKU when its real deliverable, licensing, database mapping, or fulfillment path cannot be verified. A product is preferable to being temporarily unavailable rather than being sold with a dummy or placeholder delivery."
   }
 ];
 
@@ -36,10 +40,7 @@ export default function FAQPage() {
     mainEntity: faqs.map((faq) => ({
       "@type": "Question",
       name: faq.question,
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: faq.answer,
-      },
+      acceptedAnswer: { "@type": "Answer", text: faq.answer },
     })),
   };
 
@@ -48,65 +49,29 @@ export default function FAQPage() {
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }} />
       <div className="container mx-auto px-6 max-w-4xl">
         <header className="mb-20 text-center">
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6"
-          >
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-6">
             <HelpCircle className="w-4 h-4 text-primary" />
-            <span className="text-[10px] font-black uppercase tracking-widest text-primary">Support Base</span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-primary">Customer information</span>
           </motion.div>
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
-            className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter mb-6 leading-none"
-          >
-            Frequently Asked <br />
-            <span className="text-primary italic">Questions</span>
+          <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }} className="text-5xl md:text-7xl font-black italic uppercase tracking-tighter mb-6 leading-none">
+            Frequently Asked <span className="text-primary italic">Questions</span>
           </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-            className="text-white/40 text-sm uppercase font-bold tracking-widest max-w-xl mx-auto"
-          >
-            Everything you need to know about the Digital Swarm infrastructure and deployment process.
-          </motion.p>
+          <p className="text-white/40 text-sm max-w-xl mx-auto leading-relaxed">Delivery, licensing, refunds, product availability and support—without invented guarantees.</p>
         </header>
 
         <div className="space-y-4">
           {faqs.map((faq, index) => (
-            <motion.div 
-              key={index}
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ delay: index * 0.05 }}
-              className={`border-4 border-black transition-all ${openIndex === index ? "bg-white text-black shadow-[12px_12px_0_#ff6b35]" : "bg-white/5 hover:bg-white/10 shadow-[6px_6px_0_#000]"}`}
-            >
-              <button 
-                onClick={() => setOpenIndex(openIndex === index ? null : index)}
-                className="w-full flex items-center justify-between p-8 text-left group"
-              >
-                <span className="text-xl md:text-2xl font-black uppercase italic tracking-tighter leading-tight">
-                  {faq.question}
-                </span>
-                <div className={`shrink-0 ml-4 p-2 border-2 ${openIndex === index ? "bg-black text-white border-black" : "bg-white/10 border-white/10 text-white"} transition-all`}>
-                  {openIndex === index ? <Minus className="w-5 h-5" /> : <Plus className="w-5 h-5" />}
+            <motion.div key={faq.question} initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: index * 0.04 }} className={`border transition-all rounded-2xl overflow-hidden ${openIndex === index ? "bg-white text-black border-white" : "bg-white/[0.03] border-white/10"}`}>
+              <button onClick={() => setOpenIndex(openIndex === index ? null : index)} className="w-full flex items-center justify-between p-7 text-left group">
+                <span className="text-lg md:text-xl font-black tracking-tight leading-tight">{faq.question}</span>
+                <div className={`shrink-0 ml-4 p-2 rounded-full border ${openIndex === index ? "bg-black text-white border-black" : "border-white/10 text-white"}`}>
+                  {openIndex === index ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                 </div>
               </button>
-
               <AnimatePresence>
                 {openIndex === index && (
-                  <motion.div 
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    className="overflow-hidden"
-                  >
-                    <div className="p-8 pt-0 border-t-4 border-black text-lg font-bold uppercase tracking-tight leading-relaxed opacity-80">
-                      {faq.answer}
-                    </div>
+                  <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden">
+                    <div className="px-7 pb-7 pt-0 border-t border-black/10 text-sm md:text-base font-sans leading-relaxed opacity-75">{faq.answer}</div>
                   </motion.div>
                 )}
               </AnimatePresence>
@@ -114,15 +79,13 @@ export default function FAQPage() {
           ))}
         </div>
 
-        <div className="mt-20 p-12 bg-primary border-4 border-black shadow-[12px_12px_0_#000] text-black text-center relative overflow-hidden group">
-          <div className="relative z-10">
-            <h2 className="text-3xl md:text-4xl font-black italic uppercase tracking-tighter mb-4">Still have questions?</h2>
-            <p className="text-black/60 font-black uppercase text-xs tracking-widest mb-8">Direct line to our engineering team active 24/7.</p>
-            <Link href="/contact" className="inline-block px-10 py-4 bg-black text-white font-black uppercase tracking-widest hover:bg-white hover:text-black transition-all shadow-xl">
-              Initiate Contact
-            </Link>
+        <div className="mt-20 p-10 bg-primary rounded-3xl text-black text-center">
+          <h2 className="text-3xl md:text-4xl font-black tracking-tighter mb-4">Need help with a specific order?</h2>
+          <p className="text-black/60 font-medium text-sm mb-8">Use the contact form or email support@digitalswarm.in with your order ID.</p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link href="/contact" className="inline-block px-8 py-4 bg-black text-white font-black rounded-full">Contact support</Link>
+            <Link href="/refund" className="inline-block px-8 py-4 border border-black/20 text-black font-black rounded-full">Refund policy</Link>
           </div>
-          <div className="absolute top-0 right-0 -mr-12 -mt-12 w-64 h-64 bg-black/5 rounded-full blur-3xl group-hover:bg-white/10 transition-all" />
         </div>
       </div>
     </div>

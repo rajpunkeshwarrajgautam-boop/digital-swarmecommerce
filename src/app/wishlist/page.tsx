@@ -2,150 +2,164 @@
 
 import { useWishlistStore } from "@/lib/wishlist-store";
 import { useCartStore } from "@/lib/store";
+import type { Product } from "@/lib/types";
 import Link from "next/link";
 import Image from "next/image";
-import { Heart, ShoppingCart, Trash2, ArrowRight, PackageOpen } from "lucide-react";
+import { ArrowRight, Heart, PackageOpen, ShoppingCart, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/Button";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
+const inr = new Intl.NumberFormat("en-IN", {
+  style: "currency",
+  currency: "INR",
+  maximumFractionDigits: 0,
+});
 
 export default function WishlistPage() {
-  const { items, removeItem, clearWishlist } = useWishlistStore();
+  const { items, removeItem, clearWishlist, syncWithCatalog } = useWishlistStore();
   const addItemToCart = useCartStore((state) => state.addItem);
-  
   const [mounted, setMounted] = useState(false);
+  const [catalog, setCatalog] = useState<Product[]>([]);
+  const [catalogReady, setCatalogReady] = useState(false);
+
   useEffect(() => {
     setMounted(true);
-  }, []);
+    let active = true;
+    fetch("/api/products", { cache: "no-store" })
+      .then(async (response) => {
+        if (!response.ok) throw new Error(`Catalog HTTP ${response.status}`);
+        return response.json() as Promise<Product[]>;
+      })
+      .then((products) => {
+        if (!active || !Array.isArray(products)) return;
+        setCatalog(products);
+        syncWithCatalog(products);
+      })
+      .catch((error) => console.error("[wishlist] Catalog refresh failed", error))
+      .finally(() => {
+        if (active) setCatalogReady(true);
+      });
+    return () => {
+      active = false;
+    };
+  }, [syncWithCatalog]);
 
-  if (!mounted) return null;
+  const catalogById = useMemo(
+    () => new Map(catalog.map((product) => [product.id, product])),
+    [catalog],
+  );
+
+  if (!mounted || !catalogReady) {
+    return (
+      <div className="min-h-[70vh] flex items-center justify-center text-xs font-mono uppercase tracking-[.2em] text-white/35">
+        Checking saved products…
+      </div>
+    );
+  }
 
   return (
-    <div className="container mx-auto px-4 py-24 min-h-[80vh]">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="p-2 bg-red-500/10 rounded-lg">
-                <Heart className="w-6 h-6 text-red-500 fill-red-500" />
-              </div>
-              <h1 className="text-4xl md:text-6xl font-black tracking-tight uppercase italic">My Wishlist</h1>
+    <main className="container mx-auto min-h-[80vh] max-w-6xl px-4 py-24">
+      <div className="mb-12 flex flex-col justify-between gap-6 md:flex-row md:items-end">
+        <div>
+          <div className="mb-4 flex items-center gap-3">
+            <div className="rounded-lg bg-red-500/10 p-2">
+              <Heart className="h-6 w-6 fill-red-500 text-red-500" />
             </div>
-            <p className="text-muted-foreground text-lg">
-              Saved items for your next digital evolution.
-            </p>
+            <h1 className="text-4xl font-black uppercase italic tracking-tight md:text-6xl">My Wishlist</h1>
           </div>
-          
-          {items.length > 0 && (
-            <Button 
-              variant="outline" 
-              onClick={clearWishlist}
-              className="text-red-500 border-red-500/20 hover:bg-red-500/10"
-            >
-              <Trash2 className="w-4 h-4 mr-2" /> Clear All
-            </Button>
-          )}
+          <p className="text-muted-foreground">Saved products that are still available in the approved catalog.</p>
         </div>
 
-        <AnimatePresence mode="popLayout">
-          {items.length === 0 ? (
-            <motion.div 
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-center py-32 border-2 border-dashed border-border rounded-3xl bg-secondary/5"
-            >
-              <div className="w-24 h-24 bg-secondary/10 rounded-full flex items-center justify-center mx-auto mb-8 border border-border">
-                <PackageOpen className="w-10 h-10 text-muted-foreground opacity-50" />
-              </div>
-              <h2 className="text-3xl font-bold mb-4">Your wishlist is empty</h2>
-              <p className="text-muted-foreground mb-8 max-w-sm mx-auto">
-                Discover elite AI agents and developer kits to build your next empire.
-              </p>
-              <Link href="/products">
-                <Button size="lg" className="rounded-full px-8 shadow-xl shadow-primary/20">
-                  Browse Products <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </Link>
-            </motion.div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {items.map((item) => (
-                <motion.div
+        {items.length > 0 ? (
+          <Button
+            variant="outline"
+            onClick={clearWishlist}
+            className="border-red-500/20 text-red-400 hover:bg-red-500/10"
+          >
+            <Trash2 className="mr-2 h-4 w-4" /> Clear All
+          </Button>
+        ) : null}
+      </div>
+
+      <AnimatePresence mode="popLayout">
+        {items.length === 0 ? (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="rounded-3xl border-2 border-dashed border-border bg-secondary/5 py-28 text-center"
+          >
+            <div className="mx-auto mb-8 flex h-24 w-24 items-center justify-center rounded-full border border-border bg-secondary/10">
+              <PackageOpen className="h-10 w-10 text-muted-foreground opacity-50" />
+            </div>
+            <h2 className="mb-4 text-3xl font-bold">Your wishlist is empty</h2>
+            <p className="mx-auto mb-8 max-w-sm text-muted-foreground">Browse currently available products and save anything you want to compare later.</p>
+            <Link href="/products">
+              <Button size="lg" className="rounded-full px-8">
+                Browse Products <ArrowRight className="ml-2 h-4 w-4" />
+              </Button>
+            </Link>
+          </motion.div>
+        ) : (
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
+            {items.map((item) => {
+              const product = catalogById.get(item.id);
+              if (!product) return null;
+              return (
+                <motion.article
                   key={item.id}
                   layout
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.96 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.9 }}
-                  className="group relative bg-card border-2 border-border p-6 rounded-3xl hover:-translate-y-2 transition-all duration-300 flex flex-col h-full cyber-shadow"
+                  exit={{ opacity: 0, scale: 0.96 }}
+                  className="group flex h-full flex-col rounded-3xl border border-border bg-card p-6 transition hover:-translate-y-1 hover:border-primary/30"
                 >
-                  <div className="relative aspect-video w-full mb-6 overflow-hidden rounded-2xl group-hover:shadow-2xl transition-all duration-500">
-                    <Image
-                      src={item.image}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-110"
-                      alt={item.name}
-                    />
-                    <button 
+                  <div className="relative mb-6 aspect-video w-full overflow-hidden rounded-2xl">
+                    <Image src={product.image} fill sizes="(max-width: 768px) 100vw, 33vw" className="object-cover transition-transform duration-500 group-hover:scale-105" alt={product.name} />
+                    <button
+                      type="button"
+                      aria-label={`Remove ${product.name} from wishlist`}
                       onClick={() => removeItem(item.id)}
-                      className="absolute top-4 right-4 w-10 h-10 bg-white/90 backdrop-blur-md rounded-full flex items-center justify-center text-red-500 hover:bg-red-500 hover:text-white transition-all shadow-xl z-10"
+                      className="absolute right-4 top-4 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-black/75 text-red-300 backdrop-blur-md transition hover:bg-red-500 hover:text-white"
                     >
-                      <Trash2 className="w-5 h-5" />
+                      <Trash2 className="h-5 w-5" />
                     </button>
                   </div>
 
-                  <div className="flex flex-col grow">
-                    <h3 className="text-2xl font-black mb-2 leading-tight group-hover:text-primary transition-colors">
-                      {item.name}
-                    </h3>
-                    <p className="text-2xl font-black text-primary mb-8">
-                      ₹{item.price.toLocaleString("en-IN")}
-                    </p>
+                  <div className="flex grow flex-col">
+                    <p className="mb-2 font-mono text-[9px] font-black uppercase tracking-[.18em] text-white/35">{product.category}</p>
+                    <h3 className="mb-2 text-2xl font-black leading-tight group-hover:text-primary">{product.name}</h3>
+                    <p className="mb-7 text-2xl font-black text-primary">{inr.format(product.price)}</p>
 
-                    <div className="flex gap-4 mt-auto">
-                      <Button 
-                        onClick={() => addItemToCart({ ...item, quantity: 1, description: "", category: "", rating: 0, inStock: true, sales: 0 } as any)}
-                        className="flex-1 uiverse-glow-btn h-12"
-                      >
-                        <ShoppingCart className="w-4 h-4 mr-2" /> Add to Cart
+                    <div className="mt-auto flex gap-3">
+                      <Button onClick={() => addItemToCart(product)} className="h-12 flex-1">
+                        <ShoppingCart className="mr-2 h-4 w-4" /> Add to Cart
                       </Button>
-                      <Link href={`/product/${item.id}`}>
-                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl border-border bg-white hover:bg-gray-50 shadow-sm">
-                          <ArrowRight className="w-5 h-5" />
+                      <Link href={`/product/${product.id}`} aria-label={`View ${product.name}`}>
+                        <Button variant="outline" size="icon" className="h-12 w-12 rounded-xl">
+                          <ArrowRight className="h-5 w-5" />
                         </Button>
                       </Link>
                     </div>
                   </div>
-                </motion.div>
-              ))}
-            </div>
-          )}
-        </AnimatePresence>
-
-        {/* Motivation Card */}
-        {items.length > 0 && (
-          <div className="mt-24 p-12 bg-zinc-950 border border-white/10 rounded-[3rem] text-center relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full bg-linear-to-br from-primary/10 to-transparent opacity-50" />
-            <div className="relative z-10">
-              <h2 className="text-3xl md:text-5xl font-black text-white mb-6 uppercase italic">Ready to evolve?</h2>
-              <p className="text-zinc-400 max-w-2xl mx-auto text-lg mb-10 leading-relaxed">
-                Add your dream stack to the cart and launch your next project within minutes. High-quality code, instant delivery.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Link href="/products">
-                  <Button variant="outline" className="w-full sm:w-auto px-8 h-14 rounded-2xl border-white/10 text-white hover:bg-white/5">
-                    Continue Shopping
-                  </Button>
-                </Link>
-                <Link href="/products">
-                   <button className="uiverse-glow-btn px-12 h-14 shadow-2xl shadow-primary/20">
-                     UPGRADE NOW
-                   </button>
-                </Link>
-              </div>
-            </div>
+                </motion.article>
+              );
+            })}
           </div>
         )}
-      </div>
-    </div>
+      </AnimatePresence>
+
+      {items.length > 0 ? (
+        <section className="mt-20 rounded-[2rem] border border-white/10 bg-zinc-950 p-9 text-center md:p-12">
+          <h2 className="text-3xl font-black uppercase italic text-white md:text-4xl">Ready to compare or purchase?</h2>
+          <p className="mx-auto mt-4 max-w-2xl text-sm leading-6 text-zinc-400">
+            Open a product page for exact scope and licence details, or add an available product to the cart. Checkout revalidates catalog price and availability on the server.
+          </p>
+          <Link href="/products" className="mt-7 inline-flex">
+            <Button variant="outline" className="h-13 px-8 text-white">Continue Shopping</Button>
+          </Link>
+        </section>
+      ) : null}
+    </main>
   );
 }

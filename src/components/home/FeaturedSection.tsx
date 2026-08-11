@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, ShieldCheck, ShoppingBag, Star } from "lucide-react";
+import { ArrowRight, ShieldCheck, ShoppingBag } from "lucide-react";
 import { Product } from "@/lib/types";
 import { ForgeButton } from "@/components/ui/ForgeButton";
 
@@ -29,12 +29,6 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
     currency: "INR",
     maximumFractionDigits: 0,
   }).format(product.price);
-  const originalPrice = product.originalPrice
-    ? new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 0 }).format(product.originalPrice)
-    : null;
-  const discountPct = product.originalPrice && product.originalPrice > product.price
-    ? Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)
-    : null;
   const shortDesc = product.description.replace(/\*\*/g, "").replace(/#{1,3} /g, "").slice(0, 118) +
     (product.description.length > 118 ? "…" : "");
 
@@ -60,20 +54,12 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
         <div className="absolute left-4 top-4 rounded-full border border-white/10 bg-black/55 px-3 py-1.5 font-mono text-[9px] font-bold uppercase tracking-[.18em] text-white/65 backdrop-blur-xl">
           {product.category}
         </div>
-        {discountPct ? (
-          <div className="absolute right-4 top-4 rounded-full border border-primary/25 bg-primary/90 px-3 py-1.5 font-mono text-[9px] font-black text-black">
-            SAVE {discountPct}%
-          </div>
-        ) : null}
       </div>
 
       <div className="flex flex-1 flex-col p-6">
         <div className="mb-3 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-1.5 text-primary">
-            <Star className="h-3.5 w-3.5 fill-current" />
-            <span className="font-mono text-[10px] font-bold">{product.rating.toFixed(1)}</span>
-          </div>
-          <span className="font-mono text-[9px] uppercase tracking-[.16em] text-white/25">Digital delivery</span>
+          <span className="font-mono text-[9px] uppercase tracking-[.16em] text-primary">Approved catalog SKU</span>
+          <span className="font-mono text-[9px] uppercase tracking-[.16em] text-white/25">Private digital delivery</span>
         </div>
 
         <h3 className="text-xl font-black uppercase italic leading-tight tracking-[-.035em] text-[#f6f1e8] transition-colors group-hover:text-primary md:text-2xl">
@@ -83,11 +69,10 @@ function FeaturedCard({ product, index }: { product: Product; index: number }) {
 
         <div className="mt-6 flex items-end gap-3 border-t border-white/7 pt-5">
           <span className="text-2xl font-black tracking-[-.03em] text-white">{displayPrice}</span>
-          {originalPrice ? <span className="pb-1 text-xs text-white/25 line-through">{originalPrice}</span> : null}
         </div>
 
         <div className="mt-5 flex items-center gap-2 text-[10px] uppercase tracking-[.12em] text-white/35">
-          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Clear scope &amp; license details on product page
+          <ShieldCheck className="h-3.5 w-3.5 text-primary" /> Exact scope, format and license details on product page
         </div>
 
         <Link
@@ -114,7 +99,15 @@ export function FeaturedSection() {
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
         const data: Product[] = await response.json();
         if (!Array.isArray(data)) throw new Error("Invalid product response");
-        setProducts([...data].sort((a, b) => b.rating - a.rating || b.price - a.price).slice(0, 6));
+        // Merchandising order only: featured flag first, then the approved
+        // catalog order. Never rank by invented ratings, sales or scarcity.
+        setProducts(
+          data
+            .map((product, catalogIndex) => ({ product, catalogIndex }))
+            .sort((a, b) => Number(Boolean(b.product.isFeatured)) - Number(Boolean(a.product.isFeatured)) || a.catalogIndex - b.catalogIndex)
+            .slice(0, 6)
+            .map(({ product }) => product)
+        );
       } catch (fetchError) {
         console.error("[FeaturedSection] Failed to fetch products:", fetchError);
         setError(true);

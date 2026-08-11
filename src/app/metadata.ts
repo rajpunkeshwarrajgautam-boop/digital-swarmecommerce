@@ -5,41 +5,39 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "DIGITAL SWARM | Elite AI Agent Store & SaaS Boilerplates",
-    template: "%s | DIGITAL SWARM"
+    default: "Digital Swarm | Verified Digital Products & AI Workflow Assets",
+    template: "%s | Digital Swarm",
   },
   description:
-    "Industrial-grade digital assets for engineers: AI agent protocols, Next.js SaaS kits, elite vertical playbooks, and production-ready Notion systems. Instant delivery on digitalswarm.in.",
+    "Digital Swarm sells verified downloadable digital products, AI workflow assets, prompt systems, playbooks, and software kits with server-validated checkout and private delivery.",
   keywords: [
-    "AI agents for sale",
-    "Next.js SaaS boilerplate",
-    "AI prompt engineering India",
-    "Notion CRM for freelancers",
-    "Digital Swarm ecommerce",
-    "elite AI protocols",
-    "autonomous agent templates",
-    "SaaS launch kits",
+    "digital products",
+    "AI workflow assets",
+    "AI prompt systems",
+    "software kits",
+    "digital playbooks",
+    "SaaS launch kit",
+    "Digital Swarm",
   ],
-  authors: [{ name: "Swarm Architects" }],
-  creator: "DIGITAL SWARM",
-  publisher: "DIGITAL SWARM",
+  creator: "Digital Swarm",
+  publisher: "Digital Swarm",
   formatDetection: {
     email: false,
     address: false,
     telephone: false,
   },
   openGraph: {
-    title: "DIGITAL SWARM | Elite AI Agent Store & SaaS Boilerplates",
+    title: "Digital Swarm | Verified Digital Products & AI Workflow Assets",
     description:
-      "Instant-download digital goods for high-performance builds: AI protocols, SaaS kits, and industrial playbooks. Secure checkout and verified delivery.",
+      "Verified downloadable digital products with clear scope, server-validated checkout, and private post-payment delivery.",
     url: baseUrl,
-    siteName: "DIGITAL SWARM",
+    siteName: "Digital Swarm",
     images: [
       {
-        url: "/og-image.png", // Ensure this exists or fallback to a default
+        url: "/og-image.png",
         width: 1200,
         height: 630,
-        alt: "Digital Swarm - Elite Digital Forge",
+        alt: "Digital Swarm digital product storefront",
       },
     ],
     locale: "en_IN",
@@ -47,10 +45,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "DIGITAL SWARM | The Elite Forge",
-    description: "Premium Next.js templates and AI agent protocols for elite engineers.",
+    title: "Digital Swarm | Verified Digital Products",
+    description: "Digital products and AI workflow assets with clear deliverables and private fulfillment.",
     images: ["/og-image.png"],
-    creator: "@DigitalSwarm",
   },
   robots: {
     index: true,
@@ -71,4 +68,3 @@ export const metadata: Metadata = {
     canonical: "/",
   },
 };
-

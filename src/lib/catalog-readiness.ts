@@ -1,4 +1,5 @@
 import { products } from "@/lib/data";
+import { getPrivateDeliveryAssetName, isSellableProductId } from "@/lib/catalog-integrity";
 
 type ReadinessIssue = {
   productId: string;
@@ -7,65 +8,32 @@ type ReadinessIssue = {
   message: string;
 };
 
-const categoryPriceCaps: Record<string, number> = {
-  "AI Agent": 24999,
-  "Source Code": 14999,
-  Recruitment: 9999,
-  "Home Services": 9999,
-  Legal: 9999,
-  Finance: 9999,
-  Healthcare: 9999,
-  "Digital Marketing": 9999,
-  Copywriting: 9999,
-  SaaS: 9999,
-  "E-commerce": 9999,
-};
-
-function extension(url: string): string {
-  const base = url.split("?")[0];
-  const idx = base.lastIndexOf(".");
-  return idx === -1 ? "" : base.slice(idx).toLowerCase();
-}
-
-function classifyDelivery(url: string): "source_code" | "playbook" | "asset_bundle" | "unknown" {
-  const ext = extension(url);
-  if (ext === ".zip") return "source_code";
-  if (ext === ".html" || ext === ".txt" || ext === ".md") return "playbook";
-  if (ext === ".pdf" || ext === ".css" || ext === ".tsx") return "asset_bundle";
-  return "unknown";
-}
-
+/**
+ * Catalog readiness is deliberately mechanical: it checks whether a SKU has
+ * the minimum data and private fulfillment mapping required to be offered.
+ * It does not invent market-price caps, popularity scores, or quality grades.
+ */
 export function evaluateCatalogReadiness() {
   const issues: ReadinessIssue[] = [];
   let passed = 0;
   let totalChecks = 0;
 
-  for (const product of products) {
-    const downloadUrl = product.downloadUrl ?? "";
-    const delivery = classifyDelivery(downloadUrl);
-    const cap = categoryPriceCaps[product.category];
+  const sellableProducts = products.filter(
+    (product) => product.inStock && isSellableProductId(product.id),
+  );
 
+  for (const product of sellableProducts) {
+    const privateAsset = getPrivateDeliveryAssetName(product);
     const checks: Array<[boolean, string, string]> = [
       [Boolean(product.name?.trim()), "missing_name", "Product name is empty."],
       [Boolean(product.description?.trim()), "missing_description", "Product description is empty."],
       [Boolean(product.installGuide?.trim()), "missing_install_guide", "Install guide is missing."],
-      [
-        Boolean(downloadUrl) &&
-          (downloadUrl.startsWith("/downloads/") || downloadUrl.startsWith("https://")),
-        "invalid_download_url",
-        "Download URL must be /downloads/* or absolute HTTPS URL.",
-      ],
-      [delivery !== "unknown", "unknown_delivery_type", "Delivery type is unknown from file extension."],
-      [
-        !(product.category === "Source Code" && delivery !== "source_code"),
-        "source_code_mismatch",
-        "Source Code products must deliver a .zip package.",
-      ],
-      [
-        !cap || product.price <= cap,
-        "price_above_market_cap",
-        `Price is above current market cap for ${product.category} (₹${cap}).`,
-      ],
+      [Number.isFinite(product.price) && product.price > 0, "invalid_price", "Price must be a positive finite amount."],
+      [Boolean(product.image?.trim()), "missing_image", "Catalog artwork is missing."],
+      [Boolean(product.category?.trim()), "missing_category", "Product category is missing."],
+      [Array.isArray(product.features) && product.features.length > 0, "missing_features", "Product features are missing."],
+      [Boolean(privateAsset), "missing_private_asset", "Private fulfillment mapping is missing."],
+      [privateAsset.toLowerCase().endsWith(".zip"), "non_zip_delivery", "Paid delivery must resolve to a private ZIP bundle."],
     ];
 
     for (const [ok, code, message] of checks) {
@@ -90,6 +58,6 @@ export function evaluateCatalogReadiness() {
     passed,
     totalChecks,
     issues,
-    productsEvaluated: products.length,
+    productsEvaluated: sellableProducts.length,
   };
 }

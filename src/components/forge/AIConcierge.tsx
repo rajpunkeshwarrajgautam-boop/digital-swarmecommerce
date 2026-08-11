@@ -1,66 +1,72 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { X, Sparkles, Terminal, Cpu, Zap, Command } from "lucide-react";
+import React, { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { Command, Search, ShoppingBag, Sparkles, X } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useForgeStore } from "@/lib/forge-store";
-import { useToastStore } from "@/components/ui/ForgeToast";
 
+/**
+ * Lightweight catalog command palette. This intentionally does not pretend to
+ * be a generative-AI agent: it routes buyers to real storefront destinations
+ * and catalog search results.
+ */
 export const AIConcierge = () => {
-  const { isConciergeOpen, toggleConcierge, setSystemStatus } = useForgeStore();
-  const addToast = useToastStore((s) => s.addToast);
+  const { isConciergeOpen, toggleConcierge } = useForgeStore();
   const [input, setInput] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (isConciergeOpen) {
-      setTimeout(() => inputRef.current?.focus(), 100);
-      
-      const handleEsc = (e: KeyboardEvent) => {
-        if (e.key === "Escape") toggleConcierge();
-      };
-      window.addEventListener("keydown", handleEsc);
-      return () => window.removeEventListener("keydown", handleEsc);
-    }
+    if (!isConciergeOpen) return;
+    const focusTimer = window.setTimeout(() => inputRef.current?.focus(), 100);
+    const handleEsc = (event: KeyboardEvent) => {
+      if (event.key === "Escape") toggleConcierge();
+    };
+    window.addEventListener("keydown", handleEsc);
+    return () => {
+      window.clearTimeout(focusTimer);
+      window.removeEventListener("keydown", handleEsc);
+    };
   }, [isConciergeOpen, toggleConcierge]);
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const cmd = input.toLowerCase().trim();
-    if (!cmd) return;
-    
-    setSystemStatus("processing");
-    
-    // Command Logic
-    setTimeout(() => {
-      if (cmd.includes("find") || cmd.includes("search")) {
-        const query = cmd.replace("find", "").replace("search", "").trim();
-        router.push(`/products?search=${encodeURIComponent(query)}`);
-      } else if (cmd.includes("goto cart") || cmd.includes("open cart")) {
-        router.push("/products");
-      } else if (cmd.includes("show all") || cmd.includes("registry")) {
-        router.push("/products");
-      } else if (cmd.includes("home") || cmd.includes("exit")) {
-        router.push("/");
-      } else if (cmd.includes("status")) {
-        addToast("SUCCESS", "SYSTEM_SAFE", "ALL_PROTOCOL_OPERATIONAL // v2.04_FORGE");
-      } else {
-        router.push(`/products?search=${encodeURIComponent(cmd)}`);
-      }
-      
-      setSystemStatus("idle");
-      setInput("");
-      toggleConcierge();
-    }, 800);
+  const navigate = (destination: string) => {
+    router.push(destination);
+    setInput("");
+    toggleConcierge();
+  };
+
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+    const raw = input.trim();
+    if (!raw) return;
+    const command = raw.toLowerCase();
+
+    if (command === "cart" || command.includes("open cart") || command.includes("goto cart")) {
+      navigate("/cart");
+      return;
+    }
+    if (command === "wishlist" || command.includes("open wishlist")) {
+      navigate("/wishlist");
+      return;
+    }
+    if (command === "home" || command === "exit") {
+      navigate("/");
+      return;
+    }
+    if (command === "status" || command === "health") {
+      navigate("/health");
+      return;
+    }
+
+    const query = raw.replace(/^\s*(find|search)\s+/i, "").trim() || raw;
+    navigate(`/products?query=${encodeURIComponent(query)}`);
   };
 
   return (
     <AnimatePresence>
       {isConciergeOpen && (
-        <div className="fixed inset-0 z-100 flex items-start justify-center pt-[10vh] px-4 sm:px-6">
-          {/* Backdrop */}
+        <div className="fixed inset-0 z-100 flex items-start justify-center px-4 pt-[10vh] sm:px-6">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -69,72 +75,52 @@ export const AIConcierge = () => {
             className="absolute inset-0 bg-black/80 backdrop-blur-md"
           />
 
-          {/* Console Interface */}
           <motion.div
-            initial={{ opacity: 0, y: -20, scale: 0.95 }}
+            initial={{ opacity: 0, y: -20, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -20, scale: 0.95 }}
+            exit={{ opacity: 0, y: -20, scale: 0.96 }}
             transition={{ type: "spring", damping: 25, stiffness: 300 }}
-            className="relative w-full max-w-2xl bg-[#0a0a0f] border border-white/10 rounded-xl shadow-[0_30px_60px_rgba(0,0,0,0.5)] overflow-hidden"
+            className="relative w-full max-w-2xl overflow-hidden rounded-2xl border border-white/10 bg-[#0a0a0f] shadow-[0_30px_60px_rgba(0,0,0,0.5)]"
           >
-            {/* Header / Meta */}
-            <div className="flex items-center justify-between px-4 py-3 bg-white/5 border-b border-white/5">
+            <div className="flex items-center justify-between border-b border-white/5 bg-white/5 px-4 py-3">
               <div className="flex items-center gap-2">
-                <Terminal className="w-4 h-4 text-accent" />
-                <span className="text-[10px] font-mono uppercase tracking-[0.3em] text-white/40">
-                  Forge AI Protocol v2.0
+                <Search className="h-4 w-4 text-accent" />
+                <span className="font-mono text-[10px] font-black uppercase tracking-[0.25em] text-white/45">
+                  Product Finder
                 </span>
               </div>
-              <button 
+              <button
+                type="button"
                 onClick={toggleConcierge}
-                className="p-1 hover:bg-white/10 rounded-md transition-colors"
+                aria-label="Close product finder"
+                className="rounded-md p-1 transition-colors hover:bg-white/10"
               >
-                <X className="w-4 h-4 text-white/40" />
+                <X className="h-4 w-4 text-white/45" />
               </button>
             </div>
 
-            {/* Main Command Input */}
             <form onSubmit={handleSubmit} className="p-6">
-              <div className="relative flex items-center gap-4 group">
-                <Sparkles className="w-6 h-6 text-accent animate-pulse" />
+              <div className="flex items-center gap-4">
+                <Sparkles className="h-5 w-5 text-accent" />
                 <input
                   ref={inputRef}
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
-                  placeholder="Identify your deployment requirements..."
-                  className="flex-1 bg-transparent border-none outline-none text-xl font-outfit font-light placeholder:text-white/20 text-white"
+                  onChange={(event) => setInput(event.target.value)}
+                  placeholder="Search products or type: cart, wishlist, health…"
+                  aria-label="Search the Digital Swarm catalog"
+                  className="flex-1 border-none bg-transparent font-outfit text-xl font-light text-white outline-none placeholder:text-white/20"
                 />
-                <div className="flex items-center gap-1.5 px-2 py-1 bg-white/5 rounded border border-white/10 text-[10px] font-mono text-white/30">
-                  <Command className="w-3 h-3" />
-                  <span>ENTER</span>
+                <div className="flex items-center gap-1.5 rounded border border-white/10 bg-white/5 px-2 py-1 font-mono text-[10px] text-white/30">
+                  <Command className="h-3 w-3" /> ENTER
                 </div>
               </div>
 
-              {/* Suggestions / Status Bar */}
-              <div className="mt-8 pt-6 border-t border-white/5 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <SuggestionCard 
-                  icon={<Cpu className="w-3.5 h-3.5" />} 
-                  title="Next.js Stacks" 
-                  desc="Optimize performance" 
-                  onClick={() => setInput("find Next.js")}
-                />
-                <SuggestionCard 
-                  icon={<Zap className="w-3.5 h-3.5" />} 
-                  title="AI Agent Kits" 
-                  desc="Autonomous logic" 
-                   onClick={() => setInput("find AI Agents")}
-                />
-                <SuggestionCard 
-                  icon={<Sparkles className="w-3.5 h-3.5" />} 
-                  title="UI Protocols" 
-                  desc="Advanced visuals" 
-                   onClick={() => setInput("find visual kit")}
-                />
+              <div className="mt-8 grid grid-cols-1 gap-3 border-t border-white/5 pt-6 sm:grid-cols-3">
+                <SuggestionCard title="AI agents" desc="Search agent products" onClick={() => setInput("AI Agent")} />
+                <SuggestionCard title="Playbooks" desc="Search playbooks" onClick={() => setInput("Playbook")} />
+                <SuggestionCard title="Open cart" desc="Review selected products" icon={<ShoppingBag className="h-3.5 w-3.5" />} onClick={() => navigate("/cart")} />
               </div>
             </form>
-
-            {/* Bottom Glow */}
-            <div className="h-1 w-full bg-linear-to-r from-transparent via-accent/30 to-transparent" />
           </motion.div>
         </div>
       )}
@@ -142,15 +128,28 @@ export const AIConcierge = () => {
   );
 };
 
-const SuggestionCard = ({ icon, title, desc, onClick }: { icon: React.ReactNode, title: string, desc: string, onClick: () => void }) => (
-  <button 
-    onClick={onClick}
-    className="flex flex-col gap-1 p-3 bg-white/2 border border-white/5 rounded-lg text-left hover:bg-white/5 hover:border-accent/30 transition-all group"
-  >
-    <div className="flex items-center gap-2 text-white/40 group-hover:text-accent transition-colors">
-      {icon}
-      <span className="text-[10px] font-mono uppercase tracking-widest leading-none">{title}</span>
-    </div>
-    <span className="text-xs text-white/20 group-hover:text-white/40 transition-colors">{desc}</span>
-  </button>
-);
+function SuggestionCard({
+  title,
+  desc,
+  onClick,
+  icon = <Search className="h-3.5 w-3.5" />,
+}: {
+  title: string;
+  desc: string;
+  onClick: () => void;
+  icon?: React.ReactNode;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex flex-col gap-1 rounded-lg border border-white/5 bg-white/2 p-3 text-left transition-all hover:border-accent/30 hover:bg-white/5"
+    >
+      <div className="flex items-center gap-2 text-white/45">
+        {icon}
+        <span className="font-mono text-[10px] font-black uppercase tracking-widest">{title}</span>
+      </div>
+      <span className="text-xs text-white/25">{desc}</span>
+    </button>
+  );
+}

@@ -1,113 +1,77 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Resend } from "resend";
 
 /**
  * POST /api/newsletter
- * Subscribes an email address to the Digital Swarm newsletter via Resend.
+ * Persists a real Resend contact and sends a confirmation email.
  */
 export async function POST(req: NextRequest) {
   try {
     const { email } = await req.json();
+    const normalizedEmail = typeof email === 'string' ? email.trim().toLowerCase() : '';
 
-    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return NextResponse.json(
-        { error: "Invalid email address." },
-        { status: 400 }
-      );
+    if (!normalizedEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalizedEmail)) {
+      return NextResponse.json({ error: "Invalid email address." }, { status: 400 });
     }
 
-    const resendApiKey = process.env.RESEND_API_KEY;
-
+    const resendApiKey = process.env.RESEND_API_KEY?.trim();
     if (!resendApiKey) {
-      // Graceful degradation: log and accept in environments without Resend configured
-      console.warn("RESEND_API_KEY not set. Skipping newsletter subscription.");
-      return NextResponse.json({ success: true, message: "Subscribed (dev mode)." });
+      return NextResponse.json({ error: "Newsletter service is not configured." }, { status: 503 });
     }
 
-    // Add contact to Resend audience
-    const audienceId = process.env.RESEND_AUDIENCE_ID;
+    const resend = new Resend(resendApiKey);
+    const { error: contactError } = await resend.contacts.create({
+      email: normalizedEmail,
+      unsubscribed: false,
+    });
 
-    if (audienceId) {
-      const audienceRes = await fetch(
-        `https://api.resend.com/audiences/${audienceId}/contacts`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${resendApiKey}`,
-          },
-          body: JSON.stringify({ email, unsubscribed: false }),
-        }
-      );
-      if (!audienceRes.ok) {
-        const err = await audienceRes.json();
-        console.error("Resend audience error:", err);
+    if (contactError) {
+      const message = String(contactError.message || '').toLowerCase();
+      // Existing contacts should remain a successful, idempotent subscription experience.
+      if (!message.includes('already') && !message.includes('exist')) {
+        console.error('[newsletter] Contact creation failed', contactError);
+        return NextResponse.json({ error: "Unable to save subscription." }, { status: 502 });
       }
     }
 
-    // Send welcome email
-    const emailRes = await fetch("https://api.resend.com/emails", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${resendApiKey}`,
-      },
-      body: JSON.stringify({
-        from: "Digital Swarm <no-reply@digitalswarm.in>",
-        to: [email],
-        subject: "SIGNAL_ACQUIRED // Welcome to the Swarm",
-        html: `
-          <!DOCTYPE html>
-          <html>
-          <head><meta charset="utf-8" /></head>
-          <body style="background:#0a0a0f;color:#fff;font-family:monospace;padding:40px 20px;margin:0;">
+    const { error: emailError } = await resend.emails.send({
+      from: "Digital Swarm <no-reply@digitalswarm.in>",
+      to: normalizedEmail,
+      subject: "Welcome to Digital Swarm",
+      html: `
+        <!DOCTYPE html>
+        <html lang="en">
+          <body style="background:#0a0a0f;color:#fff;font-family:Arial,sans-serif;padding:40px 20px;margin:0;">
             <div style="max-width:600px;margin:0 auto;">
-              <div style="border-left:4px solid #CCFF00;padding-left:24px;margin-bottom:32px;">
-                <h1 style="font-size:32px;font-weight:900;text-transform:uppercase;letter-spacing:-2px;font-style:italic;margin:0 0 8px;">
-                  SIGNAL ACQUIRED
-                </h1>
-                <p style="color:#CCFF00;font-size:10px;font-weight:900;text-transform:uppercase;letter-spacing:4px;margin:0;">
-                  Digital Swarm // Operational Broadcast
-                </p>
-              </div>
-              <p style="color:rgba(255,255,255,0.7);font-size:14px;font-weight:700;text-transform:uppercase;letter-spacing:1px;line-height:1.8;">
-                Welcome to the swarm, agent. You'll now receive our weekly broadcast of:
+              <p style="color:#d8b36a;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:3px;">Digital Swarm</p>
+              <h1 style="font-size:30px;margin:12px 0 16px;">Subscription confirmed</h1>
+              <p style="color:rgba(255,255,255,.7);font-size:14px;line-height:1.8;">
+                You are subscribed to Digital Swarm product releases, practical implementation notes, and store updates.
               </p>
-              <ul style="color:rgba(255,255,255,0.5);font-size:12px;text-transform:uppercase;letter-spacing:1px;line-height:2.5;">
-                <li>🔬 Hardened engineering protocols</li>
-                <li>🚀 New premium template releases</li>
-                <li>⚡ Exclusive early-access drops</li>
-                <li>🛡️ Zero-day vulnerability reports</li>
-              </ul>
-              <a href="https://digitalswarm.in/products" 
-                 style="display:inline-block;background:#CCFF00;color:#000;padding:16px 32px;font-weight:900;font-size:12px;text-transform:uppercase;letter-spacing:3px;text-decoration:none;font-style:italic;margin-top:24px;">
-                BROWSE CATALOG →
-              </a>
-              <p style="color:rgba(255,255,255,0.2);font-size:10px;margin-top:40px;">
-                © ${new Date().getFullYear()} Digital Swarm. You subscribed at digitalswarm.in.
-                <a href="#" style="color:rgba(255,255,255,0.2);">Unsubscribe</a>
+              <a href="https://digitalswarm.in/products" style="display:inline-block;background:#d8b36a;color:#09090d;padding:14px 24px;font-weight:800;font-size:12px;text-decoration:none;margin-top:20px;border-radius:10px;">Browse the catalog</a>
+              <p style="color:rgba(255,255,255,.35);font-size:11px;line-height:1.7;margin-top:32px;">
+                Future marketing broadcasts are managed through Resend contact preferences and include their supported unsubscribe controls.
               </p>
             </div>
           </body>
-          </html>
-        `,
-      }),
+        </html>
+      `,
     });
 
-    if (!emailRes.ok) {
-      const err = await emailRes.json();
-      console.error("Resend welcome email error:", err);
-      // Don't fail the subscription even if welcome email fails
+    if (emailError) {
+      console.error('[newsletter] Confirmation email failed', emailError);
+      return NextResponse.json({
+        success: true,
+        message: "Subscribed. Confirmation email could not be sent right now.",
+      });
     }
 
     return NextResponse.json({
       success: true,
-      message: "Successfully subscribed to the Digital Swarm.",
+      message: "Successfully subscribed to Digital Swarm.",
     });
   } catch (error) {
     console.error("Newsletter API error:", error);
-    return NextResponse.json(
-      { error: "Internal server error." },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error." }, { status: 500 });
   }
 }
