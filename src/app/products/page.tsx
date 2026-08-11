@@ -1,45 +1,34 @@
 "use client";
 
-import { useState, useEffect, useMemo, Suspense } from "react";
+import { useEffect, useMemo, useState, Suspense } from "react";
+import Link from "next/link";
+import { ArrowRight, LockKeyhole, Search, ShieldCheck } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 import { Product } from "@/lib/types";
 import { ProductGrid } from "@/components/products/ProductGrid";
 import { FilterSidebar } from "@/components/products/FilterSidebar";
-import { Terminal, ShieldCheck } from "lucide-react";
-import { motion } from "framer-motion";
-import Link from "next/link";
-import { Newsletter } from "@/components/home/Newsletter";
-
 import { useSwarmSWR } from "@/hooks/useSwarmSWR";
-import { useSearchParams } from "next/navigation";
 
 function ProductsContent() {
   const searchParams = useSearchParams();
   const categoryFromUrl = searchParams.get("category") || "All";
   const queryFromUrl = searchParams.get("query") || "";
-
-  const { data: productsData, isLoading } = useSwarmSWR<Product[]>('/api/products');
+  const { data: productsData, isLoading } = useSwarmSWR<Product[]>("/api/products");
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
-
-  useEffect(() => {
-    setActiveCategory(categoryFromUrl);
-    setSearchQuery(queryFromUrl);
-  }, [categoryFromUrl, queryFromUrl]);
   const [sortBy, setSortBy] = useState("featured");
   const [isNeural, setIsNeural] = useState(false);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>([]);
   const [isSearching, setIsSearching] = useState(false);
 
-  const rawProducts = useMemo(() => productsData || [], [productsData]);
+  useEffect(() => {
+    setActiveCategory(categoryFromUrl);
+    setSearchQuery(queryFromUrl);
+  }, [categoryFromUrl, queryFromUrl]);
 
-  const categories = useMemo(() =>
-    ["All", ...Array.from(new Set(rawProducts.map(p => p.category)))],
-    [rawProducts]
-  );
-  const comparisonProducts = useMemo(
-    () => filteredProducts.slice(0, 3),
-    [filteredProducts]
-  );
+  const rawProducts = useMemo(() => productsData || [], [productsData]);
+  const categories = useMemo(() => ["All", ...Array.from(new Set(rawProducts.map((product) => product.category)))], [rawProducts]);
+  const comparisonProducts = useMemo(() => filteredProducts.slice(0, 3), [filteredProducts]);
   const itemListJsonLd = useMemo(
     () => ({
       "@context": "https://schema.org",
@@ -64,160 +53,166 @@ function ProductsContent() {
     const searchSequence = async () => {
       setIsSearching(true);
       try {
-        const res = await fetch('/api/marketplace/search', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ query: searchQuery, isNeural, catalog: rawProducts })
+        const response = await fetch("/api/marketplace/search", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ query: searchQuery, isNeural, catalog: rawProducts }),
         });
-
-        if (!res.ok) throw new Error('Catalog search failed');
-
-        const data = await res.json();
-        let results = data.results || [];
-
+        if (!response.ok) throw new Error("Catalog search failed");
+        const data = await response.json();
+        let results: Product[] = data.results || [];
         if (activeCategory.toLowerCase() !== "all") {
-          results = results.filter((p: Product) => p.category.toLowerCase() === activeCategory.toLowerCase());
+          results = results.filter((product) => product.category.toLowerCase() === activeCategory.toLowerCase());
         }
-
-        if (sortBy === "price-asc") results.sort((a: Product, b: Product) => a.price - b.price);
-        else if (sortBy === "price-desc") results.sort((a: Product, b: Product) => b.price - a.price);
-
+        if (sortBy === "price-asc") results.sort((a, b) => a.price - b.price);
+        else if (sortBy === "price-desc") results.sort((a, b) => b.price - a.price);
         setFilteredProducts(results);
-      } catch (err) {
-        console.error('[CATALOG_SEARCH] Search failure:', err);
-        const localResults = rawProducts.filter(p =>
-          p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-          p.category.toLowerCase().includes(searchQuery.toLowerCase())
+      } catch (error) {
+        console.error("[CATALOG_SEARCH] Search failure:", error);
+        let localResults = rawProducts.filter((product) =>
+          product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+          product.category.toLowerCase().includes(searchQuery.toLowerCase())
         );
+        if (activeCategory.toLowerCase() !== "all") {
+          localResults = localResults.filter((product) => product.category.toLowerCase() === activeCategory.toLowerCase());
+        }
+        if (sortBy === "price-asc") localResults.sort((a, b) => a.price - b.price);
+        else if (sortBy === "price-desc") localResults.sort((a, b) => b.price - a.price);
         setFilteredProducts(localResults);
       } finally {
         setIsSearching(false);
       }
     };
 
-    const timer = setTimeout(searchSequence, 300);
+    const timer = setTimeout(searchSequence, 260);
     return () => clearTimeout(timer);
   }, [searchQuery, isNeural, activeCategory, sortBy, rawProducts]);
 
   return (
-    <div className="min-h-screen bg-[#0a0a0f] text-white pt-40 pb-32">
+    <div className="min-h-screen bg-[#d9d0ff] text-[#151515]">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListJsonLd) }} />
-      <div className="absolute inset-x-0 top-0 h-[500px] bg-linear-to-b from-primary/5 to-transparent pointer-events-none" />
 
-      <div className="container mx-auto px-6 max-w-[1600px] relative z-10">
-        <header className="mb-24">
-          <div className="flex items-center gap-4 mb-10 overflow-hidden">
-            <div className="h-px flex-1 bg-white/5" />
-            <div className="flex items-center gap-3 px-4 py-1.5 bg-primary/10 border border-primary/20">
-              <Terminal className="w-3.5 h-3.5 text-primary" />
-              <span className="text-[10px] font-mono font-black uppercase tracking-[0.4em] text-primary">Verified storefront catalog</span>
+      <section className="relative overflow-hidden border-b border-black/20 px-5 pb-16 pt-16 md:px-8 md:pb-20 md:pt-20 lg:px-12">
+        <div className="editorial-noise absolute inset-0 opacity-15" />
+        <div className="relative mx-auto max-w-[1600px]">
+          <div className="grid gap-10 lg:grid-cols-[1.25fr_.75fr] lg:items-end">
+            <div>
+              <p className="editorial-kicker">CATALOG / APPROVED FOR SALE</p>
+              <h1 className="mt-7 max-w-6xl text-[clamp(4.5rem,10vw,10rem)] font-black uppercase leading-[.78] tracking-[-.08em]">
+                Choose the
+                <span className="block">system you need.</span>
+              </h1>
             </div>
-            <div className="h-px flex-1 bg-white/5" />
-          </div>
-
-          <div className="space-y-8 max-w-4xl">
-            <motion.h1
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              className="text-7xl md:text-9xl font-outfit font-black italic uppercase tracking-tighter leading-[0.8] text-white"
-            >
-              Product <br />
-              <span className="text-white/10 italic">Catalog</span>
-            </motion.h1>
-            <p className="text-sm text-white/45 max-w-2xl leading-relaxed">
-              Browse only products currently approved for sale. Each listed SKU maps to a private delivery asset and checkout pricing is recalculated on the server before the payment order is created.
-            </p>
-          </div>
-        </header>
-
-        <div className="flex flex-col lg:flex-row gap-16 relative">
-          <FilterSidebar
-            categories={categories}
-            activeCategory={activeCategory}
-            setActiveCategory={setActiveCategory}
-            searchQuery={searchQuery}
-            setSearchQuery={setSearchQuery}
-            sortBy={sortBy}
-            setSortBy={setSortBy}
-            resultsCount={filteredProducts.length}
-            isNeural={isNeural}
-            setIsNeural={setIsNeural}
-          />
-
-          <main className="flex-1 min-w-0">
-            {isLoading || isSearching ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-                {[1, 2, 3, 4, 5, 6].map((i) => (
-                  <div key={i} className="aspect-square bg-white/2 border border-white/5 animate-pulse" />
-                ))}
+            <div className="border-t border-black/20 pt-6 lg:mb-2">
+              <p className="max-w-lg text-base leading-7 text-black/55">
+                Browse the current sellable Digital Swarm catalog. Each product page states the included files, requirements and license before checkout.
+              </p>
+              <div className="mt-6 flex flex-wrap gap-x-5 gap-y-3 font-mono text-[9px] font-black uppercase tracking-[.16em] text-black/45">
+                <span className="flex items-center gap-2"><ShieldCheck className="h-3.5 w-3.5 text-[#725cff]" /> Server-checked price</span>
+                <span className="flex items-center gap-2"><LockKeyhole className="h-3.5 w-3.5 text-[#725cff]" /> Private paid access</span>
               </div>
-            ) : (
-              <ProductGrid
-                products={filteredProducts}
-                listName={isNeural ? "products_registry_smart" : `products_registry_${activeCategory.toLowerCase().replace(/\s+/g, "_")}`}
-              />
-            )}
-          </main>
-        </div>
-
-        <section className="mt-24 grid gap-4 md:grid-cols-3">
-          <div className="border border-white/10 bg-white/[0.02] p-5">
-            <div className="text-3xl font-black text-white">{isLoading ? "—" : rawProducts.length}</div>
-            <div className="mt-2 text-[10px] font-mono uppercase tracking-[0.2em] text-white/35">Currently approved SKUs</div>
-          </div>
-          <div className="border border-white/10 bg-white/[0.02] p-5">
-            <ShieldCheck className="h-6 w-6 text-primary" />
-            <div className="mt-3 text-sm font-bold text-white">Private paid delivery</div>
-            <div className="mt-1 text-xs text-white/40">Access is issued after verified payment rather than through public product files.</div>
-          </div>
-          <div className="border border-white/10 bg-white/[0.02] p-5">
-            <div className="text-sm font-bold text-white">No simulated popularity</div>
-            <div className="mt-1 text-xs text-white/40">Catalog ranking does not depend on invented sales, stock, scarcity, or customer-rating numbers.</div>
-          </div>
-        </section>
-
-        {comparisonProducts.length > 0 && (
-          <section className="mt-20 border border-white/10 bg-white/2 p-8">
-            <h2 className="text-xl font-outfit font-black uppercase italic tracking-tight mb-2">Quick comparison</h2>
-            <p className="mb-6 text-xs text-white/40">The first three products in your current filtered result set; this is not a popularity ranking.</p>
-            <div className="overflow-x-auto">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="text-[10px] font-mono uppercase tracking-[0.2em] text-white/40 border-b border-white/10">
-                    <th className="py-3">Product</th>
-                    <th className="py-3">Category</th>
-                    <th className="py-3">Price</th>
-                    <th className="py-3">Action</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {comparisonProducts.map((product) => (
-                    <tr key={product.id} className="border-b border-white/5 text-sm">
-                      <td className="py-4 font-bold">{product.name}</td>
-                      <td className="py-4 text-white/60">{product.category}</td>
-                      <td className="py-4">₹{product.price.toLocaleString("en-IN")}</td>
-                      <td className="py-4">
-                        <Link href={`/product/${product.id}`} className="text-primary hover:underline">
-                          View product
-                        </Link>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-[#f1eee6] px-5 py-14 md:px-8 md:py-20 lg:px-12">
+        <div className="mx-auto max-w-[1600px]">
+          <div className="mb-10 flex flex-col justify-between gap-6 border-b border-black/20 pb-6 md:flex-row md:items-end">
+            <div>
+              <p className="font-mono text-[9px] font-black uppercase tracking-[.2em] text-[#725cff]">LIVE CATALOG VIEW</p>
+              <h2 className="mt-3 text-3xl font-black uppercase tracking-[-.045em] md:text-5xl">
+                {activeCategory === "All" ? "All approved products" : activeCategory}
+              </h2>
+            </div>
+            <div className="flex items-center gap-3 text-sm font-semibold text-black/45">
+              <Search className="h-4 w-4" />
+              {isLoading || isSearching ? "Updating results…" : `${filteredProducts.length} result${filteredProducts.length === 1 ? "" : "s"}`}
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-10 lg:flex-row lg:items-start">
+            <FilterSidebar
+              categories={categories}
+              activeCategory={activeCategory}
+              setActiveCategory={setActiveCategory}
+              searchQuery={searchQuery}
+              setSearchQuery={setSearchQuery}
+              sortBy={sortBy}
+              setSortBy={setSortBy}
+              resultsCount={filteredProducts.length}
+              isNeural={isNeural}
+              setIsNeural={setIsNeural}
+            />
+
+            <main className="min-w-0 flex-1">
+              {isLoading || isSearching ? (
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
+                  {[1, 2, 3, 4, 5, 6].map((index) => (
+                    <div key={index} className="overflow-hidden border border-black/15 bg-white/25">
+                      <div className="aspect-[4/3] animate-pulse bg-black/5" />
+                      <div className="space-y-4 p-6"><div className="h-3 w-1/3 bg-black/10" /><div className="h-7 w-4/5 bg-black/10" /><div className="h-4 w-full bg-black/5" /></div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <ProductGrid products={filteredProducts} listName={isNeural ? "products_smart_relevance" : `products_${activeCategory.toLowerCase().replace(/\s+/g, "_")}`} />
+              )}
+            </main>
+          </div>
+
+          <section className="mt-16 grid border border-black/20 md:grid-cols-3">
+            <Fact label="Sellable catalog" value={isLoading ? "—" : String(rawProducts.length)} note="Products returned by the approved public catalog endpoint." />
+            <Fact label="Paid delivery" value="Private" note="Eligible verified orders receive time-limited access." />
+            <Fact label="Popularity data" value="Not fabricated" note="No invented stock pressure, sales counts or rating scores." />
           </section>
-        )}
-      </div>
-      <Newsletter />
+
+          {comparisonProducts.length > 0 && (
+            <section className="mt-16 border-t border-black/20 pt-10">
+              <div className="mb-7 flex flex-col justify-between gap-4 md:flex-row md:items-end">
+                <div>
+                  <p className="font-mono text-[9px] font-black uppercase tracking-[.2em] text-[#725cff]">QUICK COMPARE</p>
+                  <h2 className="mt-2 text-3xl font-black uppercase tracking-[-.04em]">First three current results.</h2>
+                </div>
+                <p className="max-w-sm text-xs leading-5 text-black/45">This comparison follows your current filter order; it is not a popularity ranking.</p>
+              </div>
+              <div className="overflow-x-auto border border-black/20">
+                <table className="w-full min-w-[720px] text-left">
+                  <thead className="bg-[#151515] text-[#f1eee6]">
+                    <tr className="font-mono text-[9px] uppercase tracking-[.17em]">
+                      <th className="px-5 py-4">Product</th><th className="px-5 py-4">Category</th><th className="px-5 py-4">Price</th><th className="px-5 py-4">Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {comparisonProducts.map((product) => (
+                      <tr key={product.id} className="border-t border-black/15 text-sm">
+                        <td className="px-5 py-5 font-black uppercase tracking-[-.02em]">{product.name}</td>
+                        <td className="px-5 py-5 text-black/55">{product.category}</td>
+                        <td className="px-5 py-5 font-bold">₹{product.price.toLocaleString("en-IN")}</td>
+                        <td className="px-5 py-5"><Link href={`/product/${product.id}`} className="inline-flex items-center gap-2 text-[9px] font-black uppercase tracking-[.13em] text-[#725cff]">View <ArrowRight className="h-3.5 w-3.5" /></Link></td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </section>
+          )}
+        </div>
+      </section>
     </div>
   );
 }
 
-export default function ProductsPage() {
+function Fact({ label, value, note }: { label: string; value: string; note: string }) {
   return (
-    <Suspense fallback={null}>
-      <ProductsContent />
-    </Suspense>
+    <article className="border-b border-black/20 p-6 last:border-b-0 md:border-b-0 md:border-r md:last:border-r-0">
+      <span className="font-mono text-[8px] font-black uppercase tracking-[.18em] text-black/40">{label}</span>
+      <h3 className="mt-3 text-2xl font-black uppercase tracking-[-.04em]">{value}</h3>
+      <p className="mt-2 text-xs leading-5 text-black/45">{note}</p>
+    </article>
   );
+}
+
+export default function ProductsPage() {
+  return <Suspense fallback={null}><ProductsContent /></Suspense>;
 }
