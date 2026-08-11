@@ -5,11 +5,11 @@ const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "https://digitalswarm.in";
 export const metadata: Metadata = {
   metadataBase: new URL(baseUrl),
   title: {
-    default: "Digital Swarm | Verified Digital Products & AI Workflow Assets",
+    default: "Digital Swarm | Digital Products & AI Workflow Assets",
     template: "%s | Digital Swarm",
   },
   description:
-    "Digital Swarm sells verified downloadable digital products, AI workflow assets, prompt systems, playbooks, and software kits with server-validated checkout and private delivery.",
+    "Digital Swarm sells downloadable digital products, AI workflow assets, prompt systems, playbooks, and software kits with server-validated checkout and private delivery.",
   keywords: [
     "digital products",
     "AI workflow assets",
@@ -27,9 +27,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "Digital Swarm | Verified Digital Products & AI Workflow Assets",
+    title: "Digital Swarm | Digital Products & AI Workflow Assets",
     description:
-      "Verified downloadable digital products with clear scope, server-validated checkout, and private post-payment delivery.",
+      "Downloadable digital products with clear scope, server-validated checkout, and private post-payment delivery.",
     url: baseUrl,
     siteName: "Digital Swarm",
     images: [
@@ -45,7 +45,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Digital Swarm | Verified Digital Products",
+    title: "Digital Swarm | Digital Products",
     description: "Digital products and AI workflow assets with clear deliverables and private fulfillment.",
     images: ["/og-image.png"],
   },
