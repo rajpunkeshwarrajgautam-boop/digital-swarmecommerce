@@ -1,171 +1,106 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShoppingBag, Heart, Search, ShieldCheck } from "lucide-react";
-import { Logo } from "@/components/ui/Logo";
+import { Heart, Menu, Search, ShoppingBag, X } from "lucide-react";
+import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
+import { AnimatePresence, motion } from "framer-motion";
+import { usePathname } from "next/navigation";
 import { CartDrawer } from "@/components/cart/CartDrawer";
-import { NavbarMenu } from "./NavbarMenu";
+import { CurrencySwitcher } from "./CurrencySwitcher";
 import { useCartStore } from "@/lib/store";
 import { useWishlistStore } from "@/lib/wishlist-store";
-import { SignedIn, SignedOut, SignInButton, UserButton } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
-import { AnimatePresence, motion } from "framer-motion";
-import { ForgeButton } from "@/components/ui/ForgeButton";
 import { useForgeStore } from "@/lib/forge-store";
-import { CurrencySwitcher } from "./CurrencySwitcher";
-import { useAudio } from "@/hooks/useAudio";
-import { PromoBanner } from "@/components/home/PromoBanner";
+
+const links = [
+  { label: "Catalog", href: "/products" },
+  { label: "How it works", href: "/#story" },
+  { label: "Free assets", href: "/freebies" },
+  { label: "About", href: "/about" },
+];
 
 export function Header() {
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const { items: cartItems } = useCartStore();
   const { items: wishlistItems } = useWishlistStore();
-  const { playClick } = useAudio();
-  const [mounted, setMounted] = useState(false);
-  
   const toggleConcierge = useForgeStore((state) => state.toggleConcierge);
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalWishlist = wishlistItems.length;
 
-  const safePlayClick = () => {
-    try {
-      playClick();
-    } catch (e) {
-      console.warn("[HEADER] Audio skipped:", e);
-    }
-  };
-
   useEffect(() => {
-    const handle = requestAnimationFrame(() => setMounted(true));
-    let ticking = false;
-    const handleScroll = () => {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(() => {
-        setScrolled(window.scrollY > 20);
-        ticking = false;
-      });
-    };
+    const frame = requestAnimationFrame(() => setMounted(true));
+    const handleScroll = () => setScrolled(window.scrollY > 18);
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
+      cancelAnimationFrame(frame);
       window.removeEventListener("scroll", handleScroll);
-      cancelAnimationFrame(handle);
     };
   }, []);
 
-  const isAuthPage = pathname?.startsWith('/sign-in') || pathname?.startsWith('/sign-up');
+  const isAuthPage = pathname?.startsWith("/sign-in") || pathname?.startsWith("/sign-up");
   if (isAuthPage) return null;
 
   return (
     <>
-      <header 
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-          scrolled 
-            ? 'glass-panel border-b border-white/10' 
-            : 'bg-[#0a0a0b]'
-        }`}
-      >
-        <PromoBanner />
-        <div className={`container mx-auto px-4 md:px-6 flex items-center justify-between gap-4 md:gap-8 transition-all duration-500 ${scrolled ? 'h-14' : 'h-16 md:h-20'}`}>
-          <div className="flex items-center gap-4 md:gap-6 shrink-0">
-            <Link href="/" className="group" onClick={safePlayClick}>
-              <Logo className="text-xl md:text-2xl tracking-tighter transition-all group-hover:glow-text uppercase">
-                DIGITAL SWARM
-              </Logo>
+      <header className={`fixed inset-x-0 top-0 z-50 border-b border-black/15 text-[#151515] transition-all duration-300 ${scrolled ? "bg-[#f1eee6]/92 shadow-[0_8px_30px_rgba(0,0,0,.05)] backdrop-blur-xl" : "bg-[#f1eee6]"}`}>
+        <div className={`mx-auto flex max-w-[1700px] items-center justify-between gap-5 px-5 transition-all duration-300 md:px-8 lg:px-12 ${scrolled ? "h-16" : "h-20"}`}>
+          <div className="flex min-w-0 items-center gap-5 lg:gap-8">
+            <Link href="/" className="shrink-0 text-[15px] font-black uppercase tracking-[-.04em] md:text-lg">
+              DIGITAL <span className="text-[#725cff]">SWARM</span>
             </Link>
-            <div className="hidden xl:flex items-center gap-6">
+            <div className="hidden xl:block">
               <CurrencySwitcher />
             </div>
           </div>
 
-          <div className="hidden lg:flex flex-1 justify-center">
-            <NavbarMenu scrolled={scrolled} />
-          </div>
+          <nav className="hidden items-center gap-7 lg:flex" aria-label="Main navigation">
+            {links.map((link, index) => (
+              <Link key={link.href} href={link.href} className="group flex items-center gap-2 text-[10px] font-black uppercase tracking-[.18em] text-black/60 transition hover:text-black">
+                <span className="font-mono text-[8px] text-[#725cff]/70">{String(index + 1).padStart(2, "0")}</span>
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
-          <div className="flex items-center gap-2 md:gap-4">
+          <div className="flex items-center gap-1 md:gap-2">
             <button
               type="button"
-              onClick={() => { safePlayClick(); toggleConcierge(); }}
+              onClick={toggleConcierge}
               aria-label="Open product finder"
-              className="hidden sm:flex items-center gap-2 px-3 md:px-4 py-2 bg-white/5 border border-white/10 rounded-lg hover:border-accent/40 transition-transform duration-150 hover:scale-105 active:scale-[0.98] cursor-pointer group"
+              className="hidden h-10 items-center gap-2 border border-black/15 px-3 text-[9px] font-black uppercase tracking-[.16em] transition hover:bg-[#151515] hover:text-[#f1eee6] sm:flex"
             >
-              <Search className="w-4 h-4 text-accent transition-transform group-hover:rotate-12" />
-              <span className="hidden lg:block text-xs font-mono uppercase tracking-tighter text-white/50 group-hover:text-white transition-colors">
-                Product Finder
-              </span>
-              <kbd className="hidden xl:block ml-2 px-1.5 py-0.5 bg-white/10 rounded text-[9px] text-white/30">/</kbd>
+              <Search className="h-4 w-4" />
+              <span className="hidden xl:inline">Find a product</span>
             </button>
 
-            <div className="flex items-center gap-1 md:gap-2">
-              <SignedIn>
-                <Link href="/dashboard/assets">
-                  <button className="relative p-2 text-white/60 hover:glow-text transition-all group" title="Licensed Assets">
-                    <ShieldCheck className="w-5 h-5 group-hover:text-primary transition-colors" />
-                  </button>
-                </Link>
-              </SignedIn>
+            <Link href="/wishlist" className="relative flex h-10 w-10 items-center justify-center border border-transparent transition hover:border-black/15" aria-label={`View wishlist with ${totalWishlist} items`}>
+              <Heart className="h-4 w-4" />
+              {mounted && totalWishlist > 0 && <CountBadge value={totalWishlist} />}
+            </Link>
 
-              <Link href="/wishlist">
-                <button 
-                  aria-label={`View wishlist with ${totalWishlist} items`}
-                  className="relative p-2 text-white/60 hover:text-primary transition-colors group"
-                >
-                  <Heart className="w-5 h-5" />
-                  {mounted && totalWishlist > 0 && (
-                    <span className="absolute top-1 right-1 bg-primary text-black text-[9px] font-black min-w-[14px] h-[14px] rounded-full flex items-center justify-center">
-                      {totalWishlist}
-                    </span>
-                  )}
-                </button>
-              </Link>
-              
-              <Link href="/cart">
-                <button 
-                  aria-label={`View cart with ${totalItems} items`}
-                  className="relative p-2 text-white/60 hover:text-primary transition-colors group"
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  {mounted && totalItems > 0 && (
-                    <span className="absolute top-1 right-1 bg-accent text-black text-[9px] font-black min-w-[14px] h-[14px] rounded-full flex items-center justify-center transition-transform duration-200">
-                      {totalItems}
-                    </span>
-                  )}
-                </button>
-              </Link>
+            <Link href="/cart" className="relative flex h-10 w-10 items-center justify-center border border-transparent transition hover:border-black/15" aria-label={`View cart with ${totalItems} items`}>
+              <ShoppingBag className="h-4 w-4" />
+              {mounted && totalItems > 0 && <CountBadge value={totalItems} />}
+            </Link>
 
-              <div className="h-6 w-px bg-white/10 mx-1 hidden sm:block" />
+            <div className="hidden h-6 w-px bg-black/15 sm:block" />
 
-              <div className="flex items-center gap-2 md:gap-3">
-                <SignedOut>
-                  <SignInButton mode="modal" fallbackRedirectUrl={pathname}>
-                    <button className="text-[10px] md:text-[11px] font-outfit font-black uppercase italic tracking-widest text-white/60 hover:text-primary transition-all">
-                      Sign In
-                    </button>
-                  </SignInButton>
-                </SignedOut>
-                <SignedIn>
-                  <UserButton 
-                    appearance={{
-                      elements: {
-                        userButtonAvatarBox: "w-7 h-7 md:w-8 md:h-8 border border-white/10 hover:border-primary transition-all"
-                      }
-                    }}
-                  />
-                </SignedIn>
-              </div>
+            <SignedOut>
+              <SignInButton mode="modal" fallbackRedirectUrl={pathname}>
+                <button className="hidden h-10 border border-black/20 px-4 text-[9px] font-black uppercase tracking-[.16em] transition hover:bg-[#725cff] hover:text-white sm:block">Sign in</button>
+              </SignInButton>
+            </SignedOut>
+            <SignedIn>
+              <div className="hidden items-center sm:flex"><UserButton /></div>
+            </SignedIn>
 
-              <button 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden p-2 text-white/80 hover:text-primary transition-colors"
-                aria-label={isMenuOpen ? "Close navigation" : "Open navigation"}
-              >
-                {isMenuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
-              </button>
-            </div>
+            <button onClick={() => setIsMenuOpen((open) => !open)} className="ml-1 flex h-10 w-10 items-center justify-center border border-black/15 lg:hidden" aria-label={isMenuOpen ? "Close navigation" : "Open navigation"}>
+              {isMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
           </div>
         </div>
       </header>
@@ -173,73 +108,38 @@ export function Header() {
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div
-            initial={{ opacity: 0, x: '100%' }}
-            animate={{ opacity: 1, x: 0 }}
-            exit={{ opacity: 0, x: '100%' }}
-            transition={{ duration: 0.22, ease: [0.25, 0.1, 0.25, 1] }}
-            className="fixed inset-0 z-[60] glass-panel lg:hidden flex flex-col p-8 pt-32 overflow-y-auto"
+            initial={{ opacity: 0, y: -16 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -16 }}
+            transition={{ duration: 0.22 }}
+            className="fixed inset-0 z-[60] flex flex-col overflow-y-auto bg-[#d9d0ff] px-6 pb-8 pt-24 text-[#151515] lg:hidden"
           >
-            <nav className="flex flex-col gap-4 mb-12">
-              {[
-                { label: 'Products', href: '/products' },
-                { label: 'Pricing',  href: '/pricing' },
-                { label: 'Search',   href: '/search' },
-                { label: 'Pulse',    href: '/pulse' },
-                { label: 'Affiliate', href: '/affiliate' },
-                { label: 'About',    href: '/about' },
-                { label: 'Blog',     href: '/blog' },
-              ].map(({ label, href }) => (
-                <MobileNavLink 
-                  key={label} 
-                  href={href} 
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  {label}
-                </MobileNavLink>
+            <div className="mb-10 flex items-center justify-between border-b border-black/20 pb-5">
+              <span className="font-mono text-[9px] font-black uppercase tracking-[.2em]">DIGITAL SWARM / MENU</span>
+              <button onClick={() => setIsMenuOpen(false)} className="flex h-10 w-10 items-center justify-center border border-black/20" aria-label="Close navigation"><X className="h-5 w-5" /></button>
+            </div>
+
+            <nav className="flex flex-col">
+              {links.map((link, index) => (
+                <Link key={link.href} href={link.href} onClick={() => setIsMenuOpen(false)} className="grid grid-cols-[48px_1fr_auto] items-center border-b border-black/20 py-5">
+                  <span className="font-mono text-[9px] font-black text-[#725cff]">{String(index + 1).padStart(2, "0")}</span>
+                  <span className="text-4xl font-black uppercase tracking-[-.055em]">{link.label}</span>
+                  <span className="text-xl">↗</span>
+                </Link>
               ))}
             </nav>
 
-            <div className="mt-auto flex flex-col gap-6">
-              <div className="py-6 border-y border-white/5">
-                <SignedOut>
-                  <SignInButton mode="modal" fallbackRedirectUrl={pathname}>
-                    <button className="w-full py-4 text-sm font-black uppercase italic tracking-widest text-white/40 hover:text-primary transition-all border border-white/10 rounded-xl bg-white/2">
-                      Sign In
-                    </button>
-                  </SignInButton>
-                </SignedOut>
-                <SignedIn>
-                  <div className="flex items-center justify-between p-4 bg-white/5 rounded-2xl border border-white/10">
-                    <div className="flex items-center gap-4">
-                      <UserButton 
-                        appearance={{
-                          elements: {
-                            userButtonAvatarBox: "w-10 h-10 border border-primary shadow-[0_0_15px_rgba(204,255,0,0.2)]"
-                          }
-                        }}
-                      />
-                      <div className="flex flex-col">
-                        <span className="text-[10px] font-mono text-white/40 uppercase tracking-widest">Signed in</span>
-                        <span className="text-xs font-black uppercase text-primary">Customer account</span>
-                      </div>
-                    </div>
-                    <Link href="/dashboard" onClick={() => setIsMenuOpen(false)}>
-                      <button className="px-4 py-2 bg-white/10 rounded-lg text-[9px] font-mono uppercase tracking-widest hover:bg-primary hover:text-black transition-all">
-                        Dashboard
-                      </button>
-                    </Link>
-                  </div>
-                </SignedIn>
-              </div>
-
-              <Link href="/search" onClick={() => setIsMenuOpen(false)}>
-                <ForgeButton className="w-full">Search Products</ForgeButton>
-              </Link>
-              
-              <div className="flex justify-between items-center text-[9px] font-mono text-white/30 uppercase tracking-[0.2em]">
-                <span>Private paid delivery</span>
-                <span>© DIGITAL SWARM 2026</span>
-              </div>
+            <div className="mt-auto grid gap-3 pt-10">
+              <Link href="/search" onClick={() => setIsMenuOpen(false)} className="editorial-button editorial-button-dark w-full justify-between">Product finder <Search className="h-4 w-4" /></Link>
+              <SignedOut>
+                <SignInButton mode="modal" fallbackRedirectUrl={pathname}>
+                  <button className="editorial-button w-full justify-between">Sign in <span>↗</span></button>
+                </SignInButton>
+              </SignedOut>
+              <SignedIn>
+                <div className="flex items-center justify-between border border-black/20 p-4"><span className="text-[10px] font-black uppercase tracking-[.14em]">Customer account</span><UserButton /></div>
+              </SignedIn>
+              <div className="pt-3"><CurrencySwitcher /></div>
             </div>
           </motion.div>
         )}
@@ -249,15 +149,6 @@ export function Header() {
   );
 }
 
-function MobileNavLink({ href, children, onClick }: { href: string; children: React.ReactNode; onClick: () => void }) {
-  return (
-    <Link 
-      href={href} 
-      onClick={onClick}
-      className="min-h-[48px] py-2 text-2xl font-outfit font-black uppercase italic tracking-tighter text-white hover:text-primary transition-all flex items-center gap-4 group"
-    >
-      <span className="w-0 h-1 bg-primary transition-all group-hover:w-6" />
-      {children}
-    </Link>
-  );
+function CountBadge({ value }: { value: number }) {
+  return <span className="absolute right-0 top-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-[#725cff] px-1 text-[8px] font-black text-white">{value}</span>;
 }
