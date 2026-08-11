@@ -43,8 +43,8 @@ jobs:
             ]) {
               const context = await browser.newContext({ viewport: { width: cfg.width, height: cfg.height }, deviceScaleFactor: 1 });
               const page = await context.newPage();
-              await page.goto(process.env.PREVIEW_URL, { waitUntil: 'networkidle', timeout: 60000 });
-              await page.waitForTimeout(3500);
+              await page.goto(process.env.PREVIEW_URL, { waitUntil: 'domcontentloaded', timeout: 45000 });
+              await page.waitForTimeout(6000);
               await page.screenshot({ path: `${cfg.name}.png`, fullPage: true });
               await context.close();
             }
