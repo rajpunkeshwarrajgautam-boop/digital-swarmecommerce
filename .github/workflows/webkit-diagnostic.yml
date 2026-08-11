@@ -10,7 +10,7 @@ permissions:
 jobs:
   diagnose:
     runs-on: ubuntu-latest
-    timeout-minutes: 12
+    timeout-minutes: 8
     env:
       NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
       NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
@@ -40,11 +40,12 @@ jobs:
             curl -fsS http://127.0.0.1:3000/api/health >/dev/null && break
             sleep 0.5
           done
-          node <<'NODE'
+          timeout 45s node <<'NODE'
           const { webkit } = require('@playwright/test');
           (async () => {
             const browser = await webkit.launch();
             const page = await browser.newPage();
+            page.setDefaultTimeout(8000);
             page.on('console', m => console.log('BROWSER_CONSOLE', m.type(), m.text()));
             page.on('pageerror', e => console.log('PAGE_ERROR', e.message, e.stack || ''));
             page.on('requestfailed', r => console.log('REQUEST_FAILED', r.url(), r.failure()?.errorText || ''));
@@ -54,11 +55,16 @@ jobs:
                 try { console.log('PRODUCT_BODY', (await r.text()).slice(0, 1000)); } catch {}
               }
             });
-            const nav = await page.goto('http://127.0.0.1:3000/product/ai-executive-playbook', { waitUntil: 'domcontentloaded' });
+            let nav = null;
+            try {
+              nav = await page.goto('http://127.0.0.1:3000/product/ai-executive-playbook', { waitUntil: 'commit', timeout: 12000 });
+            } catch (e) {
+              console.log('NAV_ERROR', e.message);
+            }
             console.log('NAV_STATUS', nav && nav.status());
-            await page.waitForTimeout(8000);
+            await page.waitForTimeout(6000);
             console.log('FINAL_URL', page.url());
-            console.log('BODY_TEXT', (await page.locator('body').innerText()).slice(0, 6000));
+            try { console.log('BODY_TEXT', (await page.locator('body').innerText({ timeout: 5000 })).slice(0, 6000)); } catch (e) { console.log('BODY_ERROR', e.message); }
             console.log('ADD_STANDARD_COUNT', await page.getByRole('button', { name: /add standard to cart/i }).count());
             console.log('PRODUCT_NOT_FOUND_COUNT', await page.getByText(/product not found/i).count());
             console.log('LOADING_SKELETON_COUNT', await page.locator('.animate-pulse').count());
