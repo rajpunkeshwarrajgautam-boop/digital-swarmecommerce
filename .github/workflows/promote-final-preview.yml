@@ -1,0 +1,46 @@
+name: Promote final Vercel preview
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/promote-final-preview.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  promote:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+      VERCEL_ACCESS_TOKEN: ${{ secrets.VERCEL_ACCESS_TOKEN }}
+      PROJECT_ID: prj_wNDeoMNLQ2AfQFLkMJUQenvH95xe
+      TEAM_ID: team_0IZkX9o2Ab319UsAPW9oq1SL
+      DEPLOYMENT_ID: dpl_CknAeTroHxHfYm7L7iWnC5G7VQri
+    steps:
+      - name: Promote already-built final preview
+        shell: bash
+        run: |
+          set -euo pipefail
+          TOKEN="${VERCEL_TOKEN:-${VERCEL_ACCESS_TOKEN:-}}"
+          if [ -z "$TOKEN" ]; then
+            echo "::error::No VERCEL_TOKEN or VERCEL_ACCESS_TOKEN repository secret is configured."
+            exit 2
+          fi
+
+          HTTP_CODE=$(curl -sS -o /tmp/vercel-promote-response.txt -w '%{http_code}' \
+            -X POST \
+            "https://api.vercel.com/v10/projects/${PROJECT_ID}/promote/${DEPLOYMENT_ID}?teamId=${TEAM_ID}" \
+            -H "Authorization: Bearer ${TOKEN}" \
+            -H 'Content-Type: application/json')
+
+          if [ "$HTTP_CODE" != "201" ] && [ "$HTTP_CODE" != "202" ]; then
+            echo "::error::Vercel promotion failed with HTTP ${HTTP_CODE}."
+            cat /tmp/vercel-promote-response.txt
+            exit 1
+          fi
+
+          echo "Final preview promotion accepted by Vercel (HTTP ${HTTP_CODE})."
