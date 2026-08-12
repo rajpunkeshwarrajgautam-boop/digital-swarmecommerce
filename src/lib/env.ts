@@ -6,7 +6,12 @@ const optionalString = z.preprocess(
 );
 
 const optionalEmail = z.preprocess(
-  (value) => typeof value === 'string' && value.trim() === '' ? undefined : value,
+  (value) => {
+    if (typeof value !== 'string') return value;
+    const normalized = value.trim();
+    if (!normalized) return undefined;
+    return z.string().email().safeParse(normalized).success ? normalized : undefined;
+  },
   z.string().email().optional(),
 );
 
